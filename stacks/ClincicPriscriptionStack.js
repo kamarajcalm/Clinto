@@ -9,6 +9,8 @@ import PriscriptionIssue from '../MedicalScreens.js/PriscriptionIssue';
 import SearchPateint from '../MedicalScreens.js/SearchPateint';
 import ListPriscriptions from '../MedicalScreens.js/ListPriscriptions';
 import ShowCard2 from '../MedicalScreens.js/ShowCard2';
+import PrescriptionView from '../MedicalScreens.js/PrescriptionView';
+import BillPrescription from '../MedicalScreens.js/BillPrescription';
 const Stack = createStackNavigator();
 export default class ClincicPriscriptionStack extends Component {
     constructor(props) {
@@ -24,7 +26,7 @@ export default class ClincicPriscriptionStack extends Component {
                 <Stack.Screen name="SearchPateint" component={SearchPateint} options={{ headerShown: false }} />
                 <Stack.Screen name="ListPriscriptions" component={ListPriscriptions} options={{ headerShown: false }} />
                 <Stack.Screen name="showCard2" component={ShowCard2} options={{ headerShown: false }} />
-                
+                <Stack.Screen name="BillPrescription" component={BillPrescription} options={{ headerShown: false }} />
             </Stack.Navigator>
         );
     }

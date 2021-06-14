@@ -15,8 +15,7 @@ export default class ProfileStack extends Component {
   render() {
     return (
         <Stack.Navigator>
-         <Stack.Screen name="ProfileHome" component={Profile} options={{ headerShown: false }} />
-             
+         <Stack.Screen name="ProfileHome" component={Profile} options={{ headerShown: false }} />    
         </Stack.Navigator>
     );
   }

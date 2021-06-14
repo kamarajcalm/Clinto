@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "Med-Portal",
-    "slug": "Med-Portal",
+    "name": "Clinto",
+    "slug": "Clinto",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/splash.png",
+    "icon": "./assets/adaptive-icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -26,7 +26,7 @@
     "android": {
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/splash.png",
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
       "config":{
@@ -35,6 +35,10 @@
         }
       },
       "package": "in.poa.medportal"
+    },
+      "notification": {
+      "icon": "./assets/48x48.png",
+      "color": "#000000"
     },
     "web": {
       "favicon": "./assets/favicon.png"

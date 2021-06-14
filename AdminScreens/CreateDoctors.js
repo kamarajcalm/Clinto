@@ -14,13 +14,11 @@ import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import * as  ImagePicker from 'expo-image-picker';
 import { TextInput } from 'react-native-gesture-handler';
 import * as Location from 'expo-location';
-import DateTimePicker from '@react-native-community/datetimepicker';
+
 import moment from 'moment';
 import HttpsClient from '../api/HttpsClient';
-
-import Toast from 'react-native-simple-toast';
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import authAxios from '../api/authAxios';
-import SimpleToast from 'react-native-simple-toast';
 const url= settings.url
 class CreateDoctors extends Component {
     constructor(props) {
@@ -46,49 +44,62 @@ class CreateDoctors extends Component {
             image:null
         };
     }
+    showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
 
+        showMessage(message);
+    }
     createDoctor = async()=>{
       let api = `${url}/api/profile/createUser/`
 
       if(this.state.Name ==""){
-           return SimpleToast.show("Please fill Name")
+          return this.showSimpleMessage("Please fill Name", "#dd7030",)
       }
 
         if (this.state.Mobile == "") {
-            return SimpleToast.show("Please fill Mobile")
+            return this.showSimpleMessage("Please fill Mobile", "#dd7030",)
         }
         if (this.state.Pan == "") {
-            return SimpleToast.show("Please fill Pan")
+            return this.showSimpleMessage("Please fill Pan", "#dd7030",)
         }
         if (this.state.Age == "") {
-            return SimpleToast.show("Please fill Age")
+            return this.showSimpleMessage("Please fill Age", "#dd7030",)
+          
         }
         if (this.state.Qualification == "") {
-            return SimpleToast.show("Please fill Qualification")
+            return this.showSimpleMessage("Please fill Qualification", "#dd7030",)
         }
         if (this.state.Specialization == "") {
-            return SimpleToast.show("Please fill Specialization")
+            return this.showSimpleMessage("Please fill Specialization", "#dd7030",)
+
         }
         if (this.state.Experience == "") {
-            return SimpleToast.show("Please fill Experience")
+            return this.showSimpleMessage("Please fill Experience", "#dd7030",)
         }
         if (this.state.Pan == "") {
-            return SimpleToast.show("Please fill Pan")
+            return this.showSimpleMessage("Please fill Pan", "#dd7030",)
         }
         if (this.state.Address == "") {
-            return SimpleToast.show("Please fill Address")
+            return this.showSimpleMessage("Please fill Address", "#dd7030",)
         }
         if (this.state.Pincode == "") {
-            return SimpleToast.show("Please fill Pincode")
+            return this.showSimpleMessage("Please fill Pincode", "#dd7030",)
         }
         if (this.state.State == "") {
-            return SimpleToast.show("Please fill State")
+            return this.showSimpleMessage("Please fill State", "#dd7030",)
+           
         }
         if (this.state.City == "") {
-            return SimpleToast.show("Please fill City")
+            return this.showSimpleMessage("Please fill City", "#dd7030",)
         }
         if (this.state.NoOfClinics == "") {
-            return SimpleToast.show("Please fill NoOfClinics")
+            return this.showSimpleMessage("Please fill NoOfClinics", "#dd7030",)
         }
       let sendData ={
           name:this.state.Name,
@@ -113,13 +124,15 @@ class CreateDoctors extends Component {
       let post = await HttpsClient.post(api,sendData)
       console.log(post,"hhh")
         if (post.type =="success"){
-          Toast.show('created SuccessFully');
+            this.showSimpleMessage("created SuccessFully", "#00A300", "success")
+      
           setTimeout(()=>{
               this.props.navigation.goBack();
           },2000)
          
       }else{
-          Toast.show("Try again");
+
+            this.showSimpleMessage("Try again", "#B22222", "danger")
       }
     }
     

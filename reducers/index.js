@@ -26,9 +26,23 @@ const selectedMedicalReducer = (selectedMedical = null, action) => {
     }
     return selectedMedical
 }
+const selectedWorkingClinicsReducer = (selectedWorkingClinics = [], action) => {
+    if (action.type === "WORKINGCLINICS_SELECTED") {
+        return action.payload;
+    }
+    return selectedWorkingClinics
+}
+const selectedOwnedClinicsReducer = (selectedOwnedClinics = [], action) => {
+    if (action.type === "OWNEDCLINICS_SELECTED") {
+        return action.payload;
+    }
+    return selectedOwnedClinics
+}
 export default combineReducers({
     selectedTheme:selectedThemeReducer,
     selectedUser:selectedUserReducer,
     selectedClinic:selectedClinicReducer,
     selectedMedical:selectedMedicalReducer,
+    selectedWorkingClinics: selectedWorkingClinicsReducer,
+    selectedOwnedClinics: selectedOwnedClinicsReducer,
 })

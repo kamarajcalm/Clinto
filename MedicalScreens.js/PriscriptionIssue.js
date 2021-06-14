@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView } from 'react-native';
+import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView, Appearance,} from 'react-native';
 import settings from '../AppSettings';
 import { connect } from 'react-redux';
 import { selectTheme,selectMedical} from '../actions';
 const { height, width } = Dimensions.get("window");
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Ionicons, AntDesign, Fontisto, FontAwesome} from '@expo/vector-icons';
 import authAxios from '../api/authAxios';
 import HttpsClient from '../api/HttpsClient';
 import moment from 'moment';
 import Modal from 'react-native-modal';
 const fontFamily = settings.fontFamily;
-const themeColor = settings.themeColor;
+let themeColor = settings.themeColor;
 const url = settings.url;
-
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 class PriscriptionIssue extends Component {
     constructor(props) {
         const Date1 = new Date()
@@ -30,30 +30,50 @@ class PriscriptionIssue extends Component {
             priscriptions:[],
             showModal:false,
             medicals:[],
-            showCalender:false
+            showCalender:false,
+            isFetching:false,
         };
     }
-    onChange = (selectedDate) => {
-        if (selectedDate.type == "set") {
-            this.setState({ today: moment(new Date(selectedDate.nativeEvent.timestamp)).format('YYYY-MM-DD'),showCalender: false, date: new Date(selectedDate.nativeEvent.timestamp) }, () => {
-                this.getPriscriptions(this.props.medical.clinicpk)
-                console.log(this.props.medical,"vvvv")
 
-            })
+    showDatePicker = () => {
+        this.setState({ showCalender: true })
+    };
 
-        } else {
-            return null
-        }
+    hideDatePicker = () => {
+        this.setState({ showCalender: false })
+    };
 
+    handleConfirm = (date) => {
+        this.setState({ today: moment(date).format('YYYY-MM-DD'), showCalender: false, date: new Date(date) }, () => {
+            this.getPriscriptions(this.props.medical.id)
+       
+
+        })
+        this.hideDatePicker();
+    };
+    showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
+
+        showMessage(message);
     }
     getPriscriptions =async(pk)=>{
         let api = `${url}/api/prescription/issued/?clinic=${pk}&date=${moment(this.state.date).format("YYYY-MM-DD")}`
-        console.log(api)
+        console.log(api,"[kjk")
         const data = await HttpsClient.get(api)
         console.log(data)
         if(data.type =="success"){
-            this.setState({ priscriptions:data.data})
+            this.setState({ priscriptions:data.data,isFetching:false})
+        }else{
+            this.setState({  isFetching: false })
+           this.showSimpleMessage("Something Went Wrong", "#dd7030",)
         }
+
     }
     getClinic = async()=>{
    
@@ -61,6 +81,7 @@ class PriscriptionIssue extends Component {
   
            let api = `${url}/api/prescription/recopinists/?user=${this.props.user.id}`
             let data = await HttpsClient.get(api)
+            console.log(api)
             if (data.type == "success") {
 
                 this.props.selectMedical(data.data[0].clinic)
@@ -71,6 +92,7 @@ class PriscriptionIssue extends Component {
             
             let api = `${url}/api/prescription/getDoctorClinics/?medicalRep=${this.props.user.id}`
             let data = await HttpsClient.get(api)
+            console.log(api)
             if(data.type =="success"){
                 this.setState({ medicals: data.data.ownedclinics})
                 this.props.selectMedical(data.data.ownedclinics[0])
@@ -91,10 +113,19 @@ class PriscriptionIssue extends Component {
     }
     componentDidMount() {
        
-       
-              this.getClinic()
-       
+              this.getClinic();
+        this._unsubscribe = this.props.navigation.addListener('focus', () => {
         
+            this.getPriscriptions(this.props?.medical?.clinic?.id)
+
+        });
+    }
+    onRefresh = () => {
+        this.setState({ isFetching: true })
+        this.getPriscriptions(this.props.medical.id)
+    }
+    componentWillUnmount(){
+        this._unsubscribe();
     }
     render() {
         return (
@@ -107,8 +138,8 @@ class PriscriptionIssue extends Component {
                         <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
                           
                             <View style={{ flex: 1, flexDirection:"row"}}>
-                                <View style={{flex:0.5,alignItems:"center",justifyContent:"center"}}>
-                                    <Text style={[styles.text, { color: '#fff', fontWeight: 'bold', fontSize: 23, marginLeft: 20 }]}>Priscription</Text>
+                                <View style={{flex:0.5,}}>
+                                    <Text style={[styles.text, { color: '#fff', fontWeight: 'bold', fontSize: 25,marginLeft:10}]}>Prescription</Text>
                                 </View>
                                 {this.props.user.profile.occupation == "MediacalRep" &&<TouchableOpacity style={{ flex: 0.5, alignItems: "center", justifyContent: "center" ,flexDirection:"row"}}
                                     onPress={() => { this.setState({ showModal: true, showCalender:false})}}
@@ -135,7 +166,7 @@ class PriscriptionIssue extends Component {
                                 >
                                     <Fontisto name="date" size={24} color={themeColor} />
                                 </TouchableOpacity>
-                                {this.state.showCalender && (
+                                {/* {this.state.showCalender && (
                                     <DateTimePicker
                                         
                                         testID="dateTimePicker1"
@@ -145,7 +176,13 @@ class PriscriptionIssue extends Component {
                                         display="default"
                                         onChange={(time) => { this.onChange(time) }}
                                     />
-                                )}
+                                )} */}
+                                <DateTimePickerModal
+                                    isVisible={this.state.showCalender}
+                                    mode="date"
+                                    onConfirm={this.handleConfirm}
+                                    onCancel={this.hideDatePicker}
+                                />
                             </View>
                             <View>
                                 <Text style={[styles.text,]}> Total:{this.state.priscriptions.length}</Text>
@@ -154,12 +191,14 @@ class PriscriptionIssue extends Component {
                         {/* CHATS */}
                         <FlatList
                             style={{  }}
+                            onRefresh={() => this.onRefresh()}
+                            refreshing={this.state.isFetching}
                             data={this.state.priscriptions}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item, index }) => {
                                 return (
                                     <TouchableOpacity style={[styles.card, { flexDirection: "row", borderRadius: 5 ,marginTop:15}]}
-                                        onPress={() => { this.props.navigation.navigate('showCard2', { item }) }}
+                                        // onPress={() => { this.props.navigation.navigate('PrescriptionView', { item, }) }}
                                     >
                                         <View style={{ flex: 0.3, alignItems: 'center', justifyContent: "center" }}>
                                             <Image
@@ -212,7 +251,11 @@ class PriscriptionIssue extends Component {
                         onBackdropPress={() => { this.setState({ showModal: false }) }}
                     >
                         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                           
                             <View style={{ height: height * 0.3, width: width * 0.9, backgroundColor: "#fff", borderRadius: 20, alignItems: "center", justifyContent: "center" }}>
+                                <View style={{marginTop:5}}>
+                                    <Text style={[styles.text,{color:"#000",fontSize:18}]}>Select Clinic</Text>
+                                </View>
                                 <FlatList
                                     data={this.state.medicals}
                                     keyExtractor={(item, index) => index.toString()}

@@ -6,6 +6,7 @@ import ProfileEdit from '../Screens/ProfileEdit';
 import Appointments from '../Screens/Appointments';
 import ProfileView from '../Screens/ProfileView';
 import ProfileScreen from '../AdminScreens/ProfileScreen';
+import MedicalProfile from '../MedicalScreens.js/MedicalProfile';
 const Stack = createStackNavigator();
 export default class AdminProfileStack extends Component {
     constructor(props) {
@@ -17,8 +18,7 @@ export default class AdminProfileStack extends Component {
     render() {
         return (
             <Stack.Navigator>
-                <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }} />
-                
+                <Stack.Screen name="MedicalProfile" component={MedicalProfile} options={{ headerShown: false }} />
             </Stack.Navigator>
         );
     }

@@ -13,32 +13,39 @@ const themeColor = settings.themeColor;
 class ViewDoctor extends Component {
     constructor(props) {
         let item =props.route.params.item
+        let owner =props.route.params.owner
         super(props);
         this.state = {
-            item
+            item,
+            owner
         };
     }
     componentDidMount() {
         console.log(this.state.item?.doctor?.profile?.name)
     }
     getTodayTimings = (today) => {
+      
+   return(
+       this.state.item.clinicShits[today][0].timings.map((i, index) => {
+           return (
+               <View 
+                key={index}
+                style={{ flexDirection: "row", marginTop: 5 }}>
+                   <Text style={[styles.text, { fontWeight: "bold" }]}>{index + 1}.</Text>
+                   <Text style={[styles.text, { marginLeft: 5 }]}>{i[0]}</Text>
+                   <Text style={[styles.text]}>-</Text>
+                   <Text style={[styles.text]}>{i[1]}</Text>
+               </View>
+           )
+       })
+   )
        
-        return (
-            this.state.item.clinicShits[today].map((i, index) => {
-                return (
-                    <View style={{ flexDirection: "row", marginTop: 5 }}>
-                        <Text style={[styles.text,{fontWeight:"bold"}]}>{index + 1}.</Text>
-                        <Text style={[styles.text,{ marginLeft: 5 }]}>{i.timings[0][0]}</Text>
-                        <Text style={[styles.text]}>-</Text>
-                        <Text style={[styles.text]}>{i.timings[0][1]}</Text>
-                    </View>
-                )
-            })
-        )
+       
 
 
 
     }
+
     render() {
         return (
             <>
@@ -56,12 +63,12 @@ class ViewDoctor extends Component {
                             <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
                                 <Text style={[styles.text, { color: '#fff', fontWeight: 'bold', fontSize: 18 }]}>{this.state.item?.doctor?.profile?.name}</Text>
                             </View>
-                            <TouchableOpacity style={{ flex: 0.2, flexDirection:"row",alignItems:"center",justifyContent:'center' }}
-                                onPress={() => { this.props.navigation.navigate('EditDoctorTimings',{clinic:this.state.item})}}
+                           {this.state.owner&&<TouchableOpacity style={{ flex: 0.2, flexDirection:"row",alignItems:"center",justifyContent:'center' }}
+                                onPress={() => { this.props.navigation.navigate('EditDoctorTimings',{clinic:this.state.item,})}}
                             >
                                 <Entypo name="back-in-time" size={24} color="#fff" />
                                 <Text style={[styles.text, { marginLeft: 10, color: "#fff" }]}>Edit </Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity>}
                   
                         
                         </View>

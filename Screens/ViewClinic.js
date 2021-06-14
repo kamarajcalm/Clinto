@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, Dimensions, TouchableOpacity, StyleSheet, TextInput, FlatList, Image, SafeAreaView, ScrollView, Linking } from 'react-native';
-import { Ionicons, Entypo, AntDesign, MaterialIcons, FontAwesome5} from '@expo/vector-icons';
-import { connect } from 'react-redux';
+import { Ionicons, Entypo, AntDesign, MaterialIcons, FontAwesome5, FontAwesome} from '@expo/vector-icons';
+import { connect, connectAdvanced } from 'react-redux';
 import { selectTheme } from '../actions';
 import settings from '../AppSettings';
 import medicine from '../components/Medicine';
@@ -11,7 +11,13 @@ const { height, width } = Dimensions.get("window");
 const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
 const url = settings.url;
-
+import { SliderBox } from "react-native-image-slider-box";
+const images = [
+    "https://source.unsplash.com/1024x768/?nature",
+    "https://source.unsplash.com/1024x768/?water",
+    "https://source.unsplash.com/1024x768/?girl",
+    "https://source.unsplash.com/1024x768/?tree",
+]
 import moment from 'moment-timezone';
 const date = new Date();
 const day = date.getDay();
@@ -19,12 +25,12 @@ const day = date.getDay();
 class ViewClinic extends Component {
     constructor(props) {
         let item = props.route.params.item
-
+ console.log(item,"iiii")
         super(props);
         this.state = {
             item,
             clinicDetails:null,
-            showAll:false,
+            showAll:true,
             doctors:[],
             showAllDoctorTimings:false,
             selectedDoctor:null
@@ -54,32 +60,38 @@ class ViewClinic extends Component {
     }
     getTodayTimings = (today,item) => {
         return (
-            item.clinicShits[today].map((i, index) => {
+            item.clinicShits[today][0].timings.map((i, index) => {
                 return (
-                    <View style={{ flexDirection: "row", marginTop: 5 }}>
+                    <View
+                        key={index}
+                        style={{ flexDirection: "row", marginTop: 5 }}>
                         <Text style={[styles.text, { fontWeight: "bold" }]}>{index + 1}.</Text>
-                        <Text style={[styles.text, { marginLeft: 5 }]}>{i.timings[0][0]}</Text>
+                        <Text style={[styles.text, { marginLeft: 5 }]}>{i[0]}</Text>
                         <Text style={[styles.text]}>-</Text>
-                        <Text style={[styles.text]}>{i.timings[0][1]}</Text>
+                        <Text style={[styles.text]}>{i[1]}</Text>
                     </View>
                 )
             })
+           
         )
     }
     getTodayTimings2 = (item) => {
         let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
         let today = days[date.getDay()]
         return (
-            item.clinicShits[today].map((i, index) => {
+            item.clinicShits[today][0].timings.map((i, index) => {
                 return (
-                    <View style={{ flexDirection: "row", marginTop: 5 }}>
-                        <Text>{index + 1}.</Text>
-                        <Text style={{ marginLeft: 5 }}>{i.timings[0][0]}</Text>
-                        <Text>-</Text>
-                        <Text>{i.timings[0][1]}</Text>
+                    <View
+                        key={index}
+                        style={{ flexDirection: "row", marginTop: 5 }}>
+                        <Text style={[styles.text, { fontWeight: "bold" }]}>{index + 1}.</Text>
+                        <Text style={[styles.text, { marginLeft: 5 }]}>{i[0]}</Text>
+                        <Text style={[styles.text]}>-</Text>
+                        <Text style={[styles.text]}>{i[1]}</Text>
                     </View>
                 )
             })
+           
         )
 
 
@@ -135,7 +147,7 @@ class ViewClinic extends Component {
                         onPress={() => { this.setState({ showAll: !this.state.showAll }) }}
                     >
                         <Text style={[styles.text, { marginLeft: 10 }]}>closes at {this.state.clinicDetails?.working_hours[date.getDay()][1]}</Text>
-                        <View style={{alignItems:"center",justifyContent:"center"}}>
+                        <View style={{ alignItems: "center", justifyContent: "center", marginTop: 3 }}>
                             <AntDesign name={this.state.showAll ? "up" : "down"} size={15} color="black" />
                         </View>
                       
@@ -154,7 +166,10 @@ class ViewClinic extends Component {
                         onPress={() => { this.setState({ showAll: !this.state.showAll }) }}
                     >
                         <Text style={[styles.text, { marginLeft: 10 }]}>opens at {this.state?.clinicDetails?.working_hours[date.getDay() + 1][0]} {this.getDay(date.getDay() + 1)}</Text>
-                        <AntDesign name={this.state.showAll?"up":"down"} size={24} color="black" />
+                        <View style={{alignItems:"center",justifyContent:"center",marginTop:3}}>
+                            <AntDesign name={this.state.showAll ? "up" : "down"} size={15} color="black" />
+                        </View>
+ 
                     </TouchableOpacity>
                 </View>
                
@@ -168,7 +183,7 @@ class ViewClinic extends Component {
             dp = `${url}${this.state.item.displayPicture}`
         }
    
-         
+        console.log(this.state?.clinicDetails,"pppp");
 
         return (
             <>
@@ -176,42 +191,113 @@ class ViewClinic extends Component {
                 <SafeAreaView style={styles.bottomSafeArea}>
                     <View style={{ flex: 1 }}>
                         {/* HEADERS */}
-                        <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
+                        <View style={{ height: height * 0.1, backgroundColor: themeColor, flexDirection: 'row', alignItems: "center" }}>
                             <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}
                                 onPress={() => { this.props.navigation.goBack() }}
                             >
                                 <Ionicons name="chevron-back-circle" size={30} color="#fff" />
                             </TouchableOpacity>
                             <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
-                                <Text style={[styles.text, { color: "#fff", fontWeight: "bold", fontSize: 20 }]}> {this.state.item.title.toUpperCase()}</Text>
+                                <Text style={[styles.text, { color: "#fff", fontWeight: "bold", fontSize: 20 }]}> Details</Text>
                             </View>
                             <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
                             </View>
                         </View>
 
                         <ScrollView 
-                        style={{}}
-                        contentContainerStyle={{paddingBottom:130}}
+                         style={{}}
+                      
                         >
-                            <Image
-                                style={{ height: height * 0.2, resizeMode: "cover" }}
-                                source={{ uri: dp}}
-                            />
-                            <View style={{ padding: 10, }}>
-                                <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Address:</Text>
-                                <View style={{ padding: 10, }}>
-                                    <Text style={[styles.text]}>{this.state?.clinicDetails?.address}</Text>
+                            <View style={{ height: height * 0.25, }}>
+                                <SliderBox
+                                    images={images}
+                                    dotColor={themeColor}
+                                    imageLoadingColor={themeColor}
+                                    ImageComponentStyle={{ height: "100%", width: "100%", resizeMode: "cover" }}
+                                    autoplay={true}
+                                    circleLoop={true}
+                                />
+                            </View>
+                       {/* Clinic Details */}
+                            <View style={{ margin: 20 }}>
+
+                                <View>
+                                    <Text style={{ fontWeight: "bold", fontSize: 18, color: "#000" }}>{this.state.item.title.toUpperCase()}</Text>
+                                </View>
+
+
+
+                                <View style={{ marginTop: 10 }}>
+                                    <View style={{}}>
+                                        <Text style={[styles.text]}>{ this.state?.clinicDetails?.address }</Text>
+
+                                    </View>
+                                    <View style={{}}>
+                                        <Text style={[styles.text]}>{this.state?.clinicDetails?.city} - {this.state?.clinicDetails?.pincode}</Text>
+
+                                    </View>
+                                </View>
+                                <View style={{ marginTop: 10, flexDirection: "row" ,}}>
+                                   <View style={{flex:0.5,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+
+                                
+                                    <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center' }]}
+                                        onPress={() => { this.chatClinic() }}
+                                    >
+                                        <Ionicons name="md-chatbox" size={20} color="#63BCD2" />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                                        onPress={() => {
+                                            if (Platform.OS == "android") {
+                                                Linking.openURL(`tel:${this.state?.clinicDetails?.mobile}`)
+                                            } else {
+
+                                                Linking.canOpenURL(`telprompt:${this.state?.clinicDetails?.mobile}`)
+                                            }
+                                         }}
+                                    >
+                                        <FontAwesome name="phone" size={20} color="#63BCD2" />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                                        onPress={() => {
+                                            Linking.openURL(
+                                                `https://www.google.com/maps/dir/?api=1&destination=` +
+                                                this.state.item.lat +
+                                                `,` +
+                                                this.state.item.long +
+                                                `&travelmode=driving`
+                                            );
+                                        }}
+                                    >
+                                        <FontAwesome5 name="directions" size={20} color="#63BCD2" />
+                                    </TouchableOpacity>
+                                    </View>
+                                    <View style={{ alignItems: "center", justifyContent: 'center',flex:0.5 }}>
+                                        <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, backgroundColor: themeColor, borderRadius: 10, alignItems: "center", justifyContent: "center", flexDirection: "row" }}
+                                            onPress={() => { this.props.navigation.navigate('makeAppointmentClinic', { item: this.state.item, }) }}
+                                        >
+                                            <Text style={[styles.text, { color: "#fff" }]}>Book Appointment</Text>
+
+
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
                             </View>
-                            <View style={{ padding: 10, }}>
-                                <View style={{flexDirection:"row"}}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18,  }]}>Hours: </Text>
-                                    {
-                                     this.validateOpen()
-                                    }
 
-                                     
+                                           {/* clinic Timings */}
+                            <View style={[styles.boxWithShadow, { height: height * 0.07, width, backgroundColor: "#eee", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 20 }]}>
+                                <View>
+                                    <Text style={[styles.text]}>Opening Hours</Text>
                                 </View>
+                                {
+                                    this.validateOpen()
+                                }
+                                {/* <View>
+                                    <AntDesign name="down" size={20} color="black" />
+                                </View> */}
+                            </View>
+                            <View style={{ padding: 10, }}>
+                                
                                 {/* <View style={{ marginHorizontal: 20, marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
                                     <View>
                                         <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>OpeningTime:</Text>
@@ -276,26 +362,44 @@ class ViewClinic extends Component {
                                     })
                                 }
                             </View>
-                            <View style={{ margin: 20 }}>
-                                <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}> Doctors List:</Text>
+                            <View style={[styles.boxWithShadow, { height: height * 0.07, width, backgroundColor: "#eee", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 20 }]}>
+                                <View>
+                                    <Text style={[styles.text]}>Doctors List</Text>
+                                </View>
+                                <View>
+                                    <AntDesign name="down" size={20} color="black" />
+                                </View>
+                            </View>
+                            <View style={{ }}>
+                               
                                 <FlatList
                                     data={this.state.doctors}
                                     keyExtractor={(item, index) => index.toString()}
                                     renderItem={({ item, index }) => {
+                                        console.log(item.doctor.profile.displayPicture,"doctor")
                                         return (
                                             <View style={{  }}
                                                
                                             >
-                                                <View style={{ flexDirection: "row", marginTop: 15}}>
-                                                    <View style={{ alignItems: 'center', justifyContent: "center", flex: 0.1 }}>
-                                                        <Text>{index + 1}.</Text>
+                                                <View style={[{ flexDirection: "row", marginTop: 15,backgroundColor:"#fff",height:height*0.13,borderRadius:5,marginHorizontal:10}]}>
+                                                   
+                                                    <View style={{ justifyContent: "center", flex: 0.3 ,alignItems:"center"}}>
+                                                       <Image 
+                                                         style ={{height:60,width:60,borderRadius:30}}
+                                                            source={{ uri: item.doctor.profile.displayPicture}}
+                                                       />
                                                     </View>
-                                                    <View style={{ justifyContent: "center", flex: 0.3 }}>
-                                                        <Text>{item.doctor.first_name}</Text>
+                                                    <View style={{flex:0.3,justifyContent:"center"}}>
+                                                            <View>
+                                                            <Text style={[styles.text,{color:"#000"}]}>{item.doctor.first_name}</Text>
+                                                            </View>
+                                                            <View>
+                                                            <Text style={[styles.text, {  }]}>{item.doctor.profile.specialization}</Text>
+                                                            </View>
                                                     </View>
-                                                    <View style={{ flex: 0.6, alignItems: 'center', justifyContent: 'center' }}>
+                                                    <View style={{ flex: 0.4, alignItems: 'center', justifyContent: 'center' }}>
                                                         <View >
-                                                            <Text style={[styles.text]}>Today Timings:</Text>
+                                                            <Text style={[styles.text,]}>Today Timings:</Text>
                                                         </View>
                                                         {
                                                             this.getTodayTimings2(item)
@@ -306,7 +410,7 @@ class ViewClinic extends Component {
                                                         {/* Show all timings... */}
                                                
                                                    <View >
-                                                         <TouchableOpacity style={{alignItems:"center",justifyContent:"center",marginTop:10}}
+                                                         <TouchableOpacity style={{alignItems:"center",justifyContent:"center",marginBottom:20}}
                                                         onPress={() => this.setState({ showAllDoctorTimings:!this.state.showAllDoctorTimings,selectedDoctor:item})}
                                                          >
                                                             {
@@ -472,44 +576,14 @@ class ViewClinic extends Component {
                                 />
                             </View>
                           
-                             
-                         
                           
+                         
+             
                         </ScrollView>
                     </View>
                     
-                        <TouchableOpacity style={{ height: height * 0.07, position: 'absolute', width: width * 0.6, backgroundColor: themeColor, bottom: 30, left: 70, borderRadius: 20, alignItems: "center", justifyContent: "center", flexDirection: "row" }}
-                        onPress={() => { this.props.navigation.navigate('makeAppointmentClinic', { item: this.state.item ,}) }}
-                        >
-                            <Text style={[styles.text, { color: "#fff" }]}>Book Appointment</Text>
-                            <View style={{ marginLeft: 20 }}>
-                                <AntDesign name="right" size={20} color="#fff" />
-                            </View>
-
-                        </TouchableOpacity>
-                    <View style={{ alignItems: "center", justifyContent: "space-around", flexDirection: "row", position: "absolute", bottom: 100,width }}>
-                        <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center' }}
-                            onPress={() => { this.chatClinic() }}
-                        >
-                            <MaterialIcons name="chat" size={24} color="black" />
-                            <Text>with clinic</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center' }}
-                            onPress={() => {
-
-                                Linking.openURL(
-                                    `https://www.google.com/maps/dir/?api=1&destination=` +
-                                    this.state.item.lat +
-                                    `,` +
-                                    this.state.item.long +
-                                    `&travelmode=driving`
-                                );
-                            }}
-                        >
-                            <FontAwesome5 name="directions" size={24} color="black" />
-                            <Text>get Directions</Text>
-                        </TouchableOpacity>
-                    </View>
+                        
+              
                 </SafeAreaView>
             </>
         );
@@ -533,7 +607,13 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff"
     },
-
+    boxWithShadow: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        elevation: 5
+    }
 })
 const mapStateToProps = (state) => {
 

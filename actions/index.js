@@ -22,3 +22,15 @@ export const selectMedical = (medical) => {
         payload: medical
     }
 }
+export const selectWorkingClinics = (clinics) => {
+    return {
+        type: 'WORKINGCLINICS_SELECTED',
+        payload: clinics
+    }
+}
+export const selectOwnedClinics = (clinics) => {
+    return {
+        type: 'OWNEDCLINICS_SELECTED',
+        payload: clinics
+    }
+}

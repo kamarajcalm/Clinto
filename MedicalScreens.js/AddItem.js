@@ -12,7 +12,7 @@ const themeColor = settings.themeColor;
 const url = settings.url;
 import { Modal, } from 'react-native-paper';
 import HttpsClient from '../api/HttpsClient';
-import SimpleToast from 'react-native-simple-toast';
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import { FontAwesome } from '@expo/vector-icons';
 import MedicineItems from './MedicineItems';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -81,20 +81,34 @@ class AddItem extends Component {
             medicineQty:"",
         };
     }
+    showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
+
+        showMessage(message);
+    }
     addMedicine = async()=>{
 
         
         if (this.state.qty ==""){
             
             if (this.state.stripesPerBoxes == "") {
-                return SimpleToast.show("please enter no of stripes per boxes")
+                return this.showSimpleMessage("please enter no of stripes per boxes", "#dd7030",)
+            
             }
             if(this.state.medicineQty ==""){
-                return SimpleToast.show("please enter no of medicine per stripe")
+                return this.showSimpleMessage("please enter no of medicine per stripe", "#dd7030",)
+            
             }
         }
         if(this.state.boxes ==""&&this.state.stripesPerBoxes ==""&&this.state.medicineQty ==""){
-             return SimpleToast.show("please enter  Qty")
+            return this.showSimpleMessage("please enter  Qty", "#dd7030",)
+             
         }
         let api = `${url}/api/prescription/addInventory/`
         let sendData ={
@@ -118,7 +132,7 @@ class AddItem extends Component {
         console.log(sendData,post)
        if(post.type =="success"){
           this.getMedicines()
-           SimpleToast.show("added succesfully")
+           this.showSimpleMessage("added succesfully", "#00A300", "success")
            this.setState({
                showModal:false,
                shopprice:"",
@@ -132,7 +146,7 @@ class AddItem extends Component {
                medicineQty:""
             })
        }else{
-           SimpleToast.show("Try again")
+           this.showSimpleMessage("Try again", "#B22222", "danger")
        }
     }
     onRefresh =()=>{
@@ -158,7 +172,8 @@ class AddItem extends Component {
         if(data.type =="success"){
             this.setState({ medicines: data.data.subData,isFetching:false})
         }else{
-            SimpleToast.show(data.error.toString())
+            this.showSimpleMessage(data.error.toString(), "#dd7030",)
+           
             this.setState({ isFetching: false})
         }
     }
@@ -182,7 +197,7 @@ class AddItem extends Component {
           duplicate[this.state.selectedIndex] =patch.data
           this.setState({ medicines:duplicate,showModal2:false})
       }else{
-          SimpleToast.show("Try again")
+          this.showSimpleMessage("Try again", "#B22222", "danger")
       }
     }
     addVariants =()=>{

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, TextInput, FlatList, Image, SafeAreaView } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, TextInput, FlatList, Image, SafeAreaView, ActivityIndicator } from 'react-native';
 import { Ionicons, Entypo, AntDesign } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
@@ -19,18 +19,58 @@ class ListPriscriptions extends Component {
         this.state = {
             pateints: [],
             priscriptions:[],
-             item: this.props.route.params.item,
+            item: this.props.route.params.item,
+            loading: true
         };
     }
     getPateintPrescription = async () => {
         console.log(this.state.item,'kkk')
-        let api = `${url}/api/prescription/prescriptions/?forUser=${this.state.item.user}`
+        let api = `${url}/api/prescription/prescriptions/?forUser=${this.state.item.user.id}`
         console.log(api)
         let data = await HttpsClient.get(api)
-        console.log(data)
+    
         if (data.type == "success") {
-            this.setState({ priscriptions: data.data })
+            this.setState({ priscriptions: data.data, loading:false})
         }
+    }
+    showDifferentPriscription = (item, index) => {
+      
+            let dp = null
+            if (item?.doctordetails?.dp) {
+                dp = `${url}${item?.doctordetails?.dp}`
+            }
+
+            return (
+                <TouchableOpacity style={[styles.card, { flexDirection: "row", borderRadius: 5 }]}
+                    onPress={() => { this.props.navigation.navigate('PrescriptionView', { item, }) }}
+                >
+                    <View style={{ flex: 0.3, alignItems: 'center', justifyContent: "center" }}>
+                        <Image
+                            source={{ uri: dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" }}
+                            style={{ height: 60, width: 60, borderRadius: 30 }}
+                        />
+                    </View>
+                    <View style={{ flex: 0.4, justifyContent: 'center', alignItems: 'center' }}>
+                        <View >
+                            <Text style={[styles.text, { fontSize: 18, }]}>{item?.clinicname.name}</Text>
+                            <Text style={[styles.text, { fontSize: 12, }]}>{item?.doctordetails?.name}</Text>
+
+                        </View>
+
+                    </View>
+                    <View style={{ flex: 0.3, justifyContent: 'center', alignItems: "center" }}>
+                        <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
+                            <Text>{moment(item.created).format("DD/MM/YYYY")}</Text>
+
+                        </View>
+                        <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
+                            <Text>{moment(item.created).format("h:mm a")}</Text>
+                        </View>
+
+                    </View>
+                </TouchableOpacity>
+            )
+        
     }
   componentDidMount(){
       this.getPateintPrescription()
@@ -61,42 +101,26 @@ class ListPriscriptions extends Component {
                         <View style={{ flex: 0.2 }}>
                         </View>
                     </View>
-                  
-                    <FlatList
-                        data={this.state.priscriptions}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({ item, index }) => {
-                            return (
-                                <TouchableOpacity style={[styles.card, { flexDirection: "row", borderRadius: 5 ,marginTop:20}]}
-                                    onPress={() => { this.props.navigation.navigate('showCard2', { item }) }}
-                                >
-                                    <View style={{ flex: 0.3, alignItems: 'center', justifyContent: "center" }}>
-                                        <Image
-                                            source={{ uri: item?.doctordetails?.dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" }}
-                                            style={{ height: 60, width: 60, borderRadius: 30 }}
-                                        />
+                    {
+                        this.state.loading ? <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
+                            <ActivityIndicator color={themeColor} size="large" />
+                        </View> : <FlatList
+                           
+                            data={this.state.priscriptions}
+                            keyExtractor={(item, index) =>  index.toString() }
+                            renderItem={({ item, index }) => {
+                                
+                                return (
+                                    <View >
+                                        {
+                                            this.showDifferentPriscription(item, index)
+                                        }
                                     </View>
-                                    <View style={{ flex: 0.4, justifyContent: 'center', alignItems: 'center' }}>
-                                        <View >
-                                            <Text style={[styles.text, { fontSize: 18, }]}>{item?.doctordetails?.name}</Text>
-                                            <Text style={[styles.text, { fontSize: 12, }]}>{item?.clinicname?.name}</Text>
-                                        </View>
+                                )
 
-                                    </View>
-                                    <View style={{ flex: 0.3, justifyContent: 'center', alignItems: "center" }}>
-                                        <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
-                                            <Text>{moment(item.created).format("DD/MM/YYYY")}</Text>
-
-                                        </View>
-                                        <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
-                                            <Text>{moment(item.created).format("h:mm a")}</Text>
-                                        </View>
-
-                                    </View>
-                                </TouchableOpacity>
-                            )
-                        }}
-                    />
+                            }}
+                        />
+                    }
 
                 </SafeAreaView>
             </>
@@ -107,8 +131,22 @@ const styles = StyleSheet.create({
     text: {
         fontFamily
     },
+    topSafeArea: {
+        flex: 0,
+        backgroundColor: themeColor
+    },
+    bottomSafeArea: {
+        flex: 1,
+        backgroundColor: "#fff"
+    },
+    card: {
 
+        backgroundColor: "#eeee",
+        height: height * 0.1,
+        marginHorizontal: 10,
+        marginVertical: 3
 
+    },
 })
 const mapStateToProps = (state) => {
 

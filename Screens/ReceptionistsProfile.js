@@ -27,158 +27,46 @@ class ReceptionistsProfile extends Component {
     }
     render() {
         return (
-            <ScrollView style={{}}
-                contentContainerStyle={{ paddingBottom: 90 }}
-            >
-                <View style={{ marginHorizontal: 10 }}>
+            <View style={{}}>
+                <View style={{ margin: 20 }}>
+                    <View>
+                        <Text style={[styles.text, { color: "gray" }]}>Personal Info</Text>
+                    </View>
+                    <View style={{ flexDirection: "row", marginTop: 15, alignItems: "center", justifyContent: 'space-between' }}>
+                        <View style={{ flex: 0.6 }}>
+                            <Text style={[styles.text, { color: "gray" }]}>Age</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.age}</Text>
+                        </View>
+                        <View style={{ flex: 0.4 }}>
+                            <Text style={[styles.text, { color: "gray" }]}>Blood Group</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.blood_group}</Text>
+                        </View>
+                    </View>
 
-                    <View style={{ backgroundColor: "gray", borderRadius: 10, elevation: 5 }}>
-                        <View style={{ flexDirection: "row", minHeight: height * 0.05, borderBottomColor: "#fff", borderBottomWidth: 0.185 }}
 
-                        >
-                            <View style={{ flex: 0.5, justifyContent: "center" }}>
-                                <Text style={[styles.text, { fontWeight: "bold", color: "#fff", marginLeft: 10 }]}>Age:</Text>
-                            </View>
-                            <View style={{ flex: 0.5, alignItems: 'flex-end', marginRight: 10, justifyContent: "center" }}>
-                                <Text style={[styles.text, { color: "#fff" }]}>90</Text>
-                            </View>
-
+                    <View style={{ flexDirection: "row", marginTop: 15, alignItems: "center", justifyContent: 'space-between' }}>
+                        <View style={{ flex: 0.6 }}>
+                            <Text style={[styles.text, { color: "gray" }]}>Height</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.height}</Text>
+                        </View>
+                        <View style={{ flex: 0.4 }}>
+                            <Text style={[styles.text, { color: "gray" }]}>Weight</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.weight}</Text>
+                        </View>
+                    </View>
+                    <View style={{ flexDirection: "row", marginTop: 15, }}>
+                        <View >
+                            <Text style={[styles.text, { color: "gray" }]}>Address</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.address}</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.city}-{this.props.user.profile.pincode}</Text>
                         </View>
 
-                        <View style={{ flexDirection: "row", minHeight: height * 0.05, borderBottomColor: "#fff", borderBottomWidth: 0.185 }}
-
-                        >
-                            <View style={{ flex: 0.5, justifyContent: "center" }}>
-                                <Text style={[styles.text, { fontWeight: "bold", color: "#fff", marginLeft: 10 }]}>Qualification:</Text>
-                            </View>
-                            <View style={{ flex: 0.5, alignItems: 'flex-end', marginRight: 10, justifyContent: "center" }}>
-                                <Text style={[styles.text, { color: "#fff" }]}>{this.props.user.profile.qualification}</Text>
-                            </View>
-
-
-                        </View>
-                        <View style={{ flexDirection: "row", minHeight: height * 0.05, borderBottomColor: "#fff", borderBottomWidth: 0.185 }}
-
-                        >
-                            <View style={{ flex: 0.5, justifyContent: "center" }}>
-                                <Text style={[styles.text, { fontWeight: "bold", color: "#fff", marginLeft: 10 }]}>Mobile:</Text>
-                            </View>
-                            <View style={{ flex: 0.5, alignItems: 'flex-end', marginRight: 10, justifyContent: "center" }}>
-                                <Text style={[styles.text, { color: "#fff" }]}>{this.props.user.profile.mobile}</Text>
-                            </View>
-
-
-                        </View>
                     </View>
 
                 </View>
+            </View>
 
-                <View style={{ margin: 10 }}>
-                    <View style={{ marginVertical: 10 }}>
-                        <Text style={[styles.text, { fontWeight: "bold", }]}>Address</Text>
-                    </View>
-                    <View style={{ backgroundColor: "gray", borderRadius: 10, elevation: 5 }}>
-                        <View style={{ flexDirection: "row", minHeight: height * 0.05, borderBottomColor: "#fff", borderBottomWidth: 0.185 }}
-
-                        >
-                            <View style={{ flex: 0.5, justifyContent: "center" }}>
-                                <Text style={[styles.text, { fontWeight: "bold", color: "#fff", marginLeft: 10 }]}>Area:</Text>
-                            </View>
-                            <View style={{ flex: 0.5, alignItems: 'flex-end', marginRight: 10, justifyContent: "center" }}>
-                                <Text style={[styles.text, { color: "#fff" }]}>{this.props.user.profile.address}</Text>
-                            </View>
-
-
-                        </View>
-                        <View style={{ backgroundColor: "gray", borderRadius: 10, elevation: 5 }}>
-                            <View style={{ flexDirection: "row", minHeight: height * 0.05, borderBottomColor: "#fff", borderBottomWidth: 0.185 }}
-
-                            >
-                                <View style={{ flex: 0.5, justifyContent: "center" }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", color: "#fff", marginLeft: 10 }]}>City:</Text>
-                                </View>
-                                <View style={{ flex: 0.5, alignItems: 'flex-end', marginRight: 10, justifyContent: "center" }}>
-                                    <Text style={[styles.text, { color: "#fff" }]}>{this.props.user.profile.city}</Text>
-                                </View>
-
-
-                            </View>
-                        </View>
-                        <View style={{ backgroundColor: "gray", borderRadius: 10, elevation: 5 }}>
-                            <View style={{ flexDirection: "row", minHeight: height * 0.05, borderBottomColor: "#fff", borderBottomWidth: 0.185 }}
-
-                            >
-                                <View style={{ flex: 0.5, justifyContent: "center" }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", color: "#fff", marginLeft: 10 }]}>State:</Text>
-                                </View>
-                                <View style={{ flex: 0.5, alignItems: 'flex-end', marginRight: 10, justifyContent: "center" }}>
-                                    <Text style={[styles.text, { color: "#fff" }]}>{this.props.user.profile.state}</Text>
-                                </View>
-
-
-                            </View>
-                        </View>
-                        <View style={{ backgroundColor: "gray", borderRadius: 10, elevation: 5 }}>
-                            <View style={{ flexDirection: "row", minHeight: height * 0.05, borderBottomColor: "#fff", borderBottomWidth: 0.185 }}
-
-                            >
-                                <View style={{ flex: 0.5, justifyContent: "center" }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", color: "#fff", marginLeft: 10 }]}>Pincode:</Text>
-                                </View>
-                                <View style={{ flex: 0.5, alignItems: 'flex-end', marginRight: 10, justifyContent: "center" }}>
-                                    <Text style={[styles.text, { color: "#fff" }]}>{this.props.user.profile.pincode}</Text>
-                                </View>
-
-
-                            </View>
-                        </View>
-                    </View>
-
-                </View>
-
-                <View style={{ margin: 10 }}>
-                    <View style={{ marginVertical: 10 }}>
-                        <Text style={[styles.text, { fontWeight: "bold", }]}>Clinic List</Text>
-                    </View>
-
-                    <FlatList
-                        data={this.props.clinics}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({ item, index }) => {
-                            console.log(item)
-                            return (
-                                <View style={{ backgroundColor: "gray", borderRadius: 10 }}>
-                                    <TouchableOpacity style={{ flexDirection: "row", minHeight: height * 0.05, borderBottomColor: "#fff", borderBottomWidth: 0.185 }}
-                                        onPress={() => { this.props.ClinicSelect() }}
-                                    >
-                                        <View style={{ flex: 0.5, justifyContent: "center" }}>
-                                            <Text style={[styles.text, { fontWeight: "bold", color: "#fff", marginLeft: 10 }]}>{item.name}</Text>
-                                        </View>
-                                        <View style={{ flex: 0.5, alignItems: 'flex-end', marginRight: 10, justifyContent: "center" }}>
-                                            <AntDesign name="rightcircleo" size={24} color="#fff" />
-                                        </View>
-
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={{ flexDirection: "row", minHeight: height * 0.05, }}
-                                        onPress={() => { this.props.ClinicSelect() }}
-                                    >
-                                        <View style={{ flex: 0.5, justifyContent: "center" }}>
-                                            <Text style={[styles.text, { fontWeight: "bold", color: "#fff", marginLeft: 10 }]}>Change Clinic</Text>
-                                        </View>
-                                        <View style={{ flex: 0.5, alignItems: 'flex-end', marginRight: 10, justifyContent: "center" }}>
-                                            <AntDesign name="rightcircleo" size={24} color="#fff" />
-                                        </View>
-
-                                    </TouchableOpacity>
-                                </View>
-
-                            )
-                        }}
-                    />
-
-                </View>
-
-            </ScrollView>
+           
         );
     }
 }

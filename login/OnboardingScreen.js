@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { Animated, Text, Image, View, StyleSheet, Dimensions, FlatList, StatusBar} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import settings from '../AppSettings';
+const url = settings.url;
 import authAxios from '../api/authAxios';
 const { width, height } = Dimensions.get('screen');
-
+import { Appearance, useColorScheme } from 'react-native-appearance';
 // https://www.flaticon.com/packs/retro-wave
 // inspiration: https://dribbble.com/shots/11164698-Onboarding-screens-animation
 // https://twitter.com/mironcatalin/status/1321180191935373312
@@ -12,13 +14,13 @@ const bgs = ['#A5BBFF', '#DDBEFE', '#FF63ED', '#B98EFF'];
 const DATA = [
     {
         "key": "3571572",
-        "title": "changed occursss",
+        "title": url,
         "description": "I'll back up the multi-byte XSS matrix, that should feed the SCSI application!",
         "image": "https://image.freepik.com/free-vector/online-doctor-concept_52683-37585.jpg"
     },
     {
         "key": "3571747",
-        "title": "Automated radical data-warehouse",
+        "title": "Automated ",
         "description": "Use the optical SAS system, then you can navigate the auxiliary alarm!",
         "image": "https://image.freepik.com/free-vector/flat-hand-drawn-patient-taking-medical-examination_52683-56269.jpg"
     },
@@ -120,6 +122,8 @@ const Indicator =({scrollX})=>{
     </View>
 }
 export default function OnboardingScreen(props) {
+
+  
        const scrollX = React.useRef(new Animated.Value(0)).current;
     return (
         <View style={styles.container}>

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "259135862465",
+    "project_id": "medportal-2b305",
+    "storage_bucket": "medportal-2b305.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:259135862465:android:f360efed23c492dce4c640",
+        "android_client_info": {
+          "package_name": "in.poa.medportal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "259135862465-fls0vie3oai450hu56a964trdcph92ij.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDv_v2qq6LeEx3RJYPiHt-wSMUY1-9cIXc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "259135862465-fls0vie3oai450hu56a964trdcph92ij.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

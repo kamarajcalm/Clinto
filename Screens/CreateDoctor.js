@@ -359,7 +359,7 @@ class CreateDoctor extends Component {
                         </View>
 
                         {this.renderModal()}
-                        {this.state.show1&& (
+                        {/* {this.state.show1&& (
                             <DateTimePicker
                                 testID="TimePicker1"
                                 value={this.state.date}
@@ -378,7 +378,7 @@ class CreateDoctor extends Component {
                                 display="default"
                                 onChange={(time) => { this.onChange2(time) }}
                             />
-                        )}
+                        )} */}
                     </View>
                 </SafeAreaView>
 

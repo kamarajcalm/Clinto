@@ -12,7 +12,7 @@ const themeColor = settings.themeColor;
 const url = settings.url;
 import { Modal, } from 'react-native-paper';
 import HttpsClient from '../api/HttpsClient';
-import SimpleToast from 'react-native-simple-toast';
+
 import { FontAwesome } from '@expo/vector-icons';
 class MedicineItems extends Component {
     constructor(props) {

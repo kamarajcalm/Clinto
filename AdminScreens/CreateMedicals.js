@@ -15,10 +15,8 @@ import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import * as  ImagePicker from 'expo-image-picker';
 import { TextInput } from 'react-native-gesture-handler';
 import * as Location from 'expo-location';
-
 import HttpsClient from '../api/HttpsClient';
-import Toast from 'react-native-simple-toast';
-import SimpleToast from 'react-native-simple-toast';
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 class CreateMedicals extends Component {
     constructor(props) {
         super(props);
@@ -48,40 +46,58 @@ class CreateMedicals extends Component {
             doctor: null
         };
     }
+    showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
+
+        showMessage(message);
+    }
     createClinic = async () => {
 
         let token = await AsyncStorage.getItem('csrf')
 
 
         if (this.state.doctor == null) {
-            return SimpleToast.show("Please select owner")
+            return this.showSimpleMessage("Please select owner", "#dd7030",)
+         
         }
         if (this.state.clinicName == "") {
-            return SimpleToast.show("Please fill MedicalName")
+            return this.showSimpleMessage("Please fill MedicalName", "#dd7030",)
+         
         }
         if (this.state.mobile == "") {
-            return SimpleToast.show("Please fill mobile")
+            return this.showSimpleMessage("Please fill mobile", "#dd7030",)
+      
         }
         if (this.state.GST == "") {
-            return SimpleToast.show("Please fill GST")
+            return this.showSimpleMessage("Please fill GST", "#dd7030",)
         }
         if (this.state.pincode == "") {
-            return SimpleToast.show("Please fill pincode")
+            return this.showSimpleMessage("Please fill pincode", "#dd7030",)
         }
         if (this.state.address == "") {
-            return SimpleToast.show("Please fill address")
+            return this.showSimpleMessage("Please fill address", "#dd7030",)
+           
         }
         if (this.state.city == "") {
-            return SimpleToast.show("Please fill city")
+            return this.showSimpleMessage("Please fill city", "#dd7030",)
+   
         }
         if (this.state.state == "") {
-            return SimpleToast.show("Please fill state")
+            return this.showSimpleMessage("Please fill state", "#dd7030",)
+       
         }
         if (this.state.latitude == "") {
-            return SimpleToast.show("Please fill latitude")
+            return this.showSimpleMessage("Please fill latitude", "#dd7030",)
+         
         }
         if (this.state.longitude == "") {
-            return SimpleToast.show("Please fill longitude")
+            return this.showSimpleMessage("Please fill longitude", "#dd7030",)
         }
 
 
@@ -136,7 +152,7 @@ class CreateMedicals extends Component {
         if (post.type == "success") {
             return this.props.navigation.navigate('UpdateTimings', { clinicPk: post.data.clinicPk,medical:true })
         } else {
-            Toast.show("Try again")
+            this.showSimpleMessage("Try again", "#B22222", "danger")
         }
 
     }

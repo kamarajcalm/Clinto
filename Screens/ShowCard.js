@@ -38,16 +38,16 @@ class ShowCard extends Component {
             SimpleToast.show("issued SuccessFully")
         }
     }
+  componentDidMount(){
 
+  }
 
     requestPdf =async()=>{
         let api =`${url}/api/prescription/paymentpdf/`
         let data =await HttpsClient.get(api)
         console.log(data)
     }
-    validate =(item)=>{
-     console.log(item.type,"jhgh")
-    }
+  
     renderItem = (item) => {
         console.log(item,"kkk")
        

@@ -12,7 +12,8 @@ const themeColor = settings.themeColor;
 const url =settings.url;
 import { Modal, } from 'react-native-paper';
 import HttpsClient from '../api/HttpsClient';
-import SimpleToast from 'react-native-simple-toast';
+
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 class Inventory extends Component {
     constructor(props) {
         super(props);
@@ -32,13 +33,25 @@ class Inventory extends Component {
          }
          const post = await HttpsClient.post(api,sendData)
         if(post.type  =="success"){
-               SimpleToast.show("added successfully")
+             
             this.getCategories()
               this.setState({showModal:false})
         }else{
-            SimpleToast.show("Try again")
+            this.showSimpleMessage("Try again", "#B22222", "danger")
+
         }
 
+    }
+    showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
+
+        showMessage(message);
     }
     getCategories =async()=>{
         let api = `${url}/api/prescription/maincategory/?inventory=${this.props.medical.inventory}`

@@ -19,12 +19,15 @@ class SearchPateint extends Component {
         };
     }
     SearchPateint = async(query)=>{
-        let api = `${url}/api/profile/userss/?search=${query}&role=Customer`
-    
-        const data = await HttpsClient.get(api)
-        if(data.type =="success"){
-            this.setState({pateints:data.data})
+        if(query.length>9){
+            let api = `${url}/api/profile/userss/?search=${query}&role=Customer`
+
+            const data = await HttpsClient.get(api)
+            if (data.type == "success") {
+                this.setState({ pateints: data.data })
+            }
         }
+     
         
     }
     render() {

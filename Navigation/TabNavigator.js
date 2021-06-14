@@ -19,8 +19,6 @@ import ChatStack from '../stacks/ChatStack';
 import ProfileStack from '../stacks/ProfileStack';
 import AppointmentStack from '../stacks/AppointmentStack';
 const Tab = createBottomTabNavigator();
-
-
 class TabNavigator extends Component {
     constructor(props) {
         super(props);
@@ -44,10 +42,16 @@ class TabNavigator extends Component {
             return false
         }
     
+        if (routeName == "PrescriptionView") {
+            return false
+        }
+
         if (routeName == "showCard") {
             return false
         }
-       
+        if (routeName == "Chat") {
+            return false
+        }
         return true
     }
     getTabBarVisibility2 = (route) => {
@@ -68,9 +72,19 @@ class TabNavigator extends Component {
             return false
         }
         if (routeName == "ViewPriscription") {
+            
             return false
         }
-
+        if (routeName == "addPriscription") {
+            
+            return false
+        }
+        if (routeName == "SearchMedicines") {
+            return false
+        }
+        if (routeName == "Chat") {
+            return false
+        }
         return true
     }
     getTabBarVisibility3 = (route) => {

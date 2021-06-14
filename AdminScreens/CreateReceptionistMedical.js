@@ -14,11 +14,9 @@ import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import * as  ImagePicker from 'expo-image-picker';
 import { TextInput } from 'react-native-gesture-handler';
 import * as Location from 'expo-location';
-import DateTimePicker from '@react-native-community/datetimepicker';
+
 import moment from 'moment';
 import HttpsClient from '../api/HttpsClient';
-
-import Toast from 'react-native-simple-toast';
 import authAxios from '../api/authAxios';
 const url = settings.url
 class CreateReceptionistMedical extends Component {
@@ -49,8 +47,52 @@ class CreateReceptionistMedical extends Component {
         };
     }
 
+    showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
+
+        showMessage(message);
+    }
+
     CreateReceptionist = async () => {
         let api = `${url}/api/prescription/createAssitant/`
+        if (this.state.Name =="") {
+            return this.showSimpleMessage("Please fill Name", "#dd7030",)
+        }
+
+        if (this.state.Mobile == "") {
+            return this.showSimpleMessage("Please fill Mobile", "#dd7030",)
+        }
+
+        if (this.state.Age == "") {
+            return this.showSimpleMessage("Please fill Age", "#dd7030",)
+
+        }
+        if (this.state.Qualification == "") {
+            return this.showSimpleMessage("Please fill Qualification", "#dd7030",)
+        }
+
+        if (this.state.Pan == "") {
+            return this.showSimpleMessage("Please fill Pan", "#dd7030",)
+        }
+        if (this.state.Address == "") {
+            return this.showSimpleMessage("Please fill Address", "#dd7030",)
+        }
+        if (this.state.Pincode == "") {
+            return this.showSimpleMessage("Please fill Pincode", "#dd7030",)
+        }
+        if (this.state.State == "") {
+            return this.showSimpleMessage("Please fill State", "#dd7030",)
+
+        }
+        if (this.state.City == "") {
+            return this.showSimpleMessage("Please fill City", "#dd7030",)
+        }
         let sendData = {
             name: this.state.Name,
             displayPicture: this.state.image,
@@ -77,13 +119,13 @@ class CreateReceptionistMedical extends Component {
         console.log(sendData,'jjj')
         console.log(post, "hhh")
         if (post.type == "success") {
-            Toast.show('created SuccessFully');
+            this.showSimpleMessage("created SuccessFully", "#00A300", "success")
             setTimeout(() => {
                 this.props.navigation.goBack();
             }, 2000)
 
         } else {
-            Toast.show("Try again");
+            this.showSimpleMessage("Try again", "#B22222", "danger")
         }
     }
 

@@ -4,7 +4,7 @@ import settings from '../AppSettings';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
 const { height, width } = Dimensions.get("window");
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons, MaterialCommunityIcons, AntDesign} from '@expo/vector-icons';
 import HttpsClient from '../api/HttpsClient';
 const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
@@ -26,7 +26,9 @@ import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
       chats:[],
       clinics:[],
       doctors:[],
-      medicals:[]
+      medicals:[],
+      edit:false,
+      selectedChats:[]
     };
   }
    getChats = async()=>{
@@ -54,7 +56,7 @@ import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
          clinics: data.data.clinicchats, 
          doctors: data.data.doctorchats, 
          medicals: data.data.medicalchats,
-         chats:data.data
+         chats:data.data,
         })
      }
    }
@@ -68,6 +70,48 @@ componentDidMount(){
 componentWillUnmount(){
   this._unsubscribe();
 }
+   selectChat =(item)=>{
+     let duplicate =this.state.selectedChats
+     let find = this.state.selectedChats.find((i) => {
+       return i == item
+     })
+     if(find){
+        let index = this.state.selectedChats.indexOf(find) 
+        duplicate.splice(index,1)
+       this.setState({ selectedChats: duplicate })
+     }else{
+       duplicate.push(item)
+       this.setState({ selectedChats: duplicate })
+     }
+
+   }
+   validateColor =(item)=>{
+    let find = this.state.selectedChats.find((i)=>{
+        return i == item
+    })
+    if(find){
+      return "#D3D3D3"
+    }else{
+      return "#fafafa"
+    }
+   }
+   validateCheckBox = (item)=>{
+     let find = this.state.selectedChats.find((i) => {
+       return i == item
+     })
+     if (find) {
+       return (
+         <AntDesign name="check" size={24} color="green" />
+       )
+     } else {
+       return null
+     }
+   }
+   addToDelete =(item)=>{
+    
+       this.setState({edit:true})
+    
+   }
    FirstRoute =()=>{
      return(
            <FlatList
@@ -78,9 +122,47 @@ componentWillUnmount(){
            keyExtractor={(item, index) => index.toString()}
 
            renderItem={({ item, index }) => {
+             if(this.state.edit){
+               return(
+                 <TouchableOpacity style={{ height: height * 0.1, backgroundColor:this.validateColor(item), marginTop: 1, flexDirection: 'row' }}
+                   onPress={() => {
+                     this.selectChat(item)
+                   }}
+                 >
+                    <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
+                        <View style={{height:20,width:20,borderColor:"#000",borderWidth:1,alignItems:"center",justifyContent:'center'}}
+                         
+                        >
+                          {
+                            this.validateCheckBox(item)
+                          }
+
+                        </View>
+                    </View>
+                   
+                   <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                     <Image
+                       source={{
+                         uri: item.dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                       }}
+                       style={{ height: 60, width: 60, borderRadius: 30, }}
+                     />
+                   </View>
+                   <View style={{ flex: 0.6, }}>
+                     <View style={{ flex: 0.4, justifyContent: "center" }}>
+                       <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>{item.title}</Text>
+                     </View>
+                     <View style={{ flex: 0.6, }}>
+                       <Text style={[styles.text]}>{item.lastmsg}</Text>
+                     </View>
+                   </View>
+                 </TouchableOpacity>
+               )
+             }
              return (
                <TouchableOpacity style={{ height: height * 0.1, backgroundColor: "#fafafa", marginTop: 1, flexDirection: 'row' }}
                  onPress={() => { this.navigate(item,"clinic") }}
+                 onLongPress ={()=>{this.addToDelete(item)}}
                >
                  <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                    <Image
@@ -105,6 +187,7 @@ componentWillUnmount(){
      )
    }
    SecondRoute = () => {
+     
      return (
        <FlatList
          contentContainerStyle={{ paddingBottom: 90 }}
@@ -114,9 +197,47 @@ componentWillUnmount(){
          keyExtractor={(item, index) => index.toString()}
 
          renderItem={({ item, index }) => {
+           if (this.state.edit) {
+             return (
+               <TouchableOpacity style={{ height: height * 0.1, backgroundColor: this.validateColor(item), marginTop: 1, flexDirection: 'row' }}
+                 onPress={() => {
+                   this.selectChat(item)
+                 }}
+               >
+                 <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
+                   <View style={{ height: 20, width: 20, borderColor: "#000", borderWidth: 1, alignItems: "center", justifyContent: 'center' }}
+
+                   >
+                     {
+                       this.validateCheckBox(item)
+                     }
+
+                   </View>
+                 </View>
+
+                 <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                   <Image
+                     source={{
+                       uri: item.dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                     }}
+                     style={{ height: 60, width: 60, borderRadius: 30, }}
+                   />
+                 </View>
+                 <View style={{ flex: 0.6, }}>
+                   <View style={{ flex: 0.4, justifyContent: "center" }}>
+                     <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>{item.title}</Text>
+                   </View>
+                   <View style={{ flex: 0.6, }}>
+                     <Text style={[styles.text]}>{item.lastmsg}</Text>
+                   </View>
+                 </View>
+               </TouchableOpacity>
+             )
+           }
            return (
              <TouchableOpacity style={{ height: height * 0.1, backgroundColor: "#fafafa", marginTop: 1, flexDirection: 'row' }}
                onPress={() => { this.navigate(item, "doctor") }}
+               onLongPress={() => { this.addToDelete(item) }}
              >
                <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                  <Image
@@ -150,9 +271,47 @@ componentWillUnmount(){
          keyExtractor={(item, index) => index.toString()}
 
          renderItem={({ item, index }) => {
+           if (this.state.edit) {
+             return (
+               <TouchableOpacity style={{ height: height * 0.1, backgroundColor: this.validateColor(item), marginTop: 1, flexDirection: 'row' }}
+                 onPress={() => {
+                   this.selectChat(item)
+                 }}
+               >
+                 <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
+                   <View style={{ height: 20, width: 20, borderColor: "#000", borderWidth: 1, alignItems: "center", justifyContent: 'center' }}
+
+                   >
+                     {
+                       this.validateCheckBox(item)
+                     }
+
+                   </View>
+                 </View>
+
+                 <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                   <Image
+                     source={{
+                       uri: item.dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                     }}
+                     style={{ height: 60, width: 60, borderRadius: 30, }}
+                   />
+                 </View>
+                 <View style={{ flex: 0.6, }}>
+                   <View style={{ flex: 0.4, justifyContent: "center" }}>
+                     <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>{item.title}</Text>
+                   </View>
+                   <View style={{ flex: 0.6, }}>
+                     <Text style={[styles.text]}>{item.lastmsg}</Text>
+                   </View>
+                 </View>
+               </TouchableOpacity>
+             )
+           }
            return (
              <TouchableOpacity style={{ height: height * 0.1, backgroundColor: "#fafafa", marginTop: 1, flexDirection: 'row' }}
                onPress={() => { this.navigate(item, "doctor") }}
+               onLongPress={() => { this.addToDelete(item) }}
              >
                <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                  <Image
@@ -189,7 +348,7 @@ if(type=="clinic"){
     itemArrange = {
       groupPk: item.threadpk,
       uid: item.uid,
-      doctortitle: item.title||"doctor"
+      customertitle: item.title||"doctor"
     }
   }
 
@@ -245,9 +404,47 @@ if(type=="clinic"){
             keyExtractor={(item, index) => index.toString()}
 
             renderItem={({ item, index }) => {
+              if (this.state.edit) {
+                return (
+                  <TouchableOpacity style={{ height: height * 0.1, backgroundColor: this.validateColor(item), marginTop: 1, flexDirection: 'row' }}
+                    onPress={() => {
+                      this.selectChat(item)
+                    }}
+                  >
+                    <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
+                      <View style={{ height: 20, width: 20, borderColor: "#000", borderWidth: 1, alignItems: "center", justifyContent: 'center' }}
+
+                      >
+                        {
+                          this.validateCheckBox(item)
+                        }
+
+                      </View>
+                    </View>
+
+                    <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                      <Image
+                        source={{
+                          uri: item.dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                        }}
+                        style={{ height: 60, width: 60, borderRadius: 30, }}
+                      />
+                    </View>
+                    <View style={{ flex: 0.6, }}>
+                      <View style={{ flex: 0.4, justifyContent: "center" }}>
+                        <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>{item.title}</Text>
+                      </View>
+                      <View style={{ flex: 0.6, }}>
+                        <Text style={[styles.text]}>{item.lastmsg}</Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                )
+              }
               return (
                 <TouchableOpacity style={{ height: height * 0.1, backgroundColor: "#fafafa", marginTop: 1, flexDirection: 'row' }}
                   onPress={() => { this.navigate(item, "clinic") }}
+                  onLongPress={() => { this.addToDelete(item) }}
                 >
                   <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                     <Image
@@ -281,9 +478,47 @@ if(type=="clinic"){
            keyExtractor={(item, index) => index.toString()}
 
            renderItem={({ item, index }) => {
+             if (this.state.edit) {
+               return (
+                 <TouchableOpacity style={{ height: height * 0.1, backgroundColor: this.validateColor(item), marginTop: 1, flexDirection: 'row' }}
+                   onPress={() => {
+                     this.selectChat(item)
+                   }}
+                 >
+                   <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
+                     <View style={{ height: 20, width: 20, borderColor: "#000", borderWidth: 1, alignItems: "center", justifyContent: 'center' }}
+
+                     >
+                       {
+                         this.validateCheckBox(item)
+                       }
+
+                     </View>
+                   </View>
+
+                   <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                     <Image
+                       source={{
+                         uri: item.dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                       }}
+                       style={{ height: 60, width: 60, borderRadius: 30, }}
+                     />
+                   </View>
+                   <View style={{ flex: 0.6, }}>
+                     <View style={{ flex: 0.4, justifyContent: "center" }}>
+                       <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>{item.title}</Text>
+                     </View>
+                     <View style={{ flex: 0.6, }}>
+                       <Text style={[styles.text]}>{item.lastmsg}</Text>
+                     </View>
+                   </View>
+                 </TouchableOpacity>
+               )
+             }
              return (
                <TouchableOpacity style={{ height: height * 0.1, backgroundColor: "#fafafa", marginTop: 1, flexDirection: 'row' }}
                  onPress={() => { this.navigate(item, "doctor") }}
+                 onLongPress={() => { this.addToDelete(item) }}
                >
                  <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                    <Image
@@ -317,9 +552,47 @@ if(type=="clinic"){
            keyExtractor={(item, index) => index.toString()}
 
            renderItem={({ item, index }) => {
+             if (this.state.edit) {
+               return (
+                 <TouchableOpacity style={{ height: height * 0.1, backgroundColor: this.validateColor(item), marginTop: 1, flexDirection: 'row' }}
+                   onPress={() => {
+                     this.selectChat(item)
+                   }}
+                 >
+                   <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
+                     <View style={{ height: 20, width: 20, borderColor: "#000", borderWidth: 1, alignItems: "center", justifyContent: 'center' }}
+
+                     >
+                       {
+                         this.validateCheckBox(item)
+                       }
+
+                     </View>
+                   </View>
+
+                   <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                     <Image
+                       source={{
+                         uri: item.dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                       }}
+                       style={{ height: 60, width: 60, borderRadius: 30, }}
+                     />
+                   </View>
+                   <View style={{ flex: 0.6, }}>
+                     <View style={{ flex: 0.4, justifyContent: "center" }}>
+                       <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>{item.title}</Text>
+                     </View>
+                     <View style={{ flex: 0.6, }}>
+                       <Text style={[styles.text]}>{item.lastmsg}</Text>
+                     </View>
+                   </View>
+                 </TouchableOpacity>
+               )
+             }
              return (
                <TouchableOpacity style={{ height: height * 0.1, backgroundColor: "#fafafa", marginTop: 1, flexDirection: 'row' }}
                  onPress={() => { this.navigate(item, "clinic") }}
+                 onLongPress={() => { this.addToDelete(item) }}
                >
                  <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                    <Image
@@ -345,7 +618,40 @@ if(type=="clinic"){
      }
 
    }
-   
+   removeEdit =()=>{
+     this.setState({selectedChats:[]},()=>{
+         this.setState({edit:false})
+     })
+   }
+   validateEdit =()=>{
+      if(this.state.edit){
+         return(
+           <View style={{flexDirection:"row"}}>
+             <TouchableOpacity
+              style={{marginRight:20}}
+              onPress ={()=>{console.log(this.state.selectedChats,"ppppp")}}
+             >
+                <MaterialCommunityIcons name="delete" size={24} color="#fff" />
+             </TouchableOpacity>
+             <TouchableOpacity 
+             
+             onPress ={()=>{
+               this.removeEdit()
+             }}
+             >
+               <MaterialIcons name="cancel" size={24} color="#fff" />
+             </TouchableOpacity>
+           </View>
+         )
+      }
+      return(
+        <TouchableOpacity 
+         onPress ={()=>{this.setState({edit:true})}}
+        >
+          <MaterialIcons name="edit" size={24} color="#fff" />
+        </TouchableOpacity>
+      )
+   }
   render() {
  
     return (
@@ -357,10 +663,14 @@ if(type=="clinic"){
                     {/* HEADERS */}
             <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
              
-              <View style={{ }}>
+              <View style={{flex:0.7 }}>
                 <Text style={[styles.text, { color: '#fff', marginLeft: 20 ,fontWeight:'bold',fontSize:25}]}>Chats</Text>
               </View>
-            
+             <View style={{flex:0.3,alignItems:"center",justifyContent:'center'}}>
+                 {
+                   this.validateEdit()
+                 }
+             </View>
             </View>
                          {/* CHATS */}
 

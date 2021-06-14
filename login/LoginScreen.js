@@ -7,6 +7,11 @@ import { AntDesign, Entypo } from '@expo/vector-icons';
 import * as Animatable from 'react-native-animatable';
 import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import axios from 'axios';
+import HttpsClient from '../api/HttpsClient';
+import SimpleToast from 'react-native-simple-toast';
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 const { height, width } = Dimensions.get("window");
 const themeColor = settings.themeColor;
 const fontFamily = settings.fontFamily;
@@ -17,21 +22,36 @@ const url = settings.url
     this.state = {
       username:"",
       password:'',
+      token:null,
     };
   }
    login =async()=>{
-  // this.setState({loading:true})
+     if(this.state.username==""){
+       return this.showSimpleMessage(`please enter username`, "#dd7030")
+     }
+     if (this.state.password == "") {
+       return this.showSimpleMessage(`please enter password`, "#dd7030")
+     }
+  this.setState({loading:true})
    let api = `${url}/api/HR/login/?mode=api`
-   let sendData= new FormData();
-   sendData.append('username',this.state.username)
-   sendData.append('password',this.state.password)
+  //  let sendData= new FormData();
+  //  sendData.append('username',this.state.username)
+  //  sendData.append('password',this.state.password)
   //  console.log(sendData,"jjj")
-   let login = await axios.post(api,sendData)
-console.log(login.data,"ggggggg")
+let sendData ={
+  username: this.state.username,
+  password: this.state.password,
+  notificationId:this.state?.token,
+  bodyType:"formData"
+}
 
-   if(login.status==200){
+
+     let login  =await HttpsClient.post(api,sendData)
+     console.log(login)
+ 
+   if(login.type=="success"){
      AsyncStorage.setItem('csrf', login.data.csrf_token)
-     AsyncStorage.setItem('pk', login.data.pk)
+     AsyncStorage.setItem('sessionid', login.data.csrf_token)
      AsyncStorage.setItem('login', "true")
      return this.props.navigation.dispatch(
        CommonActions.reset({
@@ -74,10 +94,57 @@ console.log(login.data,"ggggggg")
        )
      }
    }
-
+    else{
+     this.setState({ loading: false})
+     return this.showSimpleMessage(`${login?.error?.toString()||login.data.message}`, "#dd7030")
+    }
  
 
 }
+   showSimpleMessage(content, color, type = "info", props = {}) {
+     const message = {
+       message: content,
+       backgroundColor: color,
+       icon: { icon: "auto", position: "left" },
+       type,
+       ...props,
+     };
+
+     showMessage(message);
+   }
+   componentDidMount(){
+     this.registerForPushNotificationsAsync().then(token => this.setState({ token }));
+   }
+   registerForPushNotificationsAsync = async function () {
+     let token;
+     if (Constants.isDevice) {
+       const { status: existingStatus } = await Notifications.getPermissionsAsync();
+       let finalStatus = existingStatus;
+       if (existingStatus !== 'granted') {
+         const { status } = await Notifications.requestPermissionsAsync();
+         finalStatus = status;
+       }
+       if (finalStatus !== 'granted') {
+         alert('Failed to get push token for push notification!');
+         return;
+       }
+       token = (await Notifications.getExpoPushTokenAsync()).data;
+       console.log(token);
+     } else {
+       alert('Must use physical device for Push Notifications');
+     }
+
+     if (Platform.OS === 'android') {
+       Notifications.setNotificationChannelAsync('default', {
+         name: 'default',
+         importance: Notifications.AndroidImportance.MAX,
+         vibrationPattern: [0, 250, 250, 250],
+         lightColor: '#FF231F7C',
+       });
+     }
+
+     return token;
+   }
   render() {
     return (
       <KeyboardAvoidingView
@@ -90,10 +157,13 @@ console.log(login.data,"ggggggg")
           <View style={styles.footer}>
               <Text style={styles.text_footer}>Mobile or username</Text>
               <View style={styles.action}>
-                    <AntDesign name="mobile1" size={20} color="#05375a" />
+                <View style={{alignItems:"center",justifyContent:"center"}}>
+                     <AntDesign name="mobile1" size={20} color="#05375a" />
+                </View>
+                  
                     <TextInput 
                        value={this.state.username}
-                 
+                       selectionColor={themeColor}
                        placeholder="your username or mobile"
                        style={styles.textInput}
               onChangeText={(text) => { this.setState({ username:text})}}
@@ -101,32 +171,45 @@ console.log(login.data,"ggggggg")
               </View>
           <Text style={[styles.text_footer,{marginTop:35}]}>Password</Text>
           <View style={styles.action}>
-            <Entypo name="lock-open" size={24} color="#05375a" />
+            <View style={{alignItems:"center",justifyContent:"center"}}>
+              <Entypo name="lock-open" size={24} color="#05375a" />
+            </View>
+       
          
             <TextInput
+              selectionColor={themeColor}
               value={this.state.password}
               placeholder="Your Password"
               style={styles.textInput}
               onChangeText={(password) => { this.setState({ password }) }}
             />
           </View>
-          <View style={{marginTop:20}}>
+          <View style={{marginTop:20,flexDirection:"row",justifyContent:"space-between"}}>
             <TouchableOpacity 
+              style={{}}
               onPress={()=>{this.props.navigation.navigate('ForgotPassword')}}
             >
-              <Text>Forgot Password?</Text>
+              <Text style={[styles.text,{fontWeight:"bold"}]}>Forgot Password?</Text>
+           
             </TouchableOpacity>
-              
-            <View style={{ alignItems: "center", justifyContent: 'center', marginTop: 30 }}>
+            <TouchableOpacity
+              style={{}}
+              onPress={() => { this.props.navigation.navigate('CreateAccount') }}
+            >
+              <Text style={[styles.text,{fontWeight:"bold"}]}>Don`t have an account?</Text>
 
-              {!this.state.loading ? <TouchableOpacity style={{ backgroundColor: themeColor, width: width * 0.4, height: height * 0.06, alignItems: 'center', justifyContent: "center", borderRadius: 10 }}
-                onPress={() => { this.login() }}
-              >
-                <Text style={{ color: "#fff" }}>Login </Text>
-              </TouchableOpacity> :
-                <ActivityIndicator size="large" color={themeColor} />
-              }
-            </View>
+            </TouchableOpacity>
+          
+          </View>
+          <View style={{ alignItems: "center", justifyContent: 'center', marginTop: 30 }}>
+
+            {!this.state.loading ? <TouchableOpacity style={{ backgroundColor: themeColor, width: width * 0.4, height: height * 0.06, alignItems: 'center', justifyContent: "center", borderRadius: 10 }}
+              onPress={() => { this.login() }}
+            >
+              <Text style={{ color: "#fff" }}>Login </Text>
+            </TouchableOpacity> :
+              <ActivityIndicator size="large" color={themeColor} />
+            }
           </View>
           </View>
       {/* <View style={{flex:1,backgroundColor:themeColor}}> 
@@ -217,7 +300,6 @@ const styles=StyleSheet.create({
     marginTop:10,
     borderBottomWidth:1,
     borderBottomColor:"#f2f2f2",
-    paddingBottom:5
   },
   textInput:{
     flex:1,

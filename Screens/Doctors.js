@@ -5,11 +5,12 @@ import settings from '../AppSettings';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
 import { AntDesign } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import png from '../assets/marker/stethoscope.png'
 import { WebView } from 'react-native-webview';
 import HttpsClient from '../api/HttpsClient';
-
+import mapstyle from '../map.json';
 const { height, width } = Dimensions.get("window");
 const themeColor = settings.themeColor;
 const fontFamily =settings.fontFamily;
@@ -19,7 +20,8 @@ const url =settings.url
     super(props);
     this.state = {
       location:null,
-      markers:[]
+      markers:[],
+      load:false
     };
   }
    getMarkers =async(lat,long)=>{
@@ -30,10 +32,10 @@ const url =settings.url
             all:"true"
           }
          const data =await HttpsClient.post(api,sendData)
-       console.log()
+     console.log(api,"uuuoiuio")
         if(data.type=="success"){
-         
-          this.setState({ markers: data.data.clinics})
+          
+          this.setState({ markers: data.data.clinics,load:false})
         }
    }
    getLocation =async()=>{
@@ -43,6 +45,7 @@ const url =settings.url
        return;
      }
      let location = await Location.getCurrentPositionAsync({});
+     console.log(location,"hjhj")
      this.getMarkers(location.coords.latitude,location.coords.longitude)
      this.setState({ location: {
         latitude: location.coords.latitude,
@@ -59,6 +62,9 @@ const url =settings.url
    }
     return  this.props.navigation.navigate('ViewClinic', { item })
  }
+   changeRegion=(region)=>{
+     this.getMarkers(region.latitude, region.longitude)
+   }
   render() {
     const {location} =this.state
    console.log(this.state.ma)
@@ -69,11 +75,18 @@ const url =settings.url
         <View style={styles.container}>
             <StatusBar backgroundColor={themeColor} />
          {location?<MapView 
+              customMapStyle={mapstyle}
                provider ={PROVIDER_GOOGLE}
                style={styles.map} 
                region={this.state?.location}
-     
+       
+              // onRegionChange={(region)=>{console.log(region)}}
+              // onRegionChangeComplete={(region) => { this.changeRegion(region)}}
             >
+              <Marker 
+                coordinate={{ latitude: this.state.location.latitude, longitude:this.state.location.longitude }}
+              
+              />
               {this.state.markers.length>0&&
                 this.state.markers.map((item,index)=>{
                      let dp =null
@@ -83,7 +96,7 @@ const url =settings.url
                   }
                     return(
                       <Marker
-                      style={{height:100}}
+                         style={{height:100}}
                          key={index}
                         coordinate={{ latitude: Number(item?.lat), longitude: Number(item?.long,)  }}
                         image={require('../assets/marker/custommarker.png')}
@@ -92,7 +105,7 @@ const url =settings.url
                           tooltip={true}
                           onPress={() => { this.navigate(item) }}
                         >
-                          <View style={{ height: height * 0.2, backgroundColor: "#fff", width: width * 0.4, alignItems: "center",  }}>
+                          <View style={{ height: height * 0.2, backgroundColor: "#fff", width: width * 0.4, alignItems: "center", borderRadius:5 }}>
                             <Text style={{ height: 80 }}>
                               <Image
                                 source={{
@@ -101,8 +114,11 @@ const url =settings.url
                                 style={{ width: 60, height: 60, resizeMode: "cover" }}
                               />
                             </Text>
-                             <View style={{alignItems:'center',justifyContent:'center'}}>
+                             <View style={{alignItems:'center',justifyContent:'center',flexDirection:"row"}}>
                               <Text style={[styles.text]}>{item.title}</Text>
+                              <View style={{marginLeft:5,backgroundColor:'green',height:10,width:10,borderRadius:5}}>
+                                  
+                              </View>
                              </View>
                             <View style={{alignItems:'center',justifyContent:"center"}}>
                               <Text style={[styles.text, { color: "gray" }]}>{item.type}</Text>
@@ -114,9 +130,11 @@ const url =settings.url
 
 
                           </View>
+                          <View style={styles.triangle}>
 
+                          </View>
                         </MapView.Callout>
-
+                     
                       </Marker>
                     )
                 })
@@ -138,6 +156,19 @@ const url =settings.url
                  </View>
                  
             </TouchableOpacity>
+            <View 
+              style={{ position: "absolute", bottom: 150, right: 30 }}
+            >
+              {!this.state.load?<TouchableOpacity 
+                onPress={() => {
+                  this.setState({ load: true })
+                  this.getLocation()
+                }}
+              >
+                <MaterialIcons name="my-location" size={30} color="black" />
+              </TouchableOpacity>:<ActivityIndicator color={themeColor} size="large"/>}
+            </View>
+           
         </View>
         </SafeAreaView>
       </>
@@ -166,6 +197,20 @@ const styles = StyleSheet.create({
   bottomSafeArea: {
     flex: 1,
     backgroundColor: "#fff"
+  },
+  triangle: {
+    width: 0,
+    height: 0,
+    backgroundColor: "transparent",
+    borderStyle: "solid",
+    borderLeftWidth: 10,
+    borderRightWidth: 10,
+    borderBottomWidth: 10,
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
+    borderBottomColor: "#fff",
+    transform: [{ rotate: "180deg" }],
+    alignSelf:'center'
   },
 });
 const mapStateToProps = (state) => {

@@ -17,7 +17,8 @@ import HttpsClient from '../api/HttpsClient';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-import Toast from 'react-native-simple-toast';
+
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 class MakeAppointment extends Component {
     constructor(props) {
   
@@ -99,13 +100,25 @@ class MakeAppointment extends Component {
         }
         let post = await HttpsClient.post(api,sendData)
         if (post.type =="success"){
-            Toast.show("requested Successfully")
+            this.showSimpleMessage("requested SuccessFully", "#00A300", "success")
+            
             setTimeout (()=>{
                  this.props.navigation.goBack()
             },2000)
         }else{
-            Toast.show("Try again")
+            this.showSimpleMessage("Try again", "#B22222", "danger")
         }
+    }
+    showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
+
+        showMessage(message);
     }
     render() {
         return (

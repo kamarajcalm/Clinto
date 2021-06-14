@@ -25,7 +25,7 @@ class SearchDoctors extends Component {
         let api = `${url}/api/profile/userss/?search=${query}&role=Doctor`
         let data = await HttpsClient.get(api)
      
-        if (data.type == "success") {
+        if (data.type == "success"){
             this.setState({ doctors: data.data })
         } 
     }

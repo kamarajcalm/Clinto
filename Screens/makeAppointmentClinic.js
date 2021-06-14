@@ -15,10 +15,11 @@ import { selectTheme } from '../actions';
 import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import HttpsClient from '../api/HttpsClient';
 import DropDownPicker from 'react-native-dropdown-picker';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import Toast from 'react-native-simple-toast';
 import SimpleToast from 'react-native-simple-toast';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 class makeAppointmentClinic extends Component {
     constructor(props) {
 
@@ -60,36 +61,67 @@ class makeAppointmentClinic extends Component {
     componentDidMount() {
        this.getDoctors()
     }
-    onChange = (selectedDate) => {
-        if (selectedDate.type == "set") {
-            this.setState({ today: moment(new Date(selectedDate.nativeEvent.timestamp)).format('YYYY-MM-DD'), show: false, date: new Date(selectedDate.nativeEvent.timestamp) }, () => {
+    showDatePicker = () => {
+        this.setState({ show: true })
+    };
+
+    hideDatePicker = () => {
+        this.setState({ show: false })
+    };
+    showDatePicker2 = () => {
+        this.setState({ show2: true })
+    };
+
+    hideDatePicker2 = () => {
+        this.setState({ show2: false })
+    };
+    handleConfirm = (date) => {
+        
+        this.setState({ today: moment(date).format('YYYY-MM-DD'), show: false, date: new Date(date) }, () => {
+          
+
+        })
+        this.hideDatePicker();
+    };
+    handleConfirm2 = (date) => {
+
+        this.setState({ time: moment(date).format('hh:mm a'), show2: false, date: new Date(date) }, () => {
+            
+
+        })
+        this.hideDatePicker2();
+    };
+    // onChange = (selectedDate) => {
+    //     if (selectedDate.type == "set") {
+    //         this.setState({ today: moment(new Date(selectedDate.nativeEvent.timestamp)).format('YYYY-MM-DD'), show: false, date: new Date(selectedDate.nativeEvent.timestamp) }, () => {
 
 
-            })
+    //         })
 
-        } else {
-            return null
-        }
+    //     } else {
+    //         return null
+    //     }
 
-    }
-    onChange2 = (selectedDate) => {
-        if (selectedDate.type == "set") {
-            this.setState({ time: moment(new Date(selectedDate.nativeEvent.timestamp)).format('hh:mm a'), show2: false, date: new Date(selectedDate.nativeEvent.timestamp) }, () => {
+    // }
+    // onChange2 = (selectedDate) => {
+    //     if (selectedDate.type == "set") {
+    //         this.setState({ time: moment(new Date(selectedDate.nativeEvent.timestamp)).format('hh:mm a'), show2: false, date: new Date(selectedDate.nativeEvent.timestamp) }, () => {
 
 
-            })
+    //         })
 
-        } else {
-            return null
-        }
+    //     } else {
+    //         return null
+    //     }
 
-    }
+    // }
     requestAppointment = async () => {
         if(this.state.today ==null){
-            return SimpleToast.show("please select date")
+            return this.showSimpleMessage("please select date", "#dd7030",)
+            
         }
         if (this.state.time == null) {
-            return SimpleToast.show("please select time")
+            return this.showSimpleMessage("please select time", "#dd7030",)
         }
         let api = `${url}/api/prescription/addAppointment/`
         let sendData = {
@@ -104,31 +136,55 @@ class makeAppointmentClinic extends Component {
         let post = await HttpsClient.post(api, sendData)
         console.log(post,"klkk")
         if (post.type == "success") {
-            Toast.show("requested Successfully")
+            this.showSimpleMessage("requested SuccessFully", "#00A300", "success")
+       
             setTimeout(() => {
                 this.props.navigation.goBack()
             }, 2000)
         } else {
-            Toast.show(post?.data?.error)
+            this.showSimpleMessage("Try again", "#B22222", "danger")
         }
     }
     getTodayTimings = (today) => {
 
         return (
-            this.state.selectedDoctor?.clinicShits[today].map((i, index) => {
+            this.state.selectedDoctor?.clinicShits[today][0].timings.map((i, index) => {
                 return (
-                    <View style={{ flexDirection: "row", marginTop: 5 }}>
+                    <View
+                        key={ index}
+                        style={{ flexDirection: "row", marginTop: 5 }}>
                         <Text style={[styles.text, { fontWeight: "bold" }]}>{index + 1}.</Text>
-                        <Text style={[styles.text, { marginLeft: 5 }]}>{i.timings[0][0]}</Text>
+                        <Text style={[styles.text, { marginLeft: 5 }]}>{i[0]}</Text>
                         <Text style={[styles.text]}>-</Text>
-                        <Text style={[styles.text]}>{i.timings[0][1]}</Text>
+                        <Text style={[styles.text]}>{i[1]}</Text>
                     </View>
                 )
             })
+            // this.state.selectedDoctor?.clinicShits[today].map((i, index) => {
+            //     return (
+            //         <View style={{ flexDirection: "row", marginTop: 5 }}>
+            //             <Text style={[styles.text, { fontWeight: "bold" }]}>{index + 1}.</Text>
+            //             { i.timings.length>0&&<Text style={[styles.text, { marginLeft: 5 }]}>{i.timings[0][0]}</Text>}
+            //             <Text style={[styles.text]}>-</Text>
+            //             {i.timings.length > 0 &&<Text style={[styles.text]}>{i.timings[0][1]}</Text>}
+            //         </View>
+            //     )
+            // })
         )
 
 
 
+    }
+    showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
+
+        showMessage(message);
     }
     render() {
         return (
@@ -373,7 +429,7 @@ class makeAppointmentClinic extends Component {
 
                                 </TouchableOpacity>
                             </View>
-                            {this.state.show && (
+                            {/* {this.state.show && (
                                 <DateTimePicker
                                     testID="dateTimePicker1"
                                     value={this.state.date}
@@ -393,7 +449,21 @@ class makeAppointmentClinic extends Component {
                                     onChange={(time) => { this.onChange2(time) }}
                                 />
                             )}
-                           
+                            */}
+                            <DateTimePickerModal
+                                testID="2"
+                                isVisible={this.state.show}
+                                mode="date"
+                                onConfirm={this.handleConfirm}
+                                onCancel={this.hideDatePicker}
+                            />
+                            <DateTimePickerModal
+                                testID="1"
+                                isVisible={this.state.show2}
+                                mode="time"
+                                onConfirm={this.handleConfirm2}
+                                onCancel={this.hideDatePicker2}
+                            />
                         </ScrollView>
                         
                        

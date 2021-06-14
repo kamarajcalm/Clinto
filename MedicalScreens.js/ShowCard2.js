@@ -12,8 +12,8 @@ const url = settings.url
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
 import HttpsClient from '../api/HttpsClient';
-import Toast from 'react-native-simple-toast';
-import SimpleToast from 'react-native-simple-toast';
+import { NavigationContainer, CommonActions } from '@react-navigation/native';
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
  class ShowCard2 extends Component {
   constructor(props) {
     super(props);
@@ -31,11 +31,35 @@ import SimpleToast from 'react-native-simple-toast';
          }
          
          let post = await HttpsClient.post(api,sendData)
+         console.log(post,"dd")
          if(post.type =="success"){
-             SimpleToast.show("issued SuccessFully")
+             this.showSimpleMessage("issued SuccessFully", "#00A300", "success")
+             return this.props.navigation.dispatch(
+                 CommonActions.reset({
+                     index: 0,
+                     routes: [
+                         {
+                             name: 'ClincicPriscriptionStack',
+
+                         },
+
+                     ],
+                 })
+             )
+         
          }
      }
-   
+     showSimpleMessage(content, color, type = "info", props = {}) {
+         const message = {
+             message: content,
+             backgroundColor: color,
+             icon: { icon: "auto", position: "left" },
+             type,
+             ...props,
+         };
+
+         showMessage(message);
+     }
      header = () => {
          return (
              <View style={{ flexDirection: "row", marginTop: 20,alignItems:"center",justifyContent:"space-between" }}>
@@ -288,7 +312,8 @@ import SimpleToast from 'react-native-simple-toast';
 
      }
      showError =()=>{
-         Toast.showWithGravity("Priscription is not valid", Toast.SHORT, Toast.CENTER)
+         return this.showSimpleMessage("Priscription is not valid", "#dd7030",)
+        
      }
      footer =()=>{
          return(

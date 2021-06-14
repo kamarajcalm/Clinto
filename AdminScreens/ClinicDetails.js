@@ -4,6 +4,7 @@ import settings from '../AppSettings';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
 const { height, width } = Dimensions.get("window");
+const deviceHeight =Dimensions.get('screen').height
 import { Ionicons } from '@expo/vector-icons';
 import authAxios from '../api/authAxios';
 const fontFamily = settings.fontFamily;
@@ -70,6 +71,7 @@ class ClinicDetails extends Component {
     }
     deleteReceptionist =async()=>{
         let api = `${url}/api/prescription/recopinists/${this.state.deleteReceptionist.id}/`
+        console.log(api,"ppppp")
         let deletee = await HttpsClient.delete(api);
         if (deletee.type == "success") {
             this.state.receptionList.splice(this.state.deleteReceptionIndex, 1);
@@ -93,14 +95,17 @@ class ClinicDetails extends Component {
     getTodayTimings =(item)=>{
       let  days =["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
       let today =days[date.getDay()]
+
       return(
-          item.clinicShits[today].map((i,index)=>{
-              return(
-                  <View style={{flexDirection:"row",marginTop:5}}>
-                      <Text>{index+1}.</Text>
-                      <Text style={{marginLeft:5}}>{i.timings[0][0]}</Text>
-                      <Text>-</Text>
-                      <Text>{i.timings[0][1]}</Text>
+          item.clinicShits[today][0].timings.map((i, index) => {
+              return (
+                  <View
+                      key={index}
+                      style={{ flexDirection: "row", marginTop: 5 }}>
+                      <Text style={[styles.text, { fontWeight: "bold" }]}>{index + 1}.</Text>
+                      <Text style={[styles.text, { marginLeft: 5 }]}>{i[0]}</Text>
+                      <Text style={[styles.text]}>-</Text>
+                      <Text style={[styles.text]}>{i[1]}</Text>
                   </View>
               )
           })
@@ -129,10 +134,11 @@ class ClinicDetails extends Component {
                             <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
                                 <Text style={[styles.text, { color: '#fff', fontWeight: 'bold', fontSize: 18 }]}>{this.state.item.companyName}</Text>
                             </View>
-                            <TouchableOpacity style={{ flex: 0.2 }}
-                                
+                            <TouchableOpacity style={{ flex: 0.2, flexDirection: "row", alignItems: "center", justifyContent: 'center' }}
+                                onPress={() => { this.props.navigation.navigate('EditClinicDetails', { clinic: this.state.item }) }}
                             >
-                        
+                                <Entypo name="back-in-time" size={24} color="#fff" />
+                                <Text style={[styles.text, { marginLeft: 10, color: "#fff" }]}>Edit </Text>
                             </TouchableOpacity>
                         </View>
                     
@@ -181,10 +187,10 @@ class ClinicDetails extends Component {
                                         <Text style={[styles.text, { fontWeight: "bold", fontSize: 18, color: "gray" }]}>Today:</Text>
                                     </View>
 
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>{this.state?.item?.working_hours[date?.getDay()][0]}</Text>
+                                    { this.state?.item?.working_hours?.length>0&& <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>{this.state?.item?.working_hours[date?.getDay()][0]}</Text>}
                                 </View>
                                 <View>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>{this.state?.item?.working_hours[date?.getDay()][1]}</Text>
+                                    {this.state?.item?.working_hours?.length > 0&&<Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>{this.state?.item?.working_hours[date?.getDay()][1]}</Text>}
                                 </View>
                                
                             </View>
@@ -195,8 +201,8 @@ class ClinicDetails extends Component {
                                     <Text>{this.state.showAll?"showLess":"showAll"}</Text>
                                 </TouchableOpacity>
                             </View>
-                           {this.state.showAll&&
-                                    this.state.item.working_hours.map((i)=>{
+                            {this.state.showAll && this.state.item.working_hours?.length>0&&
+                                    this.state.item.working_hours.map((i,index)=>{
                                      let day= ""
                                      if(i[2]=="0"){
                                          day ="Sun"
@@ -217,7 +223,10 @@ class ClinicDetails extends Component {
                                      }
                                         
                                         return(
-                                            <View style={{ marginHorizontal: 20, marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
+                                            <View 
+                                             style={{ marginHorizontal: 20, marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}
+                                             key ={index}
+                                            >
                                                 <View>
                                                     <View style={{alignSelf:"flex-start"}}>
                                                         <Text style={[styles.text, { fontWeight: "bold", fontSize: 18,color:"gray" }]}>{day}:</Text>
@@ -305,7 +314,9 @@ class ClinicDetails extends Component {
                                     keyExtractor={(item,index)=>index.toString()}
                                     renderItem={({item,index})=>{
                                         return(
-                                            <View style={{flexDirection:"row",height:height*0.1,}}>
+                                            <TouchableOpacity style={{flexDirection:"row",height:height*0.1,}}
+                                                onPress={() => { this.props.navigation.navigate('ReceptionistProfile',{item:item})}}
+                                            >
                                                 <View style={{alignItems:"center",justifyContent:"center",flex:0.33}}>
                                                     <Image
                                                         source={{ uri: item.user.profile.displayPicture || "https://s3-ap-southeast-1.amazonaws.com/practo-fabric/practices/711061/lotus-multi-speciality-health-care-bangalore-5edf8fe3ef253.jpeg" }}
@@ -321,7 +332,7 @@ class ClinicDetails extends Component {
                                                 >
                                                     <Entypo name="circle-with-cross" size={24} color={themeColor} />
                                                 </TouchableOpacity>
-                                            </View>
+                                            </TouchableOpacity>
                                         )
                                     }}
                                  />
@@ -335,7 +346,7 @@ class ClinicDetails extends Component {
                                         return (
                                             <TouchableOpacity style={{ flexDirection: "row", marginTop:15 }}
                                               onPress={()=>{
-                                                  this.props.navigation.navigate('ViewDoctor',{item})
+                                                  this.props.navigation.navigate('ViewDoctor',{item,owner:true})
                                               }}
                                             >
                                                 <View style={{ alignItems: "center", justifyContent: "center",flex:0.2 }}>
@@ -389,6 +400,7 @@ class ClinicDetails extends Component {
                        </ScrollView>
                         <View>
                             <Modal
+                                deviceHeight={deviceHeight}
                                 animationIn="slideInUp"
                                 animationOut="slideOutDown"
                                 isVisible={this.state.showModal}
@@ -415,6 +427,7 @@ class ClinicDetails extends Component {
                                 </View>
                             </Modal>
                             <Modal
+                                 deviceHeight={deviceHeight}
                                 animationIn="slideInUp"
                                 animationOut="slideOutDown"
                                 isVisible={this.state.showModal2}

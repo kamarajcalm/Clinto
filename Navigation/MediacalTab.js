@@ -72,7 +72,7 @@ class MediacalTab extends Component {
                     }}
 
                 />
-                {/* <Tab.Screen name="Inventory" component={MedicalInventoryStack}
+                <Tab.Screen name="Inventory" component={MedicalInventoryStack}
                     options={{
                         tabBarIcon: ({ focused, color, size }) => {
                             return <MaterialIcons name="inventory" size={24} color={focused?"#fff":"gray"} />
@@ -84,7 +84,7 @@ class MediacalTab extends Component {
 
                     }}
 
-                /> */}
+                />
                 <Tab.Screen name="Chats" component={ChatStack}
                     options={{
                         tabBarIcon: ({ focused, color, size }) => {
