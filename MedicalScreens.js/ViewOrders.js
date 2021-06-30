@@ -151,7 +151,8 @@ class ViewOrders extends Component {
 
     }
     editItem = async()=>{
-      let duplicate = this.state.selectedItem
+      let duplicate = {...this.state.selectedItem}
+
       duplicate.number_of_boxes= Number(this.state.boxes),
       duplicate.number_of_medicines = Number(this.state.NoofPieces)
       duplicate.number_of_strips= Number(this.state.NoofStrips)
@@ -160,8 +161,10 @@ class ViewOrders extends Component {
         let api = `${url}/api/prescription/editSubIn/`
         let post = await HttpsClient.post(api,duplicate)
         if(post.type=="success"){
+             let dup = this.state.item
+            dup.items[this.state.selectedIndex] = duplicate
             this.showSimpleMessage("edited successFully","green","success")
-            this.setState({singledit:false,editing:false})
+            this.setState({ singledit: false, editing: false, item:dup})
         }else{
             this.showSimpleMessage("Try Again","green", "success")
             this.setState({ editing: false })
@@ -636,6 +639,7 @@ class ViewOrders extends Component {
                                                 onPress={() => {
                                                     this.setState({ 
                                                         selectedItem: item, 
+                                                        selectedIndex:index,
                                                         boxes: item.number_of_boxes.toString(), 
                                                         NoofStrips: item.number_of_strips.toString(),
                                                         NoofPieces:item.number_of_medicines.toString(),
