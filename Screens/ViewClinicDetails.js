@@ -17,17 +17,11 @@ import HttpsClient from '../api/HttpsClient';
 import Modal from 'react-native-modal';
 import Toast from 'react-native-simple-toast';
 import { SliderBox } from "react-native-image-slider-box";
-const images = [
-    "https://source.unsplash.com/1024x768/?nature",
-    "https://source.unsplash.com/1024x768/?water",
-    "https://source.unsplash.com/1024x768/?girl",
-    "https://source.unsplash.com/1024x768/?tree",
-]
+
 class ViewClinicDetails extends Component {
     constructor(props) {
         let item = props.route.params.item
         let owner = props?.route?.params?.owner||false
-     
         super(props);
         this.state = {
             item:null,
@@ -40,7 +34,8 @@ class ViewClinicDetails extends Component {
             deleteReceptionist: null,
             showAll: false,
             pk:item,
-            owner
+            owner,
+            images:[]
         };
     }
     getReceptionList = async () => {
@@ -98,11 +93,29 @@ class ViewClinicDetails extends Component {
             this.setState({item:data.data})
         }
     }
+    getClinicImages = async()=>{
+        let api = `${url}/api/prescription/clinicImages/?clinic=${this.state.pk.clinicpk}`
+        console.log(api)
+        let data = await HttpsClient.get(api)
+
+        if (data.type == "success") {
+            let images = []
+            data.data.forEach((item, index) => {
+                images.push(`${url}${item.imageUrl}`)
+            })
+            this.setState({ images }, () => {
+                console.log(images)
+            })
+
+        }
+    }
     componentDidMount() {
+        this.getClinicImages()
         this.getClinicDetails()
         this.getReceptionList();
         this.getDoctors();
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
+            this.getClinicImages();
             this.getClinicDetails()
             this.getReceptionList();
             this.getDoctors();
@@ -142,7 +155,7 @@ class ViewClinicDetails extends Component {
                     <View style={{ flex: 1, backgroundColor: "#fff" }}>
                         <StatusBar backgroundColor={themeColor} />
                         {/* HEADERS */}
-                        <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
+                        <View style={{ height: height * 0.1, backgroundColor: themeColor,flexDirection: 'row', alignItems: "center" }}>
                             <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}
                                 onPress={() => { this.props.navigation.goBack() }}
                             >
@@ -164,7 +177,7 @@ class ViewClinicDetails extends Component {
                             {/* image */}
                             <View style={{ height: height * 0.25, }}>
                                 <SliderBox
-                                    images={images}
+                                    images={this.state.images}
                                     dotColor={themeColor}
                                     imageLoadingColor={themeColor}
                                     ImageComponentStyle={{ height: "100%", width: "100%", resizeMode: "cover" }}
@@ -333,7 +346,37 @@ class ViewClinicDetails extends Component {
                                     <Feather name="phone" size={20} color="black" />
                                 </TouchableOpacity>
                             </View>
-                            <View style={[styles.boxWithShadow, { height: height * 0.07, width, backgroundColor: "#eee", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 20 ,marginTop:10}]}>
+                           
+                           {this.state.owner&& <View>
+                            <View style={[styles.boxWithShadow, { height: height * 0.07, width, backgroundColor: "#eee", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 20 }]}>
+                                <View>
+                                    <Text style={[styles.text]}>Payment Info</Text>
+                                </View>
+                                <View>
+                                    <AntDesign name="down" size={20} color="black" />
+                                </View>
+                            </View>
+                            <View>
+                                <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 10 }}>
+                                    <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                        <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Valid Till:</Text>
+                                    </View>
+                                    <View style={{ alignItems: 'center', justifyContent: "center" }}>
+                                        <Text style={[styles.text, { marginLeft: 10 }]}>{this.state?.pk?.validtill.validTill}</Text>
+                                    </View>
+                                </View>
+
+                                <View style={{alignItems:"center",justifyContent:"center",marginVertical:20}}>
+                                    <TouchableOpacity style={{ height: height * 0.04, width: width * 0.3, backgroundColor: themeColor, alignItems: "center", justifyContent: "center"}}
+                                            onPress={() => { this.props.navigation.navigate("PaymentPage", { item:this.state.pk }) }}
+                                    >
+                                         <Text style={[styles.text,{color:"#fff"}]}>Recharge</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            </View>
+}
+                            <View style={[styles.boxWithShadow,{ height: height * 0.07, width, backgroundColor: "#eee", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 20 ,marginTop:10}]}>
                                 <View>
                                     <Text style={[styles.text]}>Reception list:</Text>
                                 </View>
@@ -419,7 +462,9 @@ class ViewClinicDetails extends Component {
                                     }}
                                 />
                             </View>
-                           {this.state.owner&& <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'space-around', height: height * 0.2 }}>
+                           {this.state.owner&& 
+                           <>
+                           <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: 'space-around', height: height * 0.2 }}>
 
 
                                 <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center", marginTop: 20 }}>
@@ -436,7 +481,16 @@ class ViewClinicDetails extends Component {
                                         <Text style={[styles.text, { color: "#fff" }]}>Add Doctors</Text>
                                     </TouchableOpacity>
                                 </View>
-                            </View>}
+                            </View>
+                               <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center", marginVertical:10 }}>
+                                <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, backgroundColor: themeColor, borderRadius: 5, alignItems: 'center', justifyContent: "center" }}
+                                    onPress={() => { this.props.navigation.navigate('UploadImages',{ clinic: this.state.pk.clinicpk})}}
+                                >
+                                    <Text style={[styles.text, { color: "#fff" }]}>Add Images</Text>
+                                </TouchableOpacity>
+                            </View>
+                            </>
+                            }
                         </ScrollView>
                         <View>
                             <Modal

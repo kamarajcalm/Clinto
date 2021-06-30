@@ -77,14 +77,19 @@ class DoctorProfile extends Component {
                 </View>
                 {/* Working Clinics */}
                 <View style={{ borderColor: "#F0F0F0", borderTopWidth: 3,borderBottomWidth:3 }}>
-                     <View style={{marginHorizontal:20}}>
-                         <View style={{marginTop:5}}>
+                     <View style={{marginLeft:20,flexDirection:"row",}}>
+                         <View style={{marginTop:5,flex:0.6}}>
                              <Text style={[styles.text]}>Working Clinics</Text>
                          </View>
+                         <TouchableOpacity style={[styles.boxWithShadow,{height:height*0.03,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,flex:0.4,marginTop:5,marginRight:5,borderRadius:5}]}
+                            onPress={() => { this.props.ClinicSelect()}}
+                         >
+                             <Text style={[styles.text,{color:"#fff"}]}>Change Clinic</Text>
+                         </TouchableOpacity>
                      </View>
 
                     <FlatList
-                        data={this.props.clinics}
+                        data={this.props.clinics.workingclinics}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item, index }) => {
                             console.log(item)
@@ -109,7 +114,7 @@ class DoctorProfile extends Component {
                         }}
                     />
                 </View>
-                { this.props.ownedClinics.length>0&&     <View style={{ borderColor: "#F0F0F0",  borderBottomWidth: 3 }}>
+                {this.props?.clinics?.ownedclinics?.length>0&&<View style={{ borderColor: "#F0F0F0",  borderBottomWidth: 3 }}>
                     <View style={{ margin: 20 }}>
                         <View>
                             <Text style={[styles.text]}>Owned Clinics</Text>
@@ -117,17 +122,25 @@ class DoctorProfile extends Component {
                     </View>
 
                     <FlatList
-                        data={this.props.ownedClinics}
+                        data={this.props.clinics.ownedclinics}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item, index }) => {
                             console.log(item)
                             return (
                                 <View style={{ marginBottom: 10 }}>
                                     <TouchableOpacity style={{ flexDirection: "row", minHeight: height * 0.05, borderBottomColor: "#fff", borderBottomWidth: 0.185 }}
-                                        onPress={() => { this.props.navigation.navigate('ViewClinicDetails', { item }) }}
+                                        onPress={() => { this.props.navigation.navigate('ViewClinicDetails', { item, owner:true}) }}
                                     >
                                         <View style={{ flex: 0.5, justifyContent: "center" }}>
                                             <Text style={[styles.text, { fontWeight: "bold", color: "#000", marginLeft: 10 }]}>{item.name}</Text>
+                                            {item?.validtill?.validTill?<Text style={[styles.text, { marginLeft: 10 }]}>{item?.validtill?.validTill}</Text>:
+                                             <TouchableOpacity 
+                                                    onPress={() => { this.props.navigation.navigate("PaymentPage",{item})}}
+                                             
+                                             >
+                                                 <Text style={[styles.text,{color:"red",marginLeft:10}]}>(please Recharge)</Text>
+                                             </TouchableOpacity>
+                                            }
                                         </View>
                                         <View style={{ flex: 0.5, alignItems: 'flex-end', marginRight: 10, justifyContent: "center" }}>
                                             <AntDesign name="rightcircleo" size={24} color="#000" />
@@ -182,6 +195,13 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff"
     },
+    boxWithShadow: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        elevation: 5
+    }
 })
 const mapStateToProps = (state) => {
     return {

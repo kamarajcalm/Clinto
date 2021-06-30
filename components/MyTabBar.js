@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Keyboard,Alert } from 'react-native';
-import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons } from '@expo/vector-icons';
+import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, AntDesign} from '@expo/vector-icons';
 import settings from '../AppSettings';
 const themeColor = settings.themeColor
 export default class MyTabBar extends Component {
@@ -46,28 +46,28 @@ UNSAFE_componentWillReceiveProps(){
     icon = (label, isFocused) => {
         if (label == "Prescription") {
             return (
-                <MaterialCommunityIcons name="cards" size={24} color={isFocused?"#fff":"gray"} />
+                <MaterialCommunityIcons name="cards" size={30} color={isFocused?"#fff":"gray"} />
             )
         }
         if (label == "Appointments") {
             return (
-                <MaterialCommunityIcons name="timetable" size={24} color={isFocused ? "#fff" : "gray"} />
+                <MaterialCommunityIcons name="timetable" size={30} color={isFocused ? "#fff" : "gray"} />
                
             )
         }
         if (label == "Search") {
             return (
-                <Fontisto name="doctor" size={24} color={isFocused ? "#fff" : "gray"} />
+                <AntDesign name="search1" size={30} color={isFocused ? "#fff" : "gray"} />
             )
         }
         if (label == "Chat") {
             return (
-                <Ionicons name="chatbubble-ellipses" size={24} color={isFocused ? "#fff" : "gray"} />
+                <Ionicons name="chatbubble-ellipses" size={30} color={isFocused ? "#fff" : "gray"} />
             )
         }
         if (label == "Profile") {
             return (
-                <Ionicons name="md-person-circle" size={24} color={isFocused ? "#fff" : "gray"}/>
+                <Ionicons name="md-person-circle" size={30} color={isFocused ? "#fff" : "gray"}/>
             )
         }
        
@@ -145,9 +145,9 @@ UNSAFE_componentWillReceiveProps(){
                                      {
                                          this.icon(label, isFocused)
                                      }
-                                     <Text style={[{ color: isFocused ? '#fff' : 'gray', fontFamily: "openSans", fontSize: 10 }, styles.text]}>
+                                     {/* <Text style={[{ color: isFocused ? '#fff' : 'gray', fontFamily: "openSans", fontSize: 10 }, styles.text]}>
                                          {label}
-                                     </Text>
+                                     </Text> */}
                                  </TouchableOpacity>
                              );
                          }
@@ -169,9 +169,9 @@ UNSAFE_componentWillReceiveProps(){
                                 {
                                     this.icon(label, isFocused)
                                 }
-                                <Text style={[{ color: isFocused ? '#fff' : 'gray', fontFamily: "openSans", fontSize: label == "QuestionPapers" ? 10 : 12 }, styles.text]}>
+                                {/* <Text style={[{ color: isFocused ? '#fff' : 'gray', fontFamily: "openSans", fontSize: label == "QuestionPapers" ? 10 : 12 }, styles.text]}>
                                     {label}
-                                </Text>
+                                </Text> */}
                             </TouchableOpacity>
                         );
                     }

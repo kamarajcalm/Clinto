@@ -19,7 +19,7 @@ const url = settings.url;
 import axios from 'axios';
 class PaymentPage extends Component {
     constructor(props) {
-
+        let item = props.route.params.item
 
         super(props);
         this.state = {
@@ -46,6 +46,7 @@ class PaymentPage extends Component {
             },
           ],
           loading:false,
+          item
         };
     }
     componentDidMount() {
@@ -82,18 +83,17 @@ class PaymentPage extends Component {
      let post =await HttpsClient.post(api,sendData)
      if(post.type =="success"){
          this.showSimpleMessage("recharge success", "#00A300", "success")
-         return this.props.navigation.goBack()
+         return this.props.navigation.navigate('ProfileHome')
      }
     }
     makeOrder = async(i)=>{
   
        this.setState({loading:true})
         let api =`${url}/api/profile/paymentOrder/`
-    
         let sendData ={
             plan:i.packname,
             user:this.props.user.id,
-            clinic: this.props.clinic.clinicpk
+            clinic: this.state.item.clinicpk
         }
     let post =await HttpsClient.post(api,sendData)
     console.log(post)

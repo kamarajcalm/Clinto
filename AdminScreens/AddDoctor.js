@@ -385,7 +385,7 @@ class AddDoctor extends Component {
             },
         ]
         let sendData ={
-            doctor: this.state.doctor.user,
+            doctor: this.state.doctor.user.id,
             clinic:this.state.clinic,
             timings
           

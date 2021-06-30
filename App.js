@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet ,StatusBar } from 'react-native';
 import * as Font from 'expo-font';
 import AppNavigator from './Navigation/AppNavigator';
 import { AppearanceProvider } from 'react-native-appearance';
@@ -37,6 +37,7 @@ export default class App extends React.Component {
             position="top" 
             hideStatusBar={false}
             />
+         
           </AppearanceProvider>
         </Provider>
       );

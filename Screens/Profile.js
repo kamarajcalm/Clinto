@@ -31,10 +31,7 @@ const DATA =["clinic 1","clinic 2","clinic3","clinic4"]
       isPatient:false
     };
   }
-    request =async()=>{
-     let data =await axios.get('http:192.168.29.98:8000/api/profile/users')
-     console.log(data.data,"hhhh")
-    }
+
    logOut =()=>{
      this.setState({showModal:false})
      AsyncStorage.clear();
@@ -53,14 +50,15 @@ const DATA =["clinic 1","clinic 2","clinic3","clinic4"]
      )
    }
    ClinicSelect =()=>{
-     this.setState({ showClinics:true})
+     this.setState({ showModal:true})
    }
    getClinics = async () => {
      const api = `${url}/api/prescription/getDoctorClinics/?doctor=${this.props.user.id}`
+     console.log(api)
      const data = await HttpsClient.get(api)
 
      if (data.type == "success") {
-       this.setState({ clinics: data.data.workingclinics })
+       this.setState({ clinics: data.data})
      }
    }
    findUser = () => {
@@ -87,7 +85,10 @@ componentDidMount(){
   this.findUser()
   this._unsubscribe = this.props.navigation.addListener('focus', () => {
       this.getDetails()
-
+    if (this.props.user.profile.occupation == "Doctor") {
+      this.getClinics()
+      this.setState({ isDoctor: true, })
+    }
   });
 
 }
@@ -101,9 +102,11 @@ componentWillUnmount(){
        activeClinic: item.pk
      }
      let patch = await HttpsClient.post(api, sendData)
+     console.log(patch,"kkkk")
      if (patch.type == "success") {
+
        this.props.selectClinic(item)
-       this.setState({ showClinics: false })
+       this.setState({ showModal: false })
      }
 
    }
@@ -277,34 +280,36 @@ validateExpiry =()=>{
                         </View>
                       </Modal>
               <Modal
-                statusBarTranslucent={true}
-                deviceHeight ={screenHeight}
+                deviceHeight={screenHeight}
                 animationIn="slideInUp"
                 animationOut="slideOutDown"
                 isVisible={this.state.showClinics}
                 onBackdropPress={() => { this.setState({ showClinics: false }) }}
               >
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+
                   <View style={{ height: height * 0.3, width: width * 0.9, backgroundColor: "#fff", borderRadius: 20, alignItems: "center", justifyContent: "center" }}>
+                    <View style={{ alignItems: "center", justifyContent: "center", marginTop: 10 }}>
+                      <Text style={[styles.text, { color: "#000", fontWeight: "bold", fontSize: 16 }]}>Select Clinic</Text>
+                    </View>
                     <FlatList
-                      data={this.state.clinics}
+                      data={this.state.clinics.workingclinics}
                       keyExtractor={(item, index) => index.toString()}
                       renderItem={({ item, index }) => {
-                        console.log(this.props.clinic,"clinic")
                         return (
                           <TouchableOpacity style={{ flexDirection: "row", marginTop: 20, alignItems: 'center', justifyContent: "space-around", width }}
                             onPress={() => { this.setActiveClinic(item) }}
                           >
                             <Text style={[styles.text]}>{item.name}</Text>
                             <View >
-                              <FontAwesome name="dot-circle-o" size={24} color={this.props.clinic.name == item.name ? themeColor : "gray"} />
+                              <FontAwesome name="dot-circle-o" size={24} color={this.props.clinic.clinicpk == item.clinicpk? themeColor : "gray"} />
 
                             </View>
                           </TouchableOpacity>
                         )
                       }}
                     />
-                 
+
                   </View>
                 </View>
               </Modal>

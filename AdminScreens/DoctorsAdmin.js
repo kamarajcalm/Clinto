@@ -21,7 +21,7 @@ class DoctorsAdmin extends Component {
   getDoctors = async()=>{
     let api = `${url}/api/profile/userss/?position=Doctor`
      const data = await HttpsClient.get(api)
-     console.log(data,"ddd")
+    console.log(api)
      if(data.type=="success"){
        this.setState({ doctors:data.data})
      }else{
@@ -98,7 +98,7 @@ class DoctorsAdmin extends Component {
               renderItem={({ item, index }) => {
                 return (
                   <TouchableOpacity style={{ height: height * 0.1, backgroundColor: "#fafafa", marginTop: 1, flexDirection: 'row' }}
-                    onPress={() => { this.props.navigation.navigate('') }}
+                    onPress={() => { this.props.navigation.navigate('ViewDoctorProfile',{item})}}
                   >
                     <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                       <Image

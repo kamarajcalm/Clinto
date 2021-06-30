@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, Image, StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingView, ActivityIndicator, Platform, StatusBar, AsyncStorage} from 'react-native';
+import { View, Text, Dimensions, Image, StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingView, ActivityIndicator, Platform, StatusBar, AsyncStorage } from 'react-native';
 import settings from '../AppSettings';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
@@ -16,166 +16,213 @@ const { height, width } = Dimensions.get("window");
 const themeColor = settings.themeColor;
 const fontFamily = settings.fontFamily;
 const url = settings.url
- class LoginScreen extends Component {
+class LoginScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username:"",
-      password:'',
-      token:null,
+      username: "",
+      password: '',
+      token: null,
     };
   }
-   login =async()=>{
-     if(this.state.username==""){
-       return this.showSimpleMessage(`please enter username`, "#dd7030")
-     }
-     if (this.state.password == "") {
-       return this.showSimpleMessage(`please enter password`, "#dd7030")
-     }
-  this.setState({loading:true})
-   let api = `${url}/api/HR/login/?mode=api`
-  //  let sendData= new FormData();
-  //  sendData.append('username',this.state.username)
-  //  sendData.append('password',this.state.password)
-  //  console.log(sendData,"jjj")
-let sendData ={
-  username: this.state.username,
-  password: this.state.password,
-  notificationId:this.state?.token,
-  bodyType:"formData"
-}
+  login = async () => {
 
-
-     let login  =await HttpsClient.post(api,sendData)
-     console.log(login)
- 
-   if(login.type=="success"){
-     AsyncStorage.setItem('csrf', login.data.csrf_token)
-     AsyncStorage.setItem('sessionid', login.data.csrf_token)
-     AsyncStorage.setItem('login', "true")
-     return this.props.navigation.dispatch(
-       CommonActions.reset({
-         index: 0,
-         routes: [
-           {
-             name: 'DefaultScreen',
-
-           },
-
-         ],
-       })
-     )
-            if (login.data.title =="superadmin"){
-              return this.props.navigation.dispatch(
-                CommonActions.reset({
-                  index: 0,
-                  routes: [
-                    {
-                      name: 'DefaultScreen',
-
-                    },
-
-                  ],
-                })
-              )
-            }
-     if (login.data.title == "Doctor") {
-       return this.props.navigation.dispatch(
-         CommonActions.reset({
-           index: 0,
-           routes: [
-             {
-               name: 'DefaultScreen',
-
-             },
-
-           ],
-         })
-       )
-     }
-   }
-    else{
-     this.setState({ loading: false})
-     return this.showSimpleMessage(`${login?.error?.toString()||login.data.message}`, "#dd7030")
+    if (this.state.username == "") {
+      return this.showSimpleMessage(`please enter username`, "#dd7030")
     }
- 
+    if (this.state.password == "") {
+      return this.showSimpleMessage(`please enter password`, "#dd7030")
+    }
+    this.setState({ loading: true })
+    var data = new FormData()
+    data.append("username", this.state.username)
+    data.append("password", this.state.password)
+    fetch(`${url}/api/HR/login/?mode=api`, {
+      method: 'POST',
+      body: data,
+      headers: {
 
-}
-   showSimpleMessage(content, color, type = "info", props = {}) {
-     const message = {
-       message: content,
-       backgroundColor: color,
-       icon: { icon: "auto", position: "left" },
-       type,
-       ...props,
-     };
+      }
+    }).then((response) => {
+      if (response.status == 200) {
+        var sessionid = response.headers.get('set-cookie').split('sessionid=')[1].split(';')[0]
+        AsyncStorage.setItem('sessionid', sessionid)
+        console.log(sessionid, "ppp")
+        var d = response.json()
+        return d
+      }
+      else {
+        return undefined
+      }
+    })
+      .then((responseJson) => {
+        if (responseJson == undefined) {
+          this.setState({ loading: false })
+          return this.showSimpleMessage(`incorrect username or password`, "#dd7030")
+        }
+        console.log(responseJson, "ress")
+        AsyncStorage.setItem('csrf', responseJson.csrf_token)
+        AsyncStorage.setItem('login', "true")
+        return this.props.navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'DefaultScreen',
 
-     showMessage(message);
-   }
-   componentDidMount(){
-     this.registerForPushNotificationsAsync().then(token => this.setState({ token }));
-   }
-   registerForPushNotificationsAsync = async function () {
-     let token;
-     if (Constants.isDevice) {
-       const { status: existingStatus } = await Notifications.getPermissionsAsync();
-       let finalStatus = existingStatus;
-       if (existingStatus !== 'granted') {
-         const { status } = await Notifications.requestPermissionsAsync();
-         finalStatus = status;
-       }
-       if (finalStatus !== 'granted') {
-         alert('Failed to get push token for push notification!');
-         return;
-       }
-       token = (await Notifications.getExpoPushTokenAsync()).data;
-       console.log(token);
-     } else {
-       alert('Must use physical device for Push Notifications');
-     }
+              },
 
-     if (Platform.OS === 'android') {
-       Notifications.setNotificationChannelAsync('default', {
-         name: 'default',
-         importance: Notifications.AndroidImportance.MAX,
-         vibrationPattern: [0, 250, 250, 250],
-         lightColor: '#FF231F7C',
-       });
-     }
+            ],
+          })
+        )
+      })
+      .catch((err) => {
+        this.setState({ loading: false })
+        return this.showSimpleMessage(`${err?.toString()}`, "#dd7030")
+      })
+    return
+    let api = `${url}/api/HR/login/?mode=api`
+    //  let sendData= new FormData();
+    //  sendData.append('username',this.state.username)
+    //  sendData.append('password',this.state.password)
+    //  console.log(sendData,"jjj")
+    let sendData = {
+      username: this.state.username,
+      password: this.state.password,
+      notificationId: this.state?.token,
+      bodyType: "formData"
+    }
 
-     return token;
-   }
+
+    let login = await HttpsClient.post(api, sendData)
+    console.log(login)
+
+    if (login.type == "success") {
+      AsyncStorage.setItem('csrf', login.data.csrf_token)
+      AsyncStorage.setItem('login', "true")
+      return this.props.navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [
+            {
+              name: 'DefaultScreen',
+
+            },
+
+          ],
+        })
+      )
+      if (login.data.title == "superadmin") {
+        return this.props.navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'DefaultScreen',
+
+              },
+
+            ],
+          })
+        )
+      }
+      if (login.data.title == "Doctor") {
+        return this.props.navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'DefaultScreen',
+
+              },
+
+            ],
+          })
+        )
+      }
+    }
+    else {
+      this.setState({ loading: false })
+      return this.showSimpleMessage(`${login?.error?.toString() || login.data.message}`, "#dd7030")
+    }
+
+
+  }
+  showSimpleMessage(content, color, type = "info", props = {}) {
+    const message = {
+      message: content,
+      backgroundColor: color,
+      icon: { icon: "auto", position: "left" },
+      type,
+      ...props,
+    };
+
+    showMessage(message);
+  }
+  componentDidMount() {
+    this.registerForPushNotificationsAsync().then(token => this.setState({ token }));
+  }
+  registerForPushNotificationsAsync = async function () {
+    let token;
+    if (Constants.isDevice) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!');
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log(token);
+    } else {
+      alert('Must use physical device for Push Notifications');
+    }
+
+    if (Platform.OS === 'android') {
+      Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+      });
+    }
+
+    return token;
+  }
   render() {
     return (
       <KeyboardAvoidingView
         behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
         style={styles.container}>
-          <StatusBar backgroundColor={themeColor}/>
-          <View style={styles.header}>
-              <Text style={styles.text_header}>Welcome !</Text>
-          </View>
-          <View style={styles.footer}>
-              <Text style={styles.text_footer}>Mobile or username</Text>
-              <View style={styles.action}>
-                <View style={{alignItems:"center",justifyContent:"center"}}>
-                     <AntDesign name="mobile1" size={20} color="#05375a" />
-                </View>
-                  
-                    <TextInput 
-                       value={this.state.username}
-                       selectionColor={themeColor}
-                       placeholder="your username or mobile"
-                       style={styles.textInput}
-              onChangeText={(text) => { this.setState({ username:text})}}
-                    />
-              </View>
-          <Text style={[styles.text_footer,{marginTop:35}]}>Password</Text>
+        <StatusBar backgroundColor={themeColor} />
+        <View style={styles.header}>
+          <Text style={styles.text_header}>Welcome !</Text>
+        </View>
+        <View style={styles.footer}>
+          <Text style={styles.text_footer}>Mobile or username</Text>
           <View style={styles.action}>
-            <View style={{alignItems:"center",justifyContent:"center"}}>
+            <View style={{ alignItems: "center", justifyContent: "center" }}>
+              <AntDesign name="mobile1" size={20} color="#05375a" />
+            </View>
+
+            <TextInput
+              value={this.state.username}
+              selectionColor={themeColor}
+              placeholder="your username or mobile"
+              style={styles.textInput}
+              onChangeText={(text) => { this.setState({ username: text }) }}
+            />
+          </View>
+          <Text style={[styles.text_footer, { marginTop: 35 }]}>Password</Text>
+          <View style={styles.action}>
+            <View style={{ alignItems: "center", justifyContent: "center" }}>
               <Entypo name="lock-open" size={24} color="#05375a" />
             </View>
-       
-         
+
+
             <TextInput
               selectionColor={themeColor}
               value={this.state.password}
@@ -184,22 +231,22 @@ let sendData ={
               onChangeText={(password) => { this.setState({ password }) }}
             />
           </View>
-          <View style={{marginTop:20,flexDirection:"row",justifyContent:"space-between"}}>
-            <TouchableOpacity 
+          <View style={{ marginTop: 20, flexDirection: "row", justifyContent: "space-between" }}>
+            <TouchableOpacity
               style={{}}
-              onPress={()=>{this.props.navigation.navigate('ForgotPassword')}}
+              onPress={() => { this.props.navigation.navigate('ForgotPassword') }}
             >
-              <Text style={[styles.text,{fontWeight:"bold"}]}>Forgot Password?</Text>
-           
+              <Text style={[styles.text, { fontWeight: "bold" }]}>Forgot Password?</Text>
+
             </TouchableOpacity>
             <TouchableOpacity
               style={{}}
               onPress={() => { this.props.navigation.navigate('CreateAccount') }}
             >
-              <Text style={[styles.text,{fontWeight:"bold"}]}>Don`t have an account?</Text>
+              <Text style={[styles.text, { fontWeight: "bold" }]}>Don`t have an account?</Text>
 
             </TouchableOpacity>
-          
+
           </View>
           <View style={{ alignItems: "center", justifyContent: 'center', marginTop: 30 }}>
 
@@ -211,8 +258,8 @@ let sendData ={
               <ActivityIndicator size="large" color={themeColor} />
             }
           </View>
-          </View>
-      {/* <View style={{flex:1,backgroundColor:themeColor}}> 
+        </View>
+        {/* <View style={{flex:1,backgroundColor:themeColor}}> 
           <View style={{flex:0.3,alignItems:'center',justifyContent:"center"}}>
                 <Animatable.Image
                     animation="fadeIn"
@@ -263,55 +310,55 @@ let sendData ={
     );
   }
 }
-const styles=StyleSheet.create({
-    text:{
-        fontFamily
-    },
+const styles = StyleSheet.create({
+  text: {
+    fontFamily
+  },
   container: {
     flex: 1,
-    backgroundColor:themeColor
+    backgroundColor: themeColor
   },
-  header:{
-    flex:1,
-    justifyContent:'flex-end',
-    paddingHorizontal:20,
-    paddingBottom:50
+  header: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingHorizontal: 20,
+    paddingBottom: 50
   },
-  footer:{
-    flex:3,
-    backgroundColor:"#fff",
-    borderTopLeftRadius:30,
-    borderTopRightRadius:30,
-    paddingHorizontal:20,
-    paddingVertical:30
-  
+  footer: {
+    flex: 3,
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    paddingHorizontal: 20,
+    paddingVertical: 30
+
   },
-  text_header:{
-    color:"#fff",
-    fontWeight:'bold',
-    fontSize:30
+  text_header: {
+    color: "#fff",
+    fontWeight: 'bold',
+    fontSize: 30
   },
-  text_footer:{
-    color:"#05375a",
-    fontSize:18
+  text_footer: {
+    color: "#05375a",
+    fontSize: 18
   },
-  action:{
-    flexDirection:"row",
-    marginTop:10,
-    borderBottomWidth:1,
-    borderBottomColor:"#f2f2f2",
+  action: {
+    flexDirection: "row",
+    marginTop: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f2f2f2",
   },
-  textInput:{
-    flex:1,
-    paddingLeft:10,
-    color:"#05375a"
+  textInput: {
+    flex: 1,
+    paddingLeft: 10,
+    color: "#05375a"
   }
 })
 const mapStateToProps = (state) => {
 
-    return {
-        theme: state.selectedTheme,
+  return {
+    theme: state.selectedTheme,
 
-    }
+  }
 }
 export default connect(mapStateToProps, { selectTheme })(LoginScreen);

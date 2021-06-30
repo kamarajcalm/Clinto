@@ -246,11 +246,11 @@ class AddPrescription extends Component {
        
     }
     showDatePicker = () => {
-        this.setState({ show: true })
+        this.setState({ show1: true })
     };
 
     hideDatePicker = () => {
-        this.setState({ show: false })
+        this.setState({ show1: false })
     };
     handleConfirm = (date) => {
           
@@ -373,7 +373,7 @@ class AddPrescription extends Component {
                          selectionColor={themeColor}
                          keyboardType="numeric"
                                 onChangeText={(mobileNo) => { this.searchUser(mobileNo)}}
-                         style={{ width: width * 0.9, height: height * 0.05, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10}}
+                         style={{ width: width * 0.7, height: height * 0.05, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10}}
                     />
                 </View>
                 <View style={{ marginTop: 20 }}>
@@ -382,7 +382,7 @@ class AddPrescription extends Component {
                         value ={this.state.patientsName}
                         selectionColor={themeColor}
                         onChangeText={(patientsName) => { this.setState({ patientsName }) }}
-                        style={{ width: width * 0.9, height: height * 0.05, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 }}
+                        style={{ width: width * 0.7, height: height * 0.05, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 }}
                     />
                 </View>
                         <View style={{ marginTop: 20 }}>
@@ -392,7 +392,7 @@ class AddPrescription extends Component {
                                 value={this.state.Age}
                                 selectionColor={themeColor}
                                 onChangeText={(Age) => { this.setState({ Age }) }}
-                                style={{ width: width * 0.9, height: height * 0.05, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 }}
+                                style={{ width: width * 0.7, height: height * 0.05, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 }}
                             />
                         </View>
                         <View style={{ marginTop: 20 ,flexDirection:"row"}}>
@@ -487,7 +487,7 @@ class AddPrescription extends Component {
                                 onChangeText={(Reason) => { this.setState({ Reason}) }}
                                 selectionColor={themeColor}
                                 multiline={true}
-                                style={{ width: width * 0.9, height: height * 0.15, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10, textAlignVertical:"top"}}
+                                style={{ width: width * 0.7, height: height * 0.15, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10, textAlignVertical:"top"}}
                             />
                         </View>
                         {/* <View style={{ marginTop: 20 }}>
@@ -552,28 +552,32 @@ class AddPrescription extends Component {
                                 selectionColor={themeColor}
                                 keyboardType="numeric"
                                 onChangeText={(doctorFees) => { this.setState({ doctorFees }) }}
-                                style={{ width: width * 0.9, height: height * 0.05, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 }}
+                                style={{ width: width * 0.7, height: height * 0.05, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 }}
                             />
                         </View>
                             <View >
 
                                 <Text style={[styles.text], { fontWeight: "bold", fontSize: 18, }}>Next Visit</Text>
                             </View>
-                            <View style={{ width: width * 0.9, height: height * 0.05, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 ,flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
+                            <TouchableOpacity 
+                              onPress={() => { this.setState({ show1: true }) }}
+                              style={{ width: width * 0.9, height: height * 0.05, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 ,flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
+                              
+                              
                               <View style={{alignItems:"center",justifyContent:"center"}}>
                                     <Text style={[styles.text]}>{this.state.nextVisit}</Text>
                               </View>
                                 <View style={{}}>
-                                    <TouchableOpacity
-                                        onPress={() => { this.setState({ show1: true }) }}
+                                    <View
+                                        
                                     >
                                         <AntDesign name="calendar" size={24} color="black" />
-                                    </TouchableOpacity>
+                                    </View>
 
                                 
                                 </View>
                            
-                        </View>
+                        </TouchableOpacity>
                 <View style={{height:height*0.15,alignItems:"center",justifyContent:'center'}}>
                     <TouchableOpacity style={{height:height*0.06,alignItems:"center",justifyContent:'center',backgroundColor:themeColor,width:width*0.3,borderRadius:15}}
                       onPress={()=>{this.addPriscription()}}

@@ -17,6 +17,7 @@ import { Feather } from '@expo/vector-icons';
 import HttpsClient from '../api/HttpsClient';
 import Modal from 'react-native-modal';
 import Toast from 'react-native-simple-toast';
+import { SliderBox } from "react-native-image-slider-box";
 class ClinicDetails extends Component {
     constructor(props) {
         let item = props.route.params.item
@@ -31,7 +32,8 @@ class ClinicDetails extends Component {
             deleteDocorIndex:null,
             deleteReceptionIndex:null,
             deleteReceptionist:null,
-            showAll:false
+            showAll:false,
+            images:[]
         };
     }
     getReceptionList =async()=>{
@@ -82,14 +84,31 @@ class ClinicDetails extends Component {
             Toast.show("Try again")
         }
     }
+    getImages = async()=>{
+        let api = `${url}/api/prescription/clinicImages/?clinic=${this.state.item.id}`
+       
+        let data =await HttpsClient.get(api)
+
+        if(data.type=="success"){
+            let images =[]
+            data.data.forEach((item,index)=>{
+                images.push(`${url}${item.imageUrl}`)
+            })
+            this.setState({images},()=>{
+                console.log(images)
+            })
+
+        }
+      
+    }
     componentDidMount() {
-        
+        this.getImages()
         this.getReceptionList();
         this.getDoctors();
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
-
             this.getReceptionList();
             this.getDoctors();
+            this.getImages()
         });
     }
     getTodayTimings =(item)=>{
@@ -125,7 +144,7 @@ class ClinicDetails extends Component {
                     <View style={{ flex: 1, backgroundColor: "#fff" }}>
                         <StatusBar backgroundColor={themeColor} />
                         {/* HEADERS */}
-                        <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
+                        <View style={{ height: height * 0.1, backgroundColor: themeColor,flexDirection: 'row', alignItems: "center" }}>
                             <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}
                               onPress={()=>{this.props.navigation.goBack()}}
                             >
@@ -145,12 +164,16 @@ class ClinicDetails extends Component {
                         
                        <ScrollView style={{flex:1,}}>
                                 {/* image */}
-                           <View style={{height:height*0.2,width}}>
-                                <Image 
-                                  style={{height:"100%",width:"100%",resizeMode:"cover",borderRadius:5}}
-                                    source={{ uri: this.state.item.displayPicture||"https://t2conline.com/wp-content/uploads/2019/04/thumbnail_Minor_Injury_Walk_In_Clinic1.jpg"}}
+                            <View style={{ height: height * 0.25, }}>
+                                <SliderBox
+                                    images={this.state.images}
+                                    dotColor={themeColor}
+                                    imageLoadingColor={themeColor}
+                                    ImageComponentStyle={{ height: "100%", width: "100%", resizeMode: "cover" }}
+                                    autoplay={true}
+                                    circleLoop={true}
                                 />
-                           </View>
+                            </View>
                       
                               {/* Details */}
                               <View style={{flexDirection:"row",marginHorizontal:20,marginTop:10}}>
@@ -161,6 +184,14 @@ class ClinicDetails extends Component {
                                     <Text style={[styles.text,{marginLeft:10}]}>{this.state?.item?.owner.first_name}</Text>
                                 </View>
                               </View>
+                            <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 10 }}>
+                                <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Owned Number:</Text>
+                                </View>
+                                <View style={{ alignItems: 'center', justifyContent: "center" }}>
+                                    <Text style={[styles.text, { marginLeft: 10 }]}>{this.state?.item?.owner.username}</Text>
+                                </View>
+                            </View>
                             <View style={{ marginHorizontal:20,marginTop:10 }}>
                                 <View style={{ }}>
                                     <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Address:</Text>
@@ -396,6 +427,13 @@ class ClinicDetails extends Component {
                                     <Text style={[styles.text, { color: "#fff" }]}>Add Doctors</Text>
                                 </TouchableOpacity>
                             </View>
+                            </View>
+                            <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center", marginTop: 10 }}>
+                                <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, backgroundColor: themeColor, borderRadius: 5, alignItems: 'center', justifyContent: "center" }}
+                                    onPress={() => { this.props.navigation.navigate('UploadImages',{ clinic: this.state.item.id })}}
+                                >
+                                    <Text style={[styles.text, { color: "#fff" }]}>Add Images</Text>
+                                </TouchableOpacity>
                             </View>
                        </ScrollView>
                         <View>

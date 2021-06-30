@@ -15,7 +15,8 @@ import {
     ActivityIndicator,
     TextInput,
     BackHandler,
-    RefreshControl
+    RefreshControl,
+    Keyboard
 
 } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
@@ -34,11 +35,13 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 const url =settings.url
 const fontFamily = settings.fontFamily;
 const themeColor =settings.themeColor
-
+import * as Location from 'expo-location';
 const { height,width } = Dimensions.get("window");
 const screenHeight =Dimensions.get('screen').height;
 const { diffClamp } = Animated;
 const headerHeight = height * 0.2;
+import { Swipeable } from "react-native-gesture-handler";
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 class Priscription extends React.Component {
     constructor(props) {
         const Date1 = new Date()
@@ -68,11 +71,13 @@ class Priscription extends React.Component {
             textRef2:React.createRef(),
             cancelToken: undefined,
             offset:0,
-            next:true
+            next:true,
+            keyBoard:false,
          
         };
         this.scrollY=new Animated.Value(0)
         this.translateYNumber= React.createRef()
+        this.swipeRef=[]
     } 
     handleEndReached =()=>{
         if(this.state.next){
@@ -95,7 +100,17 @@ showDatePicker = () => {
 hideDatePicker = () => {
     this.setState({ show: false })
     };
+    showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
 
+        showMessage(message);
+    }
  handleConfirm = (date) => {
      this.setState({})
      this.setState({ today: moment(date).format('YYYY-MM-DD'), show: false, prescriptions: [], offset: 0, next: true  }, () => {
@@ -112,7 +127,7 @@ hideDatePicker = () => {
     };
 
     getPateintPrescription = async()=>{
-        let api = `${url}/api/prescription/prescriptions/?forUser=${this.props.user.id}&limit=5&offset=${this.state.offset}`
+        let api = `${url}/api/prescription/prescriptions/?forUser=${this.props.user.id}&limit=6&offset=${this.state.offset}`
         let data =await HttpsClient.get(api)
         console.log(api)
         if(data.type =="success"){
@@ -126,7 +141,7 @@ hideDatePicker = () => {
     }
     getPrescription = async()=>{
       
-        let api = `${url}/api/prescription/prescriptions/?doctor=${this.props.user.id}&date=${this.state.today}&limit=5&offset=${this.state.offset}`
+        let api = `${url}/api/prescription/prescriptions/?doctor=${this.props.user.id}&date=${this.state.today}&limit=6&offset=${this.state.offset}`
         console.log(api)
         let data  =await HttpsClient.get(api)
     
@@ -141,7 +156,7 @@ hideDatePicker = () => {
       }
     }
     getClinicPrescription = async()=>{
-        let api = `${url}/api/prescription/prescriptions/?clinic=${this.props.user.profile.recopinistclinics[0].clinicpk}&date=${this.state.today}&limit=5&offset=${this.state.offset}`
+        let api = `${url}/api/prescription/prescriptions/?clinic=${this.props.user.profile.recopinistclinics[0].clinicpk}&date=${this.state.today}&limit=6&offset=${this.state.offset}`
         let data = await HttpsClient.get(api)
   console.log(api)
         if (data.type == 'success') {
@@ -201,8 +216,16 @@ hideDatePicker = () => {
 
         this.setState({ loading: false })
     }
+    getLocation = async () => {
+        let { status } = await Location.requestForegroundPermissionsAsync()
+        if (status !== 'granted') {
+            console.warn('Permission to access location was denied');
+            return;
+        }
+       
+    }
     componentDidMount(){
-     
+       this.getLocation()
        this.findUser()
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
             if(this.state.isDoctor){
@@ -211,8 +234,22 @@ hideDatePicker = () => {
             }
             
         });
-
+        Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+        Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
     }
+
+    componentWillUnmount() {
+         this._unsubscribe();
+        Keyboard.removeListener('keyboardDidShow', this._keyboardDidShow);
+        Keyboard.removeListener('keyboardDidHide', this._keyboardDidHide);
+    }
+    _keyboardDidShow = () => {
+        this.setState({ keyBoard:true })
+    };
+
+    _keyboardDidHide = () => {
+        this.setState({ keyBoard:false })
+    };
     searchPriscriptions = async (text) => {
      
         if (typeof this.state.cancelToken != typeof undefined) {
@@ -238,39 +275,103 @@ hideDatePicker = () => {
         let value = this.state.prescriptions.length - index
         return value
     }
+    makeInvalid = async(item,index)=>{
+        this.swipeRef[index].close();
+        let api = `${url}/api/prescription/prescriptions/${item.id}/`
+        console.log(api)
+        if(!item.active){
+            return this.showSimpleMessage("Prescription Already Invalid ! please Make Another One","orange","info")
+        }
+        let sendData = {
+            active:false
+        }
+        let post = await HttpsClient.patch(api, sendData)
+        if (post.type == "success") {
+           
+            let duplicate =  this.state.prescriptions
+            duplicate[index].active = false
+           return this.showSimpleMessage("changed successfully", "#00A300", "success")
+         
+        } else {
+          
+            this.showSimpleMessage("Try again", "#B22222", "danger")
+        }
+    }
+    rightSwipe =(progress,dragX,item,index)=>{
+      
+        const scale = dragX.interpolate({
+            inputRange:[0,100],
+            outputRange:[0,1],
+            extrapolate:"clamp"
+        })
+        return(
+            <View style={{alignItems: "center", justifyContent: "center", }}>
+              
+                   <TouchableOpacity 
+                    onPress={() => { this.makeInvalid(item, index)}}
+                    style={{height:height*0.05,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:item.active?"green":"red",marginRight:10}}
+                   >
+                    <Text style={[styles.text, { color: "#fff",  }]}>{item.active ?"Make Invalid":"Invalid"}</Text>
+                   </TouchableOpacity>
+             
+            </View>
+        )
+    }
+    closeRow =(index)=>{
+       this.swipeRef.forEach((i)=>{
+           if (i != this.swipeRef[index]){
+              i.close();
+           }
+       
+       })
+
+    }
+    getFirstLetter =(item)=>{
+        let name = item.username.name.split("")
+        return name[0].toUpperCase()
+    }
     showDifferentPriscription = (item, index) => {
 
         if (this.state.isDoctor){
-
-            return (
+          return(
+            <Swipeable
+                onSwipeableRightOpen={() => { this.closeRow(index)}}
+            
+                ref={ref=>this.swipeRef[index]=ref}
+                renderRightActions={(progress, dragX) => this.rightSwipe(progress, dragX, item, index)}
+            >
                 <TouchableOpacity style={[styles.card, { flexDirection: "row", borderRadius: 5 }]}
                     // onPress={() => { props.navigation.navigate('showCard', { item }) }}
                     onPress={() => { this.props.navigation.navigate('PrescriptionView', { item, }) }}
                 >
                     <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
-                        <Image
-                            style={{ height: "90%", width: "95%", resizeMode: "cover", borderRadius: 10 }}
-                            source={{ uri: "https://www.studentdoctor.net/wp-content/uploads/2018/08/20180815_prescription-1024x1024.png" }}
-                        />
+                         <View style={{height:70,width:70,borderRadius:35,backgroundColor:themeColor,alignItems:"center", justifyContent:"center"}}>
+                               <Text style={[styles.text,{color:"#ffff",fontWeight: "bold",fontSize: 18}]}>{this.getFirstLetter(item)}</Text> 
+                         </View>
                     </View>
                     <View style={{ flex: 0.7, marginHorizontal: 10, justifyContent: 'center' }}>
                         <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
                             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                                <Text style={[styles.text, { color: "#000", fontWeight: 'bold' }]}>Patient : {item?.username?.name}</Text>
-
+                                 <View style={{flexDirection:"row"}}>
+                                      <Text style={[styles.text, { color: "#000", fontWeight: 'bold' }]}>{item?.username?.name}</Text>
+                                      <Text style={[styles.text, {}]}>({item?.age} - {item?.sex})</Text>
+                                 </View>
+                                  
                             </View>
                             <View style={{ alignItems: "center", justifyContent: "center" }}>
                                 <Text>#{this.getIndex(index)}</Text>
                             </View>
                         </View>
                         <View style={{ marginTop: 10 }}>
-                            <View>
-                                <Text style={[styles.text]}>Reason : {item.ongoing_treatment}</Text>
+                            <View style={{flexDirection: "row"}}>
+                                <Text style={[styles.text,{color:"#000", fontWeight:"bold"}]}>Reason :</Text>
+                                <Text style={[styles.text]}>{item.ongoing_treatment}</Text>
                             </View>
                         </View>
                         <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                            <View>
-                                <Text style={[styles.text]}>Clinic :{item.clinicname.name}</Text>
+                            <View style={{flexDirection: "row"}}>
+                                <Text style={[styles.text,{color:"#000", fontWeight:"bold"}]}>Clinic : </Text>
+                                  <Text style={[styles.text,]}>{item.clinicname.name}</Text>
                             </View>
                             <View>
                                 <Text style={[styles.text]}>{moment(item.created).format("h:mm a")}</Text>
@@ -279,6 +380,7 @@ hideDatePicker = () => {
                     </View>
 
                 </TouchableOpacity>
+            </Swipeable>
             )
         }
         if (this.state.isReceptionist) {
@@ -448,55 +550,62 @@ hideDatePicker = () => {
     }
 
   validateHeaders = () => {
-        console.log(this.props?.clinic?.name)
-        if (this.state.isDoctor||this.state.isReceptionist) {
-            return (
-                <View>
-                    <View style={{ height: headerHeight / 2, flexDirection: "row", flex: 1 }}>
-                        <TouchableOpacity style={{ flexDirection: "row", alignItems: "center", width: width * 0.68, justifyContent: "space-around" }}
-                            onPress={() => { this.setState({showModal:true}) }}
-                        >
-                            <View>
-                                {this.state.isDoctor ? <Text style={[styles.text, { fontSize: 25, color: "#fff", fontWeight: "bold", marginLeft: 5 }]} numberOfLines={1}>{this.props?.clinic?.name}</Text> :
-                                    <Text style={[styles.text, { fontSize: 25, color: "#fff", fontWeight: "bold", marginLeft: 5 }]} numberOfLines={1}>{this.props?.user?.profile?.recopinistclinics[0]?.clinicname}</Text>
-                                }
+        // console.log(this.props?.clinic?.name)
+        // if (this.state.isDoctor||this.state.isReceptionist) {
+        //     return (
+        //         <View>
+        //             <View style={{ height: headerHeight / 2, flexDirection: "row", flex: 1 }}>
+        //                 <TouchableOpacity style={{ flexDirection: "row", alignItems: "center", width: width * 0.68, justifyContent: "space-around" }}
+        //                     onPress={() => { this.setState({showModal:true}) }}
+        //                 >
+        //                     <View>
+        //                         {this.state.isDoctor ? <Text style={[styles.text, { fontSize: 25, color: "#fff", fontWeight: "bold", marginLeft: 5 }]} numberOfLines={1}>{this.props?.clinic?.name}</Text> :
+        //                             <Text style={[styles.text, { fontSize: 25, color: "#fff", fontWeight: "bold", marginLeft: 5 }]} numberOfLines={1}>{this.props?.user?.profile?.recopinistclinics[0]?.clinicname}</Text>
+        //                         }
 
-                            </View>
+        //                     </View>
 
-                            <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                {this.state.isDoctor && <Entypo name="chevron-small-down" size={30} color="#fff" />}
-                            </View>
+        //                     <View style={{ alignItems: "center", justifyContent: "center" }}>
+        //                         {this.state.isDoctor && <Entypo name="chevron-small-down" size={30} color="#fff" />}
+        //                     </View>
 
 
-                        </TouchableOpacity>
+        //                 </TouchableOpacity>
+        //                 {
+        //                     this.renderFilter()
+        //                 }
+        //             </View>
+
+        //             <View style={{ marginHorizontal: 20, height: headerHeight / 3, alignItems: 'center', justifyContent: "center", marginBottom: 5 }}>
+        //                 <TouchableOpacity style={{ flexDirection: 'row', borderRadius: 10, backgroundColor: "#eee", width: "100%", height: height * 0.05, }}
+        //                     onPress={() => { this.props.navigation.navigate('SearchPatient') }}
+        //                 >
+        //                     <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5, flex: 0.1 }}>
+        //                         <EvilIcons name="search" size={24} color="black" />
+        //                     </View>
+        //                     <View style={{ alignItems: "center", justifyContent: "center" }}>
+        //                         <Text style={[styles.text]}>Search Patient</Text>
+        //                     </View>
+
+        //                 </TouchableOpacity>
+
+        //             </View>
+        //         </View>
+
+        //     )
+
+        // }
+        return (
+            <View>
+                <View style={{ height: headerHeight / 2,flexDirection:"row",}}>
+                     <View style={{flex:0.5,alignItems: "center", justifyContent: 'center'}}>
+                        <Text style={{ color: '#fff', fontFamily: "openSans", marginLeft: 20, fontSize: 30, fontWeight: "bold" }}>Prescription</Text>
+                     </View>
+                    <View style={{flex:0.5,alignItems: "center", justifyContent: 'center'}}>
                         {
                             this.renderFilter()
                         }
                     </View>
-
-                    <View style={{ marginHorizontal: 20, height: headerHeight / 3, alignItems: 'center', justifyContent: "center", marginBottom: 5 }}>
-                        <TouchableOpacity style={{ flexDirection: 'row', borderRadius: 10, backgroundColor: "#eee", width: "100%", height: height * 0.05, }}
-                            onPress={() => { this.props.navigation.navigate('SearchPatient') }}
-                        >
-                            <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5, flex: 0.1 }}>
-                                <EvilIcons name="search" size={24} color="black" />
-                            </View>
-                            <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                <Text style={[styles.text]}>Search Patient</Text>
-                            </View>
-
-                        </TouchableOpacity>
-
-                    </View>
-                </View>
-
-            )
-
-        }
-        return (
-            <View>
-                <View style={{ height: headerHeight / 2, justifyContent: "center" }}>
-                    <Text style={{ color: '#fff', fontFamily: "openSans", marginLeft: 20, fontSize: 30, fontWeight: "bold" }}>Prescription</Text>
                 </View>
 
                 <View style={{ marginHorizontal: 20, height: headerHeight / 3, alignItems: 'center', justifyContent: "center", marginBottom: 5 }}>
@@ -614,12 +723,15 @@ hideDatePicker = () => {
                             onEndReachedThreshold={0.1}
                             renderItem={({item,index})=>{
                                return(
-                                   <View>
-                                       {
-                                           this.showDifferentPriscription(item,index)
-                                       }
-                              
-                                   </View>
+                                  
+                                       <View>
+                                           {
+                                               this.showDifferentPriscription(item, index)
+                                           }
+
+                                       </View>
+                                
+                                 
                                   
                                )
                           }}
@@ -627,7 +739,7 @@ hideDatePicker = () => {
                           
             
 
-                  { this.state.isDoctor&&<View style={{
+                  { this.state.isDoctor&&!this.state.keyBoard&&<View style={{
                             position: "absolute",
                             bottom: 100,
                             left: 20,
@@ -729,7 +841,7 @@ const styles = StyleSheet.create({
         elevation: 5,
         borderRadius: 10,
         backgroundColor: "#fff",
-        height: height * 0.2,
+        height: height * 0.15,
         marginHorizontal: 10,
         marginVertical: 3
 

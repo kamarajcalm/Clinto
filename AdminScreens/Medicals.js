@@ -102,7 +102,7 @@ class Medicals extends Component {
               <View style={{ flex: 0.8 }}>
                 <TextInput
 
-                  style={{ height: height * 0.04, width: width * 0.7, backgroundColor: "#fff", borderRadius: 10, paddingLeft: 20 }}
+                  style={{ height: height * 0.05, width: width * 0.7, backgroundColor: "#fff", borderRadius: 10, paddingLeft: 20 }}
                   placeholder="search"
                   onChangeText={(text) => { this.searchMedicals(text) }}
                 />

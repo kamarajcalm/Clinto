@@ -28,7 +28,6 @@ class CreateClinics extends Component {
             clinicName: "new clinic",
             openingTime: null,
             closingTime: null,
-          
             show1: false,
             show2: false,
             mobile:"9060606060",
@@ -43,7 +42,8 @@ class CreateClinics extends Component {
             closingArray: [],
             day: "",
             isFetching:false,
-            doctor:null
+            doctor:null,
+            images:[]
         };
     }
     showSimpleMessage(content, color, type = "info", props = {}) {
@@ -59,7 +59,7 @@ class CreateClinics extends Component {
     }
 
     createClinic = async()=>{
-      
+    
        let token = await AsyncStorage.getItem('csrf')
       
        
@@ -128,7 +128,6 @@ class CreateClinics extends Component {
         // return
         let sendData ={
             owner: this.state.doctor.user.id,
-            displayPicture:this.state.image,
             mobile:this.state.mobile,
             gstin:this.state.GST,
             companyName:this.state.clinicName,
@@ -142,6 +141,7 @@ class CreateClinics extends Component {
             long:this.state.longitude,
            
         }
+        console.log(sendData)
         if (this.state.image){
             sendData.bodyType = "formData"
         }
@@ -162,7 +162,12 @@ class CreateClinics extends Component {
        
 
     }
- 
+    removeImage =(item,index)=>{
+        console.log("hhfff")
+        let duplicate = this.state.images
+        duplicate.splice(index,1)
+        this.setState({ images:duplicate})
+    }
     _pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -180,6 +185,9 @@ class CreateClinics extends Component {
             name: filename,
         };
         this.setState({ openImageModal: false })
+        let duplicate = this.state.images
+        duplicate.push(photo)
+        this.setState({images:duplicate})
         this.setState({ image: photo, changedImage: true })
     };
     modalAttach = async (event) => {
@@ -207,6 +215,9 @@ class CreateClinics extends Component {
             name: filename,
         };
         this.setState({ openImageModal: false })
+        let duplicate = this.state.images
+        duplicate.push(photo)
+        this.setState({ images: duplicate })
         this.setState({ image: photo, changedImage: true })
     }
     getLocation = async () => {
@@ -301,7 +312,7 @@ class CreateClinics extends Component {
                                 }
                                 showsVerticalScrollIndicator={false}
                             >
-                                <View style={{ height: height * 0.12, alignItems: "center", justifyContent: 'center' }}>
+                                {/* <View style={{ height: height * 0.12, alignItems: "center", justifyContent: 'center' }}>
                                     <Image
                                         source={{ uri:this.state?.image?.uri||"https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" }}
                                         style={{ height: 60, width: 60, borderRadius: 30 }}
@@ -313,7 +324,8 @@ class CreateClinics extends Component {
                                     >
                                         <Entypo name="edit" size={20} color={themeColor} />
                                     </TouchableOpacity>
-                                </View>
+                                </View> */}
+                                
                                 <View >
                                     <Text style={styles.text}>Owner Name</Text>
                                     <TouchableOpacity 
@@ -443,7 +455,43 @@ class CreateClinics extends Component {
                                         style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
-                                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                 {/* <View>
+                                     <View>
+                                           <Text>Images :</Text>
+                                     </View>
+                                     <View style={{ flexDirection: "row",flexWrap:"wrap",alignItems: "center",justifyContent:"space-around",marginVertical:20}}>
+                                        {
+                                            this.state.images.map((item, index) => {
+                                                return (
+                                                    <View style={{marginTop:20}}>
+                                                        <Image
+                                                            source={{ uri: item.uri }}
+                                                            style={{ height: 100, width: 100, }}
+                                                        />
+                                                        <View style={{position:"absolute",top:0,right:3}}>
+                                                            <TouchableOpacity 
+                                                                onPress={() => { this.removeImage(item,index)}}
+                                                            >
+                                                                <Entypo name="circle-with-cross" size={24} color="red" />
+                                                            </TouchableOpacity>
+                                                           
+                                                        </View>
+                                                    </View>
+
+                                                )
+                                            })
+                                        }
+                                     </View>
+                                 
+                                    <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                        <TouchableOpacity style={{ width: width * 0.4, height: height * 0.05, borderRadius: 10, alignItems: 'center', justifyContent: "center", backgroundColor: themeColor }}
+                                            onPress={()=> {this.setState({ openImageModal: true, })}}
+                                        >
+                                            <Text style={[styles.text, { color: "#fff" }]}>Add Image</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                 </View> */}
+                                <View style={{ alignItems: 'center', justifyContent: 'center' ,marginTop:30}}>
                                     <TouchableOpacity style={{ width: width * 0.4, height: height * 0.05, borderRadius: 10, alignItems: 'center', justifyContent: "center", backgroundColor: themeColor }}
                                       onPress={()=>{this.createClinic()}}
                                     >

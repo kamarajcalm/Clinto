@@ -493,7 +493,7 @@ import Modal from 'react-native-modal';
                 
                  </View>
                 </GestureRecognizer>
-                 {this.props.user.profile.occupation=="Doctor"&&<View style={{position:"absolute",width,justifyContent:"center",bottom:70,left:20}}>
+                 {/* {this.props.user.profile.occupation=="Doctor"&&<View style={{position:"absolute",width,justifyContent:"center",bottom:70,left:20}}>
                      <TouchableOpacity
                         style={{ backgroundColor: this.state.valid ? "green" :"red",height:height*0.05,width:width*0.4,alignItems:'center',justifyContent:'center',borderRadius:5}}
                         onPress={() => {
@@ -511,7 +511,7 @@ import Modal from 'react-native-modal';
                      }
                      </TouchableOpacity>
                
-                 </View>}
+                 </View>} */}
                 <Modal
                     deviceHeight={deviceHeight}
                     animationIn="slideInUp"
