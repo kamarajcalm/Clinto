@@ -176,7 +176,6 @@ hideDatePicker = () => {
         console.log(api)
        console.log(data)
         if(data.type=="success"){
-      
             this.setState({ clinics: data.data.workingclinics})
             let activeClinic = data.data.workingclinics.filter((i)=>{
                 return i.active
@@ -326,9 +325,27 @@ hideDatePicker = () => {
        })
 
     }
-    getFirstLetter =(item)=>{
+    getFirstLetter =(item ,clinic=null)=>{
         let name = item.username.name.split("")
+        let clinicName = item.clinicname.name.split("")
+        if(clinic){
+            return clinicName[0].toUpperCase();
+        }
         return name[0].toUpperCase()
+    }
+    chatClinic = async (item) => {
+
+
+        let api = `${url}/api/prescription/createClinicChat/?clinic=${item.clinic}&customer=${this.props.user.id}`
+
+        let data = await HttpsClient.get(api)
+        console.log(data)
+
+        if (data.type == "success") {
+            this.props.navigation.navigate('Chat', { item: data.data })
+        }else{
+            this.showSimpleMessage("try again ","orange","info")
+        }
     }
     showDifferentPriscription = (item, index) => {
 
@@ -395,10 +412,9 @@ hideDatePicker = () => {
                     onPress={() => { this.props.navigation.navigate('PrescriptionView', { item, }) }}
                 >
                     <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
-                        <Image
-                            style={{ height: "90%", width: "95%", resizeMode: "cover", borderRadius: 10 }}
-                            source={{ uri: "https://www.studentdoctor.net/wp-content/uploads/2018/08/20180815_prescription-1024x1024.png" }}
-                        />
+                        <View style={{ height: 70, width: 70, borderRadius: 35, backgroundColor: themeColor, alignItems: "center", justifyContent: "center" }}>
+                            <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 18 }]}>{this.getFirstLetter(item)}</Text>
+                        </View>
                     </View>
                     <View style={{ flex: 0.7, marginHorizontal: 10, justifyContent: 'center' }}>
                         <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
@@ -417,7 +433,7 @@ hideDatePicker = () => {
                         </View>
                         <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
                             <View>
-                                <Text style={[styles.text]}>Clinic :{item.clinicname.name}</Text>
+                                <Text style={[styles.text]}>Doctor :{item.doctordetails.name}</Text>
                             </View>
                             <View>
                                 <Text style={[styles.text]}>{moment(item.created).format("h:mm a")}</Text>
@@ -430,15 +446,13 @@ hideDatePicker = () => {
 
         // if patient
         return (
-            <TouchableOpacity style={[styles.card, { flexDirection: "row", borderRadius: 5 }]}
+            <TouchableOpacity style={[styles.card2, { flexDirection: "row", borderRadius: 5 }]}
                 onPress={() => { this.props.navigation.navigate('PrescriptionView', { item, }) }}
             >
                 <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
-                    <Image
-
-                        style={{ height: "90%", width: "95%", resizeMode: "contain", borderRadius: 10 }}
-                        source={{ uri: `https://www.studentdoctor.net/wp-content/uploads/2018/08/20180815_prescription-1024x1024.png` }}
-                    />
+                    <View style={{ height: 70, width: 70, borderRadius: 35, backgroundColor: themeColor, alignItems: "center", justifyContent: "center" }}>
+                        <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 18 }]}>{this.getFirstLetter(item,"clinic")}</Text>
+                    </View>
                 </View>
                 <View style={{ flex: 0.7, marginHorizontal: 10, justifyContent: 'center' }}>
                     <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
@@ -472,7 +486,7 @@ hideDatePicker = () => {
                     </View>
                     <View style={{ flexDirection: "row", marginTop: 10 }}>
                         <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
-                            onPress={() => { chatClinic(item) }}
+                            onPress={() => { this.chatClinic(item) }}
                         >
                             <Ionicons name="chatbox" size={24} color="#63BCD2" />
 
@@ -845,6 +859,21 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
         marginVertical: 3
 
+    },
+    card2:{
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0,
+        shadowRadius: 4.65,
+        elevation: 5,
+        borderRadius: 10,
+        backgroundColor: "#fff",
+        height: height * 0.2,
+        marginHorizontal: 10,
+        marginVertical: 3
     },
     topSafeArea: {
         flex: 0,

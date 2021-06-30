@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, TextInput, TouchableOpacity, Image, SafeAreaView, ToastAndroid, Pressable, ActivityIndicator, TouchableWithoutFeedback} from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TextInput, TouchableOpacity, Image, SafeAreaView, ToastAndroid, Pressable, Switch,ActivityIndicator, TouchableWithoutFeedback} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
@@ -61,6 +61,8 @@ class AddPrescription extends Component {
                 Disease:"",
                 appoinment,
                 creating:false,
+                containDrugs:false,
+                validityTimes:"0"
     };
   }
   componentDidMount(){
@@ -204,7 +206,9 @@ class AddPrescription extends Component {
             sex:this.state.selectedSex,
             next_visit:this.state.nextVisit,
             address:this.state.Address,
-            new_disease:this.state.Disease
+            new_disease:this.state.Disease,
+            contains_drug:this.state.containDrugs,
+            total_times:Number(this.state.validityTimes)
         }
    
         if(this.state.appointmentId){
@@ -330,6 +334,9 @@ class AddPrescription extends Component {
             this.setState({ Diseases:data.data })
         }
         
+    }
+    toggleSwitch =()=>{
+         this.setState({containDrugs:!this.state.containDrugs})
     }
   render() {
       const { loading } = this.state;
@@ -578,6 +585,31 @@ class AddPrescription extends Component {
                                 </View>
                            
                         </TouchableOpacity>
+                            <View style={{ marginHorizontal: 10,flexDirection:"row" ,alignItems:"center",justifyContent:"space-between",marginVertical:20}}>
+                                <View>
+                                    <Text style={[styles.text], { fontWeight: "bold", fontSize: 18 }}>Contains Drugs</Text>
+                                </View>
+                                <Switch
+                                    
+                                    style={{ marginLeft: 10 }}
+                                    trackColor={{ false: '#767577', true: '#81b0ff' }}
+                                    thumbColor={this.state.containDrugs ? '#f5dd4b' : '#f4f3f4'}
+                                    ios_backgroundColor="#3e3e3e"
+                                    onValueChange={() => { this.toggleSwitch() }}
+                                    value={this.state.containDrugs}
+                                />
+                             
+                            </View>
+                           {this.state.containDrugs&& <View style={{ marginTop: 20 }}>
+                                <Text style={[styles.text], { fontWeight: "bold", fontSize: 18 }}>Enter Validity Times</Text>
+                                <TextInput
+                                    value={this.state.validityTimes}
+                                    selectionColor={themeColor}
+                                    keyboardType="numeric"
+                                    onChangeText={(validityTimes) => { this.setState({ validityTimes }) }}
+                                    style={{ width: width * 0.7, height: height * 0.05, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 }}
+                                />
+                            </View>}
                 <View style={{height:height*0.15,alignItems:"center",justifyContent:'center'}}>
                     <TouchableOpacity style={{height:height*0.06,alignItems:"center",justifyContent:'center',backgroundColor:themeColor,width:width*0.3,borderRadius:15}}
                       onPress={()=>{this.addPriscription()}}

@@ -41,15 +41,15 @@ class ChatScreen extends Component {
         images:[]
     };
   }
-  validatePlayButton =(item)=>{
+  validatePlayButton =(item,color)=>{
       if (this.state?.currentAudio?.attachment == item.attachment) {
           if (this.state?.audioStatus?.isPlaying){
-          return    <MaterialCommunityIcons name="pause" size={24} color="#fff" />
+          return    <MaterialCommunityIcons name="pause" size={24} color={color} />
           }else{
-              return <Entypo name="controller-play" size={24} color="#fff" />
+              return <Entypo name="controller-play" size={24} color={color} />
           }
       }
-      return   <Entypo name="controller-play" size={24} color="#fff" />
+      return   <Entypo name="controller-play" size={24} color={color} />
   
       
   }
@@ -73,10 +73,10 @@ class ChatScreen extends Component {
         )
       
   }
-  validateSeconds =(item) =>{
+  validateSeconds =(item,color) =>{
       if (this.state?.currentAudio?.attachment == item.attachment){
           return(
-              <Text style={[styles.text, { color: "#fff", fontSize: 8 }]}>{this.milliconverter(this.state?.audioStatus?.positionMillis)}/{this.milliconverter(this.state?.audioStatus?.durationMillis)}</Text>
+              <Text style={[styles.text, { color:color, fontSize: 8 }]}>{this.milliconverter(this.state?.audioStatus?.positionMillis)}/{this.milliconverter(this.state?.audioStatus?.durationMillis)}</Text>
 
           )
       }
@@ -464,7 +464,7 @@ sendMessage =async()=>{
                 <ActivityIndicator size ="large" color={themeColor}/>
             )
         }
-        if (this.state.message.length > 0||this.state.sel){
+        if (this.state.message.length > 0 || this.state.selectedFile){
             return(
                 <TouchableOpacity style={{ alignItems: "center", justifyContent: "center", height: height * 0.07, backgroundColor: themeColor, borderRadius: 30, height: height * 0.05, width: 40, margin: 10 }}
                     onPress={() => { this.sendMessage() }}
@@ -608,7 +608,7 @@ sendMessage =async()=>{
 
                                           >
                                               {
-                                                  this.validatePlayButton(item)
+                                                  this.validatePlayButton(item,"#000")
                                               }
 
 
@@ -618,10 +618,13 @@ sendMessage =async()=>{
                                           }
                                           <View style={{ alignItems: "center", justifyContent: "center" }}>
                                               {
-                                                  this.validateSeconds(item)
+                                                  this.validateSeconds(item,"#000")
 
                                               }
                                           </View>
+                                      </View>
+                                      <View style={{ alignSelf: "flex-end" }}>
+                                          <Text style={[styles.text, { color: "#000", fontSize: 8 }]}>{moment(item?.created).format("hh:mm a")}</Text>
                                       </View>
                                       <View style={styles.leftArrow}></View>
 
@@ -688,7 +691,7 @@ sendMessage =async()=>{
 
                                       >
                                           {
-                                              this.validatePlayButton(item)
+                                              this.validatePlayButton(item,"#fff")
                                           }
 
 
@@ -698,7 +701,7 @@ sendMessage =async()=>{
                                       }
                                       <View style={{ alignItems: "center", justifyContent: "center" }}>
                                           {
-                                              this.validateSeconds(item)
+                                              this.validateSeconds(item,"#fff")
 
                                           }
                                       </View>

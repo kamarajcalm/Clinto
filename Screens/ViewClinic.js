@@ -12,12 +12,7 @@ const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
 const url = settings.url;
 import { SliderBox } from "react-native-image-slider-box";
-const images = [
-    "https://source.unsplash.com/1024x768/?nature",
-    "https://source.unsplash.com/1024x768/?water",
-    "https://source.unsplash.com/1024x768/?girl",
-    "https://source.unsplash.com/1024x768/?tree",
-]
+
 import moment from 'moment-timezone';
 const date = new Date();
 const day = date.getDay();
@@ -33,7 +28,8 @@ class ViewClinic extends Component {
             showAll:true,
             doctors:[],
             showAllDoctorTimings:false,
-            selectedDoctor:null
+            selectedDoctor:null,
+            images:[]
         };
     }
     getDoctors = async (id) => {
@@ -53,9 +49,24 @@ class ViewClinic extends Component {
             this.getDoctors(data.data.id)
         }
     }
+    getClinicImages = async () => {
+        let api = `${url}/api/prescription/clinicImages/?clinic=${this.state.item.pk}`
+        console.log(api)
+        let data = await HttpsClient.get(api)
+         console.log(data,"jhkjhkjj")
+        if (data.type == "success") {
+            let images = []
+            data.data.forEach((item, index) => {
+                images.push(`${url}${item.imageUrl}`)
+            })
+            this.setState({ images })
+
+        }
+    }
     componentDidMount() {
        console.log(this.state.doctors,"jkjk")
         this.getClinicDetails()
+        this.getClinicImages()
         console.log(this.props.user)
     }
     getTodayTimings = (today,item) => {
@@ -210,7 +221,7 @@ class ViewClinic extends Component {
                         >
                             <View style={{ height: height * 0.25, }}>
                                 <SliderBox
-                                    images={images}
+                                    images={this.state.images}
                                     dotColor={themeColor}
                                     imageLoadingColor={themeColor}
                                     ImageComponentStyle={{ height: "100%", width: "100%", resizeMode: "cover" }}

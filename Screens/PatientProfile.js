@@ -79,7 +79,7 @@ class PatientProfile extends Component {
                         </View>
                         <View style={{marginTop:5}}>
                             {
-                                this.props.user.profile.health_issues.map((item,index)=>{
+                                this.props.user?.profile?.health_issues?.map((item,index)=>{
                                     return(
                                    
                                         <Text style={[styles.text,{color:'#000',marginLeft:5}]} key={index}>{item}</Text>

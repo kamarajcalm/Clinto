@@ -208,6 +208,23 @@ class ViewAppointmentDoctors extends Component {
         this.props.navigation.navigate('addPriscription', { appoinment: this.state.item })
 
     }
+    getClinicImages = async () => {
+        let api = `${url}/api/prescription/clinicImages/?clinic=${this.state.item.clinic}`
+        console.log(api)
+        let data = await HttpsClient.get(api)
+        console.log(data, "jhkjhkjj")
+        if (data.type == "success") {
+            let images = []
+            data.data.forEach((item, index) => {
+                images.push(`${url}${item.imageUrl}`)
+            })
+            this.setState({ images })
+
+        }
+    }
+    componentDidMount(){
+        this.getClinicImages()
+    }
     render() {
         let dp = null
         console.log(this.state.item.patientname,"ppp")
@@ -219,7 +236,7 @@ class ViewAppointmentDoctors extends Component {
                 <SafeAreaView style={styles.topSafeArea} />
                 <SafeAreaView style={styles.bottomSafeArea}>
 
-                    <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
+                    <View style={{ height: height * 0.1, backgroundColor: themeColor,flexDirection: 'row', alignItems: "center" }}>
                         <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}
                             onPress={() => { this.props.navigation.goBack() }}
                         >

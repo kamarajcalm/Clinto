@@ -19,19 +19,19 @@ class CreateAccount extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name:"kamaraj",
-            mobileNO:"9585858585",
-            email:"kamraj089@gmail.com",
-            age:"23",
+            name:"",
+            mobileNO:"",
+            email:"",
+            age:"",
             height:"",
-            bloodGroup:"B +ve",
+            bloodGroup:"",
             healthIssue:"",
             healthIssues:[],
             dob:"",
             show:false,
-            Password:'kamaraj@98',
-            Password2:"kamaraj@98",
-            lastname:"Mariyappan"
+            Password:'',
+            Password2:"",
+            lastname:""
         };
     }
      CreateAccount = async()=>{
@@ -141,11 +141,7 @@ class CreateAccount extends Component {
     };
 
     handleConfirm = (date) => {
-        console.warn("A date has been picked: ", date);
-        this.setState({ dob: moment(date).format('YYYY-MM-DD'), show: false, date: new Date(date) }, () => {
-           
-
-        })
+        this.setState({ dob: moment(date).format('YYYY-MM-DD'), show: false, date: new Date(date) })
         this.hideDatePicker();
     };
   

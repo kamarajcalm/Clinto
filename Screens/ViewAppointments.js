@@ -13,19 +13,15 @@ const { height, width } = Dimensions.get("window");
 const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
 const url = settings.url;
-const images = [
-    "https://source.unsplash.com/1024x768/?nature",
-    "https://source.unsplash.com/1024x768/?water",
-    "https://source.unsplash.com/1024x768/?girl",
-    "https://source.unsplash.com/1024x768/?tree",
-]
+
 class ViewAppointments extends Component {
     constructor(props) {
         super(props);
         let item =this.props.route.params.item
         console.log(item)
         this.state = {
-            item
+            item,
+            images:[]
         };
     }
     getCall = () => {
@@ -81,6 +77,23 @@ class ViewAppointments extends Component {
             this.props.navigation.navigate('Chat', { item: data.data })
         }
     }
+    getClinicImages = async () => {
+        let api = `${url}/api/prescription/clinicImages/?clinic=${this.state.item.clinic}`
+        console.log(api)
+        let data = await HttpsClient.get(api)
+        console.log(data, "jhkjhkjj")
+        if (data.type == "success") {
+            let images = []
+            data.data.forEach((item, index) => {
+                images.push(`${url}${item.imageUrl}`)
+            })
+            this.setState({ images })
+
+        }
+    }
+    componentDidMount(){
+       this.getClinicImages()
+    }
     render() {
          let dp =null
         if (this.state.item.doctordetails.dp){
@@ -92,7 +105,7 @@ class ViewAppointments extends Component {
                 <SafeAreaView style={styles.topSafeArea} />
                 <SafeAreaView style={styles.bottomSafeArea}>
                                   {/* HEADERS */}
-                    <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
+                    <View style={{ height: height * 0.1, backgroundColor: themeColor,flexDirection: 'row', alignItems: "center" }}>
                         <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}
                             onPress={() => { this.props.navigation.goBack() }}
                         >
@@ -108,7 +121,7 @@ class ViewAppointments extends Component {
                  
                     <View style={{ height: height * 0.25, }}>
                         <SliderBox
-                            images={images}
+                            images={this.state.images}
                             dotColor={themeColor}
                             imageLoadingColor={themeColor}
                             ImageComponentStyle={{ height: "100%", width: "100%", resizeMode: "cover" }}

@@ -96,10 +96,10 @@ const url =settings.url
                   }
                     return(
                       <Marker
-                         style={{height:100}}
+                         style={{height:50}}
                          key={index}
-                        coordinate={{ latitude: Number(item?.lat), longitude: Number(item?.long,)  }}
-                        image={require('../assets/marker/custommarker.png')}
+                         coordinate={{ latitude: Number(item?.lat), longitude: Number(item?.long,)  }}
+                         image={require('../assets/marker/custommarker.png')}
                       >
                         <MapView.Callout
                           tooltip={true}
