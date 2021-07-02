@@ -59,7 +59,7 @@ class CreateBill extends Component {
         }
         this.setState({ MedicineName: Medicine })
         if (Medicine != "") {
-            let api = `${url}/api/prescription/subSearch/?name=${Medicine}&inventory=${this.props.medical.inventory}`
+            let api = `${url}/api/prescription/subSearch/?name=${Medicine}&inventory=${this?.props?.medical?.inventory || this?.props?.clinic?.inventory}`
            console.log(api)
             let data = await HttpsClient.get(api)
             if (data.type == "success") {
@@ -119,7 +119,7 @@ class CreateBill extends Component {
             date:this.state.today,
             discount:this.state.Discount,
             total:this.state.Amount,
-            inventory:this.props.medical.inventory,
+            inventory: this?.props?.medical?.inventory || this?.props?.clinic?.inventory,
             items:this.state.billMedicines,
             amount:this.state.Amount
         }
@@ -127,7 +127,7 @@ class CreateBill extends Component {
        console.log(post,"pp")
        if(post.type =="success"){
            this.setState({ creating: false })
-  this.showSimpleMessage("order created SuccessFully", "#00A300", "success")
+  this.showSimpleMessage("Bill created SuccessFully", "#00A300", "success")
            return this.props.navigation.goBack()
        }else{
            this.setState({ creating: false })
@@ -420,8 +420,8 @@ class CreateBill extends Component {
                                 }}
                             >
                                  {
-                                     this.state.creating?<ActivityIndicator />:
-                                        <Text style={[styles.text, { color: "#fff" }]}>Create </Text>
+                                     this.state.creating?<ActivityIndicator  size={"large"} color={"#fff"}/>:
+                                        <Text style={[styles.text, { color: "#fff" }]}>Create</Text>
                                  }
                                
                             </TouchableOpacity>
@@ -452,7 +452,8 @@ const mapStateToProps = (state) => {
     return {
         theme: state.selectedTheme,
         user: state.selectedUser,
-        medical: state.selectedMedical
+        medical: state.selectedMedical,
+        clinic: state.selectedClinic
     }
 }
 export default connect(mapStateToProps, { selectTheme })(CreateBill);

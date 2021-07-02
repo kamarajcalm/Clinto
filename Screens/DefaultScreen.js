@@ -12,6 +12,21 @@ import * as Notifications from 'expo-notifications';
 const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
 const url = settings.url;
+Notifications.setNotificationCategoryAsync("welcome", [
+  {
+    identifier: "1",
+    buttonTitle: "accept",
+
+  },
+  {
+    identifier: "2",
+    buttonTitle: "reject",
+  },
+
+]
+
+
+)
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -19,6 +34,8 @@ Notifications.setNotificationHandler({
     shouldSetBadge: true,
   }),
 });
+
+
 
  class DefaultScreen extends Component {
   constructor(props) {

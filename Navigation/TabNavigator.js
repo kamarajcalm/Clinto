@@ -18,6 +18,7 @@ import DoctorsStack from '../stacks/DoctorsStack';
 import ChatStack from '../stacks/ChatStack';
 import ProfileStack from '../stacks/ProfileStack';
 import AppointmentStack from '../stacks/AppointmentStack';
+import MedicalInventoryStack from '../stacks/MedicalInventoryStack';
 const Tab = createBottomTabNavigator();
 class TabNavigator extends Component {
     constructor(props) {
@@ -30,6 +31,7 @@ class TabNavigator extends Component {
         // this.props.selectTheme(theme)
     }
     componentDidMount() {
+        console.log(this.props.user.profile.occupation,"hjhggjh")
         this.getTheme()
     }
     getTabBarVisibility = (route) => {
@@ -110,7 +112,21 @@ class TabNavigator extends Component {
      
         return true
     }
-  
+    getTabBarVisibility8 = (route) => {
+        const routeName = route.state ? route.state.routes[route.state.index].name : ''
+        if (routeName == "ViewCategory") {
+            return false
+        }
+        if (routeName == "ViewItem") {
+            return false
+        }
+        if (routeName == "CreateOrders") {
+            return false
+        }
+     
+
+        return true
+    }
 
     render() {
         return (
@@ -133,14 +149,28 @@ class TabNavigator extends Component {
 
                     })}
                 />
-                    <Tab.Screen name="Search" component={DoctorsStack}
+
+
+                                      {/* validating inventory and search  */}
+
+
+                {this.props.user.profile.occupation =="Customer" ?<Tab.Screen name="Search" component={DoctorsStack}
                         options={({ route }) => ({
 
                             tabBarVisible: this.getTabBarVisibility3(route),
 
                         })}
 
+                    />:
+                    <Tab.Screen name="Inventory" component={MedicalInventoryStack}
+                        options={({ route }) => ({
+
+                            tabBarVisible: this.getTabBarVisibility8(route),
+
+                        })}
+
                     />
+                    }
                     <Tab.Screen name="Chat" component={ChatStack}
                         options={({ route }) => ({
 
@@ -163,7 +193,7 @@ const mapStateToProps = (state) => {
 
     return {
         theme: state.selectedTheme,
-
+        user: state.selectedUser
     }
 }
 export default connect(mapStateToProps, { selectTheme })(TabNavigator)

@@ -342,6 +342,8 @@ class Appointments extends Component {
         }
     }
     completeAppointment =async()=>{
+        this.props.navigation.navigate('addPriscription', { appoinment: this.state.selectedAppointment })
+        return
         if(this.props.user.profile.occupation=="Doctor"){
             this.props.navigation.navigate('addPriscription', { appoinment: this.state.selectedAppointment })
         }else{
@@ -739,12 +741,12 @@ class Appointments extends Component {
     SecondRoute =()=>{
         return(
             <FlatList
-            refreshing={this.state.isFectching2}
-            onRefresh ={()=>{this.handleRefresh2()}}
-            onEndReached ={()=>{this.handleEndReached2()}}
-            onEndReachedThreshold={0.1}
-            ListFooterComponent={this.renderFooter2}
-            contentContainerStyle={{paddingBottom:90}}
+             refreshing={this.state.isFectching2}
+             onRefresh ={()=>{this.handleRefresh2()}}
+               onEndReached ={()=>{this.handleEndReached2()}}
+              onEndReachedThreshold={0.1}
+              ListFooterComponent={this.renderFooter2}
+              contentContainerStyle={{paddingBottom:90}}
                 data={this.state.Appointments2}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item, index }) => {

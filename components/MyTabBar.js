@@ -70,7 +70,11 @@ UNSAFE_componentWillReceiveProps(){
                 <Ionicons name="md-person-circle" size={30} color={isFocused ? "#fff" : "gray"}/>
             )
         }
-       
+        if (label == "Inventory") {
+            return (
+                <MaterialIcons name="inventory" size={30} color={isFocused ? "#fff" : "gray"} />
+            )
+        }
     }
     render() {
         const { state, descriptors, navigation } = this.props

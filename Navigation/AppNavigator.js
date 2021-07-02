@@ -79,13 +79,7 @@ export default class AppNavigator extends Component {
         return (
             <NavigationContainer >
                 <Stack.Navigator>
-                    {/* {Object.entries({
-                        ...(this.state.logged ? Main : authScreens),
-                        ...(!this.state.logged && Main),
-                      
-                    }).map(([name, component]) => (
-                        <Stack.Screen name={name} component={component} options={{ headerShown: false }} />
-                    ))} */}
+                
                     <Stack.Screen name="DefaultScreen" component={DefaultScreen} options={{ headerShown: false }} />
                     <Stack.Screen name="MainTab" component={TabNavigator} options={{ headerShown: false }} />
                     <Stack.Screen name="Login" component={LoginStack} options={{ headerShown: false }} />

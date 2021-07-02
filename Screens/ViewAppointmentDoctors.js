@@ -15,12 +15,6 @@ import { Linking } from 'react-native';
 import { SliderBox } from "react-native-image-slider-box";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
-const images = [
-    "https://source.unsplash.com/1024x768/?nature",
-    "https://source.unsplash.com/1024x768/?water",
-    "https://source.unsplash.com/1024x768/?girl",
-    "https://source.unsplash.com/1024x768/?tree",
-]
 const themeColor = settings.themeColor;
 const url = settings.url;
 const Date1 = new Date()
@@ -36,6 +30,7 @@ class ViewAppointmentDoctors extends Component {
             item,
             modal:false,
             show:false,
+            images:[]
         };
     }
     showDatePicker = () => {
@@ -252,7 +247,7 @@ class ViewAppointmentDoctors extends Component {
 
                         <View style={{ height: height * 0.25, }}>
                             <SliderBox
-                                images={images}
+                                images={this.state.images}
                                 dotColor={themeColor}
                                 imageLoadingColor={themeColor}
                                 ImageComponentStyle={{ height: "100%", width: "100%", resizeMode: "cover" }}

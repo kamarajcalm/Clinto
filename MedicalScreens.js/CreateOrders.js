@@ -90,7 +90,7 @@ class CreateOrders extends Component {
     searchMedicines = async(Medicine)=>{
         this.setState({ Medicine: Medicine, itemGot:false})
         if (Medicine != "") {
-            let api = `${url}/api/prescription/subSearch/?name=${Medicine}&inventory=${this.props.medical.inventory}`
+            let api = `${url}/api/prescription/subSearch/?name=${Medicine}&inventory=${this?.props?.medical?.inventory || this?.props?.clinic?.inventory}`
             console.log(api, "ppp")
             let data = await HttpsClient.get(api)
             if (data.type == "success") {
@@ -393,7 +393,7 @@ class CreateOrders extends Component {
             expected_arriving:this.state.today,
             discount:this.state.Discount,
             amount:this.state.Amount,
-            inventory:this.props.medical.inventory,
+            inventory: this?.props?.medical?.inventory || this?.props?.clinic?.inventory,
             orderitems:this.state.medicines
         }
        let post =  await HttpsClient.post(api,sendData)
@@ -430,7 +430,7 @@ class CreateOrders extends Component {
     }
     getMinOrder = async()=>{
         this.setState({loadModal:true})
-        let api = `${url}/api/prescription/showMinimum/?inventory=${this.props.medical.inventory}`
+        let api = `${url}/api/prescription/showMinimum/?inventory=${this?.props?.medical?.inventory || this?.props?.clinic?.inventory}`
         console.log(api,"ppp")
         const data = await HttpsClient.get(api)
         if(data.type =="success"){
@@ -746,7 +746,8 @@ const mapStateToProps = (state) => {
     return {
         theme: state.selectedTheme,
         user: state.selectedUser,
-        medical: state.selectedMedical
+        medical: state.selectedMedical,
+        clinic: state.selectedClinic
     }
 }
 export default connect(mapStateToProps, { selectTheme })(CreateOrders);

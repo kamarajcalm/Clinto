@@ -50,7 +50,7 @@ const DATA =["clinic 1","clinic 2","clinic3","clinic4"]
      )
    }
    ClinicSelect =()=>{
-     this.setState({ showModal:true})
+     this.setState({showClinics:true})
    }
    getClinics = async () => {
      const api = `${url}/api/prescription/getDoctorClinics/?doctor=${this.props.user.id}`

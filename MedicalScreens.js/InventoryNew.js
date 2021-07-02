@@ -144,7 +144,7 @@ class InventoryNew extends Component {
     }
     getItems = async()=>{
         this.setState({ refreshing:true})
-        let api = `${url}/api/prescription/inventorycategory/?inventory=${this.props.medical.inventory}`
+        let api = `${url}/api/prescription/inventorycategory/?inventory=${this?.props?.medical?.inventory||this?.props?.clinic?.inventory}`
 
       let data =await HttpsClient.get(api)
       if(data.type =="success"){
@@ -155,7 +155,7 @@ class InventoryNew extends Component {
       }
     }
     getOrders =async()=>{
-        let api = `${url}/api/prescription/inventoryorders/?inventory=${this.props.medical.inventory}`
+        let api = `${url}/api/prescription/inventoryorders/?inventory=${this?.props?.medical?.inventory || this?.props?.clinic?.inventory}`
         let data =await HttpsClient.get(api)
         console.log(api)
         if(data.type =="success"){
@@ -183,7 +183,7 @@ class InventoryNew extends Component {
             expected_arriving:this.state.today,
             discount:this.state.Discount,
             amount:this.state.Amount,
-            clinic:this.props.medical.clinicpk
+            clinic:this?.props?.medical?.clinicpk||this?.props?.clinic?.clinicpk
         }
         let post = await HttpsClient.post(api,sendData)
         if (post.type == "success") {
@@ -204,7 +204,7 @@ class InventoryNew extends Component {
         let api = `${url}/api/prescription/createCategory/`
         let sendData ={
            title:this.state.categoryName,
-            clinic: this.props.medical.clinicpk
+            clinic: this?.props?.medical?.clinicpk || this?.props?.clinic?.clinicpk
         }
         let post = await HttpsClient.post(api,sendData)
         console.log(post,"ppp")
@@ -231,7 +231,7 @@ class InventoryNew extends Component {
          }
     }
     getSold =async()=>{
-        let api = `${url}/api/prescription/soldinventory/?inventory=${this.props.medical.inventory}`
+        let api = `${url}/api/prescription/soldinventory/?inventory=${this?.props?.medical?.inventory || this?.props?.clinic?.inventory}`
         const data = await HttpsClient.get(api)
         console.log(api)
         if(data.type=="success"){
@@ -239,6 +239,7 @@ class InventoryNew extends Component {
         }
     }
     componentDidMount() {
+        console.log(this.props.clinic.inventory,"cccccccccc")
      this.getItems()  
      this.getOrders()
      this.getSold()
@@ -530,7 +531,7 @@ class InventoryNew extends Component {
                 </ScrollView>
                 <View style={{
                     position: "absolute",
-                    bottom: 50,
+                    bottom: 100,
                     left: 20,
                     right: 20,
                     flex: 1,
@@ -770,7 +771,8 @@ const mapStateToProps = (state) => {
     return {
         theme: state.selectedTheme,
         user: state.selectedUser,
-        medical: state.selectedMedical
+        medical: state.selectedMedical,
+        clinic: state.selectedClinic
     }
 }
 export default connect(mapStateToProps, { selectTheme })(InventoryNew);

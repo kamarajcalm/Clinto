@@ -6,6 +6,7 @@ const url = settings.url;
 import authAxios from '../api/authAxios';
 const { width, height } = Dimensions.get('screen');
 import { Appearance, useColorScheme } from 'react-native-appearance';
+import * as Notifications from 'expo-notifications';
 // https://www.flaticon.com/packs/retro-wave
 // inspiration: https://dribbble.com/shots/11164698-Onboarding-screens-animation
 // https://twitter.com/mironcatalin/status/1321180191935373312
@@ -123,7 +124,13 @@ const Indicator =({scrollX})=>{
 }
 export default function OnboardingScreen(props) {
 
-  
+    React.useEffect(() => {
+        const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+           console.log(response)
+           Notifications.dismissAllNotificationsAsync()
+        });
+        return () => subscription.remove();
+    }, []);
        const scrollX = React.useRef(new Animated.Value(0)).current;
     return (
         <View style={styles.container}>

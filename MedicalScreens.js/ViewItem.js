@@ -308,7 +308,7 @@ class ViewItem extends Component {
                             <TouchableOpacity style={{ backgroundColor: themeColor, height: height * 0.05, width: width * 0.4, alignItems: 'center', justifyContent: 'center', marginTop: 25, borderRadius: 5 }}
                                 onPress={() => { this.convertToStandards() }}
                             >
-                              <Text style={[styles.text, { color: '#fff' }]}>Covert</Text>
+                              <Text style={[styles.text, { color: '#fff' }]}>Convert</Text>
                                
                                 
                             </TouchableOpacity>

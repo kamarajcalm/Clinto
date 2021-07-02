@@ -58,6 +58,7 @@ export default class ImageViewer extends Component {
     render() {
         return (
              <>
+             
                 <SafeAreaView style={styles.topSafeArea} />
                 <SafeAreaView style={styles.bottomSafeArea}>
                  
