@@ -124,13 +124,32 @@ const Indicator =({scrollX})=>{
 }
 export default function OnboardingScreen(props) {
 
-    React.useEffect(() => {
-        const subscription = Notifications.addNotificationResponseReceivedListener(response => {
-           console.log(response)
-           Notifications.dismissAllNotificationsAsync()
-        });
-        return () => subscription.remove();
-    }, []);
+    // React.useEffect(async() => {
+    //     const subscription = Notifications.addNotificationResponseReceivedListener(async(response) => {
+    //        console.log(response)
+    //       await Notifications.dismissAllNotificationsAsync()
+          
+    //     });
+    //     await Notifications.setNotificationChannelAsync('new-emails', {
+    //         name: 'E-mail notifications',
+    //         importance: Notifications.AndroidImportance.HIGH,
+    //         sound: 'starwar.wav', // <- for Android 8.0+, see channelId property below
+    //     });
+
+    //     // Eg. schedule the notification
+    //     await Notifications.scheduleNotificationAsync({
+    //         content: {
+    //             title: "You've got mail! 📬",
+    //             body: 'Open the notification to read them all',
+    //             sound: 'starwar.wav', // <- for Android below 8.0
+    //         },
+    //         trigger: {
+    //             seconds: 2,
+    //             channelId: 'new-emails', // <- for Android 8.0+, see definition above
+    //         },
+    //     });
+    //     return () => subscription.remove();
+    // }, []);
        const scrollX = React.useRef(new Animated.Value(0)).current;
     return (
         <View style={styles.container}>

@@ -191,13 +191,11 @@ class ViewClinicDetails extends Component {
                                 <View>
                                     <Text style={[styles.text]}>Clinic Details</Text>
                                 </View>
-                                <View>
-                                    <AntDesign name="down" size={20} color="black" />
-                                </View>
+                              
                             </View>
                             <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 10 }}>
                                 <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Owned By:</Text>
+                                    <Text style={[styles.text, { fontSize: 18, color: "#000"  }]}>Owned By:</Text>
                                 </View>
                                 <View style={{ alignItems: 'center', justifyContent: "center" }}>
                                     <Text style={[styles.text, { marginLeft: 10 }]}>{this.state?.item?.owner.first_name}</Text>
@@ -205,9 +203,12 @@ class ViewClinicDetails extends Component {
                             </View>
                             <View style={{ marginHorizontal: 20, marginTop: 10 }}>
                                 <View style={{}}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Address:</Text>
+                                    <Text style={[styles.text, {fontSize: 18,color:"#000" }]}>Address:</Text>
                                 </View>
                                 <View style={{ marginTop: 10 }}>
+                                    <View style={{flexDirection:"row"}}>
+
+                                    </View>
                                     <Text style={[styles.text, { marginLeft: 10 }]}>{this.state?.item?.address}</Text>
                                     <Text style={[styles.text, { marginLeft: 10 }]}>{this.state?.item?.city}</Text>
                                     <Text style={[styles.text, { marginLeft: 10 }]}>{this.state?.item?.state}</Text>
@@ -352,9 +353,7 @@ class ViewClinicDetails extends Component {
                                 <View>
                                     <Text style={[styles.text]}>Payment Info</Text>
                                 </View>
-                                <View>
-                                    <AntDesign name="down" size={20} color="black" />
-                                </View>
+                             
                             </View>
                             <View>
                                 <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 10 }}>
@@ -380,9 +379,7 @@ class ViewClinicDetails extends Component {
                                 <View>
                                     <Text style={[styles.text]}>Reception list:</Text>
                                 </View>
-                                <View>
-                                    <AntDesign name="down" size={20} color="black" />
-                                </View>
+                             
                             </View>
                             <View style={{ margin: 20 }}>
                               
@@ -416,9 +413,7 @@ class ViewClinicDetails extends Component {
                                 <View>
                                     <Text style={[styles.text]}>Doctor List:</Text>
                                 </View>
-                                <View>
-                                    <AntDesign name="down" size={20} color="black" />
-                                </View>
+                             
                             </View>
                             <View style={{ margin: 20 }}>
                                

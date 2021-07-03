@@ -177,6 +177,8 @@ class UploadImages extends Component {
                resolve(post)
            }else{
                reject("errr")
+               return this.showSimpleMessage("Try Again", "red", "failure")
+        
            }
         })
   

@@ -145,6 +145,29 @@ class Appointments extends Component {
             this.setState({ doctors, selectedDoctor: doctors[0] })
         }
     }
+
+    getCall = (item) => {
+        if (Platform.OS == "android") {
+            Linking.openURL(`tel:${item?.patientname?.mobile}`)
+        } else {
+
+            Linking.canOpenURL(`telprompt:${item?.patientname?.mobile}`)
+        }
+    }
+    chatwithCustomer= async (item) => {
+        let api = null
+        if (this.props.user.profile.occupation == "Doctor") {
+            api = `${url}/api/prescription/createDoctorChat/?doctor=${this.props.user.id}&customer=${item.requesteduser}`
+        }else{
+            api = `${url}/api/prescription/createClinicChat/?clinic=${item.clinic}&customer=${item.requesteduser}`
+        }
+
+        let data = await HttpsClient.get(api)
+        console.log(data, "kkk")
+        if (data.type == "success") {
+            this.props.navigation.navigate('Chat', { item: data.data })
+        }
+    }
     chatClinic = async (item) => {
    
         let api = `${url}/api/prescription/createClinicChat/?clinic=${item.clinic}&customer=${this.props.user.id}`
@@ -864,12 +887,12 @@ class Appointments extends Component {
                                         </View>
                                         <View style={{ flexDirection: 'row',  alignItems: "center", flex:0.4,}}>
                                             <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center',marginLeft:10 }]}
-                                                onPress={() => { }}
+                                                onPress={() => {this.chatwithCustomer(item) }}
                                             >
                                                 <Ionicons name="md-chatbox" size={20} color="#63BCD2" />
                                             </TouchableOpacity>
                                             <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center' ,marginLeft:10}]}
-                                                onPress={() => { }}
+                                                onPress={() => {this.getCall(item) }}
                                             >
                                                 <Ionicons name="call" size={20} color="#63BCD2" />
                                             </TouchableOpacity>

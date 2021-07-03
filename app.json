@@ -10,6 +10,18 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "sounds": [
+            "./assets/sounds/starwar.wav"
+          ],
+          "mode": "production"
+        }
+      ],
+      "expo-screen-orientation"
+    ],
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -18,10 +30,11 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "config":{
-        "googleMapsApiKey":"AIzaSyCOSH383cU0Ywb6J1JZA_vlRq6Y6I6DgtE"
+      "config": {
+        "googleMapsApiKey": "AIzaSyCOSH383cU0Ywb6J1JZA_vlRq6Y6I6DgtE"
       },
-      "bundleIdentifier":"in.poa.medportal"
+      "bundleIdentifier": "in.poa.medportal",
+      "requireFullScreen": true
     },
     "android": {
       "googleServicesFile": "./google-services.json",
@@ -29,14 +42,14 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "config":{
-        "googleMaps":{
-          "apiKey":"AIzaSyCOSH383cU0Ywb6J1JZA_vlRq6Y6I6DgtE"
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCOSH383cU0Ywb6J1JZA_vlRq6Y6I6DgtE"
         }
       },
       "package": "in.poa.medportal"
     },
-      "notification": {
+    "notification": {
       "icon": "./assets/48x48.png",
       "color": "#000000"
     },

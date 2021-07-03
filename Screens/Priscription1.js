@@ -42,6 +42,7 @@ const { diffClamp } = Animated;
 const headerHeight = height * 0.2;
 import { Swipeable } from "react-native-gesture-handler";
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+import { LinearGradient } from 'expo-linear-gradient';
 class Priscription extends React.Component {
     constructor(props) {
         const Date1 = new Date()
@@ -49,11 +50,12 @@ class Priscription extends React.Component {
         const month = Date1.getMonth() + 1
         const year = Date1.getFullYear()
         const today = `${year}-${month}-${day}`
-    
+        const showDate = `${day}-${month}-${year}`
         super(props);
         this.state = {
             showList: true,
             today,
+            showDate,
             mode: 'date',
             date: new Date(),
             show: false,
@@ -113,7 +115,7 @@ hideDatePicker = () => {
     }
  handleConfirm = (date) => {
      this.setState({})
-     this.setState({ today: moment(date).format('YYYY-MM-DD'), show: false, prescriptions: [], offset: 0, next: true  }, () => {
+     this.setState({ today: moment(date).format('YYYY-MM-DD'), show: false, prescriptions: [], offset: 0, next: true, showDate: moment(date).format('DD-MM-YYYY')  }, () => {
          if(this.state.isDoctor){
              this.getPrescription()
          }else if(this.state.isReceptionist){
@@ -359,12 +361,18 @@ hideDatePicker = () => {
             >
                 <TouchableOpacity style={[styles.card, { flexDirection: "row", borderRadius: 5 }]}
                     // onPress={() => { props.navigation.navigate('showCard', { item }) }}
-                    onPress={() => { this.props.navigation.navigate('PrescriptionView', { item, }) }}
+                    onPress={() => { this.props.navigation.navigate('PrescriptionViewDoctor',{item})}}
                 >
                     <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
-                         <View style={{height:70,width:70,borderRadius:35,backgroundColor:themeColor,alignItems:"center", justifyContent:"center"}}>
-                               <Text style={[styles.text,{color:"#ffff",fontWeight: "bold",fontSize: 18}]}>{this.getFirstLetter(item)}</Text> 
-                         </View>
+                        <LinearGradient 
+                              style={{ height: 70, width: 70, borderRadius: 35,alignItems: "center", justifyContent: "center" }}
+                              colors={["#333", themeColor, themeColor]}
+                        >
+                              <View >
+                                  <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 22 }]}>{this.getFirstLetter(item)}</Text>
+                              </View>
+                        </LinearGradient>
+                       
                     </View>
                     <View style={{ flex: 0.7, marginHorizontal: 10, justifyContent: 'center' }}>
                         <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
@@ -536,7 +544,7 @@ hideDatePicker = () => {
                 <View style={{ alignItems: "center", justifyContent: "center", width: width * 0.32, }}>
                     <View style={{ flexDirection: "row" }}>
                         <View style={{ alignItems: "center", justifyContent: "center" }}>
-                            <Text style={[styles.text, { color: "#fff" }]}>{this.state.today}</Text>
+                            <Text style={[styles.text, { color: "#fff" }]}>{this.state.showDate}</Text>
                         </View>
 
                         <TouchableOpacity
@@ -628,7 +636,6 @@ hideDatePicker = () => {
                             <EvilIcons name="search" size={24} color="black" />
                         </View>
                         <TextInput
-
                             selectionColor={themeColor}
                             style={{ height: "90%", flex: 0.8, backgroundColor: "#eee", paddingLeft: 10, marginTop: 3 }}
                             placeholder="search"

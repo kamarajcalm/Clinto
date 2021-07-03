@@ -9,7 +9,7 @@ import Medicine from '../components/Medicine';
 import HttpsClient from '../api/HttpsClient';
 import Modal from 'react-native-modal';
 import DropDownPicker from 'react-native-dropdown-picker';
-const { height, width } = Dimensions.get("window");
+
 const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
 const screenHeight = Dimensions.get("screen").height;
@@ -161,6 +161,7 @@ class ViewCategory extends Component {
      
     }
     validateBoxes =()=>{
+        const { height, width } = Dimensions.get("window");
         if (this.state.type== "Tablet" || this.state.type== "Capsules")
         return(
             <>
@@ -168,7 +169,7 @@ class ViewCategory extends Component {
                 <Text style={[styles.text, { color: '#000' }]}>No of Strips Per Box</Text>
                 <TextInput
                     keyboardType={"numeric"}
-                    style={{ width: width * 0.8, height: height * 0.05, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
+                    style={{ width: width * 0.8, height: height * 0.08, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
                     selectionColor={themeColor}
                     value={this.state.stripesPerBox}
                     onChangeText={(stripesPerBox) => { this.setState({ stripesPerBox }) }}
@@ -178,7 +179,7 @@ class ViewCategory extends Component {
                     <Text style={[styles.text, { color: '#000' }]}>No of Medicines Per Stripes</Text>
                     <TextInput
                         keyboardType={"numeric"}
-                        style={{ width: width * 0.8, height: height * 0.05, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
+                        style={{ width: width * 0.8, height: height * 0.08, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
                         selectionColor={themeColor}
                         value={this.state.medicinesPerStrips}
                         onChangeText={(medicinesPerStrips) => { this.setState({ medicinesPerStrips }) }}
@@ -191,7 +192,7 @@ class ViewCategory extends Component {
                 <Text style={[styles.text, { color: '#000' }]}>No of Pieces per Box</Text>
                 <TextInput
                     keyboardType={"numeric"}
-                    style={{ width: width * 0.8, height: height * 0.05, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
+                    style={{ width: width * 0.8, height: height * 0.08, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
                     selectionColor={themeColor}
                     value={this.state.piecesPerBox}
                     onChangeText={(piecesPerBox) => { this.setState({ piecesPerBox }) }}
@@ -200,6 +201,7 @@ class ViewCategory extends Component {
         )
     }
     modal =()=>{
+        const { height, width } = Dimensions.get("window");
         return (
             <Modal
                 deviceHeight={screenHeight}
@@ -208,7 +210,7 @@ class ViewCategory extends Component {
             >
                 <View style={{  justifyContent:"center"}}>
                        
-                        <ScrollView style={{ height: height * 0.5, backgroundColor: "#eee", borderRadius: 10, }}
+                        <ScrollView style={{ height: height * 0.8, backgroundColor: "#eee", borderRadius: 10, }}
                          showsVerticalScrollIndicator={false}
                         >
                             <TouchableWithoutFeedback 
@@ -223,7 +225,7 @@ class ViewCategory extends Component {
                             <View style={{ margin: 20 }}>
                                 <Text style={[styles.text, { color: '#000' }]}>Enter Medicine Name</Text>
                                 <TextInput
-                                    style={{ width: width * 0.8, height: height * 0.05, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
+                                    style={{ width: width * 0.8, height: height * 0.08, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
                                     selectionColor={themeColor}
                                     value={this.state.MedicineName}
                                 onChangeText={(MedicineName) => { this.searchMedicine(MedicineName) }}
@@ -273,7 +275,7 @@ class ViewCategory extends Component {
                             <Text style={[styles.text, { color: '#000' }]}>Selling Price</Text>
                             <TextInput
                                keyboardType={"numeric"}
-                                style={{ width: width * 0.8, height: height * 0.05, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
+                                style={{ width: width * 0.8, height: height * 0.08, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
                                 selectionColor={themeColor}
                                 value={this.state.Price}
                                 onChangeText={(Price) => { this.setState({ Price }) }}
@@ -286,14 +288,14 @@ class ViewCategory extends Component {
                             <Text style={[styles.text, { color: '#000' }]}>Minimum Quantity</Text>
                             <TextInput
                                 keyboardType={"numeric"}
-                                style={{ width: width * 0.8, height: height * 0.05, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
+                                style={{ width: width * 0.8, height: height * 0.08, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
                                 selectionColor={themeColor}
                                 value={this.state.minQty}
                                 onChangeText={(minQty) => { this.setState({ minQty }) }}
                             />
                         </View>
                             <View style={{ alignItems: "center", justifyContent: "center" ,marginVertical:10}}>
-                                <TouchableOpacity style={{ backgroundColor: themeColor, height: height * 0.05, width: width * 0.4, alignItems: 'center', justifyContent: 'center', marginTop: 25, borderRadius: 5 }}
+                                <TouchableOpacity style={{ backgroundColor: themeColor, height: height * 0.08, width: width * 0.4, alignItems: 'center', justifyContent: 'center', marginTop: 25, borderRadius: 5 }}
                                     onPress={() => { this.addMedicine() }}
                                 >
                                     {!this.state.creating ? <Text style={[styles.text, { color: '#fff' }]}>Add</Text> :
@@ -327,48 +329,50 @@ class ViewCategory extends Component {
 
     }
     renderHeader =()=>{
+        const { height, width } = Dimensions.get("window");
         return (
             <View style={{flexDirection:'row',marginTop:10}}>
-                <View style={{ width:width*0.1,alignItems:"center",justifyContent:"center"}}>
+                <View style={{flex:0.05,alignItems:"center",justifyContent:"center"}}>
                     <Text style={[styles.text,{color:"#000"}]}>#</Text> 
                 </View>
-                <View style={{ width: width *0.3, alignItems: "center", justifyContent: "center" }}>
+                <View style={{ flex:0.2, alignItems: "center", justifyContent: "center" }}>
                     <Text style={[styles.text,{color:"#000"}]}>Name</Text>
                 </View>
-                <View style={{ width: width * 0.2, alignItems: "center", justifyContent: "center" }}>
+                <View style={{ flex:0.1, alignItems: "center", justifyContent: "center" }}>
                     <Text style={[styles.text,{color:"#000"}]}>Type</Text>
                 </View>
-                <View style={{ width: width *0.2, alignItems: "center", justifyContent: "center" }}>
+                <View style={{flex:0.1, alignItems: "center", justifyContent: "center" }}>
                     <Text style={[styles.text,{color:"#000"}]}>Price</Text>
                 </View>
-                <View style={{ width: width * 0.25, alignItems: "center", justifyContent: "center" }}>
-                    <Text style={[styles.text],{color:"#000"}}>No of Boxes</Text>
+                <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
+                    <Text style={[styles.text],{color:"#000"}}> Boxes</Text>
                 </View>
-                <View style={{ width: width * 0.25, alignItems: "center", justifyContent: "center" }}>
-                    <Text style={[styles.text], { color: "#000" }}>No of Strips</Text>
+                <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
+                    <Text style={[styles.text], { color: "#000" }}>strips</Text>
                 </View>
-                <View style={{ width: width * 0.25, alignItems: "center", justifyContent: "center" }}>
-                    <Text style={[styles.text], { color: "#000" }}>No of Pieces</Text>
+                <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
+                    <Text style={[styles.text], { color: "#000" }}>Pieces</Text>
                 </View>
-                <View style={{ width: width * 0.3, alignItems: "center", justifyContent: "center" }}>
-                    <Text style={[styles.text], { color: "#000" }}>Minimum Quantity</Text>
+                <View style={{ flex:0.1, alignItems: "center", justifyContent: "center" }}>
+                    <Text style={[styles.text], { color: "#000" }}>Min-qty</Text>
                 </View>
-                <View style={{ width: width * 0.3, alignItems: "center", justifyContent: "center" }}>
-                    <Text style={[styles.text], { color: "#000" }}>Total Quantity</Text>
+                <View style={{flex: 0.1, alignItems: "center", justifyContent: "center" }}>
+                    <Text style={[styles.text], { color: "#000" }}>Total</Text>
                 </View>
-                <View style={{ width: width * 0.1, alignItems: "center", justifyContent: "center" }}>
+                <View style={{ flex: 0.05, alignItems: "center", justifyContent: "center" }}>
                    
                 </View>
             </View>
         )
     }
     render() {
+        const { height, width } = Dimensions.get("window");
         return (
             <>
                 <SafeAreaView style={styles.topSafeArea} />
                 <SafeAreaView style={styles.bottomSafeArea}>
                      {/*headers  */}
-                    <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
+                    <View style={{ height: height * 0.13, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
                         <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}
                             onPress={() => { this.props.navigation.goBack() }}
                         >
@@ -379,11 +383,7 @@ class ViewCategory extends Component {
                         </View>
 
                     </View>
-                  <ScrollView 
-                    style={{width}}
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                  >
+           
                         <FlatList
                             ListHeaderComponent={this.renderHeader()}
                             data={this.state.items}
@@ -394,34 +394,34 @@ class ViewCategory extends Component {
                                         style={{ flexDirection: "row", marginTop: 5, backgroundColor: "#eee",paddingVertical:10 }}
                                         onPress={() => { this.props.navigation.navigate('ViewItem', { item }) }}
                                     >
-                                        <View style={{ width: width * 0.1, alignItems: "center", justifyContent: "center" }}>
+                                        <View style={{ flex:0.05, alignItems: "center", justifyContent: "center" }}>
                                             <Text style={[styles.text, { color: "#000" }]}>{index+1}</Text>
                                         </View>
-                                        <View style={{ width: width * 0.3, alignItems: "center", justifyContent: "center" }}>
+                                        <View style={{ flex:0.2, alignItems: "center", justifyContent: "center" }}>
                                             <Text style={[styles.text, { color: "#000" }]}>{item.title}</Text>
                                         </View>
-                                        <View style={{ width: width * 0.2, alignItems: "center", justifyContent: "center" }}>
+                                        <View style={{ flex:0.1, alignItems: "center", justifyContent: "center" }}>
                                             <Text style={[styles.text, { color: "#000" }]}>{item.type}</Text>
                                         </View>
-                                        <View style={{ width: width * 0.2, alignItems: "center", justifyContent: "center" }}>
+                                        <View style={{flex: 0.1, alignItems: "center", justifyContent: "center" }}>
                                             <Text style={[styles.text, { color: "#000" }]}>{item.price}</Text>
                                         </View>
-                                        <View style={{ width: width * 0.25, alignItems: "center", justifyContent: "center" }}>
+                                        <View style={{ flex:0.1, alignItems: "center", justifyContent: "center" }}>
                                             <Text style={[styles.text], { color: "#000" }}>{item.totalBoxes}</Text>
                                         </View>
-                                        <View style={{ width: width * 0.25, alignItems: "center", justifyContent: "center" }}>
+                                        <View style={{flex:0.1, alignItems: "center", justifyContent: "center" }}>
                                             <Text style={[styles.text], { color: "#000" }}>{item.strips_per_boxes}</Text>
                                         </View>
-                                        <View style={{ width: width * 0.25, alignItems: "center", justifyContent: "center" }}>
+                                        <View style={{ flex:0.1, alignItems: "center", justifyContent: "center" }}>
                                             <Text style={[styles.text], { color: "#000" }}>{item.medicines_per_strips}</Text>
                                         </View>
-                                        <View style={{ width: width * 0.3, alignItems: "center", justifyContent: "center" }}>
+                                        <View style={{ flex:0.1, alignItems: "center", justifyContent: "center" }}>
                                             <Text style={[styles.text], { color: "#000" }}>{item.min_quantity}</Text>
                                         </View>
-                                        <View style={{ width: width * 0.3, alignItems: "center", justifyContent: "center" }}>
+                                        <View style={{ flex:0.1, alignItems: "center", justifyContent: "center" }}>
                                             <Text style={[styles.text], { color: "#000" }}>{item.total_quantity}</Text>
                                         </View>
-                                        <TouchableOpacity style={{ width:width*0.1, alignItems: "center", justifyContent: "center" }}
+                                        <TouchableOpacity style={{ flex:0.05, alignItems: "center", justifyContent: "center" }}
                                             onPress={() => { this.createAlert(item) }}
                                         >
                                             <Entypo name="cross" size={20} color="red" />
@@ -431,8 +431,7 @@ class ViewCategory extends Component {
                                 )
                             }}
                         />
-                  </ScrollView>
-                    
+          
                     <View style={{
                         position: "absolute",
                         bottom: 50,

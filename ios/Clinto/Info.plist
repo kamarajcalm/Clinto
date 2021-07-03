@@ -60,8 +60,6 @@
     <string>Allow $(PRODUCT_NAME) to access your location</string>
     <key>NSLocationAlwaysUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your location</string>
-    <key>UIUserInterfaceStyle</key>
-    <string>Light</string>
     <key>CFBundleURLTypes</key>
     <array>
       <dict>
@@ -73,6 +71,10 @@
     </array>
     <key>UIRequiresFullScreen</key>
     <true/>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>Allow $(PRODUCT_NAME) to save photos</string>
+    <key>UIUserInterfaceStyle</key>
+    <string>Light</string>
     <key>CFBundleDisplayName</key>
     <string>Clinto</string>
     <key>GMSApiKey</key>

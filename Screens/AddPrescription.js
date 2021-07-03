@@ -126,6 +126,14 @@ class AddPrescription extends Component {
             duplicate[index].medicine = value
             return this.setState({ medicines: duplicate })
         }
+        if (type == "validTimes") {
+            duplicate[index].invalid_count = value
+            return this.setState({ medicines: duplicate })
+        }
+        if (type == "containsDrugs") {
+            duplicate[index].is_drug = value
+            return this.setState({ medicines: duplicate })
+        }
 }
     backFunction =(medicines)=>{
         try{
@@ -136,7 +144,9 @@ class AddPrescription extends Component {
                     i.night_count = 0,
                     i.total_qty = 0,
                     i.days = 0,
-                    i.medicine = i?.title
+                    i.medicine = i?.title,
+                    i.is_drug=false,
+                    i.invalid_count=0
             })
         }catch(e){
           
@@ -207,10 +217,8 @@ class AddPrescription extends Component {
             next_visit:this.state.nextVisit,
             address:this.state.Address,
             new_disease:this.state.Disease,
-            contains_drug:this.state.containDrugs,
-            total_times:Number(this.state.validityTimes)
         }
-   
+    
         if(this.state.appointmentId){
           sendData.appointment =this.state.appointmentId
         }
@@ -497,8 +505,8 @@ class AddPrescription extends Component {
                                 style={{ width: width * 0.7, height: height * 0.15, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10, textAlignVertical:"top"}}
                             />
                         </View>
-                        {/* <View style={{ marginTop: 20 }}>
-                            <Text style={[styles.text], { fontWeight: "bold", fontSize: 18 }}>Diseases</Text>
+                        <View style={{ marginTop: 20 }}>
+                            <Text style={[styles.text], { fontWeight: "bold", fontSize: 18 }}>Diagnosis</Text>
                             <TextInput
                                 value={this.state.Disease}
                                 onChangeText={(Disease) => { this.searchDiseases(Disease) }}
@@ -531,7 +539,7 @@ class AddPrescription extends Component {
                                    )
                                })
                            }
-                        </ScrollView>} */}
+                        </ScrollView>}
                 <View style={{ marginTop: 20 }}>
                     <Text style={[styles.text], { fontWeight: "bold", fontSize: 18 }}>Add Medicines</Text>
                                 <View style={{ flexDirection: "row", marginTop: 20,alignItems:'center',justifyContent:"space-around"}}>
@@ -541,7 +549,7 @@ class AddPrescription extends Component {
                         <AntDesign name={"search1"} size={30} color={themeColor} />
                     </TouchableOpacity>
                  
-                </View>    
+                       </View>    
                 
                 </View>
                 {
@@ -585,31 +593,7 @@ class AddPrescription extends Component {
                                 </View>
                            
                         </TouchableOpacity>
-                            <View style={{ marginHorizontal: 10,flexDirection:"row" ,alignItems:"center",justifyContent:"space-between",marginVertical:20}}>
-                                <View>
-                                    <Text style={[styles.text], { fontWeight: "bold", fontSize: 18 }}>Contains Drugs</Text>
-                                </View>
-                                <Switch
-                                    
-                                    style={{ marginLeft: 10 }}
-                                    trackColor={{ false: '#767577', true: '#81b0ff' }}
-                                    thumbColor={this.state.containDrugs ? '#f5dd4b' : '#f4f3f4'}
-                                    ios_backgroundColor="#3e3e3e"
-                                    onValueChange={() => { this.toggleSwitch() }}
-                                    value={this.state.containDrugs}
-                                />
-                             
-                            </View>
-                           {this.state.containDrugs&& <View style={{ marginTop: 20 }}>
-                                <Text style={[styles.text], { fontWeight: "bold", fontSize: 18 }}>Enter Validity Times</Text>
-                                <TextInput
-                                    value={this.state.validityTimes}
-                                    selectionColor={themeColor}
-                                    keyboardType="numeric"
-                                    onChangeText={(validityTimes) => { this.setState({ validityTimes }) }}
-                                    style={{ width: width * 0.7, height: height * 0.05, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 }}
-                                />
-                            </View>}
+                   
                 <View style={{height:height*0.15,alignItems:"center",justifyContent:'center'}}>
                     <TouchableOpacity style={{height:height*0.06,alignItems:"center",justifyContent:'center',backgroundColor:themeColor,width:width*0.3,borderRadius:15}}
                       onPress={()=>{this.addPriscription()}}

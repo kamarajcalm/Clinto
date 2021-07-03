@@ -146,6 +146,8 @@ class ViewAppointmentDoctors extends Component {
         let api =null
         if (this.props.user.profile.occupation == "Doctor"){
              api = `${url}/api/prescription/createDoctorChat/?doctor=${this.props.user.id}&customer=${this.state.item.requesteduser}`
+        }else{
+            api = `${url}/api/prescription/createClinicChat/?clinic=${this.state.item.clinic}&customer=${this.state.item.requesteduser}`
         }
 
         let data = await HttpsClient.get(api)

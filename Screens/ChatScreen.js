@@ -172,8 +172,10 @@ class ChatScreen extends Component {
 
         this.connection = new wamp.Connection({ url: wampServer, realm: 'default' });
         // console.log(this.state.item.uid, "jhu")
+        console.log(this.connection)
         if (this.connection != null ) {
             this.connection.onopen = (session, details) => {
+               
                 session.subscribe(this.state.item.uid, this.messageHandler).then(
                     (sub) => {
                     },
@@ -205,6 +207,7 @@ class ChatScreen extends Component {
          }
         } else if (this.props.user.profile.occupation == "ClinicRecoptionist" || this.props.user.profile.occupation == "MedicalRecoptionist"){
          return this.setState({ chatType: "clinic&pateint" },()=>{
+            
              this.getChatMessage("clinicThread")
          })
         } else if (this.props.user.profile.occupation == "Doctor"){
@@ -500,6 +503,7 @@ sendMessage =async()=>{
   render() {
       console.log(this.props.user.profile.occupation)
       const{ item }=this.state
+      console.log(item)
       let chatTitle =""
       if (this.props.user.profile.occupation =="Customer"){
           chatTitle =this.state.item.clinictitle||this.state.item.doctortitle
@@ -509,13 +513,13 @@ sendMessage =async()=>{
           chatTitle = this.state.item?.customertitle
       }
       if (this.props.user.profile.occupation == "ClinicRecoptionist") {
-          chatTitle = this.state.item.clinictitle
+          chatTitle = this.state?.item?.customertitle||this.state.item.clinictitle
       }
       if (this.props.user.profile.occupation == "MediacalRep") {
-          chatTitle = this.state.item.clinictitle
+          chatTitle = this.state?.item?.customertitle || this.state.item?.clinictitle
       }
       if (this.props.user.profile.occupation == "MedicalRecoptionist"){
-          chatTitle = this.state.item?.clinictitle
+          chatTitle = this.state?.item?.customertitle || this.state.item?.clinictitle
       }
 //  console.log(this.props.user)
     return (
@@ -555,46 +559,49 @@ sendMessage =async()=>{
               renderItem={({item,index})=>{
                   if (this.state.chatType =="clinic&pateint"){
                       //   if non -sender
+                            // multiple recptionists can chat from clinic
 
-                      if (item.senderPk.toString() != this.props.user.id.toString() && !item.is_clinic) {
-                          if (item.msgType == "text") {
-                              return (
-                                  <View style={{ alignSelf: "flex-start", backgroundColor: '#eeee', padding: 10, borderRadius: 20, marginRight: 10, marginTop: 10, marginLeft: 20, maxWidth: width * 0.6 }}>
+                      if (this.props.user.profile.occupation == "Customer" && item.senderPk.toString() != this.props.user.id.toString() || this.props.user.profile.occupation == "ClinicRecoptionist" && item.senderPk.toString() != this.props.user.id.toString() && !item.is_clinic || this.props.user.profile.occupation == "MediacalRep" && item.senderPk.toString() != this.props.user.id.toString() && !item.is_clinic || this.props.user.profile.occupation=="MedicalRecoptionist" && item.senderPk.toString() != this.props.user.id.toString() && !item.is_clinic){
+                               
+                                  
+                                    if (item.msgType == "text") {
+                                        return (
+                                            <View style={{ alignSelf: "flex-start", backgroundColor: '#eeee', padding: 10, borderRadius: 20, marginRight: 10, marginTop: 10, marginLeft: 20, maxWidth: width * 0.6 }}>
 
-                                      <Text style={[styles.text]}>{item.message}</Text>
-                                      <View style={{ alignSelf: "flex-end" }}>
-                                          <Text style={[styles.text, { color: "#1f1f1f", fontSize: 8 }]}>{moment(item.created).format('hh:mm a')}</Text>
-                                      </View>
-                                      <View style={styles.leftArrow}></View>
+                                                <Text style={[styles.text]}>{item.message}</Text>
+                                                <View style={{ alignSelf: "flex-end" }}>
+                                                    <Text style={[styles.text, { color: "#1f1f1f", fontSize: 8 }]}>{moment(item.created).format('hh:mm a')}</Text>
+                                                </View>
+                                                <View style={styles.leftArrow}></View>
 
-                                      <View style={styles.leftArrowOverlap}></View>
-                                  </View>
-                              )
-                          }
-                          if (item.msgType == "image") {
+                                                <View style={styles.leftArrowOverlap}></View>
+                                            </View>
+                                        )
+                                    }
+                                    if (item.msgType == "image") {
 
-                              return (
-                                  <TouchableOpacity style={{ alignSelf: "flex-start", backgroundColor: '#eeee', padding: 10, borderRadius: 20, marginRight: 10, marginTop: 10, marginLeft: 20, maxWidth: width * 0.6 }}
-                                      onPress={() => {
-                                          this.props.navigation.navigate('ImageViewer', { images: this.state.images, index: index })
-                                      }}
-                                  >
-                                      <Image
-                                          source={{ uri: item.attachment }}
-                                          style={{ height: height * 0.15, width: width * 0.4, resizeMode: "contain" }}
-                                      />
+                                        return (
+                                            <TouchableOpacity style={{ alignSelf: "flex-start", backgroundColor: '#eeee', padding: 10, borderRadius: 20, marginRight: 10, marginTop: 10, marginLeft: 20, maxWidth: width * 0.6 }}
+                                                onPress={() => {
+                                                    this.props.navigation.navigate('ImageViewer', { images: this.state.images, index: index })
+                                                }}
+                                            >
+                                                <Image
+                                                    source={{ uri: item.attachment }}
+                                                    style={{ height: height * 0.15, width: width * 0.4, resizeMode: "contain" }}
+                                                />
 
-                                      <Text style={[styles.text]}>{item.message}</Text>
-                                      <View style={{ alignSelf: "flex-end" }}>
-                                          <Text style={[styles.text, { color: "#fff", fontSize: 8 }]}>{moment(item?.created).format("hh:mm a")}</Text>
-                                      </View>
-                                      <View style={styles.leftArrow}></View>
+                                                <Text style={[styles.text]}>{item.message}</Text>
+                                                <View style={{ alignSelf: "flex-end" }}>
+                                                    <Text style={[styles.text, { color: "#fff", fontSize: 8 }]}>{moment(item?.created).format("hh:mm a")}</Text>
+                                                </View>
+                                                <View style={styles.leftArrow}></View>
 
-                                      <View style={styles.leftArrowOverlap}></View>
-                                  </TouchableOpacity>
-                              )
+                                                <View style={styles.leftArrowOverlap}></View>
+                                            </TouchableOpacity>
+                                        )
 
-                          }
+                                    }
                           if (item.msgType == "voice") {
                               return (
                                   <View style={{ alignSelf: "flex-start", backgroundColor: '#eeee', padding: 10, borderRadius: 20, marginRight: 10, marginTop: 10, marginLeft: 20, maxWidth: width * 0.6 }}>
@@ -639,6 +646,7 @@ sendMessage =async()=>{
                       }
 
                       //    if sender
+                 
                       if (item.msgType == "text") {
                           return (
                               <View style={{ alignSelf: 'flex-end', backgroundColor: themeColor, padding: 10, borderRadius: 20, marginRight: 20, marginTop: 10, maxWidth: width * 0.6 }}>

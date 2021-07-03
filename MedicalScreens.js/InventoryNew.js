@@ -18,6 +18,9 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+import { NavigationContainer, CommonActions } from '@react-navigation/native';
+import * as ScreenOrientation from 'expo-screen-orientation';
+
 let types = [
     {
         label: "Pending", value: 'Pending'
@@ -238,8 +241,27 @@ class InventoryNew extends Component {
               this.setState({soldItems:data.data})
         }
     }
+    changeOrientation =async()=>{
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+    }
+    handleNavigate = async()=>{
+    
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+        return this.props.navigation.dispatch(
+            CommonActions.reset({
+                index: 0,
+                routes: [
+                    {
+                        name:'MainTab',
+
+                    },
+
+                ],
+            })
+        )
+    }
     componentDidMount() {
-        console.log(this.props.clinic.inventory,"cccccccccc")
+     console.log(this.props.clinic.inventory,"cccccccccc")
      this.getItems()  
      this.getOrders()
      this.getSold()
@@ -247,6 +269,7 @@ class InventoryNew extends Component {
             this.getItems()
             this.getOrders()
             this.getSold()
+            this.changeOrientation()
         });
     }
     componentWillUnmount(){
@@ -271,20 +294,21 @@ class InventoryNew extends Component {
         )
     }
     FirstRoute =()=>{
+        const { height, width } = Dimensions.get("window");
         return(
             <View style={{flex:1}}>
-               <View style={{height:height*0.08,flexDirection:'row',backgroundColor:"#fff",alignItems:"center",justifyContent:"space-around"}}>
+               <View style={{flexDirection:'row',backgroundColor:"#fff",alignItems:"center",justifyContent:"space-around",marginTop:10}}>
                     <View>
                        <TextInput 
                          value={this.state.categoryName}
-                         style={{height:height*0.05,width:width*0.6,backgroundColor:"#fafafa",borderRadius:10}}
+                         style={{height:height*0.1,width:width*0.6,backgroundColor:"#fafafa",borderRadius:10}}
                          placeholder ={"Enter category"}
                          selectionColor ={themeColor}
                             onChangeText={(categoryName) => { this.setState({ categoryName})}}
                        />
                     </View>
                     <View>
-                       <TouchableOpacity style={{height:height*0.05,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:10}}
+                       <TouchableOpacity style={{height:height*0.1,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:10}}
                         onPress ={()=>{this.addCategory()}}
                        >
                             {this.state.creating?<ActivityIndicator size ={"small"} color={"#fff"}/>: <Text style={[styles.text,{color:"#fff"}]}>Add</Text>}
@@ -307,7 +331,10 @@ class InventoryNew extends Component {
                                 <Text style={[styles.text, { }]}>{item.title}</Text>
                             </View>
                             <TouchableOpacity style={{ flex: 0.2, alignItems: 'center', justifyContent: 'center' }}
-                                onPress={() => { this.props.navigation.navigate('ViewCategory',{item})}}
+                                onPress={() => { 
+                              
+                                    this.props.navigation.navigate('ViewCategory', { item })
+                                }}
                             >
                                 <Text style={[styles.text, {  textDecorationLine:"underline"}]}>View</Text>
                             </TouchableOpacity>
@@ -327,25 +354,25 @@ class InventoryNew extends Component {
     orderHeaders =()=>{
         return(
             <View style={{flexDirection:"row",marginTop:10}}>
-                <View style={{ width:width*0.1,alignItems:'center',justifyContent:"center"}}>
+                <View style={{ flex:0.05,alignItems:'center',justifyContent:"center"}}>
                   <Text style={[styles.text,{color:"#000"}]}>#</Text>
                 </View>
-                <View style={{ width: width * 0.3, alignItems: 'center', justifyContent: "center" }}>
+                <View style={{flex:0.18, alignItems: 'center', justifyContent: "center" }}>
                     <Text style={[styles.text, { color: "#000" }]}>Arriving Date</Text>
                 </View>
-                <View style={{ width: width * 0.35, alignItems: 'center', justifyContent: "center" }}>
+                <View style={{flex: 0.18, alignItems: 'center', justifyContent: "center" }}>
                     <Text style={[styles.text, { color: "#000" }]}>Distributor Name</Text>
                 </View>
-                <View style={{ width: width * 0.3, alignItems: 'center', justifyContent: "center" }}>
+                <View style={{flex: 0.18, alignItems: 'center', justifyContent: "center" }}>
                     <Text style={[styles.text, { color: "#000" }]}>Mobile No</Text>
                 </View>
-                <View style={{ width: width * 0.2, alignItems: 'center', justifyContent: "center" }}>
+                <View style={{flex: 0.18, alignItems: 'center', justifyContent: "center" }}>
                     <Text style={[styles.text, { color: "#000" }]}>Discount</Text>
                 </View>
-                <View style={{ width: width * 0.2, alignItems: 'center', justifyContent: "center" }}>
+                <View style={{flex: 0.18, alignItems: 'center', justifyContent: "center" }}>
                     <Text style={[styles.text, { color: "#000" }]}>Status</Text>
                 </View>
-                <View style={{ width: width * 0.1, alignItems: 'center', justifyContent: "center" }}>
+                <View style={{flex:0.05, alignItems: 'center', justifyContent: "center" }}>
                  
                 </View>
             </View>
@@ -483,12 +510,10 @@ class InventoryNew extends Component {
         );
     }
     SecondRoute =()=>{
+        const { height, width } = Dimensions.get("window");
         return (
             <View style={{flex:1}}>
-                <ScrollView
-                 horizontal={true}
-                 showsHorizontalScrollIndicator={false}
-                >
+           
                
                <FlatList 
                  ListHeaderComponent ={this.orderHeaders()}
@@ -496,28 +521,28 @@ class InventoryNew extends Component {
                  keyExtractor ={(item,index)=>index.toString()}
                  renderItem = {({item,index})=>{
                    return(
-                       <TouchableOpacity style={{ flexDirection: "row", flex: 1, marginTop: 10,backgroundColor:"#eee" ,paddingVertical:20}}
+                       <TouchableOpacity style={{ flexDirection: "row", flex: 1, marginTop: 10,backgroundColor:"#eee" ,paddingVertical:height*0.01}}
                          onPress ={()=>{this.props.navigation.navigate('ViewOrders',{item})}}
                        >
-                           <View style={{ width: width * 0.1, alignItems: 'center', justifyContent: "center" }}>
+                           <View style={{ flex: 0.05, alignItems: 'center', justifyContent: "center" }}>
                                <Text style={[styles.text, { color: "#000" }]}>{index+1}</Text>
                            </View>
-                           <View style={{ width: width * 0.3, alignItems: 'center', justifyContent: "center" }}>
+                           <View style={{ flex:0.18, alignItems: 'center', justifyContent: "center" }}>
                                <Text style={[styles.text, { color: "#000" }]}>{item.expected_arriving}</Text>
                            </View>
-                           <View style={{ width: width * 0.35, alignItems: 'center', justifyContent: "center" }}>
+                           <View style={{ flex: 0.18, alignItems: 'center', justifyContent: "center" }}>
                                <Text style={[styles.text, { color: "#000" }]}>{item.from_contact}</Text>
                            </View>
-                           <View style={{ width: width * 0.3, alignItems: 'center', justifyContent: "center" }}>
+                           <View style={{ flex: 0.18, alignItems: 'center', justifyContent: "center" }}>
                                <Text style={[styles.text, { color: "#000" }]}>{item.from_contactNo}</Text>
                            </View>
-                           <View style={{ width: width * 0.2, alignItems: 'center', justifyContent: "center" }}>
+                           <View style={{ flex: 0.18,alignItems: 'center', justifyContent: "center" }}>
                                <Text style={[styles.text, { color: "#000" }]}>{item.discount}</Text>
                            </View>
-                           <View style={{ width: width * 0.2, alignItems: 'center', justifyContent: "center" }}>
+                           <View style={{ flex: 0.18, alignItems: 'center', justifyContent: "center" }}>
                                <Text style={[styles.text, { color: this.validateColor(item.status) }]}>{item.status}</Text>
                            </View>
-                           <TouchableOpacity style={{ width: width * 0.1, alignItems: 'center', justifyContent: "center" }}
+                           <TouchableOpacity style={{ flex: 0.05, alignItems: 'center', justifyContent: "center" }}
                                onPress={() => { this.AlertForOrderDelete(item) }}
                            >
                                <Entypo name="cross" size={20} color="red" />
@@ -528,10 +553,10 @@ class InventoryNew extends Component {
                  }}
                />
 
-                </ScrollView>
+ 
                 <View style={{
                     position: "absolute",
-                    bottom: 100,
+                    bottom: 30,
                     left: 20,
                     right: 20,
                     flex: 1,
@@ -541,14 +566,22 @@ class InventoryNew extends Component {
                     borderRadius: 20
                 }}>
                     <TouchableOpacity
-                        style={{ backgroundColor: themeColor, width: width * 0.4, alignItems: "center", justifyContent: "center", borderRadius: 5, height: height * 0.05 }}
-                        onPress={() => { this.props.navigation.navigate('CreateBill') }}
+                        style={{ backgroundColor: themeColor, width: width * 0.4, alignItems: "center", justifyContent: "center", borderRadius: 5, height: height * 0.09 }}
+                        onPress={async() => { 
+                            await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+                            this.props.navigation.navigate('CreateBill') 
+                        }}
                     >
                         <Text style={[styles.text, { color: "#fff" }]}>Create Bill</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={{backgroundColor:themeColor,width:width*0.4,alignItems:"center",justifyContent:"center",borderRadius:5,height:height*0.05}}
-                        onPress={() => { this.props.navigation.navigate('CreateOrders') }}
+                        style={{ backgroundColor: themeColor, width: width * 0.4, alignItems: "center", justifyContent: "center", borderRadius: 5, height: height * 0.09 }}
+                        onPress={async() => { 
+
+                            await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+                            this.props.navigation.navigate('CreateOrders') 
+                        
+                        }}
                     >
                       <Text style={[styles.text,{color:"#fff"}]}>Create orders</Text>
                     </TouchableOpacity>
@@ -558,48 +591,44 @@ class InventoryNew extends Component {
         )
     }
     renderHeader3 =()=>{
+        const { height, width } = Dimensions.get("window");
         return(
-            <View 
-             style={{flexDirection:"row",marginTop:10,paddingVertical:15}}
-              
-            >
-            <View 
-             style={{width:width*0.1,alignItems:"center",justifyContent:"center"}}
-            >
-               <Text style={[styles.text,{color:"#000"}]}>#</Text>
-            </View>
+            <View style={{flexDirection:"row",marginVertical:10,flex:1}}>
+               <View style={{flex:0.05,alignItems:"center",justifyContent:"center"}}>
+                      <Text style={[styles.text,{color:"#000"}]}>#</Text>
+               </View>
                 <View
-                    style={{ width: width * 0.3, alignItems: "center", justifyContent: "center" }}
+                    style={{ flex:0.2, alignItems: "center", justifyContent: "center" }}
                 >
                     <Text style={[styles.text, { color: "#000" }]}>Name</Text>
                 </View>
                 <View
-                    style={{ width: width * 0.3, alignItems: "center", justifyContent: "center" }}
+                    style={{flex:0.15, alignItems: "center", justifyContent: "center" }}
                 >
                     <Text style={[styles.text, { color: "#000" }]}>Mobile</Text>
                 </View>
                 <View
-                    style={{ width: width * 0.2, alignItems: "center", justifyContent: "center" }}
+                    style={{flex:0.15, alignItems: "center", justifyContent: "center" }}
                 >
                     <Text style={[styles.text, { color: "#000" }]}>Date</Text>
                 </View>
                 <View
-                    style={{ width: width * 0.2, alignItems: "center", justifyContent: "center" }}
+                    style={{ flex:0.15, alignItems: "center", justifyContent: "center" }}
                 >
                     <Text style={[styles.text, { color: "#000" }]}>Amount</Text>
                 </View>
                 <View
-                    style={{ width: width * 0.2, alignItems: "center", justifyContent: "center" }}
+                    style={{flex:0.15, alignItems: "center", justifyContent: "center" }}
                 >
                     <Text style={[styles.text, { color: "#000" }]}>Discount</Text>
                 </View>
                 <View
-                    style={{ width: width * 0.2, alignItems: "center", justifyContent: "center" }}
+                    style={{flex:0.15, alignItems: "center", justifyContent: "center" }}
                 >
                     <Text style={[styles.text, { color: "#000" }]}>Item Count</Text>
                 </View>
                 <View
-                    style={{ width: width * 0.2, alignItems: "center", justifyContent: "center" }}
+                    style={{flex:0.1, alignItems: "center", justifyContent: "center" }}
                 >
                     <Text style={[styles.text, { color: "#000" }]}>Action</Text>
                 </View>
@@ -607,12 +636,10 @@ class InventoryNew extends Component {
         )
     }
     ThirdRoute =()=>{
+        const { height, width } = Dimensions.get("window");
         return (
             <View style={{flex:1}}>
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-              >
+         
                    <FlatList 
                      data ={this.state.soldItems}
                      keyExtractor={(item,index)=>index.toString()}
@@ -620,46 +647,46 @@ class InventoryNew extends Component {
                      renderItem ={({item,index})=>{
                          return(
                              <TouchableOpacity
-                                 style={{ flexDirection: "row", marginTop: 0.4 ,backgroundColor:"#eee",paddingVertical:10}}
+                                 style={{ flexDirection: "row",backgroundColor:"#eee",paddingVertical:height*0.02,marginTop:0.5}}
                                  onPress ={()=>{this.props.navigation.navigate("ViewSold",{item})}}
                              >
                                  <View
-                                     style={{ width: width * 0.1, alignItems: "center", justifyContent: "center" }}
+                                     style={{ flex:0.05, alignItems: "center", justifyContent: "center" }}
                                  >
                                      <Text style={[styles.text, {color:"#000"  }]}>{index+1}</Text>
                                  </View>
                                  <View
-                                     style={{ width: width * 0.3, alignItems: "center", justifyContent: "center" }}
+                                     style={{ flex:0.2, alignItems: "center", justifyContent: "center" }}
                                  >
                                      <Text style={[styles.text, {color:"#000"}]}>{item.contact_details}</Text>
                                  </View>
                                  <View
-                                     style={{ width: width * 0.3, alignItems: "center", justifyContent: "center" }}
+                                     style={{ flex:0.15, alignItems: "center", justifyContent: "center" }}
                                  >
                                      <Text style={[styles.text, {color:"#000"}]}>{item.contact_no}</Text>
                                  </View>
                                  <View
-                                     style={{ width: width * 0.2, alignItems: "center", justifyContent: "center" }}
+                                     style={{ flex:0.15,alignItems: "center", justifyContent: "center" }}
                                  >
                                      <Text style={[styles.text, {color:"#000"}]}>{moment(item.created).format('DD-MM-YYYY')}</Text>
                                  </View>
                                  <View
-                                     style={{ width: width * 0.2, alignItems: "center", justifyContent: "center" }}
+                                     style={{ flex:0.15, alignItems: "center", justifyContent: "center" }}
                                  >
                                      <Text style={[styles.text, { color:"#000" }]}>{item.total}</Text>
                                  </View>
                                  <View
-                                     style={{ width: width * 0.2, alignItems: "center", justifyContent: "center" }}
+                                     style={{ flex:0.15,alignItems: "center", justifyContent: "center" }}
                                  >
                                      <Text style={[styles.text, { color:"#000" }]}>{item.discount}</Text>
                                  </View>
                                  <View
-                                     style={{ width: width * 0.2, alignItems: "center", justifyContent: "center" }}
+                                     style={{ flex:0.15, alignItems: "center", justifyContent: "center" }}
                                  >
                                      <Text style={[styles.text, { color:"#000" }]}>{item.items.length}</Text>
                                  </View>
                                  <View
-                                     style={{ width: width * 0.2, alignItems: "center", justifyContent: "center" }}
+                                     style={{ flex:0.1, alignItems: "center", justifyContent: "center" }}
                                  >
                                      <TouchableOpacity 
                                       onPress ={()=>{this.createAlertSold(item,index)}}
@@ -673,7 +700,7 @@ class InventoryNew extends Component {
                      }}
                    />
 
-              </ScrollView>
+      
             </View>
         )
     }
@@ -688,6 +715,7 @@ class InventoryNew extends Component {
         Sold: this.ThirdRoute,
     });
     render() {
+ 
         const { index, routes } = this.state
         return (
             <>
@@ -730,6 +758,14 @@ class InventoryNew extends Component {
                         onConfirm={this.handleConfirm}
                         onCancel={this.hideDatePicker}
                     />
+                    <View style={{position:"absolute",top:12,left:20}}>
+                            <TouchableOpacity
+                            
+                            onPress={()=>{this.handleNavigate()}}
+                            >
+                                  <Ionicons name="arrow-back" size={24} color="black" />
+                            </TouchableOpacity>
+                    </View>
                 </SafeAreaView>
 
               

@@ -48,7 +48,9 @@ export default class MedicineDetails extends Component {
         qty:'',
         comment:"",
         selectedVariant:"",
-        name:""
+        name:"",
+        containsDrugs:false,
+        validTimes:""
     };
   }
     toggleSwitch =()=>{
@@ -56,9 +58,19 @@ export default class MedicineDetails extends Component {
             this.props.changeFunction("after_food",this.state.afterFood,this.props.index)
         })
     }
+    toggleDrug = () => {
+        this.setState({ containsDrugs: !this.state.containsDrugs }, () => {
+            this.props.changeFunction("containsDrugs", this.state.containsDrugs, this.props.index)
+        })
+    }
     changeDays =(text)=>{
         this.setState({days:text},()=>{
             this.props.changeFunction("days", this.state.days, this.props.index)
+        })
+    }
+    changeValidTimes = (text) => {
+        this.setState({ validTimes: text }, () => {
+            this.props.changeFunction("validTimes", this.state.validTimes, this.props.index)
         })
     }
     changeQty = (text)=>{
@@ -280,7 +292,7 @@ export default class MedicineDetails extends Component {
             </View>
             <>
          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", flex: 0.2 }}>
-              { item.type!="Drops"&&<View style={{flexDirection:"row"}}>
+              {<View style={{flexDirection:"row"}}>
                     <Text style={[styles.text, { fontWeight: 'bold' }]}>After food</Text>
 
                     <Switch
@@ -318,6 +330,35 @@ export default class MedicineDetails extends Component {
                        style={{height:height*0.07,width:"100%",backgroundColor:"#eee",borderRadius:10,marginTop:10,textAlignVertical:"top",padding:5}}
                        value ={this.state.comment}
                      />
+                 </View>
+                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", flex: 0.2 ,marginVertical:20}}>
+                     {item.type != "Drops" && <View style={{ flexDirection: "row" }}>
+                         <Text style={[styles.text, { fontWeight: 'bold' }]}>Contains Drugs</Text>
+
+                         <Switch
+                             style={{ marginLeft: 10 }}
+                             trackColor={{ false: '#767577', true: '#81b0ff' }}
+                             thumbColor={this.state.containsDrugs ? '#f5dd4b' : '#f4f3f4'}
+                             ios_backgroundColor="#3e3e3e"
+                             onValueChange={() => { this.toggleDrug() }}
+                             value={this.state.containsDrugs}
+                         />
+                     </View>}
+                     <View style={{ flexDirection: 'row' }}>
+                         <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                             <Text>Enter valid Times</Text>
+                         </View>
+
+                         <TextInput
+                             value={this.state.validTimes}
+                             selectionColor={themeColor}
+                             keyboardType="numeric"
+                             style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5 }}
+                             onChangeText={(text) => { this.changeValidTimes(text) }}
+
+                         />
+                     </View>
+
                  </View>
          <TouchableOpacity
                 onPress={() => { this.props.changeFunction("delete",item,index)}}
@@ -436,6 +477,35 @@ export default class MedicineDetails extends Component {
                           style={{ height: height * 0.07, width: "100%", backgroundColor: "#eee", borderRadius: 10, marginTop: 10, textAlignVertical: "top", padding: 5 }}
                           value={this.state.comment}
                       />
+                  </View>
+                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", flex: 0.2, marginVertical: 20 }}>
+                      {<View style={{ flexDirection: "row" }}>
+                          <Text style={[styles.text, { fontWeight: 'bold' }]}>Contains Drugs</Text>
+
+                          <Switch
+                              style={{ marginLeft: 10 }}
+                              trackColor={{ false: '#767577', true: '#81b0ff' }}
+                              thumbColor={this.state.containsDrugs ? '#f5dd4b' : '#f4f3f4'}
+                              ios_backgroundColor="#3e3e3e"
+                              onValueChange={() => { this.toggleDrug() }}
+                              value={this.state.containsDrugs}
+                          />
+                      </View>}
+                      <View style={{ flexDirection: 'row' }}>
+                          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                              <Text>Enter valid Times</Text>
+                          </View>
+
+                          <TextInput
+                              value={this.state.validTimes}
+                              selectionColor={themeColor}
+                              keyboardType="numeric"
+                              style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5 }}
+                              onChangeText={(text) => { this.changeValidTimes(text) }}
+
+                          />
+                      </View>
+
                   </View>
                   <TouchableOpacity
                       onPress={() => { this.props.changeFunction("delete", item, index) }}
@@ -567,6 +637,35 @@ export default class MedicineDetails extends Component {
                           value={this.state.comment}
                       />
                   </View>
+                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", flex: 0.2, marginVertical: 20 }}>
+                      {<View style={{ flexDirection: "row" }}>
+                          <Text style={[styles.text, { fontWeight: 'bold' }]}>Contains Drugs</Text>
+
+                          <Switch
+                              style={{ marginLeft: 10 }}
+                              trackColor={{ false: '#767577', true: '#81b0ff' }}
+                              thumbColor={this.state.containsDrugs ? '#f5dd4b' : '#f4f3f4'}
+                              ios_backgroundColor="#3e3e3e"
+                              onValueChange={() => { this.toggleDrug() }}
+                              value={this.state.containsDrugs}
+                          />
+                      </View>}
+                      <View style={{ flexDirection: 'row' }}>
+                          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                              <Text>Enter valid Times</Text>
+                          </View>
+
+                          <TextInput
+                              value={this.state.validTimes}
+                              selectionColor={themeColor}
+                              keyboardType="numeric"
+                              style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5 }}
+                              onChangeText={(text) => { this.changeValidTimes(text) }}
+
+                          />
+                      </View>
+
+                  </View>
                   <TouchableOpacity
                       onPress={() => { this.props.changeFunction("delete", item, index) }}
                       style={{ position: "absolute", top: 10, right: 10, }}
@@ -626,6 +725,35 @@ export default class MedicineDetails extends Component {
                       </View>
                      
                   </View>
+                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", flex: 0.2, marginVertical: 20 }}>
+                      {<View style={{ flexDirection: "row" }}>
+                          <Text style={[styles.text, { fontWeight: 'bold' }]}>Contains Drugs</Text>
+
+                          <Switch
+                              style={{ marginLeft: 10 }}
+                              trackColor={{ false: '#767577', true: '#81b0ff' }}
+                              thumbColor={this.state.containsDrugs ? '#f5dd4b' : '#f4f3f4'}
+                              ios_backgroundColor="#3e3e3e"
+                              onValueChange={() => { this.toggleDrug() }}
+                              value={this.state.containsDrugs}
+                          />
+                      </View>}
+                      <View style={{ flexDirection: 'row' }}>
+                          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                              <Text>Enter valid Times</Text>
+                          </View>
+
+                          <TextInput
+                              value={this.state.validTimes}
+                              selectionColor={themeColor}
+                              keyboardType="numeric"
+                              style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5 }}
+                              onChangeText={(text) => { this.changeValidTimes(text) }}
+
+                          />
+                      </View>
+
+                  </View>
                   <TouchableOpacity
                       onPress={() => { this.props.changeFunction("delete", item, index) }}
                       style={{ position: "absolute", top: 10, right: 10, }}
@@ -669,6 +797,35 @@ export default class MedicineDetails extends Component {
                           style={{ height: height * 0.07, width: "100%", backgroundColor: "#eee", borderRadius: 10, marginTop: 10, textAlignVertical: "top", padding: 5 }}
                           value={this.state.comment}
                       />
+                  </View>
+                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", flex: 0.2, marginVertical: 20 }}>
+                      {<View style={{ flexDirection: "row" }}>
+                          <Text style={[styles.text, { fontWeight: 'bold' }]}>Contains Drugs</Text>
+
+                          <Switch
+                              style={{ marginLeft: 10 }}
+                              trackColor={{ false: '#767577', true: '#81b0ff' }}
+                              thumbColor={this.state.containsDrugs ? '#f5dd4b' : '#f4f3f4'}
+                              ios_backgroundColor="#3e3e3e"
+                              onValueChange={() => { this.toggleDrug() }}
+                              value={this.state.containsDrugs}
+                          />
+                      </View>}
+                      <View style={{ flexDirection: 'row' }}>
+                          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                              <Text>Enter valid Times</Text>
+                          </View>
+
+                          <TextInput
+                              value={this.state.validTimes}
+                              selectionColor={themeColor}
+                              keyboardType="numeric"
+                              style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5 }}
+                              onChangeText={(text) => { this.changeValidTimes(text) }}
+
+                          />
+                      </View>
+
                   </View>
                   <TouchableOpacity
                       onPress={() => { this.props.changeFunction("delete", item, index) }}
@@ -745,7 +902,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         elevation: 6,
         margin: 10,
-        height: height * 0.4,
+        height: height * 0.5,
         borderRadius: 10,
       
     },

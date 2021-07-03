@@ -22,8 +22,8 @@ Notifications.setNotificationCategoryAsync("welcome", [
     identifier: "2",
     buttonTitle: "reject",
   },
-
-]
+  
+],
 
 
 )

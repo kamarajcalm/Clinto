@@ -273,6 +273,7 @@ class CreateOrders extends Component {
         })
     }
     Modal =()=>{
+        const { height, width } = Dimensions.get("window");
         return(
             <Modal
                 deviceHeight={screenHeight}
