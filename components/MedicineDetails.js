@@ -332,7 +332,7 @@ export default class MedicineDetails extends Component {
                      />
                  </View>
                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", flex: 0.2 ,marginVertical:20}}>
-                     {item.type != "Drops" && <View style={{ flexDirection: "row" }}>
+                      <View style={{ flexDirection: "row" }}>
                          <Text style={[styles.text, { fontWeight: 'bold' }]}>Contains Drugs</Text>
 
                          <Switch
@@ -343,7 +343,7 @@ export default class MedicineDetails extends Component {
                              onValueChange={() => { this.toggleDrug() }}
                              value={this.state.containsDrugs}
                          />
-                     </View>}
+                     </View>
                      <View style={{ flexDirection: 'row' }}>
                          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                              <Text>Enter valid Times</Text>
@@ -670,7 +670,7 @@ export default class MedicineDetails extends Component {
                       onPress={() => { this.props.changeFunction("delete", item, index) }}
                       style={{ position: "absolute", top: 10, right: 10, }}
                   >
-                      <Entypo name="circle-with-cross" size={24} color="red" />
+                      <Entypo name="circle-with-cross" size={24} color="red"/>
                   </TouchableOpacity>
 
               </View>
@@ -910,7 +910,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         elevation: 6,
         margin: 10,
-        height: height * 0.27,
+        height: height * 0.37,
         borderRadius: 10,
 
     },

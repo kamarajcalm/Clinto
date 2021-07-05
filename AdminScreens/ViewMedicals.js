@@ -245,13 +245,23 @@ class ViewMedicals extends Component {
                                     }}
                                 />
                             </View>
-                            <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center", marginTop: 20 }}>
-                                <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, backgroundColor: themeColor, borderRadius: 5, alignItems: 'center', justifyContent: "center" }}
-                                    onPress={() => { this.props.navigation.navigate("CreateReceptionistMedical", { item: this.state.item }) }}
-                                >
-                                    <Text style={[styles.text, { color: "#fff" }]}>Create Receptionist</Text>
-                                </TouchableOpacity>
+                            <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around",marginVertical:20}}>
+                                <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center", marginTop: 20 }}>
+                                    <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, backgroundColor: themeColor, borderRadius: 5, alignItems: 'center', justifyContent: "center" }}
+                                        onPress={() => { this.props.navigation.navigate("CreateReceptionistMedical", { item: this.state.item }) }}
+                                    >
+                                        <Text style={[styles.text, { color: "#fff" }]}>Create Receptionist</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center", marginTop: 20 }}>
+                                    <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, backgroundColor: themeColor, borderRadius: 5, alignItems: 'center', justifyContent: "center" }}
+                                        onPress={() => { this.props.navigation.navigate("MedicalOffers", { item: this.state.item }) }}
+                                    >
+                                        <Text style={[styles.text, { color: "#fff" }]}>Manage Offers</Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
+                        
                              
                         </ScrollView>
 
