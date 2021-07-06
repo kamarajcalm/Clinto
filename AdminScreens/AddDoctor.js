@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView, ScrollView,Switch } from 'react-native';
 import settings from '../AppSettings';
 import axios from 'axios';
 import Modal from 'react-native-modal';
@@ -83,6 +83,7 @@ class AddDoctor extends Component {
             ThuArray:[],
             FriArray:[],
             SatArray:[],
+            inventory:false
         };
     }
 
@@ -387,12 +388,13 @@ class AddDoctor extends Component {
         let sendData ={
             doctor: this.state.doctor.user.id,
             clinic:this.state.clinic,
-            timings
+            timings,
+            personal:this.state.inventory
           
         }
      
         let post  =await HttpsClient.post(api,sendData)
-        console.log(post,"jkjjj")
+        
         if(post.type=="success"){
             this.showSimpleMessage("Added SuccessFully", "#00A300", "success")
               setTimeout(()=>{
@@ -528,6 +530,9 @@ class AddDoctor extends Component {
         duplicate.splice(index, 1)
         this.setState({ SatArray: duplicate })
     }
+    toggleSwitch =()=>{
+        this.setState({inventory:!this.state.inventory})
+    }
     render() {
 
         return (
@@ -566,6 +571,21 @@ class AddDoctor extends Component {
                                     >
                                         <Text>{this.state?.doctor?.name}</Text>
                                     </TouchableOpacity>
+                                </View>
+                                <View style={{flexDirection:"row",marginTop:10}}>
+                                    <View>
+                                        <Text style={styles.text}>Create Seperate Inventory</Text>
+                                    </View>
+                                 
+
+                                    <Switch
+                                        style={{ marginLeft: 10 }}
+                                        trackColor={{ false: '#767577', true: '#81b0ff' }}
+                                        thumbColor={this.state.inventory ? '#f5dd4b' : '#f4f3f4'}
+                                        ios_backgroundColor="#3e3e3e"
+                                        onValueChange={() => { this.toggleSwitch() }}
+                                        value={this.state.inventory}
+                                    />
                                 </View>
                                            {/* TIMINGS... */}
 

@@ -13,7 +13,8 @@ import {
     Linking,
     Platform,
     StatusBar,
-    ActivityIndicator
+    ActivityIndicator,
+    AsyncStorage
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 const width = Dimensions.get("screen").width
@@ -30,6 +31,8 @@ import FlashMessage, { showMessage, hideMessage } from "react-native-flash-messa
 import HttpsClient from '../api/HttpsClient';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 import Modal from 'react-native-modal';
+import LottieView from 'lottie-react-native';
+const screenHeight = Dimensions.get("screen").height
 // import Image from 'react-native-scalable-image';
 class PrescriptionViewDoctor extends Component {
     constructor(props) {
@@ -40,7 +43,8 @@ class PrescriptionViewDoctor extends Component {
             load: false,
             pk: this.props?.route?.params?.pk || null,
             showModal2: false,
-            selected:"Prescribed"
+            selected:"Prescribed",
+            lottieModal:false
         };
     }
     getDetails = async () => {
@@ -51,7 +55,18 @@ class PrescriptionViewDoctor extends Component {
             this.setState({ item: data.data })
         }
     }
+    validateAnimations = async()=>{
+        let swipeTut = await AsyncStorage.getItem("swipeTut")
+        if (swipeTut==null){
+            AsyncStorage.setItem("swipeTut","true")
+            this.setState({lottieModal:true},()=>{
+                this.animation.play()
+            })
+        }
+    }
     componentDidMount() {
+        this.validateAnimations()
+  
         if (this.state.pk) {
             this.getDetails()
         }
@@ -355,19 +370,70 @@ class PrescriptionViewDoctor extends Component {
         const { SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT } = swipeDirections;
         this.setState({ gestureName: gestureName });
         switch (gestureName) {
-            case SWIPE_UP:
-                this.props.navigation.goBack()
-                break;
-            case SWIPE_DOWN:
-                this.props.navigation.goBack()
-                break;
-            case SWIPE_LEFT:
-                this.props.navigation.goBack()
-                break;
+            // case SWIPE_UP:
+            //     this.props.navigation.goBack()
+            //     break;
+            // case SWIPE_DOWN:
+            //     this.props.navigation.goBack()
+            //     break;
+            // case SWIPE_LEFT:
+            //     this.props.navigation.goBack()
+            //     break;
             case SWIPE_RIGHT:
                 this.props.navigation.goBack()
                 break;
         }
+    }
+
+    lottieModal =()=>{
+        const config = {
+            velocityThreshold: 0.3,
+            directionalOffsetThreshold: 80
+        };
+        return(
+            <Modal
+              statusBarTranslucent={true}
+              deviceHeight={screenHeight}
+              isVisible={this.state.lottieModal}
+            >
+               
+              <View style={{height:height*0.7,alignItems:"center",justifyContent:"center"}}>
+               
+                    <LottieView
+                        ref={animation => {
+                            this.animation = animation;
+                        }}
+                        style={{
+                         
+                          
+                            width:width,
+                            height: height*0.4,
+                         
+                        }}
+                        source={require('../assets/lottie/swipe-gesture-right.json')}
+                    // OR find more Lottie files @ https://lottiefiles.com/featured
+                    // Just click the one you like, place that file in the 'assets' folder to the left, and replace the above 'require' statement
+                    />
+                    <View style={{position:"relative",top:-100,}}>
+                        <View>
+                            <Text style={[styles.text,{color:"#fff",marginTop:-40}]}>swipe to go back</Text>
+                        </View>
+                        <TouchableOpacity style={{height:height*0.05,width:width*0.2,backgroundColor:"#fff",alignItems:"center",justifyContent:"center",borderRadius:5,marginLeft:20}}
+                            onPress={() => { 
+                                this.animation.pause();
+                                this.setState({ lottieModal:false})
+                            
+                            }}
+                        >
+                            <Text style={[styles.text,{color:"#000"}]}>ok</Text>
+                        </TouchableOpacity>
+                    </View>
+                  
+              </View>
+           
+            </Modal>
+            
+        )
     }
     render() {
         const config = {
@@ -477,7 +543,7 @@ class PrescriptionViewDoctor extends Component {
                                                             <Text style={[styles.text,{color:"#000",}]}>({item.medicinename.type})</Text>
                                                         </View>
                                                      </View>
-                                                    {item.medicinename.type == "Tablet" || item.medicinename.type == "Capsules"&&<View style={{flexDirection:"row"}}>
+                                                    {(item.medicinename.type === "Tablet" || item.medicinename.type === "Capsules") && <View style={{flexDirection:"row"}}>
                                                             <View>
                                                                 <Text style={[styles.text]}> {item.morning_count} - {item.afternoon_count} -{item.night_count} </Text>
                                                             </View>
@@ -609,6 +675,9 @@ class PrescriptionViewDoctor extends Component {
                             </View>
                         </View>
                     </Modal>
+                    {
+                        this.lottieModal()
+                    }
                 </SafeAreaView>
 
             </>

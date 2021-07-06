@@ -8,7 +8,6 @@ import {
       Image, 
       Settings,
       SafeAreaView,
-      FlatList,
       TouchableOpacity,
       Linking,
      Platform,
@@ -30,6 +29,7 @@ import FlashMessage, { showMessage, hideMessage } from "react-native-flash-messa
 import HttpsClient from '../api/HttpsClient';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 import Modal from 'react-native-modal';
+import {FlatList}  from 'react-native-gesture-handler';
 // import Image from 'react-native-scalable-image';
  class PrescriptionView extends Component {
   constructor(props) {
@@ -39,7 +39,8 @@ import Modal from 'react-native-modal';
          valid: this.props.route?.params?.item?.active,
          load:false,
          pk: this.props?.route?.params?.pk ||null,
-         showModal2:false
+         showModal2:false,
+        selected:"Prescribed"
     };
     } 
      getDetails = async () => {
@@ -86,6 +87,44 @@ import Modal from 'react-native-modal';
         }
 
     }
+
+     renderHeader = () => {
+         return (
+             <View>
+                 <View style={{ marginHorizontal: 20, flexDirection: "row", marginTop: 10 }}>
+                     <View style={{ alignItems: "center", justifyContent: "center" }}>
+                         <Text style={[styles.text, { color: "#000", }]}>Reason : </Text>
+                     </View>
+                     <View style={{ alignItems: "center", justifyContent: "center" }}>
+                         <Text style={[styles.text, {}]}>{this.state.item.ongoing_treatment}</Text>
+                     </View>
+                 </View>
+                 <View style={{ marginHorizontal: 20, flexDirection: "row", marginTop: 10 }}>
+                     <View style={{ alignItems: "center", justifyContent: "center" }}>
+                         <Text style={[styles.text, { color: "#000", }]}>Diagnosis : </Text>
+                     </View>
+                     <View style={{ alignItems: "center", justifyContent: "center" }}>
+                         <Text style={[styles.text, {}]}>{this.state.item.new_disease}</Text>
+                     </View>
+                 </View>
+
+                 <View style={{ marginHorizontal: 20, flexDirection: "row", marginTop: 10, alignItems: "center", justifyContent: "space-around" }}>
+                     <TouchableOpacity
+                         onPress={() => { this.setState({ selected: "Prescribed" }) }}
+                         style={{ height: height * 0.04, width: width * 0.4, backgroundColor: this.state.selected == "Prescribed" ? themeColor : "gray", alignItems: "center", justifyContent: "center", borderRadius: 5 }}
+                     >
+                         <Text style={[styles.text, { color: "#fff" }]}>Prescribed</Text>
+                     </TouchableOpacity>
+                     <TouchableOpacity
+                         onPress={() => { this.setState({ selected: "Medicines Given" }) }}
+                         style={{ height: height * 0.04, width: width * 0.4, backgroundColor: this.state.selected == "Medicines Given" ? themeColor : "gray", alignItems: "center", justifyContent: "center", borderRadius: 5 }}
+                     >
+                         <Text style={[styles.text, { color: "#fff" }]}>Medicines Given</Text>
+                     </TouchableOpacity>
+                 </View>
+             </View>
+         )
+     }
     renderItem = (item) => {
         console.log(item, "kkk")
 
@@ -318,12 +357,12 @@ import Modal from 'react-native-modal';
          const { SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT } = swipeDirections;
          this.setState({ gestureName: gestureName });
          switch (gestureName) {
-             case SWIPE_UP:
-                 this.props.navigation.goBack()
-                 break;
-             case SWIPE_DOWN:
-                 this.props.navigation.goBack()
-                 break;
+            //  case SWIPE_UP:
+            //      this.props.navigation.goBack()
+            //      break;
+            //  case SWIPE_DOWN:
+            //      this.props.navigation.goBack()
+            //      break;
              case SWIPE_LEFT:
                  this.props.navigation.goBack()
                  break;
@@ -407,9 +446,17 @@ import Modal from 'react-native-modal';
                             <Text style={[styles.text,{textAlign:"right"}]}>{moment(this.state?.item?.created).format('DD/MM/YYYY')}</Text>
                         </View>
                     </View>
-                {this.state.item&&<View style={{flex:0.55,}}>
+                    <View style={{flex:0.15}}>
+                            {
+                                this.renderHeader()
+                            }
+                    </View>
+                  
+                        <View style={{flex:0.53,}}>
 
-                        <FlatList
+                            {this.state.selected =="Prescribed"?
+                            <FlatList
+                             style={{height:"100%"}}
                             data={item?.medicines}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item, index }) => {
@@ -443,10 +490,23 @@ import Modal from 'react-native-modal';
                                     </TouchableOpacity>
                                 )
                             }}
-                        />
+                        />:
+                        <FlatList 
+                          data={[]}
+                          keyExtractor={(item,index)=>index.toString()}
+                          renderItem ={({item,index})=>{
+                               return(
+                                   <View>
 
-                    </View>}
-                    <View style={{flex:0.23,}}>
+                                   </View>
+                               )
+                          }}
+                        />
+                    
+                    }
+
+                    </View>
+                    <View style={{flex:0.1,}}>
                         <View style={{flex:0.5}}>
 
                         </View>

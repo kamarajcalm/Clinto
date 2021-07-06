@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, TextInput, TouchableOpacity, Image, SafeAreaView, ToastAndroid, Pressable, Switch,ActivityIndicator, TouchableWithoutFeedback} from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, SafeAreaView, ToastAndroid, Pressable, Switch, ActivityIndicator, TouchableWithoutFeedback, TextInput, } from 'react-native';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
 import settings from '../AppSettings';
@@ -14,12 +13,14 @@ const screenHeight =Dimensions.get('screen').height
 import Modal from 'react-native-modal';
 import { AntDesign } from '@expo/vector-icons';
 import MedicineDetails from '../components/MedicineDetails';
+import MedicineDetails2 from '../components/MedicineDetails2';
 import HttpsClient from '../api/HttpsClient';
 import Toast from 'react-native-simple-toast';
 import SimpleToast from 'react-native-simple-toast';
 import DropDownPicker from 'react-native-dropdown-picker';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { ScrollView} from 'react-native-gesture-handler';
 import moment from 'moment';
 
 class AddPrescription extends Component {
@@ -62,13 +63,40 @@ class AddPrescription extends Component {
                 appoinment,
                 creating:false,
                 containDrugs:false,
-                validityTimes:"0"
+                validityTimes:"0",
+                MedicinesGiven:[],
+                check:true
     };
   }
   componentDidMount(){
     if(this.state.appoinment){
         this.searchUser(this.state?.appoinment?.patientname.mobile, this.state?.appoinment?.requesteddate, this.state?.appoinment?.clinic)
     }
+      const _subscribe = this.props.navigation.addListener('beforeRemove', (e) => {
+          if (this.state.check&&(this.state.medicines.length>0||this.state.MedicinesGiven.length>0)) {
+            
+              e.preventDefault();
+
+              // Prompt the user before leaving the screen
+              Alert.alert(
+                  'Go Back?',
+                  'Are you sure to discard them and leave the screen?',
+                  [
+                      { text: "Don't leave", style: 'cancel', onPress: () => { } },
+                      {
+                          text: 'Discard',
+                          style: 'destructive',
+                          // If the user confirmed, then we dispatch the action we blocked earlier
+                          // This will continue the action that had triggered the removal of the screen
+                          onPress: () => this.props.navigation.navigation.dispatch(e.data.action),
+                      },
+                  ]
+              );
+          }
+
+ 
+          
+      })
   }
     addManualMedicine =()=>{
         let duplicate = this.state.medicines
@@ -135,6 +163,23 @@ class AddPrescription extends Component {
             return this.setState({ medicines: duplicate })
         }
 }
+
+    changeFunction2 = (type, value, index) => {
+        let duplicate = this.state.MedicinesGiven
+        if (type == "total_qty") {
+            duplicate[index].total_qty = value
+            return this.setState({ MedicinesGiven: duplicate })
+        }
+        if (type == "comment") {
+            duplicate[index].command = value
+            return this.setState({ MedicinesGiven: duplicate })
+        }
+        if (type == "delete") {
+            duplicate.splice(index, 1)
+            return this.setState({ MedicinesGiven: duplicate })
+        }
+
+    }
     backFunction =(medicines)=>{
         try{
             medicines.forEach((i) => {
@@ -153,6 +198,18 @@ class AddPrescription extends Component {
         }
        
         this.setState({ medicines:this.state.medicines.concat(medicines)})
+    }
+    backFunction2 = (medicines) => {
+        try {
+            medicines.forEach((i) => {
+                i.isGiven = true,
+                i.total_qty = 0
+            })
+        } catch (e) {
+
+        }
+
+        this.setState({ MedicinesGiven: this.state.MedicinesGiven.concat(medicines) })
     }
  addPriscription = async()=>{
    
@@ -202,10 +259,10 @@ class AddPrescription extends Component {
             }
             
         })
- 
+        let medicines = this.state.medicines.concat(this.state.MedicinesGiven)
         let sendData ={
             doctor: this.props.user.id,
-            medicines:this.state.medicines,
+            medicines,
             health_issues:this.state.healthIssues,
             username:this.state.patientsName,
             usermobile:this.state.mobileNo,
@@ -234,20 +291,23 @@ class AddPrescription extends Component {
                 console.log(sendData)
                 let post = await HttpsClient.patch(api, sendData)
                 if (post.type == "success") {
-                    this.setState({ creating: false })
-                    this.showSimpleMessage("Completed SuccessFully", "#00A300", "success")
-
-                   return this.props.navigation.goBack()
+                    this.setState({ creating: false },()=>{
+                        this.showSimpleMessage("Completed SuccessFully", "#00A300", "success")
+                        return this.props.navigation.goBack()
+                    })
+         
                 } else {
                     this.showSimpleMessage("Try again", "#B22222", "danger")
                     this.setState({ modal: false })
                 }
            }else{
-               this.setState({ creating: false })
-               this.showSimpleMessage("Added SuccessFully", "#00A300", "success")
-               setTimeout(() => {
-                   this.props.navigation.goBack()
-               }, 1500)
+               this.setState({ creating: false, check:false},()=>{
+                   this.showSimpleMessage("Added SuccessFully", "#00A300", "success")
+                   setTimeout(() => {
+                       this.props.navigation.goBack()
+                   }, 1500)
+               })
+          
            }
           
 
@@ -381,7 +441,7 @@ class AddPrescription extends Component {
             >
                 
                 <View style={{ marginTop: 20 }}>
-                    <Text style={[styles.text], { fontWeight: "bold", fontSize: 18 }}>Mobile No</Text>
+                    <Text style={[styles.text], { color:"#000", fontSize: 18 }}>Mobile No</Text>
                     <TextInput
                          maxLength ={10}
                          value ={this.state.mobileNo}
@@ -392,7 +452,7 @@ class AddPrescription extends Component {
                     />
                 </View>
                 <View style={{ marginTop: 20 }}>
-                    <Text style={[styles.text], { fontWeight: "bold", fontSize: 18 }}>Patient's Name</Text>
+                                <Text style={[styles.text], { color: "#000",fontSize: 18 }}>Patient's Name</Text>
                     <TextInput
                         value ={this.state.patientsName}
                         selectionColor={themeColor}
@@ -401,7 +461,7 @@ class AddPrescription extends Component {
                     />
                 </View>
                         <View style={{ marginTop: 20 }}>
-                            <Text style={[styles.text], { fontWeight: "bold", fontSize: 18 }}>Age</Text>
+                                <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Age</Text>
                             <TextInput
                                keyboardType ={"numeric"}
                                 value={this.state.Age}
@@ -412,7 +472,7 @@ class AddPrescription extends Component {
                         </View>
                         <View style={{ marginTop: 20 ,flexDirection:"row"}}>
                             <View style={{alignItems:"center",justifyContent:"center"}}>
-                                <Text style={[styles.text], { fontWeight: "bold", fontSize: 18 }}>Sex</Text>
+                                    <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Sex</Text>
 
                             </View>
                            
@@ -445,7 +505,7 @@ class AddPrescription extends Component {
                             />
                         </View> */}
                         <View style={{ marginTop: 20 }}>
-                            <Text style={[styles.text], { fontWeight: "bold", fontSize: 18 }}>Health issues</Text>
+                                <Text style={[styles.text], { color: "#000",fontSize: 18 }}>Health issues</Text>
                             {
                                 this.state?.healthIssues?.map((i,index)=>{
                                       return(
@@ -485,18 +545,18 @@ class AddPrescription extends Component {
                           
                         </View>
                        {this.state.mobileNo.length>9&& <View style={{ marginTop: 20 }}>
-                            <Text style={[styles.text], { fontWeight: "bold", fontSize: 18 }}>Appointment Details:</Text>
+                                <Text style={[styles.text], { color: "#000",fontSize: 18 }}>Appointment Details:</Text>
                             <View style={{flexDirection:"row",marginTop:5,marginLeft:10}}>
-                                <Text style={[styles.text,{fontWeight:"bold",color:"gray"}]}>Appointment Taken:</Text>
+                                    <Text style={[styles.text, { color: "#000",color:"gray"}]}>Appointment Taken:</Text>
                                 <Text style={[styles.text,{marginLeft:10}]}>{this.state.appointment_taken?"yes":"No"}</Text>
                             </View>
                             {this.state.appointment_taken&&<View style={{ flexDirection: "row", marginTop: 5, marginLeft: 10 }}>
-                                <Text style={[styles.text, { fontWeight: "bold", color: "gray" }]}>Token Id:</Text>
+                                    <Text style={[styles.text, { color: "#000",color: "gray" }]}>Token Id:</Text>
                                 <Text style={[styles.text, { marginLeft: 10 }]}>{this.state.appointmentId}</Text>
                             </View>}
                         </View>}
                         <View style={{ marginTop: 20 }}>
-                            <Text style={[styles.text], { fontWeight: "bold", fontSize: 18 }}>Reason for this Visit</Text>
+                                <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Reason for this Visit</Text>
                             <TextInput
                                 value ={this.state.Reason}
                                 onChangeText={(Reason) => { this.setState({ Reason}) }}
@@ -506,7 +566,7 @@ class AddPrescription extends Component {
                             />
                         </View>
                         <View style={{ marginTop: 20 }}>
-                            <Text style={[styles.text], { fontWeight: "bold", fontSize: 18 }}>Diagnosis</Text>
+                                <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Diagnosis</Text>
                             <TextInput
                                 value={this.state.Disease}
                                 onChangeText={(Disease) => { this.searchDiseases(Disease) }}
@@ -540,8 +600,29 @@ class AddPrescription extends Component {
                                })
                            }
                         </ScrollView>}
+                            <View style={{ marginTop: 20 }}>
+                                <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Medicines Given</Text>
+                                <View style={{ flexDirection: "row", marginTop: 20, alignItems: 'center', justifyContent: "space-around" }}>
+                                    <TouchableOpacity style={{ alignItems: "center", justifyContent: 'center', flexDirection: "row" }}
+                                        onPress={() => { this.props.navigation.navigate("SearchMedicines", { backFunction2: (medicines) => { this.backFunction2(medicines) },toGive:true }) }}
+                                    >
+                                        <AntDesign name={"search1"} size={30} color={themeColor} />
+                                    </TouchableOpacity>
+
+                                </View>
+
+                            </View>
+                            {
+                                this.state.MedicinesGiven.map((item, index) => {
+                                    return (
+                                      
+                                        <MedicineDetails2 item={item} index={index} changeFunction={(type, value, index) => { this.changeFunction2(type, value, index) }}/>
+                                      
+                                    )
+                                })
+                            }
                 <View style={{ marginTop: 20 }}>
-                    <Text style={[styles.text], { fontWeight: "bold", fontSize: 18 }}>Add Medicines</Text>
+                                <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Add Medicines</Text>
                                 <View style={{ flexDirection: "row", marginTop: 20,alignItems:'center',justifyContent:"space-around"}}>
                     <TouchableOpacity style={{ alignItems: "center", justifyContent: 'center', flexDirection: "row" }}
                         onPress={() => { this.props.navigation.navigate("SearchMedicines", { backFunction: (medicines) => { this.backFunction(medicines) } }) }}
@@ -552,6 +633,7 @@ class AddPrescription extends Component {
                        </View>    
                 
                 </View>
+
                 {
                    this.state.medicines.map((item,index)=>{
                         return(
@@ -561,7 +643,7 @@ class AddPrescription extends Component {
                 }
                 
                         <View style={{ marginTop: 20 }}>
-                            <Text style={[styles.text], { fontWeight: "bold", fontSize: 18 }}>Doctor Fees</Text>
+                                <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Doctor Fees</Text>
                             <TextInput
                                 value={this.state.doctorFees}
                                 selectionColor={themeColor}
@@ -572,7 +654,7 @@ class AddPrescription extends Component {
                         </View>
                             <View >
 
-                                <Text style={[styles.text], { fontWeight: "bold", fontSize: 18, }}>Next Visit</Text>
+                                <Text style={[styles.text], { color: "#000", fontSize: 18, }}>Next Visit</Text>
                             </View>
                             <TouchableOpacity 
                               onPress={() => { this.setState({ show1: true }) }}

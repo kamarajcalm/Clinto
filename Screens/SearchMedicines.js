@@ -18,7 +18,8 @@ import axios from 'axios';
     this.state = {
         selected:[],
         medicines:[],
-        cancelToken: undefined
+        cancelToken: undefined,
+        toGive:false
     };
    
   }
@@ -63,6 +64,13 @@ import axios from 'axios';
         // if(data.type=="success"){
         //      this.setState({medicines:data.data})
         // }
+     }
+
+     componentDidMount(){
+         const toGive = this.props.route.params.toGive
+         if (toGive){
+             this.setState({toGive:true})
+         }
      }
   render() {
     return (
@@ -119,7 +127,13 @@ import axios from 'axios';
             </View>}
                     {this.state.medicines.length>0&&<TouchableOpacity style={{ position: "absolute", bottom: 30, right: 20, height: height * 0.05, width: width * 0.4, backgroundColor: themeColor, borderRadius: 15, alignItems: "center", justifyContent: 'center' }}
                       onPress={()=>{
-                          this.props.route.params.backFunction(this.state.selected)
+                          if(this.state.toGive){
+                            
+                              this.props.route.params.backFunction2(this.state.selected)
+                          }else{
+                              this.props.route.params.backFunction(this.state.selected)
+                          }
+                 
                           this.props.navigation.goBack()
                         }}
                     >

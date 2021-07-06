@@ -15,9 +15,9 @@ import { Linking } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import HttpsClient from '../api/HttpsClient';
 import Modal from 'react-native-modal';
-import Toast from 'react-native-simple-toast';
 import { SliderBox } from "react-native-image-slider-box";
-
+const screenHeight = Dimensions.get('screen').height;
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 class ViewClinicDetails extends Component {
     constructor(props) {
         let item = props.route.params.item
@@ -37,6 +37,17 @@ class ViewClinicDetails extends Component {
             owner,
             images:[]
         };
+    }
+    showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
+
+        showMessage(message);
     }
     getReceptionList = async () => {
         let api = `${url}/api/prescription/recopinists/?clinic=${this.state.pk.clinicpk}`
@@ -66,10 +77,10 @@ class ViewClinicDetails extends Component {
         if (deletee.type == "success") {
             this.state.doctors.splice(this.state.deleteDocorIndex, 1);
             this.setState({ doctors: this.state.doctors })
-            Toast.show("deleted Successfully")
+            this.showSimpleMessage("Deleted SuccessFully","green","success")
             this.setState({ showModal: false })
         } else {
-            Toast.show("Try again")
+            this.showSimpleMessage("Try Again", "red", "danger")
         }
 
     }
@@ -79,10 +90,10 @@ class ViewClinicDetails extends Component {
         if (deletee.type == "success") {
             this.state.receptionList.splice(this.state.deleteReceptionIndex, 1);
             this.setState({ receptionList: this.state.receptionList })
-            Toast.show("deleted Successfully")
+            this.showSimpleMessage("Deleted SuccessFully", "green", "success")
             this.setState({ showModal2: false })
         } else {
-            Toast.show("Try again")
+            this.showSimpleMessage("Try Again", "red", "danger")
         }
     }
     getClinicDetails =async()=>{
@@ -218,16 +229,16 @@ class ViewClinicDetails extends Component {
                             </View>
                             <View style={{ marginHorizontal: 20, marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
                                 <View>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>OpeningTime:</Text>
+                                    <Text style={[styles.text, { color:"#000", fontSize: 18 }]}>Opening Time:</Text>
                                 </View>
                                 <View>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>ClosingTime:</Text>
+                                    <Text style={[styles.text, { color:"#000", fontSize: 18 }]}>Closing Time:</Text>
                                 </View>
                             </View>
                             <View style={{ marginHorizontal: 20, marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
                                 <View>
                                     <View style={{ alignSelf: "flex-start" }}>
-                                        <Text style={[styles.text, { fontWeight: "bold", fontSize: 18, color: "gray" }]}>Today:</Text>
+                                        <Text style={[styles.text, {color:"#000",fontSize: 18,}]}>Today:</Text>
                                     </View>
 
                                     {this.state?.item?.working_hours?.length > 0 && <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>{this.state?.item?.working_hours[date?.getDay()][0]}</Text>}
@@ -241,7 +252,7 @@ class ViewClinicDetails extends Component {
                                 <TouchableOpacity
                                     onPress={() => { this.setState({ showAll: !this.state.showAll }) }}
                                 >
-                                    <Text>{this.state.showAll ? "showLess" : "showAll"}</Text>
+                                    <Text style={[styles.text,{color:"#000"}]}>{this.state.showAll ? "show Less" : "show All"}</Text>
                                 </TouchableOpacity>
                             </View>
                             {this.state.showAll && this.state.item.working_hours?.length > 0 &&
@@ -289,7 +300,7 @@ class ViewClinicDetails extends Component {
 
                             <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 10 }}>
                                 <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Mobile:</Text>
+                                    <Text style={[styles.text, { color:"#000",fontSize: 18 }]}>Mobile:</Text>
                                 </View>
                                 <View style={{ alignItems: 'center', justifyContent: "center" }}>
                                     <Text style={[styles.text, { marginLeft: 10 }]}>{this.state?.item?.mobile}</Text>
@@ -309,7 +320,7 @@ class ViewClinicDetails extends Component {
                             </View>
                             <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 10 }}>
                                 <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Emergency Contact 1</Text>
+                                    <Text style={[styles.text, {color:"#000", fontSize: 18 }]}>Emergency Contact 1</Text>
                                 </View>
                                 <View style={{ alignItems: 'center', justifyContent: "center" }}>
                                     <Text style={[styles.text, { marginLeft: 10 }]}>{this.state?.item?.firstEmergencyContactNo}</Text>
@@ -329,7 +340,7 @@ class ViewClinicDetails extends Component {
                             </View>
                             <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 10 }}>
                                 <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Emergency Contact 2</Text>
+                                    <Text style={[styles.text, {color:"#000", fontSize: 18 }]}>Emergency Contact 2</Text>
                                 </View>
                                 <View style={{ alignItems: 'center', justifyContent: "center" }}>
                                     <Text style={[styles.text, { marginLeft: 10 }]}>{this.state?.item?.secondEmergencyContactNo}</Text>
@@ -388,7 +399,9 @@ class ViewClinicDetails extends Component {
                                     keyExtractor={(item, index) => index.toString()}
                                     renderItem={({ item, index }) => {
                                         return (
-                                            <View style={{ flexDirection: "row", height: height * 0.1, }}>
+                                            <TouchableOpacity style={{ flexDirection: "row", height: height * 0.1, }}
+                                              onPress={()=>{this.props.navigation.navigate('ViewReceptionProfile',{item})}}
+                                            >
                                                 <View style={{ alignItems: "center", justifyContent: "center", flex: 0.33 }}>
                                                     <Image
                                                         source={{ uri: item.user.profile.displayPicture || "https://s3-ap-southeast-1.amazonaws.com/practo-fabric/practices/711061/lotus-multi-speciality-health-care-bangalore-5edf8fe3ef253.jpeg" }}
@@ -404,7 +417,7 @@ class ViewClinicDetails extends Component {
                                                 >
                                                     <Entypo name="circle-with-cross" size={24} color={themeColor} />
                                                 </TouchableOpacity>}
-                                            </View>
+                                            </TouchableOpacity>
                                         )
                                     }}
                                 />
@@ -489,6 +502,8 @@ class ViewClinicDetails extends Component {
                         </ScrollView>
                         <View>
                             <Modal
+                                statusBarTranslucent={true}
+                                deviceHeight={screenHeight}
                                 animationIn="slideInUp"
                                 animationOut="slideOutDown"
                                 isVisible={this.state.showModal}
@@ -515,6 +530,8 @@ class ViewClinicDetails extends Component {
                                 </View>
                             </Modal>
                             <Modal
+                                statusBarTranslucent={true}
+                                deviceHeight={screenHeight}
                                 animationIn="slideInUp"
                                 animationOut="slideOutDown"
                                 isVisible={this.state.showModal2}

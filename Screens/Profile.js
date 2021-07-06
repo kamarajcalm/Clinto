@@ -54,7 +54,7 @@ const DATA =["clinic 1","clinic 2","clinic3","clinic4"]
    }
    getClinics = async () => {
      const api = `${url}/api/prescription/getDoctorClinics/?doctor=${this.props.user.id}`
-     console.log(api)
+     console.log(api,"kooo")
      const data = await HttpsClient.get(api)
 
      if (data.type == "success") {
