@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Dimensions, TouchableOpacity, StyleSheet, TextInput, FlatList, Image, SafeAreaView, ScrollView, ActivityIndicator} from 'react-native';
 import { Ionicons, Entypo, AntDesign } from '@expo/vector-icons';
 import { connect } from 'react-redux';
-import { selectTheme } from '../actions';
+import { selectTheme ,setShowLottie} from '../actions';
 import settings from '../AppSettings';
 import medicine from '../components/Medicine';
 import Medicine from '../components/Medicine';
@@ -82,8 +82,8 @@ class PaymentPage extends Component {
      console.log(sendData,"errrrt")
      let post =await HttpsClient.post(api,sendData)
      if(post.type =="success"){
-         this.showSimpleMessage("recharge success", "#00A300", "success")
-         return this.props.navigation.navigate('ProfileHome')
+         this.props.setShowLottie(true)
+         return this.props.navigation.navigate('ProfileHome',{showLottie:true})
      }
     }
     makeOrder = async(i)=>{
@@ -262,6 +262,7 @@ const mapStateToProps = (state) => {
         theme: state.selectedTheme,
         user: state.selectedUser,
         clinic: state.selectedClinic,
+        showLottie: state.showLottie
     }
 }
-export default connect(mapStateToProps, { selectTheme })(PaymentPage);
+export default connect(mapStateToProps, { selectTheme, setShowLottie})(PaymentPage);

@@ -169,7 +169,7 @@ class ViewCategory extends Component {
                 <Text style={[styles.text, { color: '#000' }]}>No of Strips Per Box</Text>
                 <TextInput
                     keyboardType={"numeric"}
-                    style={{ width: width * 0.8, height: height * 0.08, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
+                    style={{ width: width * 0.8, height: height * 0.1, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
                     selectionColor={themeColor}
                     value={this.state.stripesPerBox}
                     onChangeText={(stripesPerBox) => { this.setState({ stripesPerBox }) }}
@@ -179,7 +179,7 @@ class ViewCategory extends Component {
                     <Text style={[styles.text, { color: '#000' }]}>No of Medicines Per Stripes</Text>
                     <TextInput
                         keyboardType={"numeric"}
-                        style={{ width: width * 0.8, height: height * 0.08, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
+                        style={{ width: width * 0.8, height: height * 0.1, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
                         selectionColor={themeColor}
                         value={this.state.medicinesPerStrips}
                         onChangeText={(medicinesPerStrips) => { this.setState({ medicinesPerStrips }) }}
@@ -192,7 +192,7 @@ class ViewCategory extends Component {
                 <Text style={[styles.text, { color: '#000' }]}>No of Pieces per Box</Text>
                 <TextInput
                     keyboardType={"numeric"}
-                    style={{ width: width * 0.8, height: height * 0.08, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
+                    style={{ width: width * 0.8, height: height * 0.1, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
                     selectionColor={themeColor}
                     value={this.state.piecesPerBox}
                     onChangeText={(piecesPerBox) => { this.setState({ piecesPerBox }) }}
@@ -225,7 +225,7 @@ class ViewCategory extends Component {
                             <View style={{ margin: 20 }}>
                                 <Text style={[styles.text, { color: '#000' }]}>Enter Medicine Name</Text>
                                 <TextInput
-                                    style={{ width: width * 0.8, height: height * 0.08, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
+                                    style={{ width: width * 0.8, height: height * 0.1, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
                                     selectionColor={themeColor}
                                     value={this.state.MedicineName}
                                 onChangeText={(MedicineName) => { this.searchMedicine(MedicineName) }}
@@ -275,7 +275,7 @@ class ViewCategory extends Component {
                             <Text style={[styles.text, { color: '#000' }]}>Selling Price</Text>
                             <TextInput
                                keyboardType={"numeric"}
-                                style={{ width: width * 0.8, height: height * 0.08, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
+                                style={{ width: width * 0.8, height: height * 0.1, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
                                 selectionColor={themeColor}
                                 value={this.state.Price}
                                 onChangeText={(Price) => { this.setState({ Price }) }}
@@ -288,7 +288,7 @@ class ViewCategory extends Component {
                             <Text style={[styles.text, { color: '#000' }]}>Minimum Quantity</Text>
                             <TextInput
                                 keyboardType={"numeric"}
-                                style={{ width: width * 0.8, height: height * 0.08, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
+                                style={{ width: width * 0.8, height: height * 0.1, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
                                 selectionColor={themeColor}
                                 value={this.state.minQty}
                                 onChangeText={(minQty) => { this.setState({ minQty }) }}

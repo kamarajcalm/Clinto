@@ -11,8 +11,8 @@ const themeColor = settings.themeColor;
 const fontFamily = settings.fontFamily;
 const url =settings.url;
 import { connect } from 'react-redux';
-
-import { selectTheme, selectClinic,selectUser} from '../actions';
+import LottieView from 'lottie-react-native';
+import { selectTheme, selectClinic,selectUser,setShowLottie} from '../actions';
 import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import DoctorProfile from './DoctorProfile';
 import HttpsClient from '../api/HttpsClient';
@@ -28,7 +28,8 @@ const DATA =["clinic 1","clinic 2","clinic3","clinic4"]
       clinics:[],
       isDoctor:false,
       isReceptionist:false,
-      isPatient:false
+      isPatient:false,
+      showLottie:false
     };
   }
 
@@ -81,9 +82,17 @@ const DATA =["clinic 1","clinic 2","clinic3","clinic4"]
        this.props.selectUser(data.data[0]);
      }
    }
+   validateLottie =()=>{
+       if(this.props.showLottie){
+         this.animation.play();
+       }
+   }
 componentDidMount(){
+   console.warn(this.props.showLottie)
   this.findUser()
+ 
   this._unsubscribe = this.props.navigation.addListener('focus', () => {
+    this.validateLottie()
       this.getDetails()
     if (this.props.user.profile.occupation == "Doctor") {
       this.getClinics()
@@ -98,15 +107,15 @@ componentWillUnmount(){
    setActiveClinic = async (item) => {
      const api = `${url}/api/prescription/doctorActive/`
      let sendData = {
-       deactiveClinic: this.props.clinic.pk,
-       activeClinic: item.pk
+       previous_clinic: this.props.clinic.pk,
+       current_clinic: item.pk
      }
      let patch = await HttpsClient.post(api, sendData)
      console.log(patch,"kkkk")
      if (patch.type == "success") {
 
        this.props.selectClinic(item)
-       this.setState({ showModal: false })
+       this.setState({ showClinics: false })
      }
 
    }
@@ -182,6 +191,52 @@ validateExpiry =()=>{
     
      }
     
+   }
+   lottieModal =()=>{
+      return(
+        <Modal
+          onBackdropPress={()=>{
+            this.props.setShowLottie(false)
+            this.animation.false
+          }}
+          deviceHeight={screenHeight}
+          isVisible={this.props.showLottie}
+          statusBarTranslucent={true}
+        >
+            <View style={{height:height*0.6,alignItems:"center",justifyContent:"center"}}>
+            <LottieView
+           
+              ref={animation => {
+                this.animation = animation;
+              }}
+              style={{
+                width: 400,
+                height: 400,
+               
+              }}
+              source={require('../assets/lottie/success.json')}
+            // OR find more Lottie files @ https://lottiefiles.com/featured
+            // Just click the one you like, place that file in the 'assets' folder to the left, and replace the above 'require' statement
+            />
+            <View style={{ position: "absolute",bottom:90 }}>
+              <Text style={[styles.text, { color: "#fff" }]}>Recharge Success</Text>
+            </View>
+              <View>
+                   
+                  <TouchableOpacity
+                onPress={() => {
+                  this.animation.pause();
+                  this.props.setShowLottie(false)
+                }}
+                    style={{ height: height * 0.05, width: width * 0.2, alignItems: "center", justifyContent: "center", backgroundColor: "#fff", borderRadius: 5 }}
+                  >
+                    <Text style={[styles.text, { color: "#000" }]}>OK</Text>
+                  </TouchableOpacity>
+              </View>
+        
+             </View> 
+        </Modal>
+      )
    }
   render() {
     console.log(this.props.user.profile.displayPicture)
@@ -316,7 +371,9 @@ validateExpiry =()=>{
               
                   </View>
       </View>
-
+             {
+               this.lottieModal()
+             }
         </SafeAreaView>
       </>
     );
@@ -339,7 +396,8 @@ const mapStateToProps = (state) => {
   return {
     theme: state.selectedTheme,
     user:state.selectedUser,
-    clinic:state.selectedClinic
+    clinic:state.selectedClinic,
+    showLottie:state.showLottie
   }
 }
-export default connect(mapStateToProps, { selectTheme, selectClinic, selectUser })(Profile)
+export default connect(mapStateToProps, { selectTheme, selectClinic, selectUser, setShowLottie})(Profile)

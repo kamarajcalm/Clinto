@@ -38,6 +38,12 @@ const selectedOwnedClinicsReducer = (selectedOwnedClinics = [], action) => {
     }
     return selectedOwnedClinics
 }
+const setLottieReducer = (setShowLottie = false, action) => {
+    if (action.type === "LOTTIE_SELECTED") {
+        return action.payload;
+    }
+    return setShowLottie
+}
 export default combineReducers({
     selectedTheme:selectedThemeReducer,
     selectedUser:selectedUserReducer,
@@ -45,4 +51,5 @@ export default combineReducers({
     selectedMedical:selectedMedicalReducer,
     selectedWorkingClinics: selectedWorkingClinicsReducer,
     selectedOwnedClinics: selectedOwnedClinicsReducer,
+    showLottie: setLottieReducer,
 })

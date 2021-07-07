@@ -28,9 +28,9 @@ export default class PriscriptionStack extends Component {
         return (
             <Stack.Navigator>
                 {/* <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} /> */}
-                <Stack.Screen name="Priscription" component={Priscription1} options={{ headerShown: false }} />
+                <Stack.Screen name="Priscription" component={Priscription1} options={{ headerShown: false, }} />
                 <Stack.Screen name="showCard" component={ShowCard} options={{ headerShown: false }} />
-                <Stack.Screen name="addPriscription" component={AddPrescription} options={{ headerShown: false }} />
+                <Stack.Screen name="addPriscription" component={AddPrescription} options={{ headerShown: false, }} />
                 <Stack.Screen name="SearchMedicines" component={SearchMedicines} options={{ headerShown: false }} />
                 <Stack.Screen name="ProfileView" component={ProfileView} options={{ headerShown: false }} />
                 <Stack.Screen name="PrescriptionView" component={PrescriptionView} options={{ headerShown: false }} />

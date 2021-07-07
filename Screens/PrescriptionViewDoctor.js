@@ -44,7 +44,9 @@ class PrescriptionViewDoctor extends Component {
             pk: this.props?.route?.params?.pk || null,
             showModal2: false,
             selected:"Prescribed",
-            lottieModal:false
+            lottieModal:false,
+            prescribed:[],
+            medicinesGiven:[]
         };
     }
     getDetails = async () => {
@@ -64,9 +66,14 @@ class PrescriptionViewDoctor extends Component {
             })
         }
     }
+    filterMedicines =()=>{
+        const prescribed = this.state.item.medicines.filter((item)=> !item.is_given)
+        const medicinesGiven = this.state.item.medicines.filter((item) => item.is_given)
+        this.setState({ prescribed, medicinesGiven})
+    }
     componentDidMount() {
         this.validateAnimations()
-  
+        this.filterMedicines()
         if (this.state.pk) {
             this.getDetails()
         }
@@ -344,7 +351,7 @@ class PrescriptionViewDoctor extends Component {
                         <Text style={[styles.text, { color: "#000", }]}>Diagnosis : </Text>
                     </View>
                     <View style={{ alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, {}]}>{this.state.item.new_disease}</Text>
+                        <Text style={[styles.text, {}]}>{this.state.item.diseaseTitle}</Text>
                     </View>
                 </View>
            
@@ -511,16 +518,21 @@ class PrescriptionViewDoctor extends Component {
                                 </View>
                             </View>
 
-                             {
-                                 this.renderHeader()
-                             }
-                            <View style={{ flex: 0.55, }}>
+                            <View style={{ flex: 0.15 }}>
+                                {
+                                    this.renderHeader()
+                                }
+                            </View>
+                            <View style={{ flex: 0.53, }}>
                                 
                                {this.state.selected=="Prescribed"?<FlatList
-                                    data={item?.medicines}
-                             
+                                    data={this.state.prescribed}
+                                    style={{ height: "100%" }}
                                     keyExtractor={(item, index) => index.toString()}
                                     renderItem={({ item, index }) => {
+                                     
+
+                                    
                                         return (
                                             <TouchableOpacity style={{
                                                 paddingBottom: 10,
@@ -561,28 +573,72 @@ class PrescriptionViewDoctor extends Component {
                                                             <Text style={[styles.text]}> {item.days} days</Text>
                                                         </View>
                                                        <View>
-                                                        <Text style={[styles.text]}>count : {item.days} </Text>
+                                                        <Text style={[styles.text]}>count : {item.total_qty} </Text>
                                                        </View>
                                                 </View>
                                             </TouchableOpacity>
                                         )
+                                        
                                     }}
                                 />:<FlatList 
-                                     data={[]}
+                                     data={this.state.medicinesGiven}
                                      keyExtractor={(item,index)=>index.toString()}
                                      renderItem={({item,index})=>{
-                                         return(
-                                             <View>
+                                   
+                                             return (
+                                                 <TouchableOpacity style={{
+                                                     paddingBottom: 10,
+                                                     flex: 1,
+                                                     borderBottomWidth: 0.5,
+                                                     borderColor: '#D1D2DE',
+                                                     backgroundColor: '#FFFFFF',
+                                                     flexDirection: "row",
+                                                     marginTop: 10
+                                                 }}>
+                                                     <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
+                                                         <Text style={[styles.text]}>{index + 1} . </Text>
+                                                     </View>
+                                                     <View style={{ flex: 0.7 }}>
+                                                         <View style={{ flexDirection: "row" }}>
+                                                             <View>
+                                                                 <Text style={[styles.text, { color: "#000", }]}>{item.medicinename.name}</Text>
+                                                             </View>
+                                                             <View style={{ marginLeft: 10 }}>
+                                                                 <Text style={[styles.text, { color: "#000", }]}>({item.medicinename.type})</Text>
+                                                             </View>
+                                                         </View>
+                                                         {/* {(item.medicinename.type === "Tablet" || item.medicinename.type === "Capsules") && <View style={{ flexDirection: "row" }}>
+                                                             <View>
+                                                                 <Text style={[styles.text]}> {item.morning_count} - {item.afternoon_count} -{item.night_count} </Text>
+                                                             </View>
+                                                             <View>
+                                                                 <Text style={[styles.text]}>( {item.after_food ? "AF" : "BF"} )</Text>
+                                                             </View>
+                                                         </View>} */}
+                                                         <View style={{ marginTop: 10 }}>
+                                                             <Text style={[styles.text]}>{item.command}</Text>
+                                                         </View>
 
-                                             </View>
-                                         )
+                                                     </View>
+                                                     <View style={{ flex: 0.2, alignItems: "center", justifyContent: "space-around" }}>
+                                                         {/* <View>
+                                                             <Text style={[styles.text]}> {item.days} days</Text>
+                                                         </View> */}
+                                                         <View>
+                                                             <Text style={[styles.text]}>count : {item.total_qty} </Text>
+                                                         </View>
+                                                     </View>
+                                                 </TouchableOpacity>
+                                             )
+                                         
+                                      
                                      }}
                                 />
                                 
                                 }
 
                             </View>
-                            <View style={{ flex: 0.23, }}>
+                            <View style={{ flex: 0.1, }}>
                                 <View style={{ flex: 0.5 }}>
 
                                 </View>

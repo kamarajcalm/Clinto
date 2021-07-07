@@ -48,22 +48,32 @@ import axios from 'axios';
          
      }
      SearchMedicines =async(query)=>{
-      this.setState({search:true})
-      if(typeof this.state.cancelToken != typeof undefined){
-         this.state.cancelToken.cancel('cancelling the previous request')
-      }
-      this.state.cancelToken = axios.CancelToken.source()
-      let api= `${url}/api/prescription/medicines/?name=${query}`
-       console.log(api,"ppp")
-      const data = await axios.get(api,{cancelToken:this.state.cancelToken.token});
-         this.setState({ medicines: data.data })
-    // const data =await HttpsClient.get(api)
-      console.log(data,"kjkjkk")
-      console.log(data.statusText,"sssss")
+         this.setState({ search: true })
+    if(this.state.toGive){
+        if (typeof this.state.cancelToken != typeof undefined) {
+            this.state.cancelToken.cancel('cancelling the previous request')
+        }
+        this.state.cancelToken = axios.CancelToken.source()
+        let api = `${url}/api/prescription/subSearch/?name=${query}&inventory=${this?.props?.clinic?.inventory}`
+        console.log(api)
+        const data = await axios.get(api, { cancelToken: this.state.cancelToken.token });
+        this.setState({ medicines: data.data })
+    }else{
+        if (typeof this.state.cancelToken != typeof undefined) {
+            this.state.cancelToken.cancel('cancelling the previous request')
+        }
+        this.state.cancelToken = axios.CancelToken.source()
+        let api = `${url}/api/prescription/medicines/?name=${query}`
+        console.log(api, "ppp")
+        const data = await axios.get(api, { cancelToken: this.state.cancelToken.token });
+        this.setState({ medicines: data.data })
 
-        // if(data.type=="success"){
-        //      this.setState({medicines:data.data})
-        // }
+    }
+    
+   
+     
+
+    
      }
 
      componentDidMount(){
@@ -81,8 +91,14 @@ import axios from 'axios';
             <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
                 <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}
                     onPress={() => { 
-                        this.props.route.params.backFunction(this.state.selected)
-                        this.props.navigation.goBack() 
+                        if (this.state.toGive) {
+
+                            this.props.route.params.backFunction2(this.state.selected)
+                        } else {
+                            this.props.route.params.backFunction(this.state.selected)
+                        }
+
+                        this.props.navigation.goBack()
                     }}
                 >
                     <Ionicons name="chevron-back-circle" size={30} color="#fff" />
@@ -169,7 +185,8 @@ const mapStateToProps = (state) => {
 
     return {
         theme: state.selectedTheme,
+        clinic:state.selectedClinic
 
     }
 }
-export default connect(mapStateToProps, { selectTheme })(SearchMedicines);
+export default connect(mapStateToProps,{selectTheme})(SearchMedicines);

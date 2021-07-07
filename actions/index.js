@@ -34,3 +34,9 @@ export const selectOwnedClinics = (clinics) => {
         payload: clinics
     }
 }
+export const setShowLottie = (value) => {
+    return {
+        type: 'LOTTIE_SELECTED',
+        payload: value
+    }
+}

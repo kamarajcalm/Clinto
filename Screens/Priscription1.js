@@ -175,7 +175,7 @@ hideDatePicker = () => {
     getClinics = async()=>{
         const api = `${url}/api/prescription/getDoctorClinics/?doctor=${this.props.user.id}`
         const data = await HttpsClient.get(api)
-        console.log(api)
+        console.log(api,"ggghdf")
        console.log(data)
         if(data.type=="success"){
             this.setState({ clinics: data.data.workingclinics})
@@ -230,8 +230,10 @@ hideDatePicker = () => {
        this.findUser()
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
             if(this.state.isDoctor){
-                this.setState({prescriptions:[],offset:0,next:true})
-                this.getPrescription()
+                this.setState({prescriptions:[],offset:0,next:true},()=>{
+                    this.getPrescription()
+                })
+             
             }
             
         });
@@ -417,7 +419,7 @@ hideDatePicker = () => {
 
             return (
                 <TouchableOpacity style={[styles.card, { flexDirection: "row", borderRadius: 5 }]}
-                    onPress={() => { this.props.navigation.navigate('PrescriptionView', { item, }) }}
+                    onPress={() => { this.props.navigation.navigate('PrescriptionViewDoctor', { item }) }}
                 >
                     <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
                         <View style={{ height: 70, width: 70, borderRadius: 35, backgroundColor: themeColor, alignItems: "center", justifyContent: "center" }}>

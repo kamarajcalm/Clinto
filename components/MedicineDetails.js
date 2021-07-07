@@ -37,19 +37,19 @@ export default class MedicineDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        afterFood:false,
-        morning:false,
-        night:false,
-        afterNoon:false,
-        morningCount:0,
-        afterNoonCount:0,
-        nightCount:0,
-        days:"",
+        afterFood: this.props.item.after_food?true:false,
+        morning:this.props.item.morning_count>0?true:false,
+        night: this.props.item.night_count > 0 ?true:false,
+        afterNoon: this.props.item.afternoon_count > 0 ? true : false,
+        morningCount: this.props.item.morning_count||0,
+        afterNoonCount: this.props.item.afternoon_count||0,
+        nightCount: this.props.item.night_count ||0,
+        days: this.props.item.days.toString()||"",
         qty:'',
-        comment:"",
+        comment: this.props.item.command||"",
         selectedVariant:"",
         name:"",
-        containsDrugs:false,
+        containsDrugs: this.props.item.is_drug?true:false,
         validTimes:""
     };
   }
@@ -122,7 +122,7 @@ export default class MedicineDetails extends Component {
             style={styles.card}
         >
             <View style={{ flex: 0.2,flexDirection:"row" ,margin:10}}>
-                <Text style={[styles.text, { fontWeight: "bold", fontSize: 20 }]}>{item.title}</Text>
+                     <Text style={[styles.text, { fontWeight: "bold", fontSize: 20 }]}>{item.title || item.medicine}</Text>
               
 
             </View>
@@ -313,7 +313,7 @@ export default class MedicineDetails extends Component {
                        value={this.state.days}
                        selectionColor={themeColor}
                        keyboardType="numeric"
-                       style={{height:35,width: 50,backgroundColor:'#eee',borderRadius:5,marginLeft:5,paddingLeft:5}}
+                                 style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5, alignItems: "center", justifyContent: "center"}}
                        onChangeText ={(text)=>{this.changeDays(text)}}
                     
                     />
@@ -344,7 +344,7 @@ export default class MedicineDetails extends Component {
                              value={this.state.containsDrugs}
                          />
                      </View>
-                     <View style={{ flexDirection: 'row' }}>
+                     {/* <View style={{ flexDirection: 'row' }}>
                          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                              <Text>Enter valid Times</Text>
                          </View>
@@ -357,7 +357,7 @@ export default class MedicineDetails extends Component {
                              onChangeText={(text) => { this.changeValidTimes(text) }}
 
                          />
-                     </View>
+                     </View> */}
 
                  </View>
          <TouchableOpacity
@@ -441,7 +441,7 @@ export default class MedicineDetails extends Component {
                       </TouchableOpacity>
                   </View>
                   <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
-                    <View style={{flexDirection:"row"}}>
+                    {/* <View style={{flexDirection:"row"}}>
                         <View style={{alignItems:'center',justifyContent:"center"}}>
                               <Text>Enter ml</Text>
                         </View>
@@ -452,7 +452,7 @@ export default class MedicineDetails extends Component {
                               style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5 }}
                               onChangeText={(text) => {this.changeQty(text)}}
                           />
-                    </View>
+                    </View> */}
                      
                       <View style={{flexDirection:"row"}}>
                           <View style={{alignItems:'center',justifyContent:"center"}}>
@@ -462,7 +462,7 @@ export default class MedicineDetails extends Component {
                           <TextInput
                               keyboardType ={"numeric"}
                               selectionColor={themeColor}
-                              style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5 }}
+                              style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5, alignItems: "center", justifyContent: "center" }}
                               value={this.state.days}
                               onChangeText={(text) => { this.changeDays(text) }}
                           />
@@ -491,7 +491,7 @@ export default class MedicineDetails extends Component {
                               value={this.state.containsDrugs}
                           />
                       </View>}
-                      <View style={{ flexDirection: 'row' }}>
+                      {/* <View style={{ flexDirection: 'row' }}>
                           <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                               <Text>Enter valid Times</Text>
                           </View>
@@ -504,7 +504,7 @@ export default class MedicineDetails extends Component {
                               onChangeText={(text) => { this.changeValidTimes(text) }}
 
                           />
-                      </View>
+                      </View> */}
 
                   </View>
                   <TouchableOpacity
@@ -621,7 +621,7 @@ export default class MedicineDetails extends Component {
                           <TextInput
                               keyboardType={"numeric"}
                               selectionColor={themeColor}
-                              style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5 }}
+                              style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5, alignItems: "center", justifyContent: "center" }}
                            
                               onChangeText={(text) => { this.changeQty(text) }}
                           />
@@ -650,7 +650,7 @@ export default class MedicineDetails extends Component {
                               value={this.state.containsDrugs}
                           />
                       </View>}
-                      <View style={{ flexDirection: 'row' }}>
+                      {/* <View style={{ flexDirection: 'row' }}>
                           <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                               <Text>Enter valid Times</Text>
                           </View>
@@ -663,7 +663,7 @@ export default class MedicineDetails extends Component {
                               onChangeText={(text) => { this.changeValidTimes(text) }}
 
                           />
-                      </View>
+                      </View> */}
 
                   </View>
                   <TouchableOpacity
@@ -706,7 +706,7 @@ export default class MedicineDetails extends Component {
                           <TextInput
                               keyboardType={"numeric"}
                               selectionColor={themeColor}
-                              style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5 }}
+                              style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5 ,alignItems:"center",justifyContent:"center"}}
                               value={this.state.qty}
                               onChangeText={(text) => { this.changeQty(text) }}
                           />
@@ -738,7 +738,7 @@ export default class MedicineDetails extends Component {
                               value={this.state.containsDrugs}
                           />
                       </View>}
-                      <View style={{ flexDirection: 'row' }}>
+                      {/* <View style={{ flexDirection: 'row' }}>
                           <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                               <Text>Enter valid Times</Text>
                           </View>
@@ -751,7 +751,7 @@ export default class MedicineDetails extends Component {
                               onChangeText={(text) => { this.changeValidTimes(text) }}
 
                           />
-                      </View>
+                      </View> */}
 
                   </View>
                   <TouchableOpacity
@@ -783,7 +783,7 @@ export default class MedicineDetails extends Component {
                       <TextInput
                           keyboardType={"numeric"}
                           selectionColor={themeColor}
-                          style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5 }}
+                          style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5, alignItems: "center", justifyContent: "center"}}
                           value={this.state.qty}
                           onChangeText={(text) => { this.changeQty(text) }}
                       />
@@ -811,7 +811,7 @@ export default class MedicineDetails extends Component {
                               value={this.state.containsDrugs}
                           />
                       </View>}
-                      <View style={{ flexDirection: 'row' }}>
+                      {/* <View style={{ flexDirection: 'row' }}>
                           <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                               <Text>Enter valid Times</Text>
                           </View>
@@ -824,7 +824,7 @@ export default class MedicineDetails extends Component {
                               onChangeText={(text) => { this.changeValidTimes(text) }}
 
                           />
-                      </View>
+                      </View> */}
 
                   </View>
                   <TouchableOpacity

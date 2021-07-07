@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions, Switch, TextInput } from 'react-native';
 import { AntDesign, Entypo } from '@expo/vector-icons';
-import {fontFamily,themeColor} from '../AppSettings';
+import settings from '../AppSettings'
+const fontFamily = settings.fontFamily
+const themeColor =settings.themeColor
 const {height,width} = Dimensions.get("window")
 export default class MedicineDetails2 extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        qty:"",
-        comment:""
+        qty: this.props.item.total_qty.toString()||"",
+        comment: this.props.item.command||""
     };
   }
     changeQty = (text) => {

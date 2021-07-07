@@ -12,7 +12,8 @@ import {
       Linking,
      Platform,
      StatusBar,
-     ActivityIndicator
+     ActivityIndicator,
+     AsyncStorage
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 const width = Dimensions.get("screen").width
@@ -25,11 +26,13 @@ import moment from 'moment';
 const url = settings.url
 const themeColor =settings.themeColor
 const fontFamily =settings.fontFamily
+const screenHeight = Dimensions.get("screen").height
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import HttpsClient from '../api/HttpsClient';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 import Modal from 'react-native-modal';
 import {FlatList}  from 'react-native-gesture-handler';
+import LottieView from 'lottie-react-native';
 // import Image from 'react-native-scalable-image';
  class PrescriptionView extends Component {
   constructor(props) {
@@ -40,7 +43,9 @@ import {FlatList}  from 'react-native-gesture-handler';
          load:false,
          pk: this.props?.route?.params?.pk ||null,
          showModal2:false,
-        selected:"Prescribed"
+         selected:"Prescribed",
+         prescribed:[],
+         medicinesGiven:[]
     };
     } 
      getDetails = async () => {
@@ -51,7 +56,24 @@ import {FlatList}  from 'react-native-gesture-handler';
              this.setState({ item: data.data })
          }
      }
+     validateAnimations = async () => {
+         let swipeTut = await AsyncStorage.getItem("swipeTut")
+         if (swipeTut == null) {
+             AsyncStorage.setItem("swipeTut", "true")
+             this.setState({ lottieModal: true }, () => {
+                 this.animation.play()
+             })
+         }
+     }
+     filterMedicines = () => {
+         const prescribed = this.state.item.medicines.filter((item) => !item.is_given)
+         const medicinesGiven = this.state.item.medicines.filter((item) => item.is_given)
+         this.setState({ prescribed, medicinesGiven })
+     }
+
     componentDidMount(){
+        this.validateAnimations()
+        this.filterMedicines()
         if(this.state.pk){
             this.getDetails()
         }
@@ -87,7 +109,56 @@ import {FlatList}  from 'react-native-gesture-handler';
         }
 
     }
+     lottieModal = () => {
+         const config = {
+             velocityThreshold: 0.3,
+             directionalOffsetThreshold: 80
+         };
+         return (
+             <Modal
+                 statusBarTranslucent={true}
+                 deviceHeight={screenHeight}
+                 isVisible={this.state.lottieModal}
+             >
 
+                 <View style={{ height: height * 0.7, alignItems: "center", justifyContent: "center" }}>
+
+                     <LottieView
+                         ref={animation => {
+                             this.animation = animation;
+                         }}
+                         style={{
+
+
+                             width: width,
+                             height: height * 0.4,
+
+                         }}
+                         source={require('../assets/lottie/swipe-gesture-right.json')}
+                     // OR find more Lottie files @ https://lottiefiles.com/featured
+                     // Just click the one you like, place that file in the 'assets' folder to the left, and replace the above 'require' statement
+                     />
+                     <View style={{ position: "relative", top: -100, }}>
+                         <View>
+                             <Text style={[styles.text, { color: "#fff", marginTop: -40 }]}>swipe to go back</Text>
+                         </View>
+                         <TouchableOpacity style={{ height: height * 0.05, width: width * 0.2, backgroundColor: "#fff", alignItems: "center", justifyContent: "center", borderRadius: 5, marginLeft: 20 }}
+                             onPress={() => {
+                                 this.animation.pause();
+                                 this.setState({ lottieModal: false })
+
+                             }}
+                         >
+                             <Text style={[styles.text, { color: "#000" }]}>ok</Text>
+                         </TouchableOpacity>
+                     </View>
+
+                 </View>
+
+             </Modal>
+
+         )
+     }
      renderHeader = () => {
          return (
              <View>
@@ -457,7 +528,7 @@ import {FlatList}  from 'react-native-gesture-handler';
                             {this.state.selected =="Prescribed"?
                             <FlatList
                              style={{height:"100%"}}
-                            data={item?.medicines}
+                            data={this.state.prescribed}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item, index }) => {
                                 return (
@@ -492,13 +563,53 @@ import {FlatList}  from 'react-native-gesture-handler';
                             }}
                         />:
                         <FlatList 
-                          data={[]}
+                          data={this.state.medicinesGiven}
                           keyExtractor={(item,index)=>index.toString()}
                           renderItem ={({item,index})=>{
                                return(
-                                   <View>
+                                   <TouchableOpacity style={{
+                                       paddingBottom: 10,
+                                       flex: 1,
+                                       borderBottomWidth: 0.5,
+                                       borderColor: '#D1D2DE',
+                                       backgroundColor: '#FFFFFF',
+                                       flexDirection: "row",
+                                       marginTop: 10
+                                   }}>
+                                       <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
+                                           <Text style={[styles.text]}>{index + 1} . </Text>
+                                       </View>
+                                       <View style={{ flex: 0.7 }}>
+                                           <View style={{ flexDirection: "row" }}>
+                                               <View>
+                                                   <Text style={[styles.text, { color: "#000", }]}>{item.medicinename.name}</Text>
+                                               </View>
+                                               <View style={{ marginLeft: 10 }}>
+                                                   <Text style={[styles.text, { color: "#000", }]}>({item.medicinename.type})</Text>
+                                               </View>
+                                           </View>
+                                           {/* {(item.medicinename.type === "Tablet" || item.medicinename.type === "Capsules") && <View style={{ flexDirection: "row" }}>
+                                                             <View>
+                                                                 <Text style={[styles.text]}> {item.morning_count} - {item.afternoon_count} -{item.night_count} </Text>
+                                                             </View>
+                                                             <View>
+                                                                 <Text style={[styles.text]}>( {item.after_food ? "AF" : "BF"} )</Text>
+                                                             </View>
+                                                         </View>} */}
+                                           <View style={{ marginTop: 10 }}>
+                                               <Text style={[styles.text]}>{item.command}</Text>
+                                           </View>
 
-                                   </View>
+                                       </View>
+                                       <View style={{ flex: 0.2, alignItems: "center", justifyContent: "space-around" }}>
+                                           {/* <View>
+                                                             <Text style={[styles.text]}> {item.days} days</Text>
+                                                         </View> */}
+                                           <View>
+                                               <Text style={[styles.text]}>count : {item.total_qty} </Text>
+                                           </View>
+                                       </View>
+                                   </TouchableOpacity>
                                )
                           }}
                         />
@@ -599,6 +710,9 @@ import {FlatList}  from 'react-native-gesture-handler';
                         </View>
                     </View>
                 </Modal>
+                {
+                    this.lottieModal()
+                }
             </SafeAreaView>
 
         </>

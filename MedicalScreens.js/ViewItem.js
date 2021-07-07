@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, TextInput, FlatList, Image, SafeAreaView, Alert, ActivityIndicator} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, TextInput, FlatList, Image, SafeAreaView, Alert, ActivityIndicator, ScrollView} from 'react-native';
 import { Ionicons, Entypo, AntDesign, FontAwesome, FontAwesome5, MaterialIcons} from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
@@ -195,7 +195,7 @@ class ViewItem extends Component {
                         <Text style={[styles.text, { color: '#000' }]}>No of  boxes</Text>
                         <TextInput
                             keyboardType={"numeric"}
-                            style={{ width: width * 0.8, height: height * 0.05, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
+                            style={{ width: width * 0.4, height: height * 0.1, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
                             selectionColor={themeColor}
                             value={this.state.boxes}
                             onChangeText={(boxes) => { this.setState({ boxes,converted:false},()=>{
@@ -207,7 +207,7 @@ class ViewItem extends Component {
                     <Text style={[styles.text, { color: '#000' }]}>No of strip per boxes</Text>
                     <TextInput
                         keyboardType={"numeric"}
-                        style={{ width: width * 0.8, height: height * 0.05, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
+                            style={{ width: width * 0.4, height: height * 0.1, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
                         selectionColor={themeColor}
                         value={this.state.NoofStripe}
                             onChangeText={(NoofStripe) => {
@@ -220,7 +220,7 @@ class ViewItem extends Component {
                         <Text style={[styles.text, { color: '#000' }]}>No of Tablet per Strips</Text>
                         <TextInput
                             keyboardType={"numeric"}
-                            style={{ width: width * 0.8, height: height * 0.05, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
+                            style={{ width: width * 0.4, height: height * 0.1, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
                             selectionColor={themeColor}
                             value={this.state.NoofMedicines}
                             onChangeText={(NoofMedicines) => {
@@ -238,7 +238,7 @@ class ViewItem extends Component {
                    <Text style={[styles.text, { color: '#000' }]}>No of  boxes</Text>
                    <TextInput
                        keyboardType={"numeric"}
-                       style={{ width: width * 0.8, height: height * 0.05, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
+                       style={{ width: width * 0.4, height: height * 0.1, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
                        selectionColor={themeColor}
                        value={this.state.boxes}
                        onChangeText={(boxes) => {
@@ -252,7 +252,7 @@ class ViewItem extends Component {
                    <Text style={[styles.text, { color: '#000' }]}>No of Pieces</Text>
                    <TextInput
                        keyboardType={"numeric"}
-                       style={{ width: width * 0.8, height: height * 0.05, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
+                       style={{ width: width * 0.4, height: height * 0.1, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
                        selectionColor={themeColor}
                        value={this.state.NoofMedicines}
                        onChangeText={(NoofMedicines) => {
@@ -267,14 +267,17 @@ class ViewItem extends Component {
         
     }
     modal = () => {
+        const { height, width } = Dimensions.get("window");
         return (
             <Modal
                 deviceHeight={screenHeight}
                 isVisible={this.state.modal}
                 onBackdropPress={() => { this.setState({ modal: false }) }}
             >
-                <View style={{ flex: 1, justifyContent: "center" }}>
-                    <View style={{ height: height * 0.6, backgroundColor: "#eee", borderRadius: 10, }}>
+                <View style={{ flex: 1, justifyContent: "center" ,alignItems:"center"}}>
+                    <ScrollView 
+                     showsVerticalScrollIndicator={false}
+                    style={{ height: height * 0.8, backgroundColor: "#eee", borderRadius: 10,width:width*0.7 }}>
                     
                     
                         {
@@ -285,7 +288,7 @@ class ViewItem extends Component {
                             <TextInput
                                 editable={false}
                                 keyboardType={"numeric"}
-                                style={{ width: width * 0.8, height: height * 0.05, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
+                                style={{ width: width * 0.4, height: height * 0.1, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
                                 selectionColor={themeColor}
                                 value={this.state.quantity}
                                 onChangeText={(quantity) => { this.setState({ quantity }) }}
@@ -304,15 +307,15 @@ class ViewItem extends Component {
                                  </View>
                             </View>
                         </View>
-                        <View style={{ alignItems: "center", justifyContent: "space-around" ,flexDirection:"row"}}>
-                            <TouchableOpacity style={{ backgroundColor: themeColor, height: height * 0.05, width: width * 0.4, alignItems: 'center', justifyContent: 'center', marginTop: 25, borderRadius: 5 }}
+                        <View style={{ alignItems: "center", justifyContent: "space-around" ,flexDirection:"row",marginVertical:20}}>
+                            <TouchableOpacity style={{ backgroundColor: themeColor, height: height * 0.08, width: width * 0.2, alignItems: 'center', justifyContent: 'center', marginTop: 25, borderRadius: 5 }}
                                 onPress={() => { this.convertToStandards() }}
                             >
                               <Text style={[styles.text, { color: '#fff' }]}>Convert</Text>
                                
                                 
                             </TouchableOpacity>
-                          {this.state.converted&&  <TouchableOpacity style={{ backgroundColor: themeColor, height: height * 0.05, width: width * 0.4, alignItems: 'center', justifyContent: 'center', marginTop: 25, borderRadius: 5 }}
+                          {this.state.converted&&  <TouchableOpacity style={{ backgroundColor: themeColor, height: height * 0.08, width: width * 0.2, alignItems: 'center', justifyContent: 'center', marginTop: 25, borderRadius: 5 }}
                                 onPress={() => { this.addMedicine() }}
                             >
                                 {!this.state.creating ? <Text style={[styles.text, { color: '#fff' }]}>Add</Text> :
@@ -321,7 +324,7 @@ class ViewItem extends Component {
                             </TouchableOpacity>}
                         </View>
 
-                    </View>
+                    </ScrollView>
 
                 </View>
             </Modal>
@@ -343,6 +346,7 @@ class ViewItem extends Component {
 
     }
     renderHeader = () => {
+        const { height, width } = Dimensions.get("window");
         return (
             <View style={{ flexDirection: 'row', flex: 1, marginTop: 10 }}>
                 <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
@@ -367,6 +371,7 @@ class ViewItem extends Component {
         )
     }
     renderHeader2 = () => {
+        const { height, width } = Dimensions.get("window");
         return (
             <View style={{ flexDirection: 'row', flex: 1, marginTop: 10 }}>
                 <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
@@ -388,12 +393,13 @@ class ViewItem extends Component {
         )
     }
     render() {
+        const { height, width } = Dimensions.get("window");
         return (
             <>
                 <SafeAreaView style={styles.topSafeArea} />
                 <SafeAreaView style={styles.bottomSafeArea}>
                     {/*headers  */}
-                    <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
+                    <View style={{ height: height * 0.12, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
                         <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}
                             onPress={() => { this.props.navigation.goBack() }}
                         >

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, SafeAreaView, ToastAndroid, Pressable, Switch, ActivityIndicator, TouchableWithoutFeedback, TextInput, } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, SafeAreaView, ToastAndroid, Pressable, Switch, ActivityIndicator, TouchableWithoutFeedback, TextInput,Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
 import settings from '../AppSettings';
@@ -68,11 +68,12 @@ class AddPrescription extends Component {
                 check:true
     };
   }
+
   componentDidMount(){
     if(this.state.appoinment){
         this.searchUser(this.state?.appoinment?.patientname.mobile, this.state?.appoinment?.requesteddate, this.state?.appoinment?.clinic)
     }
-      const _subscribe = this.props.navigation.addListener('beforeRemove', (e) => {
+      this._subscribe = this.props.navigation.addListener('beforeRemove', (e) => {
           if (this.state.check&&(this.state.medicines.length>0||this.state.MedicinesGiven.length>0)) {
             
               e.preventDefault();
@@ -88,15 +89,15 @@ class AddPrescription extends Component {
                           style: 'destructive',
                           // If the user confirmed, then we dispatch the action we blocked earlier
                           // This will continue the action that had triggered the removal of the screen
-                          onPress: () => this.props.navigation.navigation.dispatch(e.data.action),
+                          onPress: () => this.props.navigation.dispatch(e.data.action),
                       },
                   ]
               );
           }
-
- 
-          
       })
+  }
+  componentWillUnmount(){
+ 
   }
     addManualMedicine =()=>{
         let duplicate = this.state.medicines
@@ -191,7 +192,8 @@ class AddPrescription extends Component {
                     i.days = 0,
                     i.medicine = i?.title,
                     i.is_drug=false,
-                    i.invalid_count=0
+                    i.invalid_count=0,
+                    i.is_given = false
             })
         }catch(e){
           
@@ -202,14 +204,29 @@ class AddPrescription extends Component {
     backFunction2 = (medicines) => {
         try {
             medicines.forEach((i) => {
-                i.isGiven = true,
-                i.total_qty = 0
+                i.is_given = true,
+                i.total_qty = 0,
+                i.medicine =i.id
             })
         } catch (e) {
 
         }
 
         this.setState({ MedicinesGiven: this.state.MedicinesGiven.concat(medicines) })
+    }
+    searchTemplates = async (age=null,disease="") => {
+        this.setState({ loading: true })
+        let api = `${url}/api/prescription/getTemplate/?clinic=${this.state?.appoinment?.clinic || this.props.clinic.clinicpk}&age=${age}&diagonsis=${disease}`
+         console.log(api)
+        let data = await HttpsClient.get(api)
+      
+        if(data.type=="success"){
+    
+            this.setState({ loading: false })
+            this.setState({ medicines: data.data.prescribed_medicines, MedicinesGiven: data.data.medicines_given})
+        }else{
+            this.setState({ loading: false })
+        }
     }
  addPriscription = async()=>{
    
@@ -269,7 +286,7 @@ class AddPrescription extends Component {
             ongoing_treatment: this.state.Reason,
             doctor_fees:this.state.doctorFees,
             clinic: this.state?.appoinment?.clinic||this.props.clinic.clinicpk,
-            age:this.state.Age,
+            age:Number(this.state.Age),
             sex:this.state.selectedSex,
             next_visit:this.state.nextVisit,
             address:this.state.Address,
@@ -356,8 +373,11 @@ class AddPrescription extends Component {
                        Reason: data.data.user.appointment_reason,
                        appointment_taken: data.data.user.appointment_taken,
                        appointmentId: data.data.user.appointment,
+                    },()=>{
+                       this.searchTemplates(this.state.Age,this.state.Disease)
                     })
                }
+               
              this.setState({loading:false})
            }else{
                this.setState({ loading: false })
@@ -466,7 +486,9 @@ class AddPrescription extends Component {
                                keyboardType ={"numeric"}
                                 value={this.state.Age}
                                 selectionColor={themeColor}
-                                onChangeText={(Age) => { this.setState({ Age }) }}
+                                onChangeText={(Age) => { this.setState({ Age },()=>{
+                                    this.searchTemplates(this.state.Age, this.state.Disease)
+                                }) }}
                                 style={{ width: width * 0.7, height: height * 0.05, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 }}
                             />
                         </View>
@@ -591,8 +613,10 @@ class AddPrescription extends Component {
                                    return(
                                        <TouchableOpacity 
                                            key ={index}
-                                           style={{margin:20,justifyContent:"center"}}
-                                           onPress={() => { this.setState({ Disease: i.title,Diseases:[]})}}
+                                           style={{margin:20,justifyContent:"center",width:width*0.9}}
+                                           onPress={() => { this.setState({ Disease: i.title,Diseases:[]},()=>{
+                                               this.searchTemplates(this.state.Age, this.state.Disease)
+                                           })}}
                                        >
                                            <Text style={[styles.text,{color:themeColor}]}>{i.title}</Text>
                                        </TouchableOpacity>

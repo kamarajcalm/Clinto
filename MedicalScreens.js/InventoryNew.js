@@ -282,7 +282,7 @@ class InventoryNew extends Component {
                       <Text style={[styles.text,{color:"#000"}]}>#</Text>
                   </View>
                 <View style={{ flex: 0.4, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={[styles.text, { color: "#000" }]}>Category</Text>
+                    <Text style={[styles.text, { color: "#000" }]}>Rack</Text>
                   </View>
                 <View style={{ flex: 0.2, alignItems: 'center', justifyContent: 'center'}}>
                     <Text style={[styles.text, { color: "#000" }]}>Action</Text>
@@ -302,7 +302,7 @@ class InventoryNew extends Component {
                        <TextInput 
                          value={this.state.categoryName}
                          style={{height:height*0.1,width:width*0.6,backgroundColor:"#fafafa",borderRadius:10}}
-                         placeholder ={"Enter category"}
+                         placeholder ={"Enter rack"}
                          selectionColor ={themeColor}
                             onChangeText={(categoryName) => { this.setState({ categoryName})}}
                        />
