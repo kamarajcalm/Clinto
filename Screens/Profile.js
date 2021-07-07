@@ -37,6 +37,7 @@ const DATA =["clinic 1","clinic 2","clinic3","clinic4"]
      this.setState({showModal:false})
      AsyncStorage.clear();
      AsyncStorage.removeItem('login')
+    
      return this.props.navigation.dispatch(
        CommonActions.reset({
          index: 0,

@@ -14,10 +14,10 @@ import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import * as  ImagePicker from 'expo-image-picker';
 import { TextInput } from 'react-native-gesture-handler';
 import * as Location from 'expo-location';
-
 import moment from 'moment';
 import HttpsClient from '../api/HttpsClient';
 import authAxios from '../api/authAxios';
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 const url = settings.url
 class CreateReceptionistMedical extends Component {
     constructor(props) {

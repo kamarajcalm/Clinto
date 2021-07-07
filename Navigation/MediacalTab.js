@@ -80,7 +80,8 @@ class MediacalTab extends Component {
                         },
                         tabBarLabel: ({ focused }) => {
                             return <Text style={{ color: focused ? "#fff" : "gray", fontFamily }}>Inventory</Text>
-                        }
+                        },
+                        tabBarVisible:false
 
                     }}
 

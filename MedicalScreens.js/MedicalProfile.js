@@ -2,26 +2,45 @@ import React, { Component } from 'react';
 import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView, AsyncStorage, ScrollView, ImageBackground} from 'react-native';
 import settings from '../AppSettings';
 import { connect } from 'react-redux';
-import { selectTheme } from '../actions';
+import { selectTheme,selectUser,selectMedical,setShowLottie } from '../actions';
 const { height, width } = Dimensions.get("window");
 import { Ionicons, AntDesign, Entypo, MaterialCommunityIcons} from '@expo/vector-icons';
 import Modal from 'react-native-modal';
 import { NavigationContainer, CommonActions } from '@react-navigation/native';
+import HttpsClient from '../api/HttpsClient';
+import { color } from 'react-native-reanimated';
+const {url} =settings
 const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
 class MedicalProfile extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showModal: false
+            showModal: false,
+            medicals:[]
         };
     }
-    componentDidMount() {
 
+    getClinics = async()=>{
+        let api = `${url}/api/prescription/getDoctorClinics/?medicalRep=${this.props.user.id}`
+        let data = await HttpsClient.get(api)
+       console.log(api)
+        if (data.type == "success") {
+            this.setState({ medicals: data.data.ownedclinics })
+        }
+      
+    }
+    componentDidMount() {
+       if(this.props.user.profile.occupation =="MediacalRep"){
+           this.getClinics()
+       }
     }
     logOut = async () => {
         this.setState({ showModal: false })
         await AsyncStorage.clear();
+        this.props.selectMedical(null)
+        this.props.selectMedical(null)
+        this.props.setShowLottie(false)
         return this.props.navigation.dispatch(
             CommonActions.reset({
                 index: 0,
@@ -42,6 +61,11 @@ class MedicalProfile extends Component {
                 <SafeAreaView style={styles.topSafeArea} />
                 <SafeAreaView style={styles.bottomSafeArea}>
                     <View style={{ flex: 1, backgroundColor: "#fff" }}>
+                        <ScrollView
+                         contentContainerStyle={{paddingBottom:30}}
+                        >
+
+                      
                         <StatusBar backgroundColor={themeColor} />
                         <ImageBackground
                             blurRadius={1}
@@ -125,7 +149,39 @@ class MedicalProfile extends Component {
                                         </View>
 
                                     </View>
+                                    <View style={{ borderColor: "#F0F0F0", borderTopWidth: 3, borderBottomWidth: 3 ,marginTop:10}}>
+                                        <View style={{ marginLeft: 20, flexDirection: "row", }}>
+                                            <View style={{ marginTop: 5, flex: 0.6 }}>
+                                                <Text style={[styles.text,{color:"#000",fontSize:20}]}>Owned  Medicals :</Text>
+                                            </View>
+                                     
+                                        </View>
 
+                                        <FlatList
+                                            data={this.state.medicals}
+                                            keyExtractor={(item, index) => index.toString()}
+                                            renderItem={({ item, index }) => {
+                                                return (
+                                                    <View style={{ margin: 10 }}>
+                                                        <TouchableOpacity style={{ flexDirection: "row", minHeight: height * 0.05, borderBottomColor: "#fff", borderBottomWidth: 0.185 }}
+                                                            onPress={() => { this.props.navigation.navigate('ViewMedicalDetails', { item }) }}
+                                                        >
+                                                            <View style={{ flex: 0.5, justifyContent: "center" }}>
+                                                                <Text style={[styles.text, { fontWeight: "bold", color: "#000", marginLeft: 10 }]}>{item.name}</Text>
+                                                                {this.props.medical.name == item.name && <Text style={[styles.text, { color: "gray", marginLeft: 10 }]}>selected</Text>}
+                                                            </View>
+                                                            <View style={{ flex: 0.5, alignItems: 'flex-end', marginRight: 10, justifyContent: "center" }}>
+                                                                <AntDesign name="rightcircleo" size={24} color="#000" />
+                                                            </View>
+
+                                                        </TouchableOpacity>
+
+                                                    </View>
+
+                                                )
+                                            }}
+                                        />
+                                    </View>
                                 </View>
 
 
@@ -163,6 +219,7 @@ class MedicalProfile extends Component {
                                 </View>
                             </Modal>
                         </View>
+                        </ScrollView>
                     </View>
                 </SafeAreaView>
             </>
@@ -187,7 +244,8 @@ const mapStateToProps = (state) => {
     return {
         theme: state.selectedTheme,
         user:state.selectedUser,
+        medical:state.selectedMedical
     }
 }
-export default connect(mapStateToProps, { selectTheme })(MedicalProfile);
+export default connect(mapStateToProps, { selectTheme, selectUser, selectMedical, setShowLottie  })(MedicalProfile);
 

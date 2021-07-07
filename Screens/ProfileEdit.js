@@ -1,45 +1,59 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView,  TextInput } from 'react-native';
 import settings from '../AppSettings';
 import axios from 'axios';
 import Modal from 'react-native-modal';
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
-import { Ionicons, Entypo, AntDesign, Feather, MaterialCommunityIcons, FontAwesome} from '@expo/vector-icons';
+import { Ionicons, Entypo, AntDesign, Feather, MaterialCommunityIcons, FontAwesome, MaterialIcons} from '@expo/vector-icons';
 const themeColor = settings.themeColor;
 const fontFamily = settings.fontFamily;
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
 import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import * as  ImagePicker from 'expo-image-picker';
-import { TextInput } from 'react-native-gesture-handler';
+import { ScrollView,} from 'react-native-gesture-handler';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import moment from 'moment';
 class ProfileEdit extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            show:false,
             showModal: false,
             openImageModal:false,
+            name: this.props.user.profile.name,
+            phoneNo: this.props.user.profile.mobile,
+            dob: this.props.user.profile.dob,
+            imageuri: this.props.user.profile.displayPicture,
+            address: this.props.user.profile.address,
+            city: this.props.user.profile.city,
+            state: this.props.user.profile.state,
+            pincode: this.props.user.profile.pincode,
+            bloodGroup: this.props.user.profile.blood_group,
         };
     }
-    request = async () => {
-        let data = await axios.get('http:192.168.29.98:8000/api/profile/users')
-        console.log(data.data, "hhhh")
-    }
-    logOut = () => {
-        this.setState({ showModal: false })
-        AsyncStorage.removeItem('login')
-        return this.props.navigation.dispatch(
-            CommonActions.reset({
-                index: 0,
-                routes: [
-                    {
-                        name: 'Login2',
+    handleConfirm = (date) => {
+     
+        this.setState({ dob: moment(date).format('YYYY-MM-DD'), show: false, }, () => {
+      
 
-                    },
+        })
+        this.hideDatePicker();
+    };
+    hideDatePicker = () => {
+        this.setState({ show: false })
+    };
+    showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
 
-                ],
-            })
-        )
+        showMessage(message);
     }
     _pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -59,7 +73,7 @@ class ProfileEdit extends Component {
             name: filename,
         };
         this.setState({ openImageModal: false })
-        this.setState({ selectedFile: photo, selectedType: 'image' })
+        this.setState({ selectedFile: photo, selectedType: 'image', imageuri: photo.uri })
     };
     modalAttach = async (event) => {
         if (event == 'gallery') return this._pickImage();
@@ -86,7 +100,7 @@ class ProfileEdit extends Component {
             name: filename,
         };
         this.setState({ openImageModal: false })
-        this.setState({ image: photo, changedImage: true })
+        this.setState({ image: photo, changedImage: true, imageuri:photo.uri})
     }
     renderModal = () => {
         return (
@@ -127,7 +141,7 @@ class ProfileEdit extends Component {
         )
     }
     componentDidMount() {
-        // this.request()
+      console.log(this.props.user)
     }
     render() {
         return (
@@ -157,7 +171,7 @@ class ProfileEdit extends Component {
                             >
                             <View style={{ height: height * 0.12, alignItems: "center", justifyContent: 'center' }}>
                                 <Image
-                                    source={{ uri: "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" }}
+                                        source={{ uri: this.state.imageuri ||"https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" }}
                                     style={{ height: 60, width: 60, borderRadius: 30 }}
                                 />
                                 
@@ -174,66 +188,87 @@ class ProfileEdit extends Component {
                                 <View >
                                     <Text style={styles.text}>Name</Text>
                                     <TextInput 
+                                      value={this.state.name}
                                       selectionColor={themeColor}
-                                      style={{width:width*0.8,height:height*0.05,borderRadius:15,backgroundColor:"#eeee",margin:10,paddingLeft:10}}
+                                      onChangeText={(name) => { this.setState({name})}}
+                                      style={{width:width*0.7,height:height*0.05,borderRadius:15,backgroundColor:"#eeee",margin:10,paddingLeft:10}}
                                     />
                                 </View>
                                 <View>
                                     <Text style={styles.text}>Phone No</Text>
                                     <TextInput
+                                        value={this.state.phoneNo}
                                         keyboardType="numeric"
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        onChangeText={(phoneNo) => { phoneNo}}
+                                        style={{ width: width * 0.7, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
                                 <View>
-                                    <Text style={styles.text}>Age</Text>
-                                    <TextInput
-                                        keyboardType ="numeric"
-                                        selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
-                                    />
-                                </View>
-                                <View>
-                                    <Text style={styles.text}>height</Text>
-                                    <TextInput
-                                        keyboardType="numeric"
-                                        selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
-                                    />
-                                </View>
-                                <View>
-                                    <Text style={styles.text}>Weight</Text>
-                                    <TextInput
-                                        keyboardType="numeric"
-                                        selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
-                                    />
+                                    <Text style={styles.text}>Date of Birth</Text>
+                                     <TouchableOpacity
+                                        onPress={()=>{this.setState({show:true})}}
+                                        style={{ width: width * 0.7, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", flexDirection: "row", margin: 10, paddingLeft: 10 ,alignItems:"center",justifyContent:"space-between"}}
+                                     >
+                                          <View>
+                                            <Text style={[styles.text]}>{this.state.dob}</Text>
+                                          </View>
+                                          <View>
+                                            <MaterialIcons name="date-range" size={24} color="black" />
+                                          </View>
+                                     </TouchableOpacity>
                                 </View>
                                 <View>
                                     <Text style={styles.text}>Blood Group</Text>
                                     <TextInput
-                                        keyboardType="numeric"
+                                        value={this.state.bloodGroup}
+                                        onChangeText={(bloodGroup) => { this.setState({bloodGroup})}}
+                                  
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.7, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
                                 <View>
-                                    <Text style={styles.text}>Location</Text>
+                                    <Text style={styles.text}>Address</Text>
                                     <TextInput
-                                        
+                                        value={this.state.address}
+                                     
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        onChangeText={(address) => { this.setState({ address})}}
+                                        style={{ width: width * 0.7, height: height * 0.1, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 ,textAlignVertical:"top"}}
                                     />
                                 </View>
                                 <View>
-                                    <Text style={styles.text}>Medical History</Text>
+                                    <Text style={styles.text}>city</Text>
                                     <TextInput
-                                        multiline={true}
+                                        value={this.state.city}
+                                   
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.2, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        onChangeText={(city) => { this.setState({ city})}}
+                                        style={{ width: width * 0.7, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
+                                <View>
+                                    <Text style={styles.text}>State</Text>
+                                    <TextInput
+                                        value={this.state.state}
+                                       
+                                        selectionColor={themeColor}
+                                        onChangeText={(state) => { this.setState({ state})}}
+                                        style={{ width: width * 0.7, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                    />
+                                </View>
+                                <View>
+                                    <Text style={styles.text}>Pincode</Text>
+                                    <TextInput
+                                        value={this.state.pincode}
+                                        keyboardType={"numeric"}
+                                        selectionColor={themeColor}
+                                        onChangeText={(state) => { this.setState({ state }) }}
+                                        style={{ width: width * 0.7, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                    />
+                                </View>
+                        
                                 <View style={{alignItems:'center',justifyContent:'center'}}>
                                     <TouchableOpacity style={{ width: width * 0.4, height: height * 0.05, borderRadius: 10, alignItems: 'center', justifyContent: "center" ,backgroundColor:themeColor}}>
                                         <Text style={[styles.text,{color:"#fff"}]}>Update</Text>
@@ -246,6 +281,13 @@ class ProfileEdit extends Component {
                      
                         {this.renderModal()}
                     </View>
+
+                    <DateTimePickerModal
+                        isVisible={this.state.show}
+                        mode="date"
+                        onConfirm={this.handleConfirm}
+                        onCancel={this.hideDatePicker}
+                    />
                 </SafeAreaView>
 
             </>
@@ -278,7 +320,7 @@ const mapStateToProps = (state) => {
 
     return {
         theme: state.selectedTheme,
-
+        user:state.selectedUser,
     }
 }
 export default connect(mapStateToProps, { selectTheme })(ProfileEdit)

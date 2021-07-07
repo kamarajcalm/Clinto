@@ -23,7 +23,8 @@ class MedicalOffers extends Component {
             Monthly:"",
             threeMonth:"",
             sixMonth:"",
-            edit:false
+            edit:false,
+            discount:""
         };
     }
 
@@ -60,20 +61,21 @@ class MedicalOffers extends Component {
                         <ScrollView style={{ flex: 1, }}>
                             {/* image */}
                            
-                            <View style={{marginTop:10}}>
+                            <View style={{marginTop:40,alignItems:"center"}}>
                                 <View style={{marginLeft:5}}>
-                                    <Text style={[styles.text, { color: "#000" }]}> Monthly Pack Amount</Text>
+                                    <Text style={[styles.text, { color: "#000" }]}>Discount %</Text>
                                 </View>
                                 <View style={{ marginTop: 10, marginLeft: 20}}>
                                    <TextInput 
+                                    value={this.state.discount}
                                       editable={this.state.edit}
                                       style={{height:height*0.05,width:width*0.6,backgroundColor:"#fafafa"}}
                                       selectionColor={themeColor}
-                                      onChangeText={(Monthly) => { this.setState({ Monthly})}}
+                                      onChangeText={(discount) => { this.setState({ discount})}}
                                    />
                                </View>
                             </View>
-                            <View style={{ marginTop: 10 }}>
+                            {/* <View style={{ marginTop: 10 }}>
                                 <View style={{ marginLeft:5 }}>
                                     <Text style={[styles.text, { color: "#000" }]}> Three Month Pack Amount</Text>
                                 </View>
@@ -111,9 +113,9 @@ class MedicalOffers extends Component {
                                         onChangeText={(Yearly) => { this.setState({ Yearly }) }}
                                     />
                                 </View>
-                            </View>
+                            </View> */}
 
-                              <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around",marginVertical:20}}>
+                              <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around",marginTop:50}}>
                                    <TouchableOpacity 
                                      style={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:"#333"}}
                                      onPress={()=>{this.setState({edit:true})}}

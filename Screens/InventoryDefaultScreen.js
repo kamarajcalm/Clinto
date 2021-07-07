@@ -18,6 +18,7 @@ export default class InventoryDefaultScreen extends Component {
       });
   }
 
+
   render() {
     return (
       <View style={{flex:1,alignItems:"center",justifyContent:"center",backgroundColor:"#000"}}>
