@@ -139,13 +139,10 @@ class makeAppointmentClinic extends Component {
         if (post.type == "success") {
             this.setState({ creating: false })
             this.showSimpleMessage("requested SuccessFully", "#00A300", "success")
-       
-         
                 this.props.navigation.goBack()
-        
         } else {
             this.setState({creating:false})
-            this.showSimpleMessage("Try again", "#B22222", "danger")
+            this.showSimpleMessage(`${post.data.error ||"try again"}`, "#B22222", "danger")
         }
     }
     getTodayTimings = (today) => {

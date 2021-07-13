@@ -12,6 +12,7 @@ import ViewDoctor from '../AdminScreens/ViewDoctor';
 import EditDoctorTimings from '../AdminScreens/EditDoctorTimings';
 import EditClinicDetails from '../AdminScreens/EditClinicDetails';
 import ReceptionistProfile from '../AdminScreens/ReceptionistProfile';
+import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack';
 import UploadImages from '../AdminScreens/UploadImages';
 const Stack = createStackNavigator();
 export default class ClincsStack extends Component {
@@ -23,7 +24,16 @@ export default class ClincsStack extends Component {
 
     render() {
         return (
-            <Stack.Navigator>
+            <Stack.Navigator 
+                screenOptions={{
+                    transitionSpec: {
+                        open: TransitionSpecs.TransitionIOSSpec,
+                        close: TransitionSpecs.TransitionIOSSpec,
+                    },
+                    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+
+                }}
+            >
                 <Stack.Screen name="Clinics" component={Clinics} options={{ headerShown: false }} />
                 <Stack.Screen name="CreateClincs" component={CreateClinics} options={{ headerShown: false }} />
                 <Stack.Screen name="ClinicDetails" component={ClinicDetails} options={{ headerShown: false }} />

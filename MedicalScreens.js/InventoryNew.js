@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, TextInput, FlatList, Image, SafeAreaView, Alert, ScrollView} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, TextInput, FlatList, Image, SafeAreaView, Alert, ScrollView,Switch} from 'react-native';
 import { Ionicons, Entypo, AntDesign, MaterialIcons} from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
@@ -64,7 +64,8 @@ class InventoryNew extends Component {
             Amount:"",
             selectedStatus:types[0].value,
             modal2:false,
-            soldItems:[]
+            soldItems:[],
+            rack:true
         };
     }
     deleteSold = async(item,index)=>{
@@ -308,27 +309,43 @@ class InventoryNew extends Component {
             </View>
         )
     }
+    toggleSwitch =()=>{
+        this.props.navigation.navigate('TypeWiseView')
+    }
     FirstRoute =()=>{
         const { height, width } = Dimensions.get("window");
         return(
             <View style={{flex:1}}>
-               <View style={{flexDirection:'row',backgroundColor:"#fff",alignItems:"center",justifyContent:"space-around",marginTop:10}}>
+               <View style={{flexDirection:'row',backgroundColor:"#fff",alignItems:"center",justifyContent:"space-around",marginTop:10,zIndex:99}}>
                     <View>
                        <TextInput 
                          value={this.state.categoryName}
-                         style={{height:height*0.1,width:width*0.6,backgroundColor:"#fafafa",borderRadius:10}}
+                         style={{height:height*0.1,width:width*0.3,backgroundColor:"#fafafa",borderRadius:10}}
                          placeholder ={"Enter rack"}
                          selectionColor ={themeColor}
                             onChangeText={(categoryName) => { this.setState({ categoryName})}}
                        />
                     </View>
                     <View>
-                       <TouchableOpacity style={{height:height*0.1,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:10}}
+                       <TouchableOpacity style={{height:height*0.1,width:width*0.2,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:10}}
                         onPress ={()=>{this.addCategory()}}
                        >
                             {this.state.creating?<ActivityIndicator size ={"small"} color={"#fff"}/>: <Text style={[styles.text,{color:"#fff"}]}>Add</Text>}
                        </TouchableOpacity>
                     </View>
+                 <View >
+                        <View>
+                            <Text style={[styles.text,{color:"#000"}]}>Rack View</Text>
+                        </View>
+                        <Switch
+                            style={{ }}
+                            trackColor={{ false: '#767577', true: '#81b0ff' }}
+                            thumbColor={this.state.rack ? '#f5dd4b' : '#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={()=>{ this.toggleSwitch() }}
+                            value={this.state.rack}
+                        />
+                 </View>
                </View>
                <FlatList 
                  refreshing={this.state.refreshing}
@@ -580,15 +597,7 @@ class InventoryNew extends Component {
                     justifyContent:"space-around",
                     borderRadius: 20
                 }}>
-                    <TouchableOpacity
-                        style={{ backgroundColor: themeColor, width: width * 0.4, alignItems: "center", justifyContent: "center", borderRadius: 5, height: height * 0.09 }}
-                        onPress={async() => { 
-                            await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
-                            this.props.navigation.navigate('CreateBill') 
-                        }}
-                    >
-                        <Text style={[styles.text, { color: "#fff" }]}>Create Bill</Text>
-                    </TouchableOpacity>
+                  
                     <TouchableOpacity
                         style={{ backgroundColor: themeColor, width: width * 0.4, alignItems: "center", justifyContent: "center", borderRadius: 5, height: height * 0.09 }}
                         onPress={async() => { 
@@ -714,8 +723,27 @@ class InventoryNew extends Component {
                          )
                      }}
                    />
-
-      
+                <View style={{
+                    position: "absolute",
+                    bottom: 30,
+                    left: 20,
+                    right: 20,
+                    flex: 1,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-around",
+                    borderRadius: 20
+                }}>
+                <TouchableOpacity
+                    style={{ backgroundColor: themeColor, width: width * 0.4, alignItems: "center", justifyContent: "center", borderRadius: 5, height: height * 0.09 }}
+                    onPress={async () => {
+                        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+                        this.props.navigation.navigate('CreateBill')
+                    }}
+                >
+                    <Text style={[styles.text, { color: "#fff" }]}>Create Bill</Text>
+                </TouchableOpacity>
+                </View>
             </View>
         )
     }

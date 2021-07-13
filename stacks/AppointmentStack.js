@@ -11,6 +11,7 @@ import ViewAppointmentDoctors from '../Screens/ViewAppointmentDoctors';
 import ViewPriscriptions from '../Screens/ViewPriscriptions';
 import AddPrescription from '../Screens/AddPrescription';
 import SearchMedicines from '../Screens/SearchMedicines';
+import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack';
 const Stack = createStackNavigator();
 export default class AppointmentStack extends Component {
     constructor(props) {
@@ -21,7 +22,16 @@ export default class AppointmentStack extends Component {
 
     render() {
         return (
-            <Stack.Navigator>
+            <Stack.Navigator 
+                screenOptions={{
+                    transitionSpec: {
+                        open: TransitionSpecs.TransitionIOSSpec,
+                        close: TransitionSpecs.TransitionIOSSpec,
+                    },
+                    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+
+                }}
+            >
                 <Stack.Screen name="Appointments" component={Appointments} options={{ headerShown: false }} />
                 <Stack.Screen name="ProfileView" component={ProfileView} options={{ headerShown: false }} />
                 <Stack.Screen name="ViewAppointment" component={ViewAppointments} options={{ headerShown: false }} />

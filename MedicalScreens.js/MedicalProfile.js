@@ -38,6 +38,7 @@ class MedicalProfile extends Component {
     logOut = async () => {
         this.setState({ showModal: false })
         await AsyncStorage.clear();
+        this.props.selectMedical({})
         return this.props.navigation.dispatch(
             CommonActions.reset({
                 index: 0,

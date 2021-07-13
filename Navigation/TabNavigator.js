@@ -137,6 +137,9 @@ class TabNavigator extends Component {
         if (routeName == "ViewSold"){
             return false
         }
+        if (routeName == "TypeWiseView"){
+            return false
+        }
         return true
     }
 

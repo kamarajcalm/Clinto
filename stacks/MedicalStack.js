@@ -9,6 +9,7 @@ import ViewMedicals from '../AdminScreens/ViewMedicals';
 import CreateReceptionistMedical from '../AdminScreens/CreateReceptionistMedical';
 import UpdateTimings from '../AdminScreens/UpdateTimings';
 import MedicalOffers from '../AdminScreens/MedicalOffers';
+import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack';
 const Stack = createStackNavigator();
 export default class MedicalStack extends Component {
     constructor(props) {
@@ -19,7 +20,16 @@ export default class MedicalStack extends Component {
 
     render() {
         return (
-            <Stack.Navigator>
+            <Stack.Navigator 
+                screenOptions={{
+                    transitionSpec: {
+                        open: TransitionSpecs.TransitionIOSSpec,
+                        close: TransitionSpecs.TransitionIOSSpec,
+                    },
+                    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+
+                }}
+            >
                 <Stack.Screen name="Medicals" component={Medicals} options={{ headerShown: false }} />
                 <Stack.Screen name="CreateMedicals" component={CreateMedicals} options={{ headerShown: false }} />
                 <Stack.Screen name="CreateRep" component={CreateRep} options={{ headerShown: false }} />

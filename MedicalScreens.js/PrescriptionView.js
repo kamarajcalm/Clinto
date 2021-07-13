@@ -14,7 +14,9 @@ import {
     Platform,
     StatusBar,
     ActivityIndicator,
-    AsyncStorage
+    AsyncStorage,
+    ScrollView,
+    TextInput
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 const width = Dimensions.get("screen").width
@@ -47,7 +49,9 @@ class PrescriptionView extends Component {
             selected: "Prescribed",
             lottieModal: false,
             prescribed: [],
-            medicinesGiven: []
+            medicinesGiven: [],
+            drugModal:false,
+            drugs:[]
         };
     }
     getDetails = async () => {
@@ -64,10 +68,24 @@ class PrescriptionView extends Component {
             prescription: this.state.item.id,
             clinic: this.props.medical.clinicpk,
         }
-  
+        if(this.state.drugs.length>0){
+             let drugs = []
+            this.state.drugs.forEach((item)=>{
+                 let pushObj ={
+                     id: item.id,
+                     name: item.medicinename.name,
+                     qty:item.qty,
+                     total_qty: item.total_qty,
+                     type: item.medicinename.type
+                 }
+                drugs.push(pushObj)
+            })
+            sendData.drugs = drugs
+        }
         let post = await HttpsClient.post(api, sendData)
         console.log(post, "dd")
         if (post.type == "success") {
+            this.setState({issuing:false,drugModal:false})
             this.showSimpleMessage("issued SuccessFully", "#00A300", "success")
             return this.props.navigation.dispatch(
                 CommonActions.reset({
@@ -82,6 +100,10 @@ class PrescriptionView extends Component {
                 })
             )
 
+        }
+        else{
+            this.setState({ issuing: false, })
+            return (this.showSimpleMessage("Try again","red","danger"))
         }
     }
     validateAnimations = async () => {
@@ -98,9 +120,14 @@ class PrescriptionView extends Component {
         const medicinesGiven = this.state.item.medicines.filter((item) => item.is_given)
         this.setState({ prescribed, medicinesGiven })
     }
+    filterDrugs =()=>{
+        const drugs = this.state.item.medicines.filter((item) => item.is_drug)
+        this.setState({ drugs})
+    }
     componentDidMount() {
         this.validateAnimations()
         this.filterMedicines()
+        this.filterDrugs()
         if (this.state.pk) {
             this.getDetails()
         }
@@ -469,6 +496,111 @@ class PrescriptionView extends Component {
             </View>
         )
     }
+    changeQty =(qty,index,max)=>{
+        let duplicate = this.state.drugs
+        let qtyy = Number(qty)
+        if (qtyy<max){
+         
+            duplicate[index].qty = qtyy.toString()
+        }
+        else{
+            duplicate[index].qty = max.toString()
+        }
+     
+        this.setState({drugs:duplicate})
+      
+    }
+    drugModal =()=>{
+        return  (
+            <Modal
+               deviceHeight={screenHeight}
+               statusBarTranslucent ={true}
+              isVisible ={this.state.drugModal}
+              onBackdropPress={() => { this.setState({ drugModal:false})}}
+            >
+                <View style={{ }}>
+                 
+
+                 
+                    <ScrollView style={{ height: height * 0.4, backgroundColor: "#eee", borderRadius: 10, }}>
+                      
+                               <View style={{marginVertical:10,alignItems:"center",justifyContent:'center'}}>
+                                   <Text style={[styles.text,{color:"#000",fontSize:18,textDecorationLine:"underline"}]}>DRUGS</Text>
+                               </View>
+                                           {/* HEADERS */}
+                               <View style={{flexDirection:"row"}}>
+                                     <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
+                                        <Text style={[styles.text,{color:'#000',fontSize:18}]}>Medicine</Text>
+                                     </View>
+                                <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center"}}>
+                                        <Text style={[styles.text, { color: '#000', fontSize: 18 }]}>Type</Text>
+                                      </View>
+                                <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center"}}>
+                                           <Text style={[styles.text, { color: '#000', fontSize: 18 }]}>Max</Text>
+                                     </View>
+                                <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center"}}>
+                                       <Text style={[styles.text, { color: '#000', fontSize: 18 }]}>Qty</Text>
+                                     </View>
+                               </View>
+                               {
+                                   this.state.drugs.map((item,index)=>{
+                                       return(
+                                           <View style={{ flexDirection: "row",marginTop:10 }}
+                                        
+                                           key={index}
+                                           >
+                                               <View style={{ flex: 0.4, alignItems: "center", justifyContent: "center" }}>
+                                                   <Text style={[styles.text, { color: '#000', fontSize: 18 }]}>{item.medicinename.name}</Text>
+                                               </View>
+                                               <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
+                                                   <Text style={[styles.text, { color: '#000', fontSize: 18 }]}>{item.medicinename.type}</Text>
+                                               </View>
+                                               <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
+                                                   <TextInput 
+                                                      style={{height:height*0.05,width:"70%",backgroundColor:"#fff",borderRadius:5,color:"#000",alignItems:"center",justifyContent:"center"}}
+                                                      editable ={false}
+                                                      selectionColor={themeColor}
+                                                      value={item.total_qty.toString()}
+                                                   />
+                                               </View>
+                                               <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
+                                                   <TextInput
+                                                       keyboardType={"numeric"}
+                                                        value={item?.qty}
+                                                       style={{ height: height * 0.05, width: "70%", backgroundColor: "#fff", borderRadius: 5}}
+                                                       onChangeText={(qty) => { this.changeQty(qty, index,item.total_qty)}}
+                                                       selectionColor={themeColor}
+                                                   />
+                                               </View>
+                                           </View>
+                                       )
+                                   })
+                               }
+                            <View style={{marginVertical:20,alignItems:"center"}}>
+                                 <TouchableOpacity 
+                                   onPress={()=>{
+                                       this.setState({issuing:true},()=>{
+                                           this.IssuePriscription()
+                                       })
+                                   }}
+                                  style={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",borderRadius:10,backgroundColor:themeColor}}
+                                 >
+                                    {!this.state.issuing?<Text style={[styles.text,{color:"#fff"}]}>Issue</Text>:
+                                      <ActivityIndicator 
+                                        size={"large"}
+                                        color={"#fff"}
+                                      />
+                                    
+                                    }
+                                 </TouchableOpacity>
+                            </View>
+                     </ScrollView>
+                    </View>
+            
+
+            </Modal>
+        )
+    }
     render() {
         const config = {
             velocityThreshold: 0.3,
@@ -479,8 +611,8 @@ class PrescriptionView extends Component {
             <>
                 <SafeAreaView style={styles.topSafeArea} />
                 <SafeAreaView style={styles.bottomSafeArea}>
-                    <StatusBar backgroundColor={"#5081BC"} />
-                    <View style={{ height: height * 0.1, backgroundColor: "#5081BC", flexDirection: "row" }}>
+                    <StatusBar backgroundColor={themeColor} />
+                    <View style={{ height: height * 0.1, backgroundColor: themeColor, flexDirection: "row" }}>
                         <View style={{ flex: 0.7 }}>
                             <View style={{ flex: 0.5, justifyContent: "center", marginLeft: 20 }}>
                                 <Text style={[styles.text, { color: "#ffff", fontWeight: 'bold', fontSize: 20 }]}>{this.state?.item?.clinicname?.name?.toUpperCase()}</Text>
@@ -551,7 +683,11 @@ class PrescriptionView extends Component {
                             </View>
                             <View style={{ flex: 0.53, }}>
 
-                                {this.state.selected == "Prescribed" ? <FlatList
+                                {this.state.selected == "Prescribed" ? 
+                                
+                                <FlatList
+                                     showsVerticalScrollIndicator ={false}
+                                    contentContainerStyle={{paddingBottom:50}}
                                     data={this.state.prescribed}
                                     style={{ height: "100%" }}
                                     keyExtractor={(item, index) => index.toString()}
@@ -607,10 +743,11 @@ class PrescriptionView extends Component {
 
                                     }}
                                 /> : <FlatList
-                                    data={this.state.medicinesGiven}
-                                    keyExtractor={(item, index) => index.toString()}
-                                    renderItem={({ item, index }) => {
-
+                                        showsVerticalScrollIndicator={false}
+                                        contentContainerStyle={{ paddingBottom: 50 }}
+                                        data={this.state.medicinesGiven}
+                                        keyExtractor={(item, index) => index.toString()}
+                                        renderItem={({ item, index }) => {
                                         return (
                                             <TouchableOpacity style={{
                                                 paddingBottom: 10,
@@ -681,7 +818,7 @@ class PrescriptionView extends Component {
                                     </View>
                                 </View>
                             </View>
-                            <View style={{ flex: 0.07, backgroundColor: "#5081BC", flexDirection: 'row' }}>
+                            <View style={{ flex: 0.07, backgroundColor: themeColor, flexDirection: 'row' }}>
                                 <TouchableOpacity style={{ flex: 0.5, flexDirection: "row", alignItems: 'center', justifyContent: "center" }}
                                     onPress={() => {
                                         if (Platform.OS == "android") {
@@ -713,17 +850,23 @@ class PrescriptionView extends Component {
                     </GestureRecognizer>
                     {<View style={{position:"absolute",width,justifyContent:"center",bottom:70,left:20}}>
                      <TouchableOpacity
-                            style={{ backgroundColor:"#5081BC",height:height*0.05,width:width*0.4,alignItems:'center',justifyContent:'center',borderRadius:5}}
+                            style={{ backgroundColor:themeColor,height:height*0.05,width:width*0.4,alignItems:'center',justifyContent:'center',borderRadius:5}}
                         onPress={() => {
                             if (!this.state.valid) {
                                 this.setState({ load: false })
                                 return this.showSimpleMessage("Prescription is invalid ", "#dd7030",)
                             }
-                            this.IssuePriscription()
+                            if(this.state.drugs.length==0){
+                               return this.setState({issuing:true},()=>{
+                                    this.IssuePriscription()
+                                })
+                            
+                            }
+                           this.setState({drugModal:true})
                         //  this.validate()
                         }}
                      >{
-                         this.state.load?<ActivityIndicator  color ={"#fff"} size ="large"/>:
+                                this.state.issuing?<ActivityIndicator  color ={"#fff"} size ="large"/>:
                          <View style={{flexDirection:"row"}}>
                              <View style={{alignItems:'center',justifyContent:"center"}}>
                                  <Text style={[styles.text, { color: "#fff" }]}>Issue</Text>
@@ -744,13 +887,16 @@ class PrescriptionView extends Component {
                     <View style={{ position: "absolute", width, justifyContent: "center", bottom: 130, left: 20 }}>
                       <TouchableOpacity 
                             onPress={() => { this.props.navigation.navigate("BillPrescription",{item:this.state.item})}}
-                            style={{ backgroundColor: "#5081BC", height: height * 0.05, width: width * 0.4, alignItems: 'center', justifyContent: 'center', borderRadius: 5 }}
+                            style={{ backgroundColor: themeColor, height: height * 0.05, width: width * 0.4, alignItems: 'center', justifyContent: 'center', borderRadius: 5 }}
                       >
                             <Text style={[styles.text, { color: "#fff" }]}>Create Bill</Text>
                       </TouchableOpacity>
                   </View>
                     {
                         this.lottieModal()
+                    }
+                    {
+                        this.drugModal()
                     }
                 </SafeAreaView>
 

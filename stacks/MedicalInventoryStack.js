@@ -14,6 +14,8 @@ import CreateOrders from '../MedicalScreens.js/CreateOrders';
 import CreateBill from '../MedicalScreens.js/CreateBill';
 import ViewSold from '../MedicalScreens.js/ViewSold';
 import InventoryDefaultScreen from '../Screens/InventoryDefaultScreen';
+import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack';
+import TypeWiseView from '../MedicalScreens.js/TypeWiseView';
 const Stack = createStackNavigator();
 export default class MedicalInventoryStack extends Component {
     constructor(props) {
@@ -24,7 +26,16 @@ export default class MedicalInventoryStack extends Component {
 
     render() {
         return (
-            <Stack.Navigator>
+            <Stack.Navigator 
+                screenOptions={{
+                    transitionSpec: {
+                        open: TransitionSpecs.TransitionIOSSpec,
+                        close: TransitionSpecs.TransitionIOSSpec,
+                    },
+                    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+
+                }}
+            >
                 <Stack.Screen name="InventoryDefaultScreen" component={InventoryDefaultScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="InventoryNew" component={InventoryNew} options={{ headerShown: false }} />
                 <Stack.Screen name="Inventory" component={Inventory} options={{ headerShown: false }} />
@@ -36,6 +47,7 @@ export default class MedicalInventoryStack extends Component {
                 <Stack.Screen name="CreateOrders" component={CreateOrders} options={{ headerShown: false }} />
                 <Stack.Screen name="CreateBill" component={CreateBill} options={{ headerShown: false }} />
                 <Stack.Screen name="ViewSold" component={ViewSold} options={{ headerShown: false }} />
+                <Stack.Screen name="TypeWiseView" component={TypeWiseView} options={{ headerShown: false }} />
             </Stack.Navigator>
         );
     }

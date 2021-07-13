@@ -11,6 +11,7 @@ import ListPriscriptions from '../MedicalScreens.js/ListPriscriptions';
 import ShowCard2 from '../MedicalScreens.js/ShowCard2';
 import PrescriptionView from '../MedicalScreens.js/PrescriptionView';
 import BillPrescription from '../MedicalScreens.js/BillPrescription';
+import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack';
 const Stack = createStackNavigator();
 export default class ClincicPriscriptionStack extends Component {
     constructor(props) {
@@ -21,7 +22,16 @@ export default class ClincicPriscriptionStack extends Component {
 
     render() {
         return (
-            <Stack.Navigator>
+            <Stack.Navigator 
+                screenOptions={{
+                    transitionSpec: {
+                        open: TransitionSpecs.TransitionIOSSpec,
+                        close: TransitionSpecs.TransitionIOSSpec,
+                    },
+                    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+
+                }}
+            >
                 <Stack.Screen name="PriscriptionIssue" component={PriscriptionIssue} options={{ headerShown: false }} />
                 <Stack.Screen name="SearchPateint" component={SearchPateint} options={{ headerShown: false }} />
                 <Stack.Screen name="ListPriscriptions" component={ListPriscriptions} options={{ headerShown: false }} />

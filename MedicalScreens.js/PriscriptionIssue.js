@@ -83,8 +83,11 @@ class PriscriptionIssue extends Component {
             let data = await HttpsClient.get(api)
             console.log(api)
             if (data.type == "success") {
-
-                this.props.selectMedical(data.data[0].clinic)
+                 let medical ={
+                     clinicpk: data.data[0].clinic.id,
+                     inventory: data.data[0].clinic.inventory,
+                 }
+                this.props.selectMedical(medical)
                 this.getPriscriptions(data.data[0].clinic.id)
             }
           
@@ -98,7 +101,7 @@ class PriscriptionIssue extends Component {
                 this.props.selectMedical(data.data.ownedclinics[0])
                 this.getPriscriptions(data.data.ownedclinics[0].clinicpk)
             }
-            console.log(data,api)
+            console.log(api)
 
         }
 
@@ -115,19 +118,21 @@ class PriscriptionIssue extends Component {
        
               this.getClinic();
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
-        
-            this.getPriscriptions(this.props?.medical?.clinic?.id)
+            
+            this.getPriscriptions(this.props?.medical?.clinicpk)
 
         });
     }
     onRefresh = () => {
         this.setState({ isFetching: true })
-        this.getPriscriptions(this.props.medical.id)
+        console.log(this.props.medical)
+        this.getPriscriptions(this.props.medical.clinicpk)
     }
     componentWillUnmount(){
         this._unsubscribe();
     }
     render() {
+        const { height, width } = Dimensions.get("window");
         return (
             <>
                 <SafeAreaView style={styles.topSafeArea} />

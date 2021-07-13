@@ -38,6 +38,7 @@ import SearchDoctors from '../AdminScreens/SearchDoctors';
 import PrescriptionView from '../MedicalScreens.js/PrescriptionView';
 import UploadImages from '../AdminScreens/UploadImages';
 import ViewReceptionProfile from '../Screens/ViewReceptionProfile';
+import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -79,7 +80,17 @@ export default class AppNavigator extends Component {
       
         return (
             <NavigationContainer >
-                <Stack.Navigator>
+                <Stack.Navigator
+                
+                    screenOptions={{
+                        transitionSpec: {
+                            open: TransitionSpecs.TransitionIOSSpec,
+                            close: TransitionSpecs.TransitionIOSSpec,
+                        },
+                        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+
+                    }}
+                >
                 
                     <Stack.Screen name="DefaultScreen" component={DefaultScreen} options={{ headerShown: false }} />
                     <Stack.Screen name="MainTab" component={TabNavigator} options={{ headerShown: false }} />

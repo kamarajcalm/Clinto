@@ -8,6 +8,7 @@ import MakeAppointment from '../Screens/MakeAppointment';
 import ChatScreen from '../Screens/ChatScreen';
 import ViewClinic from '../Screens/ViewClinic';
 import makeAppointmentClinic from '../Screens/makeAppointmentClinic';
+import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack';
 import ViewMedicals from '../Screens/ViewMedicals';
 const Stack = createStackNavigator();
 export default class DoctorsStack extends Component {
@@ -19,7 +20,16 @@ export default class DoctorsStack extends Component {
 
   render() {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator 
+        screenOptions={{
+          transitionSpec: {
+            open: TransitionSpecs.TransitionIOSSpec,
+            close: TransitionSpecs.TransitionIOSSpec,
+          },
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+
+        }}
+        >
             <Stack.Screen name="Doctors" component={Doctors} options={{ headerShown: false }} />
             <Stack.Screen name="SearchDoctors" component={SearchDoctors} options={{ headerShown: false }} />
             <Stack.Screen name="ProfileView" component={ProfileView} options={{ headerShown: false }} />

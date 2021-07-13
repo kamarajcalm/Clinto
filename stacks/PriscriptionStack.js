@@ -13,6 +13,7 @@ import ListPatientPriscription from '../Screens/ListPatientPriscription';
 import ChatScreen from '../Screens/ChatScreen';
 import Priscription1 from '../Screens/Priscription1';
 import PrescriptionViewDoctor from '../Screens/PrescriptionViewDoctor';
+import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack';
 
 
 const Stack = createStackNavigator();
@@ -26,7 +27,16 @@ export default class PriscriptionStack extends Component {
 
     render() {
         return (
-            <Stack.Navigator>
+            <Stack.Navigator 
+                screenOptions={{
+                    transitionSpec: {
+                        open: TransitionSpecs.TransitionIOSSpec,
+                        close: TransitionSpecs.TransitionIOSSpec,
+                    },
+                    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+
+                }}
+            >
                 {/* <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} /> */}
                 <Stack.Screen name="Priscription" component={Priscription1} options={{ headerShown: false, }} />
                 <Stack.Screen name="showCard" component={ShowCard} options={{ headerShown: false }} />
