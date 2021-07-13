@@ -44,51 +44,57 @@ class ViewSold extends Component {
                     </View>
                        
                     <ScrollView>
-                        <View style={{marginHorizontal:20,marginTop:10}}>
-                            <View>
-                                <Text style={[styles.text,{color:"#000"}]}>Customer Name :</Text>
-                            </View>
-                            <View style={{marginTop:5,marginLeft:5}}>
-                                <Text style={[styles.text]}>{this.state.item.contact_details}</Text>
-                            </View>
+                        <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                            <View style={{ marginHorizontal: 20, marginTop: 10 }}>
+                                <View>
+                                    <Text style={[styles.text, { color: "#000" }]}>Customer Name :</Text>
+                                </View>
+                                <View style={{ marginTop: 5, marginLeft: 5 }}>
+                                    <Text style={[styles.text]}>{this.state.item.contact_details}</Text>
+                                </View>
 
-                        </View>
-                        <View style={{ marginHorizontal: 20, marginTop: 10 }}>
-                            <View>
-                                <Text style={[styles.text, { color: "#000" }]}>Customer Mobile :</Text>
                             </View>
-                            <View style={{ marginTop: 5, marginLeft: 5 }}>
-                                <Text style={[styles.text]}>{this.state.item.contact_no}</Text>
-                            </View>
+                            <View style={{ marginHorizontal: 20, marginTop: 10 }}>
+                                <View>
+                                    <Text style={[styles.text, { color: "#000" }]}>Customer Mobile :</Text>
+                                </View>
+                                <View style={{ marginTop: 5, marginLeft: 5 }}>
+                                    <Text style={[styles.text]}>{this.state.item.contact_no}</Text>
+                                </View>
 
-                        </View>
-                        <View style={{ marginHorizontal: 20, marginTop: 10 }}>
-                            <View>
-                                <Text style={[styles.text, { color: "#000" }]}>Discount :</Text>
                             </View>
-                            <View style={{ marginTop: 5, marginLeft: 5 }}>
-                                <Text style={[styles.text]}>{this.state.item.discount}</Text>
-                            </View>
+                            <View style={{ marginHorizontal: 20, marginTop: 10 }}>
+                                <View>
+                                    <Text style={[styles.text, { color: "#000" }]}>Date :</Text>
+                                </View>
+                                <View style={{ marginTop: 5, marginLeft: 5 }}>
+                                    <Text style={[styles.text]}>{moment(this.state.item.created).format("DD-MM-YYYY")}</Text>
+                                </View>
 
+                            </View>
                         </View>
-                        <View style={{ marginHorizontal: 20, marginTop: 10 }}>
-                            <View>
-                                <Text style={[styles.text, { color: "#000" }]}>Amount :</Text>
-                            </View>
-                            <View style={{ marginTop: 5, marginLeft: 5 }}>
-                                <Text style={[styles.text]}>{this.state.item.total}</Text>
-                            </View>
+                      <View style={{flexDirection:"row",alignItems:"center",justifyContent:"center",marginVertical:20}}>
+                            <View style={{ marginHorizontal: 20, marginTop: 10 }}>
+                                <View>
+                                    <Text style={[styles.text, { color: "#000" }]}>Discount :</Text>
+                                </View>
+                                <View style={{ marginTop: 5, marginLeft: 5 }}>
+                                    <Text style={[styles.text]}>{this.state.item.discount}</Text>
+                                </View>
 
-                        </View>
-                        <View style={{ marginHorizontal: 20, marginTop: 10 }}>
-                            <View>
-                                <Text style={[styles.text, { color: "#000" }]}>Date :</Text>
                             </View>
-                            <View style={{ marginTop: 5, marginLeft: 5 }}>
-                                <Text style={[styles.text]}>{moment(this.state.item.created).format("DD-MM-YYYY")}</Text>
-                            </View>
+                            <View style={{ marginHorizontal: 20, marginTop: 10 }}>
+                                <View>
+                                    <Text style={[styles.text, { color: "#000" }]}>Amount :</Text>
+                                </View>
+                                <View style={{ marginTop: 5, marginLeft: 5 }}>
+                                    <Text style={[styles.text]}>{this.state.item.total}</Text>
+                                </View>
 
-                        </View>
+                            </View>
+                      </View>
+                   
+                      
                         <View style={{ marginHorizontal: 20, marginTop: 10,alignItems:"center" }}>
                             <Text style={[styles.text,{fontSize:18}]}>Medicines</Text>
                         </View>

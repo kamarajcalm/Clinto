@@ -308,13 +308,13 @@ hideDatePicker = () => {
             extrapolate:"clamp"
         })
         return(
-            <View style={{alignItems: "center", justifyContent: "center", }}>
+            <View style={{ alignItems: "center", justifyContent: "center", backgroundColor: "gray", height: height * 0.15, }}>
               
                    <TouchableOpacity 
                     onPress={() => { this.makeInvalid(item, index)}}
-                    style={{height:height*0.05,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:item.active?"green":"red",marginRight:10}}
+                    style={{height:height*0.05,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:item.active?"green":"red",marginHorizontal:20}}
                    >
-                    <Text style={[styles.text, { color: "#fff",  }]}>{item.active ?"Make Invalid":"Invalid"}</Text>
+                    <Text style={[styles.text, { color: "#fff",  }]}>{item.active ?"Invalid":"Invalid"}</Text>
                    </TouchableOpacity>
              
             </View>
@@ -361,13 +361,13 @@ hideDatePicker = () => {
                 ref={ref=>this.swipeRef[index]=ref}
                 renderRightActions={(progress, dragX) => this.rightSwipe(progress, dragX, item, index)}
             >
-                <TouchableOpacity style={[styles.card, { flexDirection: "row", borderRadius: 5 }]}
+                <TouchableOpacity style={[styles.card, { flexDirection: "row",}]}
                     // onPress={() => { props.navigation.navigate('showCard', { item }) }}
                     onPress={() => { this.props.navigation.navigate('PrescriptionViewDoctor',{item})}}
                 >
                     <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
                         <LinearGradient 
-                              style={{ height: 70, width: 70, borderRadius: 35,alignItems: "center", justifyContent: "center" }}
+                              style={{ height: 50, width: 50, borderRadius: 25,alignItems: "center", justifyContent: "center" }}
                               colors={["#333", themeColor, themeColor]}
                         >
                               <View >
@@ -381,7 +381,7 @@ hideDatePicker = () => {
                             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                                  <View style={{flexDirection:"row"}}>
                                       <Text style={[styles.text, { color: "#000", fontWeight: 'bold' }]}>{item?.username?.name}</Text>
-                                      <Text style={[styles.text, {}]}>({item?.age} - {item?.sex})</Text>
+                                      <Text style={[styles.text, {}]}> ({item?.age} - {item?.sex})</Text>
                                  </View>
                                   
                             </View>
@@ -389,21 +389,16 @@ hideDatePicker = () => {
                                 <Text>#{this.getIndex(index)}</Text>
                             </View>
                         </View>
-                        <View style={{ marginTop: 10 }}>
+                        <View style={{ marginTop: 10 ,flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
                             <View style={{flexDirection: "row"}}>
                                 <Text style={[styles.text,{color:"#000", fontWeight:"bold"}]}>Reason :</Text>
                                 <Text style={[styles.text]}>{item.ongoing_treatment}</Text>
                             </View>
+                              <View>
+                                  <Text style={[styles.text]}>{moment(item.created).format("h:mm a")}</Text>
+                              </View>
                         </View>
-                        <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                            <View style={{flexDirection: "row"}}>
-                                <Text style={[styles.text,{color:"#000", fontWeight:"bold"}]}>Clinic : </Text>
-                                  <Text style={[styles.text,]}>{item.clinicname.name}</Text>
-                            </View>
-                            <View>
-                                <Text style={[styles.text]}>{moment(item.created).format("h:mm a")}</Text>
-                            </View>
-                        </View>
+                  
                     </View>
 
                 </TouchableOpacity>
@@ -640,7 +635,7 @@ hideDatePicker = () => {
                         <TextInput
                             selectionColor={themeColor}
                             style={{ height: "90%", flex: 0.8, backgroundColor: "#eee", paddingLeft: 10, marginTop: 3 }}
-                            placeholder="search"
+                            placeholder={`search ${this.props?.clinic?.name}`}
                             onChangeText={(text) => { this.searchPriscriptions(text) }}
                         />
                     </View>
@@ -737,7 +732,7 @@ hideDatePicker = () => {
                             }
                             data={this.state.prescriptions}
                             scrollEventThrottle={16}
-                            contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: 90 }}
+                            contentContainerStyle={{ paddingTop: headerHeight-20, paddingBottom: 90 }}
                             onScroll={handleScroll}
                             ref={ref=>this.ref=ref}
                             onMomentumScrollEnd={handleSnap}
@@ -854,19 +849,14 @@ const styles = StyleSheet.create({
         height: height * 2
     },
     card: {
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0,
-        shadowRadius: 4.65,
-        elevation: 5,
-        borderRadius: 10,
+    
+     
+       
         backgroundColor: "#fff",
-        height: height * 0.15,
-        marginHorizontal: 10,
-        marginVertical: 3
+        height: height * 0.1,
+        borderColor:"gray",
+        borderBottomWidth:0.5
+       
 
     },
     card2:{

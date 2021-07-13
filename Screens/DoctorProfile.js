@@ -89,7 +89,7 @@ class DoctorProfile extends Component {
                      </View>
 
                     <FlatList
-                        data={this.props.clinics.workingclinics}
+                        data={this.props?.clinics?.workingclinics}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item, index }) => {
                             console.log(item)
@@ -100,7 +100,7 @@ class DoctorProfile extends Component {
                                     >
                                         <View style={{ flex: 0.5, justifyContent: "center" }}>
                                             <Text style={[styles.text, { fontWeight: "bold", color: "#000", marginLeft: 10 }]}>{item.name}</Text>
-                                            {this.props.clinic.name == item.name&& <Text style={[styles.text, {  color: "gray", marginLeft: 10 }]}>selected</Text>}
+                                            {this?.props?.clinic.name == item.name&& <Text style={[styles.text, {  color: "gray", marginLeft: 10 }]}>selected</Text>}
                                         </View>
                                         <View style={{ flex: 0.5, alignItems: 'flex-end', marginRight: 10, justifyContent: "center" }}>
                                             <AntDesign name="rightcircleo" size={24} color="#000" />

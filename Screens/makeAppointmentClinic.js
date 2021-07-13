@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView, ScrollView, ToastAndroid, TextInput } from 'react-native';
+import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView, ScrollView, ToastAndroid, TextInput ,ActivityIndicator} from 'react-native';
 import settings from '../AppSettings';
 import axios from 'axios';
 import Modal from 'react-native-modal';
@@ -116,6 +116,7 @@ class makeAppointmentClinic extends Component {
 
     // }
     requestAppointment = async () => {
+
         if(this.state.today ==null){
             return this.showSimpleMessage("please select date", "#dd7030",)
             
@@ -136,12 +137,14 @@ class makeAppointmentClinic extends Component {
         let post = await HttpsClient.post(api, sendData)
         console.log(post,"klkk")
         if (post.type == "success") {
+            this.setState({ creating: false })
             this.showSimpleMessage("requested SuccessFully", "#00A300", "success")
        
-            setTimeout(() => {
+         
                 this.props.navigation.goBack()
-            }, 2000)
+        
         } else {
+            this.setState({creating:false})
             this.showSimpleMessage("Try again", "#B22222", "danger")
         }
     }
@@ -422,9 +425,21 @@ class makeAppointmentClinic extends Component {
                             >
                                 <TouchableOpacity
                                     style={{ height: height * 0.05, width: width * 0.4, borderRadius: 20, alignItems: "center", justifyContent: "center", flexDirection: "row", backgroundColor: themeColor, marginTop: 20 }}
-                                    onPress={() => { this.requestAppointment() }}
+                                    onPress={() => {
+                                        this.setState({creating:true},()=>{
+                                            this.requestAppointment()
+                                        })
+                                        }}
                                 >
-                                    <Text style={[styles.text, { color: "#fff" }]}>Confirm </Text>
+                                    {
+                                        !this.state.creating ? 
+                                        <Text style={[styles.text, { color: "#fff" }]}>Confirm </Text>:
+                                        <ActivityIndicator 
+                                         size={"large"}
+                                         color={"#fff"}
+                                        />
+                                    }
+                                   
 
 
                                 </TouchableOpacity>

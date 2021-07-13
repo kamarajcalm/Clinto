@@ -26,8 +26,9 @@ const url = settings.url
 class Appointments extends Component {
     constructor(props) {
         const routes = [
-            { key: 'NewAppointments', title: 'New Appointments' },
-            { key: 'Completed', title: 'All Appointments'},
+            { key: 'Pending', title: 'Pending' },
+            { key: 'InProgress', title: 'In Progress' },
+            { key: 'AllAppointments', title: 'All '}
 
         ];
         super(props);
@@ -58,6 +59,11 @@ class Appointments extends Component {
             isFectching:false,
             isFectching2:false,
             first:true,
+            AppointmentsPending:[],
+            offset3:0,
+            next3:true,
+            isFectchingPending:false,
+            show3:false
         };
     }
     searchUser = async (mobileNo) => {
@@ -207,12 +213,12 @@ class Appointments extends Component {
 
         let api =""
         if (this.props.user.profile.occupation == "Doctor") {
-            api = `${url}/api/prescription/appointments/?doctor=${this.props.user.id}&pending=true&accepted=true&limit=5&offset=${this.state.offset}`
+            api = `${url}/api/prescription/appointments/?doctor=${this.props.user.id}&status=Accepted&limit=5&offset=${this.state.offset}`
         } else if (this.props.user.profile.occupation == "ClinicRecoptionist"){
-            api = `${url}/api/prescription/appointments/?clinic=${this.props.user.profile.recopinistclinics[0].clinicpk}&pending=true&accepted=true&limit=5&offset=${this.state.offset}`
+            api = `${url}/api/prescription/appointments/?clinic=${this.props.user.profile.recopinistclinics[0].clinicpk}&status=Accepted&limit=5&offset=${this.state.offset}`
         }
         else{
-            api = `${url}/api/prescription/appointments/?requesteduser=${this.props.user.id}&pending=true&accepted=true&limit=5&offset=${this.state.offset}`
+            api = `${url}/api/prescription/appointments/?requesteduser=${this.props.user.id}&status=Accepted&limit=5&offset=${this.state.offset}`
         }
         console.log(api,"first")
         const data =await HttpsClient.get(api,"lll")
@@ -228,16 +234,43 @@ class Appointments extends Component {
             }
         }
     }
+    getAppointmentsPending = async()=>{
+
+        let api = ""
+        if (this.props.user.profile.occupation == "Doctor") {
+            api = `${url}/api/prescription/appointments/?doctor=${this.props.user.id}&status=Pending&limit=5&offset=${this.state.offset}`
+        } else if (this.props.user.profile.occupation == "ClinicRecoptionist") {
+            api = `${url}/api/prescription/appointments/?clinic=${this.props.user.profile.recopinistclinics[0].clinicpk}&status=Pending&limit=5&offset=${this.state.offset}`
+        }
+        else {
+            api = `${url}/api/prescription/appointments/?requesteduser=${this.props.user.id}&status=Pending&limit=5&offset=${this.state.offset}`
+        }
+        console.log(api, "first")
+        const data = await HttpsClient.get(api, "lll")
+
+        if (data.type == "success") {
+
+
+            this.setState({ AppointmentsPending: this.state.AppointmentsPending.concat(data.data.results), isFectchingPending: false })
+            if (data.data.next != null) {
+                this.setState({ next3: true })
+            } else {
+                this.setState({ next3: false })
+            }
+        }
+    }
 
     showDatePicker = () => {
         this.setState({ show: true })
     };
 
     hideDatePicker = () => {
-        this.setState({ show: false })
+        this.setState({ show: false})
     };
 
-
+    hideDatePicker2 = () => {
+        this.setState({ show2: false,modal: true})
+    };
     handleConfirm = (date) => {
         this.setState({ today: moment(date).format('YYYY-MM-DD'), show: false, date: new Date(date),Appointments2:[],offset2:0,next2:true}, () => {
           this.getAppointments2()
@@ -245,38 +278,23 @@ class Appointments extends Component {
         })
         this.hideDatePicker();
     };
-    // onChange = (selectedDate) => {
-    //     if (selectedDate.type == "set") {
-    //         this.setState({ today: moment(new Date(selectedDate.nativeEvent.timestamp)).format('YYYY-MM-DD'), show: false, date: new Date(selectedDate.nativeEvent.timestamp) }, () => {
-
-
-    //         })
-
-    //     } else {
-    //         return null
-    //     }
-
-    // }
+ 
 
     handleConfirm2 = (date) => {
         this.setState({ time: moment(date).format('hh:mm a'), show2: false, date: new Date(date) }, () => {
 
 
         })
-        this.hideDatePicker();
+        this.hideDatePicker2();
     };
-    // onChange2 = (selectedDate) => {
-    //     if (selectedDate.type == "set") {
-    //         this.setState({ time: moment(new Date(selectedDate.nativeEvent.timestamp)).format('hh:mm a'), show2: false, date: new Date(selectedDate.nativeEvent.timestamp) }, () => {
-
-
-    //         })
-
-    //     } else {
-    //         return null
-    //     }
-
-    // }
+    hideDatePicker3 =()=>{
+        this.setState({ show3: false, modal: true })
+    }
+    handleConfirm3 = (date) => {
+        this.setState({ today2: moment(date).format('YYYY-MM-DD'), show3: false, })
+        this.hideDatePicker3();
+    };
+ 
     showSimpleMessage(content, color, type = "info", props = {}) {
         const message = {
             message: content,
@@ -292,14 +310,16 @@ class Appointments extends Component {
         this.getDoctors()
         this.getAppointments();
         this.getAppointments2();
+        this.getAppointmentsPending();
         this.setState({first:false})
         this._unsubscribe = this.props.navigation.addListener('focus',() => {
             if(!this.state.first){
                 this.setState({ modal: false })
-                this.setState({ offset2: 0, offset: 0, Appointments2: [], Appointments: [], next: true, next2: true }, () => {
+                this.setState({ offset2: 0, offset: 0,offset3:0, Appointments2: [], Appointments: [], next: true, next2: true ,AppointmentsPending:[],next3:true}, () => {
                     console.log("oipopo")
                     this.getAppointments();
                     this.getAppointments2();
+                    this.getAppointmentsPending();
                 })
 
             }
@@ -330,17 +350,19 @@ class Appointments extends Component {
     acceptAppointment =async()=>{
         let api = `${url}/api/prescription/appointments/${this.state.selectedAppointment.id}/`
         let sendData ={
-            accepteddate:this.state.today,
+            accepteddate:this.state.today2,
             acceptedtime:this.state.time,
             status:"Accepted"
         }
         console.log(sendData)
       let post = await HttpsClient.patch(api,sendData)
       if(post.type =="success"){
-          let duplicate = this.state.Appointments
-          duplicate[this.state.selectedIndex]=post.data
+           this.getAppointments();
+           this.getAppointments2();
+          let duplicate = this.state.AppointmentsPending
+          duplicate.splice(this.state.selectedIndex, 1)
           this.showSimpleMessage("Accepted SuccessFully", "#00A300","success")
-          this.setState({ modal:false,Appointments:duplicate})
+          this.setState({ modal: false, AppointmentsPending:duplicate})
       }else{
           this.showSimpleMessage("Try again", "#B22222", "danger")
           this.setState({ modal: false })
@@ -354,11 +376,12 @@ class Appointments extends Component {
         console.log(sendData)
         let post = await HttpsClient.patch(api, sendData)
         if (post.type == "success") {
-            let duplicate = this.state.Appointments
+            let duplicate = this.state.AppointmentsPending
             duplicate.splice(this.state.selectedIndex, 1)
             this.showSimpleMessage("Rejected SuccessFully", "#dd7030",)
-          
-            this.setState({ modal: false, Appointments: duplicate })
+            this.getAppointments();
+            this.getAppointments2();
+            this.setState({ modal: false, AppointmentsPending: duplicate })
         } else {
             this.showSimpleMessage("Try again", "#B22222", "danger")
             this.setState({ modal: false })
@@ -486,6 +509,14 @@ class Appointments extends Component {
         }
         return
     }
+    handleEndReachedPending =()=>{
+        if (this.state.next3) {
+            this.setState({ offset: this.state.offset3 + 5 }, () => {
+                this.getAppointmentsPending()
+            })
+        }
+        return
+    }
     handleEndReached2 = () => {
         if (this.state.next2) {
             this.setState({ offset2: this.state.offset2 + 5 }, () => {
@@ -504,6 +535,11 @@ class Appointments extends Component {
             this.getAppointments2()
         })
     }
+    handleRefreshPending =()=>{
+        this.setState({ AppointmentsPending: [], isFectchingPending: true, next3: true, offset3: 0, }, () => {
+            this.getAppointmentsPending()
+        })
+    }
     FirstRoute =()=>{
         return(
             <FlatList 
@@ -512,7 +548,7 @@ class Appointments extends Component {
               ListFooterComponent ={this.renderFooter}
               contentContainerStyle={{paddingBottom:90}}
               data={this.state.Appointments}
-              onEndReached={()=>{this.handleEndReached()}}
+              onEndReached={()=>{this.handleEndReachedPending()}}
               onEndReachedThreshold={0.1}
               keyExtractor ={(item,index)=>index.toString()}
               renderItem ={({item,index})=>{
@@ -597,7 +633,7 @@ class Appointments extends Component {
                             onPress={() => { this.viewAppointments(item)}}
                             style={{
                                 marginTop: 10,
-                                minHeight: height * 0.17,
+                                height: height * 0.15,
                                 backgroundColor: "#eee",
                                 marginHorizontal: 10,
                                 borderRadius: 10,
@@ -605,27 +641,23 @@ class Appointments extends Component {
                         >
 
                  
-                        <View
-                            style={{
-                                
-                                flexDirection: "row",
-                            }}
-
-                        >
-                            <View style={{flex:0.6}}>
-                                    <View style={{ paddingLeft:10 ,paddingTop:10}}>
-                                        <Text style={[styles.text, {fontWeight:"bold",color:"#000"}]}>{item.patientname.name}</Text>
+                    
+                            <View style={{flex:0.6,flexDirection:'row'}}>
+                                <View style={{flex:0.5}}>
+                                    <View style={{ paddingLeft: 10, paddingTop: 10 }}>
+                                        <Text style={[styles.text, { fontWeight: "bold", color: "#000" }]}>{item.patientname.name}</Text>
                                     </View>
-                                    <View style={{ paddingLeft: 10, paddingTop: 10 ,flexDirection:"row"}}>
+                                    <View style={{ paddingLeft: 10, paddingTop: 10, flexDirection: "row" }}>
                                         <View>
                                             <Text style={[styles.text, { fontWeight: "bold" }]}>Reason : </Text>
                                         </View>
                                         <View>
                                             <Text style={[styles.text, { fontWeight: "bold" }]}>{item.reason}</Text>
                                         </View>
-                                     
+
                                     </View>
-                                    <View style={{ paddingLeft: 10, paddingTop: 10 ,flexDirection:"row"}}>
+                                </View>
+                                    <View style={{ flex:0.5,flexDirection:"row",paddingTop:10}}>
                                         <View>
                                             <Text style={[styles.text, {}]}>{item.requesteddate}</Text>
                                         </View>
@@ -636,111 +668,35 @@ class Appointments extends Component {
                                             <Text style={[styles.text]}> {item.requestedtime} </Text>
                                         </View>
                                     </View>
-                                    <View style={{ paddingLeft: 10, paddingTop: 10 ,}}>
-                                        <Text style={[styles.text, { fontWeight: "bold", color: this.validateColor(item?.status) }]}>{item?.status}</Text>
-                                    </View>
+                                  
                                </View>
-                               <View style={{flex:0.4}}>
-
-                                    <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
-
-                                        {item?.status == "Pending" ? <TouchableOpacity style={{ height: height * 0.05, width: "80%", borderRadius: 10, alignItems: 'center', justifyContent: "center", backgroundColor: "#32CD32" }}
-                                            onPress={() => { this.setState({ modal: true, selectedAppointment: item, selectedIndex: index, today: item.requesteddate, time: item.requestedtime }) }}
-                                        >
-                                            <Text style={[styles.text, { color: "#fff" }]}>Accept</Text>
-                                        </TouchableOpacity> : <TouchableOpacity style={{ height: height * 0.05, width: "70%", borderRadius: 10, alignItems: 'center', justifyContent: "center", backgroundColor: "orange" }}
+                               <View style={{flex:0.4,flexDirection:"row"}}>
+                                      
+                                      <TouchableOpacity style={{flex:0.5,alignItems:"center",justifyContent:"center"}}
                                             onPress={() => {
 
                                                 this.setState({ selectedAppointment: item, selectedIndex: index, }, () => {
                                                     this.completeAppointment()
                                                 })
                                             }}
-                                        >
-                                            <Text style={[styles.text, { color: "#fff" }]}>finish</Text>
-                                        </TouchableOpacity>}
-                                    </View>
-
-                                    {item?.status != "Completed" && <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
-                                        <TouchableOpacity style={{ height: height * 0.05, width: "80%", borderRadius: 10, alignItems: 'center', justifyContent: "center", backgroundColor: "#B22222" }}
+                                      >
+                                          <Text style={[styles.text, { color: "orange" }]}>Complete</Text>
+                                      </TouchableOpacity>
+                                        <TouchableOpacity style={{ flex: 0.5, alignItems: "center", justifyContent: "center" }}
                                             onPress={() => {
                                                 this.setState({ selectedAppointment: item, selectedIndex: index }, () => {
                                                     this.RejectAppointment()
                                                 })
-                                            }}
+                                       }}
                                         >
-                                            <Text style={[styles.text, { color: "#fff" }]}>Reject</Text>
+                                              <Text style={[styles.text, { color: "#B22222" }]}>Reject</Text>
                                         </TouchableOpacity>
-                                    </View>}
-                               </View>
-                                {/* <View style={{ flex: 0.6, justifyContent: "center" }}>
-                                    <View style={{ flexDirection: "row", margin: 5, flex: 0.5 }}>
-
-                                        <Text style={[styles.text, { fontWeight: "bold" }]}>Name   :</Text>
-                                        <Text style={[styles.text, { marginLeft: 10 }]}>{item.patientname.name}</Text>
-                                    </View>
-                                    <View style={{ flexDirection: "row", margin: 5, flex: 0.5 }}>
-                                        <Text style={[styles.text, { fontWeight: "bold" }]}>Reason:</Text>
-                                        <View style={{ justifyContent: 'center', flex: 1 }}>
-                                            <Text style={[styles.text, { marginLeft: 10 }]}>{item.reason}</Text>
-
-                                        </View>
-
-                                    </View>
-                                </View> */}
-
-
-
-                            {/* <View style={{ flex: 0.4, flexDirection: "row", alignItems: "center", justifyContent: 'center' }}>
-                               
-                              
-
-
-                                <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
-
-                                    {item.status =="Pending"?<TouchableOpacity style={{ height: height * 0.05, width: "80%", borderRadius: 10, alignItems: 'center', justifyContent: "center", backgroundColor: "#32CD32" }}
-                                            onPress={() => { this.setState({ modal: true, selectedAppointment: item, selectedIndex: index, today: item.requesteddate, time: item.requestedtime})}}
-                        >
-                            <Text style={[styles.text, { color: "#fff" }]}>Accept</Text>
-                                    </TouchableOpacity> : <TouchableOpacity style={{ height: height * 0.05, width: "70%", borderRadius: 10, alignItems: 'center', justifyContent: "center", backgroundColor: "orange"  }}
-                                                onPress={() => {
-                                                  
-                                                    this.setState({ selectedAppointment: item, selectedIndex: index, },()=>{
-                                                this.completeAppointment()
-                                            }) }}
-                                    >
-                                        <Text style={[styles.text, { color: "#fff" }]}>finish</Text>
-                                    </TouchableOpacity>}
-                                </View> 
-                              
-                                {item.status != "Completed" && <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
-                                    <TouchableOpacity style={{ height: height * 0.05, width: "80%", borderRadius: 10, alignItems: 'center', justifyContent: "center", backgroundColor: "#B22222" }}
-                                        onPress={() => {
-                                            this.setState({ selectedAppointment: item, selectedIndex: index }, () => {
-                                                this.RejectAppointment()
-                                            })
-                                        }}
-                        >
-                            <Text style={[styles.text, { color: "#fff" }]}>Reject</Text>
-                        </TouchableOpacity>
-                    </View>}
-                            </View> */}
-                            
-                        </View>
-                        {/* <View style ={{
-                            margin:10,
-                            alignItems:"center",
-                            justifyContent:"center",
-                            flexDirection:"row"
-                        }}>
-                        
-                            <View style={{flex:1}}>
-                                    {
-                                        this.validateInformation(item)
-                                    }
-                            </View>
+                                      
                        
+                               </View>
                         
-                        </View> */}
+                     
+              
                         </TouchableOpacity>
                     )
                 }
@@ -760,6 +716,169 @@ class Appointments extends Component {
             return "Yellow"
         }
       
+    }
+    PendingRoute = () => {
+        return (
+            <FlatList
+                refreshing={this.state.isFectchingPending}
+                onRefresh={() => { this.handleRefreshPending() }}
+                ListFooterComponent={this.renderFooter}
+                contentContainerStyle={{ paddingBottom: 90 }}
+                data={this.state.AppointmentsPending}
+                onEndReached={() => { this.handleEndReached() }}
+                onEndReachedThreshold={0.1}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item, index }) => {
+
+
+                    if (this.props.user.profile.occupation == "Customer") {
+
+                        let dp = null
+                        if (item?.doctordetails?.dp) {
+                            dp = `${url}${item?.doctordetails?.dp}`
+                        }
+
+                        return (
+                            <TouchableOpacity
+                                onPress={() => { this.viewAppointments(item) }}
+                                style={{
+                                    marginTop: 10,
+                                    minHeight: height * 0.2,
+                                    backgroundColor: "#eee",
+                                    marginHorizontal: 10,
+                                    borderRadius: 10,
+                                }}
+                            >
+                                <View style={{ flexDirection: "row", flex: 1, }}>
+                                    <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                                        <Image
+                                            style={{ height: '80%', width: "95%", borderRadius: 5 }}
+                                            source={{ uri: dp }}
+                                            resizeMode={"cover"}
+                                        />
+                                    </View>
+                                    <View style={{ flex: 0.7, paddingLeft: 10 }}>
+                                        <View style={{ marginTop: 20 }}>
+                                            <Text style={[styles.text, { color: "#000", fontWeight: "bold" }]}>{item?.clinicname?.name}</Text>
+                                        </View>
+                                        <View style={{ marginTop: 10, flexDirection: "row" }}>
+                                            <Text style={[styles.text, { color: "#000", }]}>Reason :</Text>
+                                            <Text style={[styles.text, { color: "#000", }]}> {item?.reason}</Text>
+                                        </View>
+                                        <View style={{ flexDirection: "row", marginTop: 10, }}>
+                                            <Text style={[styles.text, { color: "#000", }]}>{item?.requesteddate}</Text>
+                                            <Text style={[styles.text, { color: "#000", }]}>|</Text>
+                                            <Text style={[styles.text, { color: "#000", }]}>{item?.requestedtime}</Text>
+                                        </View>
+                                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 10, }}>
+                                            <View style={{ flex: 0.7 }}>
+                                                <Text style={[styles.text, { color: this.validateColor(item?.status) }]}>{item?.status}</Text>
+                                            </View>
+                                            <View style={{ flexDirection: 'row', justifyContent: "space-around", alignItems: "center", flex: 0.3 }}>
+                                                <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center' }]}
+                                                    onPress={() => { this.chatClinic(item) }}
+                                                >
+                                                    <Ionicons name="md-chatbox" size={20} color="#63BCD2" />
+                                                </TouchableOpacity>
+                                                <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center' }]}
+                                                    onPress={() => {
+                                                        Linking.openURL(
+                                                            `https://www.google.com/maps/dir/?api=1&destination=` +
+                                                            item.clinicname.lat +
+                                                            `,` +
+                                                            item.clinicname.long +
+                                                            `&travelmode=driving`
+                                                        );
+                                                    }}
+                                                >
+                                                    <FontAwesome5 name="directions" size={20} color="#63BCD2" />
+                                                </TouchableOpacity>
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
+
+
+
+
+
+                            </TouchableOpacity>
+                        )
+                    } else {
+                        return (
+                            <TouchableOpacity
+                                onPress={() => { this.viewAppointments(item) }}
+                                style={{
+                                    marginTop: 10,
+                                    height: height * 0.15,
+                                    backgroundColor: "#eee",
+                                    marginHorizontal: 10,
+                                    borderRadius: 10,
+                                }}
+                            >
+
+
+                            
+                                    <View style={{ flex: 0.6,flexDirection:"row" }}>
+                                        <View style={{flex:0.5}}>
+                                                <View style={{ paddingLeft: 10, paddingTop: 10 }}>
+                                                    <Text style={[styles.text, { fontWeight: "bold", color: "#000" }]}>{item.patientname.name}</Text>
+                                                </View>
+
+                                        <View style={{ paddingLeft: 10, paddingTop: 10, flexDirection: "row" }}>
+                                            <View>
+                                                <Text style={[styles.text, { fontWeight: "bold" }]}>Reason : </Text>
+                                            </View>
+                                            <View>
+                                                <Text style={[styles.text, { fontWeight: "bold" }]}>{item.reason}</Text>
+                                            </View>
+
+                                        </View>
+                                    </View>
+                                        
+                                        <View style={{ paddingLeft: 10, paddingTop: 10, flexDirection: "row",flex:0.5 }}>
+                                            <View>
+                                                <Text style={[styles.text, {}]}>{item.requesteddate}</Text>
+                                            </View>
+                                            <View>
+                                                <Text style={[styles.text]}> | </Text>
+                                            </View>
+                                            <View>
+                                                <Text style={[styles.text]}> {item.requestedtime} </Text>
+                                            </View>
+                                        </View>
+                                       
+                                    </View>
+                                    <View style={{ flex: 0.4, flexDirection: "row",}}>
+                                             <TouchableOpacity 
+                                              style={{flex:0.5,alignItems:"center",justifyContent:"center"}}
+                                              onPress={() => { this.setState({ modal: true, selectedAppointment: item, selectedIndex: index, today2: item.requesteddate, time: item.requestedtime }) }}
+                                             >
+                                                 <Text style={[styles.text, { color: "#32CD32" }]}>Accept</Text>
+                                             </TouchableOpacity>
+                                        <TouchableOpacity
+                                        style={{ flex: 0.5, alignItems: "center", justifyContent: "center" }}
+                                            onPress={() => {
+                                                this.setState({ selectedAppointment: item, selectedIndex: index }, () => {
+                                                    this.RejectAppointment()
+                                                })
+                                            }}
+                                        >
+                                            <Text style={[styles.text, { color: "#B22222" }]}>Reject</Text>
+                                        </TouchableOpacity>
+                                     
+                                    </View>
+                
+
+                              
+                      
+                            </TouchableOpacity>
+                        )
+                    }
+
+                }}
+            />
+        )
     }
     SecondRoute =()=>{
         return(
@@ -965,8 +1084,9 @@ class Appointments extends Component {
        
     }
     renderScene = SceneMap({
-        NewAppointments: this.FirstRoute,
-        Completed: this.SecondRoute,
+        Pending: this.PendingRoute,
+        InProgress: this.FirstRoute,
+        AllAppointments: this.SecondRoute,
     });
     // renderScene = (routes) => {
 
@@ -1119,8 +1239,8 @@ class Appointments extends Component {
         return(
             <Modal 
                 deviceHeight={screenHeight}
-              isVisible={this.state.modal}
-              onBackdropPress={()=>{this.setState({modal:false})}}
+                isVisible={this.state.modal}
+                onBackdropPress={()=>{this.setState({modal:false})}}
             >
                  <View style={{flex:1,justifyContent:"center"}}>
                      <View style={{height:height*0.3,backgroundColor:"#eee",borderRadius:10,alignItems:'center',justifyContent:'center'}}>
@@ -1128,12 +1248,16 @@ class Appointments extends Component {
                           <View style={{flexDirection:"row"}}>
                             <TouchableOpacity
                                 style={{ marginTop: 10 }}
-                                onPress={() => { this.setState({ show: true }) }}
+                                onPress={() => { this.setState({modal:false},()=>{
+                                    setTimeout(()=>{
+                                        this.setState({ show3: true })
+                                    },500)
+                                })}}
                             >
                                 <FontAwesome name="calendar" size={24} color="black" />
                             </TouchableOpacity>
                             <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 10, marginTop: 7}}>
-                                <Text>{this.state?.today}</Text>
+                                <Text>{this.state?.today2}</Text>
                             </View>
                    
                           </View>
@@ -1142,7 +1266,11 @@ class Appointments extends Component {
                         <View style={{flexDirection:"row"}}>
                             <TouchableOpacity
                                 style={{ marginTop: 10 }}
-                                onPress={() => { this.setState({ show2: true }) }}
+                                onPress={() => { this.setState({ modal:false},()=>{
+                                    setTimeout(() => {
+                                        this.setState({ show2: true })
+                                    }, 500)
+                                })}}
                             >
                                 <FontAwesome5 name="clock" size={24} color="black" />
                             </TouchableOpacity>
@@ -1301,7 +1429,7 @@ class Appointments extends Component {
         )
     }
     renderFilter =()=>{
-        if (this.state.index == 1 && this.props.user.profile.occupation == "Customer"){
+        if (this.state.index == 2 && this.props.user.profile.occupation == "Customer"){
             return(
                 <View style={{ flex: 0.4, alignItems: "center", justifyContent: "center"}}>
                     <TouchableOpacity 
@@ -1314,7 +1442,7 @@ class Appointments extends Component {
                 </View>
             )
         }
-        if (this.state.index == 1)
+        if (this.state.index == 2)
         return(
             <View style={{ flex: 0.4, alignItems: "center", justifyContent: "center" }}>
                     <View style={{ flexDirection: "row" }}>
@@ -1324,7 +1452,7 @@ class Appointments extends Component {
 
                         <TouchableOpacity
                             style={{ marginLeft: 20 }}
-                            onPress={() => { this.setState({ show: true }) }}
+                            onPress={() => { this.setState({ show: true}) }}
                         >
                             <Fontisto name="date" size={24} color={"#fff"} />
                         </TouchableOpacity>
@@ -1426,10 +1554,10 @@ class Appointments extends Component {
                             />
                         )} */}
                         <DateTimePickerModal
-                            isVisible={this.state.show}
+                            isVisible={this.state.show3}
                             mode="date"
-                            onConfirm={this.handleConfirm}
-                            onCancel={this.hideDatePicker}
+                            onConfirm={this.handleConfirm3}
+                            onCancel={this.hideDatePicker3}
                         />
                         <DateTimePickerModal
                         

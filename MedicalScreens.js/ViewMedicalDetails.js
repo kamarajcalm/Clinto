@@ -19,7 +19,6 @@ import { SliderBox } from "react-native-image-slider-box";
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 class ViewMedicalDetails extends Component {
     constructor(props) {
-        
         super(props);
         this.state = {
             item:null,

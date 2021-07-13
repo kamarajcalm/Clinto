@@ -340,18 +340,18 @@ class PrescriptionViewDoctor extends Component {
             <View>
                 <View style={{marginHorizontal:20,flexDirection:"row",marginTop:10}}>
                     <View style={{alignItems:"center",justifyContent:"center"}}> 
-                        <Text style={[styles.text, { color: "#000", }]}>Reason : </Text>
+                        <Text style={[styles.text, { }]}>Reason : </Text>
                     </View>
                     <View style={{alignItems:"center",justifyContent:"center"}}>
-                        <Text style={[styles.text, { }]}>{this.state.item.ongoing_treatment}</Text>
+                        <Text style={[styles.text, {color:"#000" }]}>{this.state.item.ongoing_treatment}</Text>
                     </View>
                 </View>
                 <View style={{ marginHorizontal: 20, flexDirection: "row" ,marginTop:10}}>
                     <View style={{ alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, { color: "#000", }]}>Diagnosis : </Text>
+                        <Text style={[styles.text, { }]}>Diagnosis : </Text>
                     </View>
                     <View style={{ alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, {}]}>{this.state.item.diseaseTitle}</Text>
+                        <Text style={[styles.text, {color:"#000"}]}>{this.state.item.diseaseTitle}</Text>
                     </View>
                 </View>
            
@@ -452,8 +452,8 @@ class PrescriptionViewDoctor extends Component {
             <>
                 <SafeAreaView style={styles.topSafeArea} />
                 <SafeAreaView style={styles.bottomSafeArea}>
-                    <StatusBar backgroundColor={"#5081BC"} />
-                    <View style={{ height: height * 0.1, backgroundColor: "#5081BC", flexDirection: "row" }}>
+                    <StatusBar backgroundColor={themeColor} />
+                    <View style={{ height: height * 0.1, backgroundColor: themeColor, flexDirection: "row" }}>
                         <View style={{ flex: 0.7 }}>
                             <View style={{ flex: 0.5, justifyContent: "center", marginLeft: 20 }}>
                                 <Text style={[styles.text, { color: "#ffff", fontWeight: 'bold', fontSize: 20 }]}>{this.state?.item?.clinicname?.name?.toUpperCase()}</Text>
@@ -485,7 +485,7 @@ class PrescriptionViewDoctor extends Component {
 
 
                         <View style={{ flex: 1 }}>
-                            <View style={{ flex: 0.15, borderColor: "#eee", borderBottomWidth: 0.5 }}>
+                            <View style={{ flex: 0.1, borderColor: "#eee", borderBottomWidth: 0.5 }}>
                                 <View style={{ marginHorizontal: 20, flexDirection: "row", alignItems: 'center', justifyContent: 'space-around', marginVertical: 15 }}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <View>
@@ -512,10 +512,16 @@ class PrescriptionViewDoctor extends Component {
                                         </View>
                                     </View>
                                 </View>
-                                <View style={{ alignSelf: "flex-end", marginHorizontal: 20 }}>
-                                    <Text style={[styles.text]}>Prescription No:{this.state?.item?.id}</Text>
-                                    <Text style={[styles.text, { textAlign: "right" }]}>{moment(this.state?.item?.created).format('DD/MM/YYYY')}</Text>
+                                <View style={{ marginHorizontal: 20 ,flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
+                                    <View>
+                                        <Text style={[styles.text, { textAlign: "right" }]}>{moment(this.state?.item?.created).format('DD/MM/YYYY')}</Text>
+                                    </View>
+                                    <View style={{ }}>
+                                        <Text style={[styles.text]}>Prescription No : {this.state?.item?.id}</Text>
+
+                                    </View>
                                 </View>
+                             
                             </View>
 
                             <View style={{ flex: 0.15 }}>
@@ -523,7 +529,7 @@ class PrescriptionViewDoctor extends Component {
                                     this.renderHeader()
                                 }
                             </View>
-                            <View style={{ flex: 0.53, }}>
+                            <View style={{ flex: 0.58, }}>
                                 
                                {this.state.selected=="Prescribed"?<FlatList
                                     data={this.state.prescribed}
@@ -540,41 +546,54 @@ class PrescriptionViewDoctor extends Component {
                                                 borderBottomWidth: 0.5,
                                                 borderColor: '#D1D2DE',
                                                 backgroundColor: '#FFFFFF',
-                                                flexDirection:"row",
+                                               
                                                 marginTop:10
                                             }}>
-                                               <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
-                                                   <Text style={[styles.text]}>{index+1} . </Text>
-                                               </View>
-                                                <View style={{flex:0.7}}>
-                                                     <View style={{flexDirection:"row"}}>
-                                                          <View>
-                                                             <Text style={[styles.text,{color:"#000",}]}>{item.medicinename.name}</Text>
-                                                          </View>
-                                                        <View style={{marginLeft:10}}>
-                                                            <Text style={[styles.text,{color:"#000",}]}>({item.medicinename.type})</Text>
+                                                <View style={{flexDirection:"row"}}>
+                                                    <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
+                                                        <Text style={[styles.text,{color:"#000",fontWeight:"bold"}]}>{index + 1} . </Text>
+                                                    </View>
+                                                    <View style={{ flex: 0.8 }}>
+
+                                                        <View style={{ flexDirection: "row" }}>
+                                                            <View>
+                                                                <Text style={[styles.text, { color: "#000", fontWeight: "bold"}]}>{item.medicinename.name}</Text>
+                                                            </View>
+                                                            <View style={{ marginLeft: 10 }}>
+                                                                <Text style={[styles.text, { color: "#000", fontWeight: "bold" }]}>({item.medicinename.type})</Text>
+                                                            </View>
+                                                            <View>
+                                                                <Text style={[styles.text]}>*</Text>
+                                                            </View>
+                                                            <View>
+                                                                <Text style={[styles.text]}> {item.days} days</Text>
+                                                            </View>
                                                         </View>
-                                                     </View>
-                                                    {(item.medicinename.type === "Tablet" || item.medicinename.type === "Capsules") && <View style={{flexDirection:"row"}}>
+                                                        {(item.medicinename.type === "Tablet" || item.medicinename.type === "Capsules") && <View style={{ flexDirection: "row" }}>
                                                             <View>
                                                                 <Text style={[styles.text]}> {item.morning_count} - {item.afternoon_count} -{item.night_count} </Text>
                                                             </View>
                                                             <View>
-                                                            <Text style={[styles.text]}>( {item.after_food?"AF":"BF"} )</Text>
+                                                                <Text style={[styles.text]}>( {item.after_food ? "AF" : "BF"} )</Text>
                                                             </View>
-                                                     </View>}
-                                                     <View style={{marginTop:10}}>
-                                                        <Text style={[styles.text]}>{item.command}</Text>
-                                                     </View>
+                                                        </View>}
 
-                                                </View>
-                                                <View style={{flex:0.2,alignItems:"center",justifyContent:"space-around"}}>
-                                                       <View>
-                                                            <Text style={[styles.text]}> {item.days} days</Text>
+                                                    </View>
+                                                    <View style={{ flex: 0.2, alignItems: "center", justifyContent: "space-around" }}>
+
+                                                        <View>
+                                                            <Text style={[styles.text]}>Qty : {item.total_qty} </Text>
                                                         </View>
-                                                       <View>
-                                                        <Text style={[styles.text]}>count : {item.total_qty} </Text>
-                                                       </View>
+                                                    </View>
+                                                </View>
+                                           
+                                                <View style={{flexDirection:"row"}}>
+                                                    <View style={{flex: 0.1,}}>
+
+                                                    </View>
+                                                    <View style={{ marginTop: 10 ,flex: 0.9,paddingRight:10}}>
+                                                        <Text style={[styles.text]}>{item.command}</Text>
+                                                    </View>
                                                 </View>
                                             </TouchableOpacity>
                                         )
@@ -625,7 +644,7 @@ class PrescriptionViewDoctor extends Component {
                                                              <Text style={[styles.text]}> {item.days} days</Text>
                                                          </View> */}
                                                          <View>
-                                                             <Text style={[styles.text]}>count : {item.total_qty} </Text>
+                                                             <Text style={[styles.text]}>Qty : {item.total_qty} </Text>
                                                          </View>
                                                      </View>
                                                  </TouchableOpacity>
@@ -655,8 +674,8 @@ class PrescriptionViewDoctor extends Component {
                                     </View>
                                 </View>
                             </View>
-                            <View style={{ flex: 0.07, backgroundColor: "#5081BC", flexDirection: 'row' }}>
-                                <TouchableOpacity style={{ flex: 0.5, flexDirection: "row", alignItems: 'center', justifyContent: "center" }}
+                            <View style={{ flex: 0.07, backgroundColor: themeColor, flexDirection: 'row' ,alignItems:"center",justifyContent:"space-around"}}>
+                                <TouchableOpacity style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center" }}
                                     onPress={() => {
                                         if (Platform.OS == "android") {
                                             Linking.openURL(`tel:${this.state.appDetails?.mobile}`)
@@ -673,7 +692,7 @@ class PrescriptionViewDoctor extends Component {
                                         <Text style={[styles.text, { color: "#ffff" }]}>{this.state.item.clinicname.mobile}</Text>
                                     </View>
                                 </TouchableOpacity >
-                                <View style={{ flex: 0.5, flexDirection: "row" }}>
+                                <View style={{ flexDirection: "row" }}>
                                     <View style={{ alignItems: 'center', justifyContent: "center" }}>
                                         <Feather name="mail" size={24} color="#fff" />
                                     </View>
@@ -750,7 +769,7 @@ const styles = StyleSheet.create({
     },
     topSafeArea: {
         flex: 0,
-        backgroundColor: "#5081BC"
+        backgroundColor: themeColor
     },
     bottomSafeArea: {
         flex: 1,

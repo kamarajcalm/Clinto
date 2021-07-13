@@ -13,12 +13,14 @@ import {
     Linking,
     Platform,
     StatusBar,
-    ActivityIndicator
+    ActivityIndicator,
+    AsyncStorage
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 const width = Dimensions.get("screen").width
 const height = Dimensions.get("screen").height
-const deviceHeight = Dimensions.get("screen").height
+const screenHeight = Dimensions.get("screen").height
+
 import { connect } from 'react-redux';
 import { selectTheme, selectClinic, selectWorkingClinics, selectOwnedClinics } from '../actions';
 import settings from '../AppSettings'
@@ -31,6 +33,7 @@ import HttpsClient from '../api/HttpsClient';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import Modal from 'react-native-modal';
+import LottieView from 'lottie-react-native';
 // import Image from 'react-native-scalable-image';
 class PrescriptionView extends Component {
     constructor(props) {
@@ -40,7 +43,11 @@ class PrescriptionView extends Component {
             valid: this.props.route?.params?.item?.active,
             load: false,
             pk: this.props?.route?.params?.pk || null,
-            showModal2: false
+            showModal2: false,
+            selected: "Prescribed",
+            lottieModal: false,
+            prescribed: [],
+            medicinesGiven: []
         };
     }
     getDetails = async () => {
@@ -77,7 +84,23 @@ class PrescriptionView extends Component {
 
         }
     }
+    validateAnimations = async () => {
+        let swipeTut = await AsyncStorage.getItem("swipeTut")
+        if (swipeTut == null) {
+            AsyncStorage.setItem("swipeTut", "true")
+            this.setState({ lottieModal: true }, () => {
+                this.animation.play()
+            })
+        }
+    }
+    filterMedicines = () => {
+        const prescribed = this.state.item.medicines.filter((item) => !item.is_given)
+        const medicinesGiven = this.state.item.medicines.filter((item) => item.is_given)
+        this.setState({ prescribed, medicinesGiven })
+    }
     componentDidMount() {
+        this.validateAnimations()
+        this.filterMedicines()
         if (this.state.pk) {
             this.getDetails()
         }
@@ -345,19 +368,106 @@ class PrescriptionView extends Component {
         const { SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT } = swipeDirections;
         this.setState({ gestureName: gestureName });
         switch (gestureName) {
-            case SWIPE_UP:
-                this.props.navigation.goBack()
-                break;
-            case SWIPE_DOWN:
-                this.props.navigation.goBack()
-                break;
-            case SWIPE_LEFT:
-                this.props.navigation.goBack()
-                break;
+            // case SWIPE_UP:
+            //     this.props.navigation.goBack()
+            //     break;
+            // case SWIPE_DOWN:
+            //     this.props.navigation.goBack()
+            //     break;
+            // case SWIPE_LEFT:
+            //     this.props.navigation.goBack()
+            //     break;
             case SWIPE_RIGHT:
                 this.props.navigation.goBack()
                 break;
         }
+    }
+    lottieModal = () => {
+        const config = {
+            velocityThreshold: 0.3,
+            directionalOffsetThreshold: 80
+        };
+        return (
+            <Modal
+                statusBarTranslucent={true}
+                deviceHeight={screenHeight}
+                isVisible={this.state.lottieModal}
+            >
+
+                <View style={{ height: height * 0.7, alignItems: "center", justifyContent: "center" }}>
+
+                    <LottieView
+                        ref={animation => {
+                            this.animation = animation;
+                        }}
+                        style={{
+
+
+                            width: width,
+                            height: height * 0.4,
+
+                        }}
+                        source={require('../assets/lottie/swipe-gesture-right.json')}
+                    // OR find more Lottie files @ https://lottiefiles.com/featured
+                    // Just click the one you like, place that file in the 'assets' folder to the left, and replace the above 'require' statement
+                    />
+                    <View style={{ position: "relative", top: -100, }}>
+                        <View>
+                            <Text style={[styles.text, { color: "#fff", marginTop: -40 }]}>swipe to go back</Text>
+                        </View>
+                        <TouchableOpacity style={{ height: height * 0.05, width: width * 0.2, backgroundColor: "#fff", alignItems: "center", justifyContent: "center", borderRadius: 5, marginLeft: 20 }}
+                            onPress={() => {
+                                this.animation.pause();
+                                this.setState({ lottieModal: false })
+
+                            }}
+                        >
+                            <Text style={[styles.text, { color: "#000" }]}>ok</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                </View>
+
+            </Modal>
+
+        )
+    }
+    renderHeader = () => {
+        return (
+            <View>
+                <View style={{ marginHorizontal: 20, flexDirection: "row", marginTop: 10 }}>
+                    <View style={{ alignItems: "center", justifyContent: "center" }}>
+                        <Text style={[styles.text, { color: "#000", }]}>Reason : </Text>
+                    </View>
+                    <View style={{ alignItems: "center", justifyContent: "center" }}>
+                        <Text style={[styles.text, {}]}>{this.state.item.ongoing_treatment}</Text>
+                    </View>
+                </View>
+                <View style={{ marginHorizontal: 20, flexDirection: "row", marginTop: 10 }}>
+                    <View style={{ alignItems: "center", justifyContent: "center" }}>
+                        <Text style={[styles.text, { color: "#000", }]}>Diagnosis : </Text>
+                    </View>
+                    <View style={{ alignItems: "center", justifyContent: "center" }}>
+                        <Text style={[styles.text, {}]}>{this.state.item.diseaseTitle}</Text>
+                    </View>
+                </View>
+
+                <View style={{ marginHorizontal: 20, flexDirection: "row", marginTop: 10, alignItems: "center", justifyContent: "space-around" }}>
+                    <TouchableOpacity
+                        onPress={() => { this.setState({ selected: "Prescribed" }) }}
+                        style={{ height: height * 0.04, width: width * 0.4, backgroundColor: this.state.selected == "Prescribed" ? themeColor : "gray", alignItems: "center", justifyContent: "center", borderRadius: 5 }}
+                    >
+                        <Text style={[styles.text, { color: "#fff" }]}>Prescribed</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => { this.setState({ selected: "Medicines Given" }) }}
+                        style={{ height: height * 0.04, width: width * 0.4, backgroundColor: this.state.selected == "Medicines Given" ? themeColor : "gray", alignItems: "center", justifyContent: "center", borderRadius: 5 }}
+                    >
+                        <Text style={[styles.text, { color: "#fff" }]}>Medicines Given</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        )
     }
     render() {
         const config = {
@@ -433,12 +543,22 @@ class PrescriptionView extends Component {
                                     <Text style={[styles.text, { textAlign: "right" }]}>{moment(this.state?.item?.created).format('DD/MM/YYYY')}</Text>
                                 </View>
                             </View>
-                            {this.state.item && <View style={{ flex: 0.55, }}>
 
-                                <FlatList
-                                    data={item?.medicines}
+                            <View style={{ flex: 0.15 }}>
+                                {
+                                    this.renderHeader()
+                                }
+                            </View>
+                            <View style={{ flex: 0.53, }}>
+
+                                {this.state.selected == "Prescribed" ? <FlatList
+                                    data={this.state.prescribed}
+                                    style={{ height: "100%" }}
                                     keyExtractor={(item, index) => index.toString()}
                                     renderItem={({ item, index }) => {
+
+
+
                                         return (
                                             <TouchableOpacity style={{
                                                 paddingBottom: 10,
@@ -446,33 +566,105 @@ class PrescriptionView extends Component {
                                                 borderBottomWidth: 0.5,
                                                 borderColor: '#D1D2DE',
                                                 backgroundColor: '#FFFFFF',
+                                                flexDirection: "row",
+                                                marginTop: 10
                                             }}>
-                                                <View style={{ flexDirection: "row", justifyContent: "space-between", paddingLeft: 15, marginTop: 5 }}>
-                                                    <View style={{ flexDirection: "row", flex: 0.7 }}>
-                                                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
-
-
-                                                            <Text style={[styles.text, { color: "#000", fontSize: 18 }]}>{item.medicinename.name}</Text>
-                                                            <Text style={[styles.text, { color: "gray", }]}> * {item.days} days</Text>
-                                                            <Text style={[styles.text, { color: "gray", }]}> </Text>
+                                                <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
+                                                    <Text style={[styles.text]}>{index + 1} . </Text>
+                                                </View>
+                                                <View style={{ flex: 0.7 }}>
+                                                    <View style={{ flexDirection: "row" }}>
+                                                        <View>
+                                                            <Text style={[styles.text, { color: "#000", }]}>{item.medicinename.name}</Text>
                                                         </View>
-
+                                                        <View style={{ marginLeft: 10 }}>
+                                                            <Text style={[styles.text, { color: "#000", }]}>({item.medicinename.type})</Text>
+                                                        </View>
+                                                    </View>
+                                                    {(item.medicinename.type === "Tablet" || item.medicinename.type === "Capsules") && <View style={{ flexDirection: "row" }}>
+                                                        <View>
+                                                            <Text style={[styles.text]}> {item.morning_count} - {item.afternoon_count} -{item.night_count} </Text>
+                                                        </View>
+                                                        <View>
+                                                            <Text style={[styles.text]}>( {item.after_food ? "AF" : "BF"} )</Text>
+                                                        </View>
+                                                    </View>}
+                                                    <View style={{ marginTop: 10 }}>
+                                                        <Text style={[styles.text]}>{item.command}</Text>
                                                     </View>
 
-
                                                 </View>
-
-                                                {
-                                                    this.renderItem(item)
-                                                }
-
+                                                <View style={{ flex: 0.2, alignItems: "center", justifyContent: "space-around" }}>
+                                                    <View>
+                                                        <Text style={[styles.text]}> {item.days} days</Text>
+                                                    </View>
+                                                    <View>
+                                                        <Text style={[styles.text]}>count : {item.total_qty} </Text>
+                                                    </View>
+                                                </View>
                                             </TouchableOpacity>
                                         )
+
+                                    }}
+                                /> : <FlatList
+                                    data={this.state.medicinesGiven}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    renderItem={({ item, index }) => {
+
+                                        return (
+                                            <TouchableOpacity style={{
+                                                paddingBottom: 10,
+                                                flex: 1,
+                                                borderBottomWidth: 0.5,
+                                                borderColor: '#D1D2DE',
+                                                backgroundColor: '#FFFFFF',
+                                                flexDirection: "row",
+                                                marginTop: 10
+                                            }}>
+                                                <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
+                                                    <Text style={[styles.text]}>{index + 1} . </Text>
+                                                </View>
+                                                <View style={{ flex: 0.7 }}>
+                                                    <View style={{ flexDirection: "row" }}>
+                                                        <View>
+                                                            <Text style={[styles.text, { color: "#000", }]}>{item.medicinename.name}</Text>
+                                                        </View>
+                                                        <View style={{ marginLeft: 10 }}>
+                                                            <Text style={[styles.text, { color: "#000", }]}>({item.medicinename.type})</Text>
+                                                        </View>
+                                                    </View>
+                                                    {/* {(item.medicinename.type === "Tablet" || item.medicinename.type === "Capsules") && <View style={{ flexDirection: "row" }}>
+                                                             <View>
+                                                                 <Text style={[styles.text]}> {item.morning_count} - {item.afternoon_count} -{item.night_count} </Text>
+                                                             </View>
+                                                             <View>
+                                                                 <Text style={[styles.text]}>( {item.after_food ? "AF" : "BF"} )</Text>
+                                                             </View>
+                                                         </View>} */}
+                                                    <View style={{ marginTop: 10 }}>
+                                                        <Text style={[styles.text]}>{item.command}</Text>
+                                                    </View>
+
+                                                </View>
+                                                <View style={{ flex: 0.2, alignItems: "center", justifyContent: "space-around" }}>
+                                                    {/* <View>
+                                                             <Text style={[styles.text]}> {item.days} days</Text>
+                                                         </View> */}
+                                                    <View>
+                                                        <Text style={[styles.text]}>count : {item.total_qty} </Text>
+                                                    </View>
+                                                </View>
+                                            </TouchableOpacity>
+                                        )
+
+
                                     }}
                                 />
 
-                            </View>}
-                            <View style={{ flex: 0.23, }}>
+                                }
+
+                            </View>
+                            <View style={{ flex: 0.1, }}>
                                 <View style={{ flex: 0.5 }}>
 
                                 </View>
@@ -482,10 +674,10 @@ class PrescriptionView extends Component {
 
                                     </View>
                                     <View>
-                                        <Text style={styles.text}>specialization</Text>
+                                        <Text style={styles.text}>{this.state?.item?.doctordetails?.specialization}</Text>
                                     </View>
                                     <View>
-                                        <Text style={styles.text}>9009009090</Text>
+                                        <Text style={styles.text}>{this.state?.item?.doctordetails?.mobile}</Text>
                                     </View>
                                 </View>
                             </View>
@@ -504,7 +696,7 @@ class PrescriptionView extends Component {
                                         <Feather name="phone" size={24} color="#fff" />
                                     </View>
                                     <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5 }}>
-                                        <Text style={[styles.text, { color: "#ffff" }]}>9090909090</Text>
+                                        <Text style={[styles.text, { color: "#ffff" }]}>{this.state.item.clinicname.mobile}</Text>
                                     </View>
                                 </TouchableOpacity >
                                 <View style={{ flex: 0.5, flexDirection: "row" }}>
@@ -512,7 +704,7 @@ class PrescriptionView extends Component {
                                         <Feather name="mail" size={24} color="#fff" />
                                     </View>
                                     <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5 }}>
-                                        <Text style={[styles.text, { color: "#ffff" }]}>kamraj089@gmail.com</Text>
+                                        <Text style={[styles.text, { color: "#ffff" }]}>{this.state.item.clinicname.email}</Text>
                                     </View>
                                 </View>
                             </View>
@@ -557,6 +749,9 @@ class PrescriptionView extends Component {
                             <Text style={[styles.text, { color: "#fff" }]}>Create Bill</Text>
                       </TouchableOpacity>
                   </View>
+                    {
+                        this.lottieModal()
+                    }
                 </SafeAreaView>
 
             </>

@@ -38,9 +38,6 @@ class MedicalProfile extends Component {
     logOut = async () => {
         this.setState({ showModal: false })
         await AsyncStorage.clear();
-        this.props.selectMedical(null)
-        this.props.selectMedical(null)
-        this.props.setShowLottie(false)
         return this.props.navigation.dispatch(
             CommonActions.reset({
                 index: 0,
