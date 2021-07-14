@@ -670,9 +670,14 @@ class PrescriptionView extends Component {
                                         </View>
                                     </View>
                                 </View>
-                                <View style={{ alignSelf: "flex-end", marginHorizontal: 20 }}>
-                                    <Text style={[styles.text]}>Prescription No:{this.state?.item?.id}</Text>
-                                    <Text style={[styles.text, { textAlign: "right" }]}>{moment(this.state?.item?.created).format('DD/MM/YYYY')}</Text>
+                                <View style={{ marginHorizontal: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                                    <View>
+                                        <Text style={[styles.text, { textAlign: "right" }]}>{moment(this.state?.item?.created).format('DD/MM/YYYY')}</Text>
+                                    </View>
+                                    <View style={{}}>
+                                        <Text style={[styles.text]}>Prescription No : {this.state?.item?.id}</Text>
+
+                                    </View>
                                 </View>
                             </View>
 
@@ -681,7 +686,7 @@ class PrescriptionView extends Component {
                                     this.renderHeader()
                                 }
                             </View>
-                            <View style={{ flex: 0.53, }}>
+                            <View style={{ flex: 0.58, }}>
 
                                 {this.state.selected == "Prescribed" ? 
                                 
@@ -818,8 +823,8 @@ class PrescriptionView extends Component {
                                     </View>
                                 </View>
                             </View>
-                            <View style={{ flex: 0.07, backgroundColor: themeColor, flexDirection: 'row' }}>
-                                <TouchableOpacity style={{ flex: 0.5, flexDirection: "row", alignItems: 'center', justifyContent: "center" }}
+                            <View style={{ flex: 0.07, backgroundColor: themeColor, flexDirection: 'row', alignItems: "center", justifyContent: "space-around" }}>
+                                <TouchableOpacity style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center" }}
                                     onPress={() => {
                                         if (Platform.OS == "android") {
                                             Linking.openURL(`tel:${this.state.appDetails?.mobile}`)
@@ -836,7 +841,7 @@ class PrescriptionView extends Component {
                                         <Text style={[styles.text, { color: "#ffff" }]}>{this.state.item.clinicname.mobile}</Text>
                                     </View>
                                 </TouchableOpacity >
-                                <View style={{ flex: 0.5, flexDirection: "row" }}>
+                                <View style={{ flexDirection: "row" }}>
                                     <View style={{ alignItems: 'center', justifyContent: "center" }}>
                                         <Feather name="mail" size={24} color="#fff" />
                                     </View>

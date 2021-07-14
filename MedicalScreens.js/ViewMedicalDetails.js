@@ -129,7 +129,9 @@ class ViewMedicalDetails extends Component {
                             </View> :
 
                     
-                        <ScrollView style={{ flex: 1, }}>
+                        <ScrollView 
+                        contentContainerStyle={{paddingBottom:90}}
+                        style={{ flex: 1, }}>
                             {/* image */}
                                     <View style={{ height: height * 0.25, }}>
                                         <SliderBox

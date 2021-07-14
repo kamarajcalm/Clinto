@@ -4,7 +4,7 @@ import settings from '../AppSettings';
 import { connect } from 'react-redux';
 import { selectTheme,selectUser,selectMedical,setShowLottie } from '../actions';
 const { height, width } = Dimensions.get("window");
-import { Ionicons, AntDesign, Entypo, MaterialCommunityIcons} from '@expo/vector-icons';
+import { Ionicons, AntDesign, Entypo, MaterialCommunityIcons,FontAwesome} from '@expo/vector-icons';
 import Modal from 'react-native-modal';
 import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import HttpsClient from '../api/HttpsClient';
@@ -12,12 +12,14 @@ import { color } from 'react-native-reanimated';
 const {url} =settings
 const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
+const screenHeight = Dimensions.get("screen").height
 class MedicalProfile extends Component {
     constructor(props) {
         super(props);
         this.state = {
             showModal: false,
-            medicals:[]
+            medicals:[],
+            
         };
     }
 
@@ -52,7 +54,10 @@ class MedicalProfile extends Component {
             })
         )
     }
-
+    setActiveMedical = (item) => {
+        this.props.selectMedical(item)
+        this.setState({ showModal2: false })
+    }
     render() {
         return (
             <>
@@ -60,7 +65,7 @@ class MedicalProfile extends Component {
                 <SafeAreaView style={styles.bottomSafeArea}>
                     <View style={{ flex: 1, backgroundColor: "#fff" }}>
                         <ScrollView
-                         contentContainerStyle={{paddingBottom:30}}
+                         contentContainerStyle={{paddingBottom:90}}
                         >
 
                       
@@ -85,7 +90,7 @@ class MedicalProfile extends Component {
                                 <View style={{ alignItems: "center", justifyContent: "center", flexDirection: "row", marginLeft: 20 }}>
                                     <Image
                                         source={{ uri: this.props.user.profile.displayPicture || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" }}
-                                        style={{ height: 60, width: 60, borderRadius: 30 }}
+                                        style={{ height: 100, width: 100, borderRadius: 50 }}
                                     />
                                     <TouchableOpacity style={{}}
                                         onPress={() => { this.props.navigation.navigate('ProfileEdit') }}
@@ -147,12 +152,17 @@ class MedicalProfile extends Component {
                                         </View>
 
                                     </View>
-                                    <View style={{ borderColor: "#F0F0F0", borderTopWidth: 3, borderBottomWidth: 3 ,marginTop:10}}>
+                             {this.props.user.profile.occupation=="MediacalRep"&&<View style={{ borderColor: "#F0F0F0", borderTopWidth: 3, borderBottomWidth: 3 ,marginTop:10}}>
                                         <View style={{ marginLeft: 20, flexDirection: "row", }}>
                                             <View style={{ marginTop: 5, flex: 0.6 }}>
-                                                <Text style={[styles.text,{color:"#000",fontSize:20}]}>Owned  Medicals :</Text>
+                                                <Text style={[styles.text,{color:"#000",fontSize:20,textDecorationLine:"underline"}]}>Medicals :</Text>
                                             </View>
-                                     
+                                             <TouchableOpacity 
+                                                onPress={()=>{this.setState({showModal2:true})}}
+                                               style={{height:height*0.04,flex:0.4,backgroundColor:themeColor,alignItems:"center",justifyContent:"center",borderRadius:10,marginTop:6}}
+                                             >
+                                                 <Text style={[styles.text,{color:"#fff"}]}>Change Medical</Text>
+                                             </TouchableOpacity>
                                         </View>
 
                                         <FlatList
@@ -179,7 +189,7 @@ class MedicalProfile extends Component {
                                                 )
                                             }}
                                         />
-                                    </View>
+                                    </View>}
                                 </View>
 
 
@@ -191,6 +201,8 @@ class MedicalProfile extends Component {
 
                         <View>
                             <Modal
+                                statusBarTranslucent={true}
+                                deviceHeight={screenHeight}
                                 animationIn="slideInUp"
                                 animationOut="slideOutDown"
                                 isVisible={this.state.showModal}
@@ -219,6 +231,44 @@ class MedicalProfile extends Component {
                         </View>
                         </ScrollView>
                     </View>
+                    <Modal
+                        statusBarTranslucent={true}
+                        deviceHeight={screenHeight}
+                        animationIn="slideInUp"
+                        animationOut="slideOutDown"
+                        isVisible={this.state.showModal2}
+                        onBackdropPress={() => { this.setState({ showModal2: false }) }}
+                    >
+                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+
+                            <View style={{ height: height * 0.3, width: width * 0.9, backgroundColor: "#fff", borderRadius: 20, alignItems: "center", justifyContent: "center" }}>
+                                <View style={{ marginTop: 5 }}>
+                                    <Text style={[styles.text, { color: "#000", fontSize: 18 }]}>Select Clinic</Text>
+                                </View>
+                                <FlatList
+                                    data={this.state.medicals}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    renderItem={({ item, index }) => {
+                                        return (
+                                            <TouchableOpacity style={{ flexDirection: "row", marginTop: 20, alignItems: 'center', justifyContent: "space-around", width }}
+                                                onPress={() => { this.setActiveMedical(item) }}
+                                            >
+                                                <View style={{ flex: 0.6, alignItems: "center", justifyContent: 'center' }}>
+                                                    <Text style={[styles.text]}>{item.name}</Text>
+                                                </View>
+
+                                                <View style={{ flex: 0.4, alignItems: 'center', justifyContent: "center" }}>
+                                                    <FontAwesome name="dot-circle-o" size={24} color={this.props.medical.name == item.name? themeColor : "gray"} />
+
+                                                </View>
+                                            </TouchableOpacity>
+                                        )
+                                    }}
+                                />
+
+                            </View>
+                        </View>
+                    </Modal>
                 </SafeAreaView>
             </>
         );

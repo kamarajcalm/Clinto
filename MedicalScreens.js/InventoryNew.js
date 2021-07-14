@@ -65,7 +65,8 @@ class InventoryNew extends Component {
             selectedStatus:types[0].value,
             modal2:false,
             soldItems:[],
-            rack:true
+            rack:true,
+            soldMedicinesView:false
         };
     }
     deleteSold = async(item,index)=>{
@@ -290,6 +291,9 @@ class InventoryNew extends Component {
     }
     componentWillUnmount(){
         this._unsubscribe()
+    }
+    toggleSoldMedicines =() =>{
+        this.props.navigation.navigate('SoldMedicinesView')
     }
     header =()=>{
         return(
@@ -548,6 +552,7 @@ class InventoryNew extends Component {
            
                
                <FlatList 
+                 contentContainerStyle ={{paddingBottom:80}}
                  ListHeaderComponent ={this.orderHeaders()}
                  data ={this.state.orders}
                  keyExtractor ={(item,index)=>index.toString()}
@@ -659,6 +664,7 @@ class InventoryNew extends Component {
             </View>
         )
     }
+
     ThirdRoute =()=>{
         const { height, width } = Dimensions.get("window");
         return (
@@ -723,6 +729,19 @@ class InventoryNew extends Component {
                          )
                      }}
                    />
+                <View style={{position:"absolute",bottom:30,right:20}}>
+                    <View>
+                        <Text style={[styles.text, { color: "#000" }]}>Medicines View</Text>
+                    </View>
+                    <Switch
+                        style={{}}
+                        trackColor={{ false: '#767577', true: '#81b0ff' }}
+                        thumbColor={this.state.soldMedicinesView?'#f5dd4b' : '#f4f3f4'}
+                        ios_backgroundColor="#3e3e3e"
+                        onValueChange={() => { this.toggleSoldMedicines() }}
+                        value={this.state.soldMedicinesView}
+                    />
+                </View>
                 <View style={{
                     position: "absolute",
                     bottom: 30,

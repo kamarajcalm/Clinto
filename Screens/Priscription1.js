@@ -569,51 +569,7 @@ hideDatePicker = () => {
     }
 
   validateHeaders = () => {
-        // console.log(this.props?.clinic?.name)
-        // if (this.state.isDoctor||this.state.isReceptionist) {
-        //     return (
-        //         <View>
-        //             <View style={{ height: headerHeight / 2, flexDirection: "row", flex: 1 }}>
-        //                 <TouchableOpacity style={{ flexDirection: "row", alignItems: "center", width: width * 0.68, justifyContent: "space-around" }}
-        //                     onPress={() => { this.setState({showModal:true}) }}
-        //                 >
-        //                     <View>
-        //                         {this.state.isDoctor ? <Text style={[styles.text, { fontSize: 25, color: "#fff", fontWeight: "bold", marginLeft: 5 }]} numberOfLines={1}>{this.props?.clinic?.name}</Text> :
-        //                             <Text style={[styles.text, { fontSize: 25, color: "#fff", fontWeight: "bold", marginLeft: 5 }]} numberOfLines={1}>{this.props?.user?.profile?.recopinistclinics[0]?.clinicname}</Text>
-        //                         }
-
-        //                     </View>
-
-        //                     <View style={{ alignItems: "center", justifyContent: "center" }}>
-        //                         {this.state.isDoctor && <Entypo name="chevron-small-down" size={30} color="#fff" />}
-        //                     </View>
-
-
-        //                 </TouchableOpacity>
-        //                 {
-        //                     this.renderFilter()
-        //                 }
-        //             </View>
-
-        //             <View style={{ marginHorizontal: 20, height: headerHeight / 3, alignItems: 'center', justifyContent: "center", marginBottom: 5 }}>
-        //                 <TouchableOpacity style={{ flexDirection: 'row', borderRadius: 10, backgroundColor: "#eee", width: "100%", height: height * 0.05, }}
-        //                     onPress={() => { this.props.navigation.navigate('SearchPatient') }}
-        //                 >
-        //                     <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5, flex: 0.1 }}>
-        //                         <EvilIcons name="search" size={24} color="black" />
-        //                     </View>
-        //                     <View style={{ alignItems: "center", justifyContent: "center" }}>
-        //                         <Text style={[styles.text]}>Search Patient</Text>
-        //                     </View>
-
-        //                 </TouchableOpacity>
-
-        //             </View>
-        //         </View>
-
-        //     )
-
-        // }
+     
         return (
             <View>
                 <View style={{ height: headerHeight / 2,flexDirection:"row",}}>

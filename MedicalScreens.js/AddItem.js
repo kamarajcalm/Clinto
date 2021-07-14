@@ -220,7 +220,10 @@ class AddItem extends Component {
                     {/* HEADERS */}
                     <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
                         <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}
-                            onPress={() => { this.props.navigation.goBack() }}
+                            onPress={() => { 
+                                
+                                this.props.navigation.goBack() 
+                            }}
                         >
                             <Ionicons name="chevron-back-circle" size={30} color="#fff" />
                         </TouchableOpacity>

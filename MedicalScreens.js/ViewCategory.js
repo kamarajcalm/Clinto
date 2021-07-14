@@ -16,6 +16,7 @@ const screenHeight = Dimensions.get("screen").height;
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import { ActivityIndicator } from 'react-native-paper';
 import { color } from 'react-native-reanimated';
+import * as ScreenOrientation from 'expo-screen-orientation';
 const url = settings.url;
 let types = [
     {
@@ -135,6 +136,14 @@ class ViewCategory extends Component {
     }
     componentDidMount(){
         this.getItems()
+        this._unsubscribe = this.props.navigation.addListener('focus', () => {
+
+          this.getItems()
+
+        });
+    }
+    componentWillUnmount(){
+        this._unsubscribe()
     }
     deleteCategory =async(item)=>{
         let api = `${url}/api/prescription/maincategory/${item.id}/`
@@ -160,55 +169,21 @@ class ViewCategory extends Component {
         }
      
     }
-    validateBoxes =()=>{
-        const { height, width } = Dimensions.get("window");
-        if (this.state.type== "Tablet" || this.state.type== "Capsules")
-        return(
-            <>
-            <View style={{ margin: 20 }}>
-                <Text style={[styles.text, { color: '#000' }]}>No of Strips Per Box</Text>
-                <TextInput
-                    keyboardType={"numeric"}
-                    style={{ width: width * 0.8, height: height * 0.1, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
-                    selectionColor={themeColor}
-                    value={this.state.stripesPerBox}
-                    onChangeText={(stripesPerBox) => { this.setState({ stripesPerBox }) }}
-                />
-            </View>
-                <View style={{ margin: 20 }}>
-                    <Text style={[styles.text, { color: '#000' }]}>No of Medicines Per Stripes</Text>
-                    <TextInput
-                        keyboardType={"numeric"}
-                        style={{ width: width * 0.8, height: height * 0.1, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
-                        selectionColor={themeColor}
-                        value={this.state.medicinesPerStrips}
-                        onChangeText={(medicinesPerStrips) => { this.setState({ medicinesPerStrips }) }}
-                    />
-                </View>
-            </>
-        )
-        return(
-            <View style={{ margin: 20 }}>
-                <Text style={[styles.text, { color: '#000' }]}>No of Pieces per Box</Text>
-                <TextInput
-                    keyboardType={"numeric"}
-                    style={{ width: width * 0.8, height: height * 0.1, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
-                    selectionColor={themeColor}
-                    value={this.state.piecesPerBox}
-                    onChangeText={(piecesPerBox) => { this.setState({ piecesPerBox }) }}
-                />
-            </View>
-        )
-    }
+
     modal =()=>{
         const { height, width } = Dimensions.get("window");
+        const  screenHeightt = Dimensions.get("screen").height
         return (
             <Modal
-                deviceHeight={screenHeight}
+                 statusBarTranslucent={true}
+                deviceHeight={screenHeightt}
                 isVisible={this.state.modal}
-                onBackdropPress={() => { this.setState({ modal: false }) }}
+                onBackdropPress={async() => { 
+                    await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+                    this.setState({ modal: false }) 
+                }}
             >
-                <View style={{  justifyContent:"center"}}>
+                <View style={{  justifyContent:"center",width:width*0.9}}>
                        
                         <ScrollView style={{ height: height * 0.8, backgroundColor: "#eee", borderRadius: 10, }}
                          showsVerticalScrollIndicator={false}
@@ -216,7 +191,7 @@ class ViewCategory extends Component {
                             <TouchableWithoutFeedback 
 
                              onPress ={()=>{
-                                 console.log("yuyuu")
+                                
                                  this.setState({medicines:[]})
                                 }}
                             >
@@ -225,7 +200,7 @@ class ViewCategory extends Component {
                             <View style={{ margin: 20 }}>
                                 <Text style={[styles.text, { color: '#000' }]}>Enter Medicine Name</Text>
                                 <TextInput
-                                    style={{ width: width * 0.8, height: height * 0.1, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
+                                    style={{ width: width * 0.8, height: height * 0.05, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
                                     selectionColor={themeColor}
                                     value={this.state.MedicineName}
                                 onChangeText={(MedicineName) => { this.searchMedicine(MedicineName) }}
@@ -275,7 +250,7 @@ class ViewCategory extends Component {
                             <Text style={[styles.text, { color: '#000' }]}>Selling Price</Text>
                             <TextInput
                                keyboardType={"numeric"}
-                                style={{ width: width * 0.8, height: height * 0.1, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
+                                        style={{ width: width * 0.8, height: height * 0.05, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
                                 selectionColor={themeColor}
                                 value={this.state.Price}
                                 onChangeText={(Price) => { this.setState({ Price }) }}
@@ -288,14 +263,14 @@ class ViewCategory extends Component {
                             <Text style={[styles.text, { color: '#000' }]}>Minimum Quantity</Text>
                             <TextInput
                                 keyboardType={"numeric"}
-                                style={{ width: width * 0.8, height: height * 0.1, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
+                                        style={{ width: width * 0.8, height: height * 0.05, backgroundColor: "#fff", borderRadius: 5, marginTop: 10 }}
                                 selectionColor={themeColor}
                                 value={this.state.minQty}
                                 onChangeText={(minQty) => { this.setState({ minQty }) }}
                             />
                         </View>
                             <View style={{ alignItems: "center", justifyContent: "center" ,marginVertical:10}}>
-                                <TouchableOpacity style={{ backgroundColor: themeColor, height: height * 0.08, width: width * 0.4, alignItems: 'center', justifyContent: 'center', marginTop: 25, borderRadius: 5 }}
+                                <TouchableOpacity style={{ backgroundColor: themeColor, height: height * 0.05, width: width * 0.4, alignItems: 'center', justifyContent: 'center', marginTop: 25, borderRadius: 5 }}
                                     onPress={() => { this.addMedicine() }}
                                 >
                                     {!this.state.creating ? <Text style={[styles.text, { color: '#fff' }]}>Add</Text> :
@@ -444,14 +419,17 @@ class ViewCategory extends Component {
                         borderRadius: 20
                     }}>
                         <TouchableOpacity
-                            onPress={() => { this.setState({modal:true})}}
+                            onPress={async() => {
+                                await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+                                setTimeout(()=>{
+                                    this.props.navigation.navigate("AddRackItem", {item:this.props.route.params.item})
+                                },200)
+                             }}
                         >
                             <AntDesign name="pluscircle" size={40} color={themeColor} />
                         </TouchableOpacity>
                     </View>
-                    {
-                        this.modal()
-                    }
+                   
                 </SafeAreaView>
             </>
         );

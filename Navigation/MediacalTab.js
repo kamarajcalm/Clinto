@@ -21,7 +21,7 @@ import AdminProfileStack from '../stacks/AdminProfileStack';
 import ClincicPriscriptionStack from '../stacks/ClincicPriscriptionStack';
 import MedicalInventoryStack from '../stacks/MedicalInventoryStack';
 import ChatStack from '../stacks/ChatStack';
-
+import MedicalTabBar from '../components/MedicalTabBar';
 const Tab = createBottomTabNavigator();
 
 
@@ -39,77 +39,88 @@ class MediacalTab extends Component {
         this.getTheme()
     }
 
+    getTabBarVisibility = (route) => {
+        const routeName = route.state ? route.state.routes[route.state.index].name : ''
+        if (routeName == "ListPriscriptions") {
+            return false
+        }
+    
+        return true
+    }
+    getTabBarVisibility8 = (route) => {
+        const routeName = route.state ? route.state.routes[route.state.index].name : ''
+        if (routeName == "ViewCategory") {
+            return false
+        }
+        if (routeName == "ViewItem") {
+            return false
+        }
+        if (routeName == "CreateOrders") {
+            return false
+        }
 
-
+        if (routeName == "InventoryNew") {
+            return false
+        }
+        if (routeName == "CreateBill") {
+            return false
+        }
+        if (routeName == "ViewOrders") {
+            return false
+        }
+        if (routeName == "ViewSold") {
+            return false
+        }
+        if (routeName == "TypeWiseView") {
+            return false
+        }
+        if (routeName == "SoldMedicinesView"){
+            return false
+        }
+        if (routeName == "AddRackItem") {
+            return false
+        }
+        return true
+    }
     render() {
         return (
 
             <Tab.Navigator
-                tabBarOptions={{
-                    activeBackgroundColor: themeColor,
-                    inactiveBackgroundColor: themeColor,
-                    keyboardHidesTabBar: true,
-                    style: {
-
-                    },
-                }}
-                screenOptions={({ route }) => ({
-
-                })}
+                tabBar={props => <MedicalTabBar {...props} />}
+              
 
             >
 
                 <Tab.Screen name="ClincicPriscriptionStack" component={ClincicPriscriptionStack}
-                    options={{
-                        tabBarIcon: ({ focused, color, size }) => {
-                            return <MaterialCommunityIcons name="cards" size={24} color={focused?"#fff":"gray"} />
+                    options={({ route }) => ({
 
-                        }
-                        ,
-                        tabBarLabel: ({ focused }) => {
-                            return <Text style={{ color: focused ? "#fff" : "gray", fontFamily }}>Prescription</Text>
-                        }
-                    }}
+                        tabBarVisible: this.getTabBarVisibility(route),
+
+                    })}
 
                 />
                 <Tab.Screen name="Inventory" component={MedicalInventoryStack}
-                    options={{
-                        tabBarIcon: ({ focused, color, size }) => {
-                            return <MaterialIcons name="inventory" size={24} color={focused?"#fff":"gray"} />
+                    options={({ route }) => ({
 
-                        },
-                        tabBarLabel: ({ focused }) => {
-                            return <Text style={{ color: focused ? "#fff" : "gray", fontFamily }}>Inventory</Text>
-                        },
-                        tabBarVisible:false
+                        tabBarVisible: this.getTabBarVisibility8(route),
 
-                    }}
+                    })}
 
                 />
                 <Tab.Screen name="Chats" component={ChatStack}
-                    options={{
-                        tabBarIcon: ({ focused, color, size }) => {
-                            return <Ionicons name="chatbubble-ellipses" size={24} color={focused ? "#fff" : "gray"} />
+                    options={({ route }) => ({
 
-                        },
-                        tabBarLabel: ({ focused }) => {
-                            return <Text style={{ color: focused ? "#fff" : "gray", fontFamily }}>Chats</Text>
-                        }
+                        tabBarVisible: this.getTabBarVisibility(route),
 
-                    }}
+                    })}
 
                 />
                 <Tab.Screen name="AdminProfileStack" component={AdminProfileStack}
-                    options={{
-                        tabBarIcon: ({ focused, color, size }) => {
-                            return <Ionicons name="ios-person-circle-sharp" size={24} color={focused ? "#fff" : "gray"} />
+                    options={({ route }) => ({
 
-                        },
-                        tabBarLabel: ({ focused }) => {
-                            return <Text style={{ color: focused ? "#fff" : "gray", fontFamily }}>Profile</Text>
-                        }
+                        tabBarVisible: this.getTabBarVisibility(route),
 
-                    }}
+                    })}
 
                 />
             </Tab.Navigator>
@@ -121,7 +132,7 @@ const mapStateToProps = (state) => {
 
     return {
         theme: state.selectedTheme,
-
+         
     }
 }
 export default connect(mapStateToProps, { selectTheme })(MediacalTab)

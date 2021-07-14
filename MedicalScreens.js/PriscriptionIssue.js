@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView, Appearance,} from 'react-native';
+import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView, Appearance,Animated,TextInput,RefreshControl} from 'react-native';
 import settings from '../AppSettings';
 import { connect } from 'react-redux';
 import { selectTheme,selectMedical} from '../actions';
 const { height, width } = Dimensions.get("window");
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { Ionicons, AntDesign, Fontisto, FontAwesome} from '@expo/vector-icons';
+import { Ionicons, AntDesign, Fontisto, FontAwesome,EvilIcons} from '@expo/vector-icons';
 import authAxios from '../api/authAxios';
 import HttpsClient from '../api/HttpsClient';
 import moment from 'moment';
@@ -13,6 +13,8 @@ import Modal from 'react-native-modal';
 const fontFamily = settings.fontFamily;
 let themeColor = settings.themeColor;
 const url = settings.url;
+const { diffClamp } = Animated;
+const headerHeight = height * 0.2;
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 class PriscriptionIssue extends Component {
     constructor(props) {
@@ -33,6 +35,8 @@ class PriscriptionIssue extends Component {
             showCalender:false,
             isFetching:false,
         };
+        this.scrollY = new Animated.Value(0)
+        this.translateYNumber = React.createRef()
     }
 
     showDatePicker = () => {
@@ -109,11 +113,7 @@ class PriscriptionIssue extends Component {
         
        
     }
-    setActiveMedical =(item)=>{
-        this.props.selectMedical(item)
-        this.getPriscriptions(item.clinicpk)
-        this.setState({showModal:false})
-    }
+
     componentDidMount() {
        
               this.getClinic();
@@ -131,8 +131,132 @@ class PriscriptionIssue extends Component {
     componentWillUnmount(){
         this._unsubscribe();
     }
+    renderFooter = () => {
+        if (this.state.next) {
+            return (
+                <ActivityIndicator size="large" color={themeColor} />
+            )
+        }
+        return null
+    }
+    searchPriscriptions = ()=>{
+        
+    }
+    validateHeaders = () => {
+
+        return (
+            <View>
+                <View style={{ height: headerHeight / 2, flexDirection: "row", }}>
+                    <View style={{ flex: 0.5, alignItems: "center", justifyContent: 'center' }}>
+                        <Text style={{ color: '#fff', fontFamily: "openSans", marginLeft: 20, fontSize: 30, fontWeight: "bold" }}>Prescription</Text>
+                    </View>
+                    <View style={{ flex: 0.5, alignItems: "center", justifyContent: 'center' }}>
+                        {
+                            this.renderFilter()
+                        }
+                    </View>
+                </View>
+
+                <View style={{ marginHorizontal: 20, height: headerHeight / 3, alignItems: 'center', justifyContent: "center", marginBottom: 5 }}>
+                    <View style={{ flexDirection: 'row', borderRadius: 10, backgroundColor: "#eee", width: "100%", height: height * 0.05, }}>
+                        <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5, flex: 0.1 }}>
+                            <EvilIcons name="search" size={24} color="black" />
+                        </View>
+                        <TextInput
+                            selectionColor={themeColor}
+                            style={{ height: "90%", flex: 0.8, backgroundColor: "#eee", paddingLeft: 10, marginTop: 3 }}
+                            placeholder={`search ${this.props?.medical?.name}`}
+                            onChangeText={(text) => { this.searchPriscriptions(text) }}
+                        />
+                    </View>
+
+                </View>
+            </View>
+        )
+    }
+    renderFilter = () => {
+
+        return (
+
+            <View style={{ alignItems: "center", justifyContent: "center", width: width * 0.32, }}>
+                <View style={{ flexDirection: "row" }}>
+                    <View style={{ alignItems: "center", justifyContent: "center" }}>
+                        <Text style={[styles.text, { color: "#fff" }]}>{this.state.today}</Text>
+                    </View>
+
+                    <TouchableOpacity
+                        style={{ marginLeft: 20 }}
+                        onPress={() => { this.setState({ showCalender: true }) }}
+                    >
+                        <Fontisto name="date" size={24} color={"#fff"} />
+                    </TouchableOpacity>
+
+
+                    <DateTimePickerModal
+                        isVisible={this.state.showCalender}
+                        mode="date"
+                        onConfirm={this.handleConfirm}
+                        onCancel={this.hideDatePicker}
+                    />
+                </View>
+
+            </View>
+
+        )
+
+    }
+    getCloser = (value, checkOne, checkTwo) =>
+        Math.abs(value - checkOne) < Math.abs(value - checkTwo) ? checkOne : checkTwo;
     render() {
         const { height, width } = Dimensions.get("window");
+        const scrollYClamped = diffClamp(this.scrollY, 0, headerHeight);
+
+        const translateY = scrollYClamped.interpolate({
+            inputRange: [0, headerHeight],
+            outputRange: [0, -(headerHeight / 2)],
+        });
+
+
+        translateY.addListener(({ value }) => {
+            this.translateYNumber.current = value;
+        });
+
+        const handleScroll = Animated.event(
+            [
+                {
+                    nativeEvent: {
+                        contentOffset: { y: this.scrollY },
+                    },
+                },
+            ],
+            {
+                useNativeDriver: true,
+            },
+        );
+
+        const handleSnap = ({ nativeEvent }) => {
+
+            const offsetY = nativeEvent.contentOffset.y;
+            if (
+                !(
+                    this.translateYNumber.current === 0 ||
+                    this.translateYNumber.current === -headerHeight / 2
+                )
+            ) {
+                if (this.ref) {
+
+                    this.ref.scrollToOffset({
+                        offset:
+                            this.getCloser(this.translateYNumber.current, -headerHeight / 2, 0) ===
+                                -headerHeight / 2
+                                ? offsetY + headerHeight / 2
+                                : offsetY - headerHeight / 2,
+                    });
+                }
+            }
+        };
+
+ 
         return (
             <>
                 <SafeAreaView style={styles.topSafeArea} />
@@ -140,66 +264,33 @@ class PriscriptionIssue extends Component {
                     <View style={{ flex: 1, backgroundColor: "#fff" }}>
                         <StatusBar backgroundColor={themeColor} />
                         {/* HEADERS */}
-                        <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
-                          
-                            <View style={{ flex: 1, flexDirection:"row"}}>
-                                <View style={{flex:0.5,}}>
-                                    <Text style={[styles.text, { color: '#fff', fontWeight: 'bold', fontSize: 25,marginLeft:10}]}>Prescription</Text>
-                                </View>
-                                {this.props.user.profile.occupation == "MediacalRep" &&<TouchableOpacity style={{ flex: 0.5, alignItems: "center", justifyContent: "center" ,flexDirection:"row"}}
-                                    onPress={() => { this.setState({ showModal: true, showCalender:false})}}
-                                >
-                                    <View style={{alignItems:"center",justifyContent:"center"}}>
-                                        <Text style={[styles.text, { color: '#fff', }]}>{this.props?.medical?.name}</Text>
+                        <Animated.View style={[styles.header, { transform: [{ translateY }] }]}>
+                            {
+                                this.validateHeaders()
+                            }
 
-                                    </View>
-                                    <View style={{alignItems:"center",justifyContent:"center"}}>
-                                        <AntDesign name="right" size={20} color="#fff" />
-                                    </View>
-                                  
-                                </TouchableOpacity>}
-                            </View>
-                   
-                        </View>
-                        {/* DATES */}
-                        <View style={{ height: height * 0.07, alignItems: "center", justifyContent: "space-around", flexDirection: "row" }}>
-                            <View style={{ flexDirection: "row" }}>
-                                <Text style={[styles.text, { color: "#000" }]}>{this.state.today}</Text>
-                                <TouchableOpacity
-                                    style={{ marginLeft: 20 }}
-                                    onPress={() => { this.setState({ showCalender: true }) }}
-                                >
-                                    <Fontisto name="date" size={24} color={themeColor} />
-                                </TouchableOpacity>
-                                {/* {this.state.showCalender && (
-                                    <DateTimePicker
-                                        
-                                        testID="dateTimePicker1"
-                                        value={this.state.date}
-                                        mode={this.state.mode}
-                                        is24Hour={true}
-                                        display="default"
-                                        onChange={(time) => { this.onChange(time) }}
-                                    />
-                                )} */}
-                                <DateTimePickerModal
-                                    isVisible={this.state.showCalender}
-                                    mode="date"
-                                    onConfirm={this.handleConfirm}
-                                    onCancel={this.hideDatePicker}
-                                />
-                            </View>
-                            <View>
-                                <Text style={[styles.text,]}> Total:{this.state.priscriptions.length}</Text>
-                            </View>
-                        </View>
-                        {/* CHATS */}
-                        <FlatList
+                        </Animated.View>
+                    
+            
+                        {/* PRISCRIPTIONS */}
+                        <Animated.FlatList
                             style={{  }}
-                            onRefresh={() => this.onRefresh()}
-                            refreshing={this.state.isFetching}
+                            refreshControl={
+                                <RefreshControl
+                                    onRefresh={() => this.onRefresh()}
+                                    refreshing={this.state.isFetching}
+                                    progressViewOffset={headerHeight}
+                                />
+                            }
                             data={this.state.priscriptions}
                             keyExtractor={(item, index) => index.toString()}
+                            scrollEventThrottle={16}
+                            contentContainerStyle={{ paddingTop: headerHeight - 20, paddingBottom: 90 }}
+                            onScroll={handleScroll}
+                            onMomentumScrollEnd={handleSnap}
+                            onEndReached={() => { this.handleEndReached() }}
+                            ListFooterComponent={this.renderFooter()}
+                            onEndReachedThreshold={0.1}
                             renderItem={({ item, index }) => {
                                 return (
                                     <TouchableOpacity style={[styles.card, { flexDirection: "row", borderRadius: 5 ,marginTop:15}]}
@@ -234,7 +325,7 @@ class PriscriptionIssue extends Component {
                         />
                         <View style={{
                             position: "absolute",
-                            bottom: 20,
+                            bottom: 100,
                             left: 20,
                             right: 20,
                             flex: 1,
@@ -249,42 +340,7 @@ class PriscriptionIssue extends Component {
                             </TouchableOpacity>
                         </View>
                     </View>
-                    <Modal
-                        animationIn="slideInUp"
-                        animationOut="slideOutDown"
-                        isVisible={this.state.showModal}
-                        onBackdropPress={() => { this.setState({ showModal: false }) }}
-                    >
-                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                           
-                            <View style={{ height: height * 0.3, width: width * 0.9, backgroundColor: "#fff", borderRadius: 20, alignItems: "center", justifyContent: "center" }}>
-                                <View style={{marginTop:5}}>
-                                    <Text style={[styles.text,{color:"#000",fontSize:18}]}>Select Clinic</Text>
-                                </View>
-                                <FlatList
-                                    data={this.state.medicals}
-                                    keyExtractor={(item, index) => index.toString()}
-                                    renderItem={({ item, index }) => {
-                                        return (
-                                            <TouchableOpacity style={{ flexDirection: "row", marginTop: 20, alignItems: 'center', justifyContent: "space-around", width }}
-                                                onPress={() => { this.setActiveMedical(item) }}
-                                            >   
-                                                <View style={{flex:0.6,alignItems:"center",justifyContent:'center'}}>
-                                                    <Text style={[styles.text]}>{item.name}</Text>
-                                                </View>
-                                              
-                                                <View style={{flex:0.4,alignItems:'center',justifyContent:"center"}}>
-                                                    <FontAwesome name="dot-circle-o" size={24} color={this.props.medical == item ? themeColor : "gray"} />
-
-                                                </View>
-                                            </TouchableOpacity>
-                                        )
-                                    }}
-                                />
-
-                            </View>
-                        </View>
-                    </Modal>
+                
                 </SafeAreaView>
             </>
         );
@@ -301,6 +357,15 @@ const styles = StyleSheet.create({
     bottomSafeArea: {
         flex: 1,
         backgroundColor: "#fff"
+    },
+    header: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        width: '100%',
+        zIndex: 1,
+        backgroundColor: themeColor,
+        elevation: 6
     },
 })
 const mapStateToProps = (state) => {

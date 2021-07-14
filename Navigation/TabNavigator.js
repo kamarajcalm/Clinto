@@ -140,6 +140,9 @@ class TabNavigator extends Component {
         if (routeName == "TypeWiseView"){
             return false
         }
+        if (routeName == "AddRackItem"){
+            return false
+        }
         return true
     }
 
