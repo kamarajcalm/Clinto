@@ -37,6 +37,7 @@ class LoginScreen extends Component {
     var data = new FormData()
     data.append("username", this.state.username)
     data.append("password", this.state.password)
+    data.append("notificationId", this.state.token)
     fetch(`${url}/api/HR/login/?mode=api`, {
       method: 'POST',
       body: data,
@@ -55,7 +56,9 @@ class LoginScreen extends Component {
         return undefined
       }
     })
+      
       .then((responseJson) => {
+    
         if (responseJson == undefined) {
           this.setState({ loading: false })
           return this.showSimpleMessage(`incorrect username or password`, "#dd7030")

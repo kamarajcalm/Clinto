@@ -308,11 +308,11 @@ hideDatePicker = () => {
             extrapolate:"clamp"
         })
         return(
-            <View style={{ alignItems: "center", justifyContent: "center", backgroundColor: "gray", height: height * 0.15, }}>
+            <View style={{  backgroundColor: "gray", height: height * 0.15, }}>
               
                    <TouchableOpacity 
                     onPress={() => { this.makeInvalid(item, index)}}
-                    style={{height:height*0.05,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:item.active?"green":"red",marginHorizontal:20}}
+                    style={{height:height*0.05,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:item.active?"green":"red",marginHorizontal:20,marginTop:20}}
                    >
                     <Text style={[styles.text, { color: "#fff",  }]}>{item.active ?"Invalid":"Invalid"}</Text>
                    </TouchableOpacity>

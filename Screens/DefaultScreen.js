@@ -24,9 +24,11 @@ Notifications.setNotificationCategoryAsync("welcome", [
   },
   
 ],
-
-
 )
+Notifications.setNotificationChannelAsync('new-emails', {
+  name: 'E-mail notifications',
+  sound: 'starwar.wav', // Provide ONLY the base filename
+});
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -123,6 +125,15 @@ Notifications.setNotificationHandler({
      }
   componentDidMount(){
       this.getUserDetails()
+    const subscriptionn = Notifications.addNotificationReceivedListener(notification => {
+      console.log(notification,"ppppp");
+    });
+    const subscription = Notifications.addNotificationResponseReceivedListener(async (response) => {
+
+      console.log(response,"ppipip")
+
+
+    });
   }
   
   render() {

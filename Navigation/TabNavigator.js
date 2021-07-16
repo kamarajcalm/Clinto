@@ -65,6 +65,17 @@ class TabNavigator extends Component {
 
         return true
     }
+    getTabBarVisibility9 = (route) => {
+        const routeName = route.state ? route.state.routes[route.state.index].name : ''
+        if (routeName == "ViewTemplates") {
+            return false
+        }
+        if (routeName == "ViewFullTemplates") {
+            return false
+        }
+
+        return true
+    }
     getTabBarVisibility4 = (route) => {
         const routeName = route.state ? route.state.routes[route.state.index].name : ''
         if (routeName == "ViewAppointment") {
@@ -145,7 +156,7 @@ class TabNavigator extends Component {
         }
         return true
     }
-
+  
     render() {
         return (
             
@@ -198,7 +209,11 @@ class TabNavigator extends Component {
 
                     />
                     <Tab.Screen name="Profile" component={ProfileStack}
-                   
+                    options={({ route }) => ({
+
+                        tabBarVisible: this.getTabBarVisibility9(route),
+
+                    })}
 
                     />
 
