@@ -396,7 +396,7 @@ class ProfileEdit extends Component {
                                         value={this.state.pincode}
                                         keyboardType={"numeric"}
                                         selectionColor={themeColor}
-                                        onChangeText={(state) => { this.setState({ state }) }}
+                                        onChangeText={(pincode) => { this.setState({ pincode }) }}
                                         style={{ width: width * 0.7, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>

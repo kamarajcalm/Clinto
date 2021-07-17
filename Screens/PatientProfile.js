@@ -43,7 +43,7 @@ class PatientProfile extends Component {
                         </View>
                     </View>
 
-                    <View style={{ flexDirection: "row", marginTop: 15, alignItems: "center", justifyContent: 'space-between' }}>
+                    {/* <View style={{ flexDirection: "row", marginTop: 15, alignItems: "center", justifyContent: 'space-between' }}>
                         <View style={{ flex: 0.6 }}>
                             <Text style={[styles.text, { color: "gray" }]}>Height</Text>
                             <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.height}</Text>
@@ -52,6 +52,13 @@ class PatientProfile extends Component {
                             <Text style={[styles.text, { color: "gray" }]}>Weight</Text>
                             <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.weight}</Text>
                         </View>
+                    </View> */}
+                    <View style={{ flexDirection: "row", marginTop: 15, alignItems: "center", justifyContent: 'space-between' }}>
+                        <View style={{ }}>
+                            <Text style={[styles.text, { color: "gray" }]}>Email</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.email}</Text>
+                        </View>
+                     
                     </View>
                     <View style={{ flexDirection: "row", marginTop: 15, }}>
                         <View >
