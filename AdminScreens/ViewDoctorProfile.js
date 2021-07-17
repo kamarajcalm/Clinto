@@ -92,6 +92,14 @@ class ViewDoctorProfile extends Component {
                             </View>
                             <View style={{ flexDirection: "row", marginTop: 10, marginLeft: 10 }}>
                                 <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                    <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Email : </Text>
+                                </View>
+                                <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                    <Text style={[styles.text, { fontSize: 22 }]}>{this.state.item.user.email}</Text>
+                                </View>
+                            </View>
+                            <View style={{ flexDirection: "row", marginTop: 10, marginLeft: 10 }}>
+                                <View style={{ alignItems: "center", justifyContent: "center" }}>
                                     <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Address: </Text>
                                 </View>
                                 <View style={{ alignItems: "center", justifyContent: "center" }}>

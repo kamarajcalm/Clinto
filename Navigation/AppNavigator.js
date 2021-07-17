@@ -12,7 +12,7 @@ import MyTabBar from '../components/MyTabBar';
 
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { connect } from 'react-redux';
-import { selectTheme } from '../actions';
+import { selectTheme, selectUser,setNoticationRecieved} from '../actions';
 import PriscriptionStack from '../stacks/PriscriptionStack';
 import DoctorsStack from '../stacks/DoctorsStack';
 import ChatStack from '../stacks/ChatStack';
@@ -36,9 +36,15 @@ import EditDoctorTimings from '../AdminScreens/EditDoctorTimings';
 import EditClinicDetails from '../AdminScreens/EditClinicDetails';
 import SearchDoctors from '../AdminScreens/SearchDoctors';
 import PrescriptionView from '../MedicalScreens.js/PrescriptionView';
+import PrescriptionViewOuter from '../Screens/PrescriptionView';
 import UploadImages from '../AdminScreens/UploadImages';
 import ViewReceptionProfile from '../Screens/ViewReceptionProfile';
 import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack';
+import * as Notifications from 'expo-notifications';
+import * as Linking from 'expo-linking';
+import EditHeathIssues from '../Screens/EditHeathIssues';
+
+const prefix = Linking.makeUrl('/')
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -51,7 +57,7 @@ const Main = {
 const authScreens = {
     Login: LoginStack,
 };
-export default class AppNavigator extends Component {
+ class AppNavigator extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -59,27 +65,25 @@ export default class AppNavigator extends Component {
             isReady: false,
         };
     }
-    getUserDetails = async () => {
-        const login = await AsyncStorage.getItem("login")
 
-        console.log(login, "lllllll")
-        if (login) {
-            this.setState({ logged: true })
-        }
-    }
-    getTheme = async () => {
-        let theme = await AsyncStorage.getItem("theme")
-        this.props.selectTheme(theme)
-    }
   
     componentDidMount() {
-        this.getUserDetails()
+      if(this.props.response){
+          this.props.setNoticationRecieved(this.props.response)
+      }
     }
    
     render() {
-      
+         const linking = {
+             prefixes:[prefix],
+             config:{
+                 PrescriptionView:"PrescriptionView"
+             },
+    
+         }
+        
         return (
-            <NavigationContainer >
+            <NavigationContainer linking={linking} ref={ref=>this.navRef=ref}>
                 <Stack.Navigator
                 
                     screenOptions={{
@@ -93,6 +97,7 @@ export default class AppNavigator extends Component {
                 >
                 
                     <Stack.Screen name="DefaultScreen" component={DefaultScreen} options={{ headerShown: false }} />
+                    <Stack.Screen name="PrescriptionViewOuter" component={PrescriptionViewOuter} options={{ headerShown: false }} />
                     <Stack.Screen name="MainTab" component={TabNavigator} options={{ headerShown: false }} />
                     <Stack.Screen name="Login" component={LoginStack} options={{ headerShown: false }} />
                     <Stack.Screen name="ProfileEdit" component={ProfileEdit} options={{ headerShown: false }} />
@@ -112,9 +117,19 @@ export default class AppNavigator extends Component {
                     <Stack.Screen name="EditClinicDetails" component={EditClinicDetails} options={{ headerShown: false }} />
                     <Stack.Screen name="PrescriptionView" component={PrescriptionView} options={{ headerShown: false }} />
                     <Stack.Screen name="ViewReceptionProfile" component={ViewReceptionProfile} options={{ headerShown: false }} />
+                    <Stack.Screen name="EditHealthIssues" component={EditHeathIssues} options={{ headerShown: false }} />
                  </Stack.Navigator>
                 
             </NavigationContainer>
         );
     }
 }
+const mapStateToProps = (state) => {
+
+    return {
+        theme: state.selectedTheme,
+        user: state.selectedUser,
+        notification: state.notification
+    }
+}
+export default connect(mapStateToProps, { selectTheme, selectUser, setNoticationRecieved})(AppNavigator);

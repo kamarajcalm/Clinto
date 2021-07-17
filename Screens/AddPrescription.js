@@ -193,7 +193,8 @@ class AddPrescription extends Component {
                     i.medicine = i?.title,
                     i.is_drug=false,
                     i.invalid_count=0,
-                    i.is_given = false
+                    i.is_given = false,
+                    i.command = ""
             })
         }catch(e){
           
@@ -206,7 +207,8 @@ class AddPrescription extends Component {
             medicines.forEach((i) => {
                 i.is_given = true,
                 i.total_qty = 0,
-                i.medicine =i.id
+                i.medicine =i.id,
+                i.command =""
             })
         } catch (e) {
 
@@ -291,6 +293,7 @@ class AddPrescription extends Component {
             next_visit:this.state.nextVisit,
             address:this.state.Address,
             new_disease:this.state.Disease,
+            type:"mobile"
         }
     
         if(this.state.appointmentId){

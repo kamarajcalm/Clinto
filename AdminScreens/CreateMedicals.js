@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView, ScrollView, RefreshControl } from 'react-native';
+import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView, ScrollView, RefreshControl ,ActivityIndicator} from 'react-native';
 import settings from '../AppSettings';
 import axios from 'axios';
 import Modal from 'react-native-modal';
@@ -43,7 +43,8 @@ class CreateMedicals extends Component {
             closingArray: [],
             day: "",
             isFetching: false,
-            doctor: null
+            doctor: null,
+            email:""
         };
     }
     showSimpleMessage(content, color, type = "info", props = {}) {
@@ -58,45 +59,60 @@ class CreateMedicals extends Component {
         showMessage(message);
     }
     createClinic = async () => {
-
+         this.setState({creating:true})
         let token = await AsyncStorage.getItem('csrf')
 
 
         if (this.state.doctor == null) {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please select owner", "#dd7030",)
          
         }
         if (this.state.clinicName == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill MedicalName", "#dd7030",)
          
         }
         if (this.state.mobile == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill mobile", "#dd7030",)
       
         }
+        if (this.state.email == "") {
+            this.setState({ creating: false })
+            return this.showSimpleMessage("Please fill email", "#dd7030",)
+
+        }
         if (this.state.GST == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill GST", "#dd7030",)
         }
         if (this.state.pincode == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill pincode", "#dd7030",)
         }
         if (this.state.address == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill address", "#dd7030",)
            
         }
         if (this.state.city == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill city", "#dd7030",)
    
         }
         if (this.state.state == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill state", "#dd7030",)
        
         }
         if (this.state.latitude == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill latitude", "#dd7030",)
          
         }
         if (this.state.longitude == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill longitude", "#dd7030",)
         }
 
@@ -128,7 +144,7 @@ class CreateMedicals extends Component {
         // console.log(post2,"pppp")
         // return
         let sendData = {
-            owner: this.state.doctor.user,
+            owner: this.state.doctor.user.id,
             displayPicture: this.state.image,
             mobile: this.state.mobile,
             gstin: this.state.GST,
@@ -141,7 +157,8 @@ class CreateMedicals extends Component {
             secondEmergencyContactNo: this.state.secondEmergencyContactNo,
             lat: this.state.latitude,
             long: this.state.longitude,
-            type:"MedicalStore"
+            type:"MedicalStore",
+            offical_email:this.state.email
         }
         if (this.state.image) {
             sendData.bodyType = "formData"
@@ -150,8 +167,10 @@ class CreateMedicals extends Component {
         const post = await HttpsClient.post(api, sendData)
         console.log(post, "pppp")
         if (post.type == "success") {
+            this.setState({ creating: false })
             return this.props.navigation.navigate('UpdateTimings', { clinicPk: post.data.clinicPk,medical:true })
         } else {
+            this.setState({ creating: false })
             this.showSimpleMessage("Try again", "#B22222", "danger")
         }
 
@@ -285,7 +304,7 @@ class CreateMedicals extends Component {
                                 <Ionicons name="chevron-back-circle" size={30} color="#fff" />
                             </TouchableOpacity>
                             <View style={{ flex: 0.6, alignItems: 'center', justifyContent: "center" }}>
-                                <Text style={[styles.text, { color: "#fff" }]}>Create Clinic</Text>
+                                <Text style={[styles.text, { color: "#fff" }]}>Create Medical</Text>
                             </View>
                             <View style={{ flex: 0.2, alignItems: 'center', justifyContent: "center" }}>
 
@@ -304,7 +323,7 @@ class CreateMedicals extends Component {
                                 }
                                 showsVerticalScrollIndicator={false}
                             >
-                                <View style={{ height: height * 0.12, alignItems: "center", justifyContent: 'center' }}>
+                                {/* <View style={{ height: height * 0.12, alignItems: "center", justifyContent: 'center' }}>
                                     <Image
                                         source={{ uri: this.state?.image?.uri || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" }}
                                         style={{ height: 60, width: 60, borderRadius: 30 }}
@@ -316,7 +335,7 @@ class CreateMedicals extends Component {
                                     >
                                         <Entypo name="edit" size={20} color={themeColor} />
                                     </TouchableOpacity>
-                                </View>
+                                </View> */}
                                 <View >
                                     <Text style={styles.text}>Owner Name</Text>
                                     <TouchableOpacity
@@ -353,6 +372,17 @@ class CreateMedicals extends Component {
                                         value={this.state.mobile}
                                         onChangeText={(mobile) => { this.setState({ mobile }) }}
                                         keyboardType="numeric"
+                                        selectionColor={themeColor}
+                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                    />
+                                </View>
+
+                                <View>
+                                    <Text style={styles.text}>Email</Text>
+                                    <TextInput
+                                        value={this.state.email}
+                                        onChangeText={(email) => { this.setState({ email }) }}
+                             
                                         selectionColor={themeColor}
                                         style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
@@ -450,7 +480,7 @@ class CreateMedicals extends Component {
                                     <TouchableOpacity style={{ width: width * 0.4, height: height * 0.05, borderRadius: 10, alignItems: 'center', justifyContent: "center", backgroundColor: themeColor }}
                                         onPress={() => { this.createClinic() }}
                                     >
-                                        <Text style={[styles.text, { color: "#fff" }]}>Create</Text>
+                                        {this.state.creating ? <ActivityIndicator size={"large"} color={"#fff"} /> : <Text style={[styles.text, { color: "#fff" }]}>Create</Text>}
                                     </TouchableOpacity>
                                 </View>
 

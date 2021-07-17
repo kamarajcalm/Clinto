@@ -44,6 +44,18 @@ const setLottieReducer = (setShowLottie = false, action) => {
     }
     return setShowLottie
 }
+const setSelectedNotificationReducer = (setNotification=null,action) =>{
+    if (action.type === "NOTIFICATION_SELECTED") {
+        return action.payload;
+    }
+    return setNotification
+}
+const setFirstReducer = (setFirst = true, action) => {
+    if (action.type === "FIRST_SELECTED") {
+        return action.payload;
+    }
+    return setFirst
+}
 export default combineReducers({
     selectedTheme:selectedThemeReducer,
     selectedUser:selectedUserReducer,
@@ -52,4 +64,6 @@ export default combineReducers({
     selectedWorkingClinics: selectedWorkingClinicsReducer,
     selectedOwnedClinics: selectedOwnedClinicsReducer,
     showLottie: setLottieReducer,
+    notification: setSelectedNotificationReducer,
+    first: setFirstReducer
 })

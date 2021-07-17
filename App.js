@@ -7,9 +7,38 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import reducers from './reducers';
 import FlashMessage from "react-native-flash-message";
+import * as Notifications from 'expo-notifications';
+import * as Linking from 'expo-linking';
+import notRef from './notificationRef';
+Notifications.setNotificationCategoryAsync("welcome", [
+  {
+    identifier: "1",
+    buttonTitle: "accept",
+
+  },
+  {
+    identifier: "2",
+    buttonTitle: "reject",
+  },
+
+],
+)
+Notifications.setNotificationChannelAsync('new-emails', {
+  name: 'E-mail notifications',
+  sound: 'starwar.wav', // Provide ONLY the base filename
+});
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
 export default class App extends React.Component {
   state = {
     fontsLoaded: false,
+    response:null,
+    first:true,
   };
 
   async loadFonts() {
@@ -19,20 +48,40 @@ export default class App extends React.Component {
 
 
     });
-    this.setState({ fontsLoaded: true });
+    this.setState({ fontsLoaded: true,});
   }
 
-  componentDidMount() {
+   componentDidMount() {
+   
     this.loadFonts();
+   
+ const subscribe =  Notifications.addNotificationResponseReceivedListener(response => {
+        
+      
+          if(this.state.first){
+       
+            this.setState({ first: false }, ()=>{
+        
+              this.setState({ response })
+            })
+    
+          }
+        
+        });
+     
+  setTimeout(()=>{
+    subscribe.remove()
+  },2000)
   }
 
+  
   render() {
     // Use the font with the fontFamily property after loading
     if (this.state.fontsLoaded) {
       return (
         <Provider store={createStore(reducers)}>
           <AppearanceProvider>
-            <AppNavigator />
+            <AppNavigator response ={this.state.response}/>
             <FlashMessage 
             position="top" 
             hideStatusBar={false}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView, ScrollView, RefreshControl} from 'react-native';
+import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView, ScrollView, RefreshControl,ActivityIndicator} from 'react-native';
 import settings from '../AppSettings';
 import axios from 'axios';
 import Modal from 'react-native-modal';
@@ -17,6 +17,7 @@ import { TextInput } from 'react-native-gesture-handler';
 import * as Location from 'expo-location';
 import HttpsClient from '../api/HttpsClient';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+
 class CreateClinics extends Component {
     constructor(props) {
         super(props);
@@ -43,7 +44,9 @@ class CreateClinics extends Component {
             day: "",
             isFetching:false,
             doctor:null,
-            images:[]
+            images:[],
+            email:"abcty@gmail.com",
+            creating:false
         };
     }
     showSimpleMessage(content, color, type = "info", props = {}) {
@@ -59,43 +62,57 @@ class CreateClinics extends Component {
     }
 
     createClinic = async()=>{
-    
+        this.setState({creating:true})
        let token = await AsyncStorage.getItem('csrf')
       
        
          if(this.state.doctor == null){
+             this.setState({ creating: false })
              return this.showSimpleMessage("Please select owner", "#dd7030",)
          
          }
         if (this.state.clinicName == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill clinicName", "#dd7030",)
     
         }
         if (this.state.mobile == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill mobile", "#dd7030",)
         }
+        if (this.state.email == "") {
+            this.setState({ creating: false })
+            return this.showSimpleMessage("Please fill email", "#dd7030",)
+        }
         if (this.state.GST == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill GST", "#dd7030",)
            
         }
         if (this.state.pincode == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill pincode", "#dd7030",)
         }
         if (this.state.address == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill address", "#dd7030",)
         }
         if (this.state.city == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill city", "#dd7030",)
     
         }
         if(this.state.state ==""){
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill state", "#dd7030",)
             
         }
         if (this.state.latitude == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill latitude", "#dd7030",)
         }
         if (this.state.longitude == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill longitude", "#dd7030",)
         }
        
@@ -139,7 +156,7 @@ class CreateClinics extends Component {
             secondEmergencyContactNo:this.state.secondEmergencyContactNo,
             lat:this.state.latitude,
             long:this.state.longitude,
-           
+            offical_email:this.state.email
         }
         console.log(sendData)
         if (this.state.image){
@@ -149,9 +166,11 @@ class CreateClinics extends Component {
         const post = await HttpsClient.post(api,sendData)
         console.log(post,"pppp")
        if(post.type=="success"){
+            this.setState({creating:false})
            this.showSimpleMessage("Added SuccessFully", "#00A300", "success")
         return  this.props.navigation.navigate('UpdateTimings', { clinicPk: post.data.clinicPk})
        }else{
+           this.setState({ creating: false })
            this.showSimpleMessage("Try again", "#B22222", "danger")
        }
 
@@ -367,6 +386,15 @@ class CreateClinics extends Component {
                                     />
                                 </View>
                                 <View>
+                                    <Text style={styles.text}>Email</Text>
+                                    <TextInput
+                                        value={this.state.email}
+                                        onChangeText={(email) => { this.setState({ email }) }}
+                                        selectionColor={themeColor}
+                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                    />
+                                </View>
+                                <View>
                                     <Text style={styles.text}>GST IN</Text>
                                     <TextInput
                                         value={this.state.GST}
@@ -493,9 +521,10 @@ class CreateClinics extends Component {
                                  </View> */}
                                 <View style={{ alignItems: 'center', justifyContent: 'center' ,marginTop:30}}>
                                     <TouchableOpacity style={{ width: width * 0.4, height: height * 0.05, borderRadius: 10, alignItems: 'center', justifyContent: "center", backgroundColor: themeColor }}
+                                      
                                       onPress={()=>{this.createClinic()}}
                                     >
-                                        <Text style={[styles.text, { color: "#fff" }]}>Create</Text>
+                                      { this.state.creating?<ActivityIndicator size={"large"} color={"#fff"}/> :<Text style={[styles.text, { color: "#fff" }]}>Create</Text>}
                                     </TouchableOpacity>
                                 </View>
 

@@ -9,33 +9,7 @@ import HttpsClient from '../api/HttpsClient';
 const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
 const url =settings.url
-const DATA = [
-  {
-    name: "sri devi clinic",
-    place: "bengaluru"
-  },
-  {
-    name: "sri devi clinic",
-    place: "bengaluru"
-  },
-  {
-    name: "sri devi clinic",
-    place: "bengaluru"
-  },
-  {
-    name: "sri devi clinic",
-    place: "bengaluru"
-  },
-  {
-    name: "sri devi clinic",
-    place: "bengaluru"
-  },
-  {
-    name: "sri devi clinic",
-    place: "bengaluru"
-  },
 
-]
 class Medicals extends Component {
   constructor(props) {
     super(props);
@@ -111,7 +85,7 @@ class Medicals extends Component {
             {/* CHATS */}
             <FlatList
 
-
+              contentContainerStyle ={{paddingBottom:90}}
               data={this.state.medicals}
 
               keyExtractor={(item, index) => index.toString()}

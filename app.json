@@ -1,5 +1,6 @@
 {
   "expo": {
+    "scheme":"Clinto",
     "name": "Clinto",
     "slug": "Clinto",
     "version": "1.0.0",
@@ -19,8 +20,7 @@
           ],
           "mode": "production"
         }
-      ],
-      "expo-screen-orientation"
+      ]
     ],
     "updates": {
       "fallbackToCacheTimeout": 0

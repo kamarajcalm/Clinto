@@ -56,7 +56,7 @@ class ViewFullTemplates extends Component {
     filterMedicines = () =>{
         let priscribed = this.state.template.medicines.filter((item) => !item.is_given)
         let MedicinesGiven = this.state.template.medicines.filter((item) => item.is_given)
-        this.setState({ priscribed, MedicinesGiven, priscribedEdit:priscribed,MedicinesGivenEdit:MedicinesGiven})
+        this.setState({ priscribed, MedicinesGiven, priscribedEdit:[...priscribed],MedicinesGivenEdit:[...MedicinesGiven]})
     }
     getMedicines= async()=>{
         let api = `${url}/api/prescription/templateEdit/?templateid=${this.state.item.id}`

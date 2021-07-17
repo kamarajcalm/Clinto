@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView,  TextInput } from 'react-native';
+import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView,  TextInput ,ActivityIndicator} from 'react-native';
 import settings from '../AppSettings';
 import axios from 'axios';
 import Modal from 'react-native-modal';
@@ -9,12 +9,15 @@ import { Ionicons, Entypo, AntDesign, Feather, MaterialCommunityIcons, FontAweso
 const themeColor = settings.themeColor;
 const fontFamily = settings.fontFamily;
 import { connect } from 'react-redux';
-import { selectTheme } from '../actions';
+import { selectTheme ,selectUser} from '../actions';
 import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import * as  ImagePicker from 'expo-image-picker';
 import { ScrollView,} from 'react-native-gesture-handler';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import moment from 'moment';
+import HttpsClient from '../api/HttpsClient';
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+const url = settings.url;
 class ProfileEdit extends Component {
     constructor(props) {
         super(props);
@@ -31,7 +34,95 @@ class ProfileEdit extends Component {
             state: this.props.user.profile.state,
             pincode: this.props.user.profile.pincode,
             bloodGroup: this.props.user.profile.blood_group,
+            image:null,
+            updating:false,
+            email: this.props.user.email,
+            healthIssues: [this.props.user.profile.health_issues]
         };
+    }
+    showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
+
+        showMessage(message);
+    }
+    getSelfMode = async()=>{
+        const data = await HttpsClient.get(`${url}/api/HR/users/?mode=mySelf&format=json`);
+        if(data.type =="success"){
+            this.props.selectUser(data.data[0]);
+            this.showSimpleMessage("Profile Updated Successfully", "green", "success")
+         return   this.setState({ updating: false })
+        }
+  
+    
+    }
+    updateProfile = async()=>{
+        this.setState({updating:true})
+        if(this.state.name ==""){
+            this.showSimpleMessage("please fill name","orange","info")
+            return this.setState({ updating: false })
+        }
+        if (this.state.phoneNo == "") {
+            this.showSimpleMessage("please fill phoneNo", "orange", "info")
+            return this.setState({ updating: false })
+        }
+        if (this.state.dob == null) {
+            this.showSimpleMessage("please fill dob", "orange", "info")
+            return this.setState({ updating: false })
+        }
+        if (this.state.bloodGroup == "") {
+            this.showSimpleMessage("please fill bloodGroup", "orange", "info")
+            return this.setState({ updating: false })
+        }
+        if (this.state.address == "") {
+            this.showSimpleMessage("please fill address", "orange", "info")
+            return this.setState({ updating: false })
+        }
+        if (this.state.city == "") {
+            this.showSimpleMessage("please fill city", "orange", "info")
+            return this.setState({ updating: false })
+        }
+        if (this.state.state == "") {
+            this.showSimpleMessage("please fill state", "orange", "info")
+            return this.setState({ updating: false })
+        }
+        if (this.state.pincode == "") {
+            this.showSimpleMessage("please fill pincode", "orange", "info")
+            return this.setState({ updating: false })
+        }
+        let api = `${url}/api/profile/userss/${this.props.user.profile.id}/`
+        let sendData ={
+            name:this.state.name,
+            mobile:this.state.phoneNo,
+            dob:this.state.dob,
+            blood_group:this.state.bloodGroup,
+            address:this.state.address,
+            city:this.state.city,
+            state:this.state.state,
+            pincode:this.state.pincode,
+            email:this.state.email
+           
+        }
+        if(this.state.image){
+            sendData.displayPicture = this.state.image,
+            sendData.bodyType = "formData"
+        }
+        let patch = await HttpsClient.patch(api,sendData)
+    
+        console.log(sendData,patch)
+        if(patch.type =="success"){
+            this.getSelfMode()
+       
+
+        }else{
+            this.showSimpleMessage("Try Again", "red", "danger")
+            this.setState({ updating: false })
+        }
     }
     handleConfirm = (date) => {
      
@@ -73,7 +164,7 @@ class ProfileEdit extends Component {
             name: filename,
         };
         this.setState({ openImageModal: false })
-        this.setState({ selectedFile: photo, selectedType: 'image', imageuri: photo.uri })
+        this.setState({ image: photo, selectedType: 'image', imageuri: photo.uri })
     };
     modalAttach = async (event) => {
         if (event == 'gallery') return this._pickImage();
@@ -167,6 +258,7 @@ class ProfileEdit extends Component {
                         </View>
                         <View style={{ flex: 1 }}>
                             <ScrollView style={{ margin: 20 }}
+                                keyboardShouldPersistTaps ={"handled"}
                                 showsVerticalScrollIndicator={false}
                             >
                             <View style={{ height: height * 0.12, alignItems: "center", justifyContent: 'center' }}>
@@ -200,10 +292,50 @@ class ProfileEdit extends Component {
                                         value={this.state.phoneNo}
                                         keyboardType="numeric"
                                         selectionColor={themeColor}
-                                        onChangeText={(phoneNo) => { phoneNo}}
+                                        onChangeText={(phoneNo) => { this.setState({phoneNo})}}
                                         style={{ width: width * 0.7, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
+                                <View>
+                                    <Text style={styles.text}>Email </Text>
+                                    <TextInput
+                                        value={this.state.email}
+                                    
+                                        selectionColor={themeColor}
+                                        onChangeText={(email) => { this.setState({ email }) }}
+                                        style={{ width: width * 0.7, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                    />
+                                </View>
+                                {this.props.user.profile.occupation =="Customer"&& <View style={{marginVertical:10}}>
+                                    <View>
+                                        <Text style={[styles.text,{textDecorationLine:"underline",color:"#000"}]}>Update HealthIssues :</Text>
+                                    </View>
+                                    <View>
+                                        {
+                                            this.state.healthIssues.map((item,index)=>{
+                                                    return(
+                                                        <View style={{flexDirection:"row",marginLeft:width*0.2,marginTop:5}}>
+                                                            <View>
+                                                                <Text style={[styles.text]}> {index + 1} . </Text>
+                                                            </View>
+                                                           <View>
+                                                                <Text style={[styles.text]}>{item}</Text>
+                                                           </View>
+                                                     
+                                                        </View>
+                                                    )
+                                            })
+                                        }
+                                        <View style={{alignItems:"center",marginVertical:20}}> 
+                                            <TouchableOpacity style={{height:height*0.05,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:10}}
+                                             onPress ={()=>{this.props.navigation.navigate('EditHealthIssues',{item:this.state.healthIssues})}}
+                                            >
+                                                <Text style={[styles.text,{color:"#fff"}]}>Edit</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+
+                                </View>}
                                 <View>
                                     <Text style={styles.text}>Date of Birth</Text>
                                      <TouchableOpacity
@@ -268,10 +400,12 @@ class ProfileEdit extends Component {
                                         style={{ width: width * 0.7, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
-                        
-                                <View style={{alignItems:'center',justifyContent:'center'}}>
-                                    <TouchableOpacity style={{ width: width * 0.4, height: height * 0.05, borderRadius: 10, alignItems: 'center', justifyContent: "center" ,backgroundColor:themeColor}}>
-                                        <Text style={[styles.text,{color:"#fff"}]}>Update</Text>
+                             
+                                <View style={{alignItems:'center',justifyContent:'center',marginVertical:20}}>
+                                    <TouchableOpacity style={{ width: width * 0.4, height: height * 0.05, borderRadius: 10, alignItems: 'center', justifyContent: "center" ,backgroundColor:themeColor}}
+                                     onPress ={()=>{this.updateProfile()}}
+                                    >
+                                       {this.state.updating?<ActivityIndicator size={"large"} color={"#fff"}/>: <Text style={[styles.text,{color:"#fff"}]}>Update</Text>}
                                     </TouchableOpacity>
                                 </View>
                                 
@@ -323,4 +457,4 @@ const mapStateToProps = (state) => {
         user:state.selectedUser,
     }
 }
-export default connect(mapStateToProps, { selectTheme })(ProfileEdit)
+export default connect(mapStateToProps, { selectTheme, selectUser })(ProfileEdit)

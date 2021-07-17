@@ -20,7 +20,7 @@ const width = Dimensions.get("screen").width
 const height = Dimensions.get("screen").height
 const deviceHeight = Dimensions.get("screen").height
 import { connect } from 'react-redux';
-import { selectTheme, selectClinic, selectWorkingClinics, selectOwnedClinics } from '../actions';
+import { selectTheme, selectClinic, selectWorkingClinics, selectOwnedClinics ,setNoticationRecieved} from '../actions';
 import settings from '../AppSettings'
 import moment from 'moment';
 const url = settings.url
@@ -53,7 +53,9 @@ import LottieView from 'lottie-react-native';
          const data = await HttpsClient.get(api)
          console.log(api)
          if (data.type == "success") {
-             this.setState({ item: data.data })
+             this.setState({ item: data.data },()=>{
+                 this.filterMedicines()
+             })
          }
      }
      validateAnimations = async () => {
@@ -72,8 +74,12 @@ import LottieView from 'lottie-react-native';
      }
 
     componentDidMount(){
+
         this.validateAnimations()
-        this.filterMedicines()
+        if(this.state.pk ==null){
+            this.filterMedicines()
+        }
+   
         if(this.state.pk){
             this.getDetails()
         }
@@ -167,7 +173,7 @@ import LottieView from 'lottie-react-native';
                          <Text style={[styles.text, { color: "#000", }]}>Reason : </Text>
                      </View>
                      <View style={{ alignItems: "center", justifyContent: "center" }}>
-                         <Text style={[styles.text, {}]}>{this.state.item.ongoing_treatment}</Text>
+                         <Text style={[styles.text, {}]}>{this.state?.item?.ongoing_treatment}</Text>
                      </View>
                  </View>
                  <View style={{ marginHorizontal: 20, flexDirection: "row", marginTop: 10 }}>
@@ -175,7 +181,7 @@ import LottieView from 'lottie-react-native';
                          <Text style={[styles.text, { color: "#000", }]}>Diagnosis : </Text>
                      </View>
                      <View style={{ alignItems: "center", justifyContent: "center" }}>
-                         <Text style={[styles.text, {}]}>{this.state.item.new_disease}</Text>
+                         <Text style={[styles.text, {}]}>{this.state.item?.new_disease}</Text>
                      </View>
                  </View>
 
@@ -435,9 +441,11 @@ import LottieView from 'lottie-react-native';
             //      this.props.navigation.goBack()
             //      break;
              case SWIPE_LEFT:
+                 this.props.setNoticationRecieved(null)
                  this.props.navigation.goBack()
                  break;
              case SWIPE_RIGHT:
+                 this.props.setNoticationRecieved(null)
                  this.props.navigation.goBack()
                  break;
          }
@@ -452,8 +460,8 @@ import LottieView from 'lottie-react-native';
          <>
             <SafeAreaView style={styles.topSafeArea} />
             <SafeAreaView style={styles.bottomSafeArea}>
-                <StatusBar backgroundColor={"#5081BC"}/>
-                <View style={{ height: height * 0.1, backgroundColor:"#5081BC",flexDirection:"row"}}>
+                <StatusBar backgroundColor={themeColor}/>
+                <View style={{ height: height * 0.1, backgroundColor:themeColor,flexDirection:"row"}}>
                      <View style={{flex:0.7}}>
                          <View style={{flex:0.5,justifyContent:"center",marginLeft:20}}>
                             <Text style={[styles.text,{color:"#ffff",fontWeight:'bold',fontSize:20}]}>{this.state?.item?.clinicname?.name?.toUpperCase()}</Text>
@@ -634,7 +642,7 @@ import LottieView from 'lottie-react-native';
                             </View>
                         </View>
                     </View>
-                    <View style={{ flex: 0.07, backgroundColor:"#5081BC",flexDirection:'row'}}>
+                    <View style={{ flex: 0.07, backgroundColor:themeColor,flexDirection:'row'}}>
                         <TouchableOpacity style={{ flex: 0.5, flexDirection: "row",alignItems: 'center', justifyContent: "center"}}
                          onPress ={()=>{
                              if (Platform.OS == "android") {
@@ -649,7 +657,7 @@ import LottieView from 'lottie-react-native';
                                 <Feather name="phone" size={24} color="#fff" />
                             </View>
                             <View style={{alignItems:'center',justifyContent:"center",marginLeft:5}}>
-                                    <Text style={[styles.text, { color: "#ffff" }]}>{this.state.item.clinicname.mobile}</Text>
+                                    <Text style={[styles.text, { color: "#ffff" }]}>{this.state.item?.clinicname?.mobile}</Text>
                             </View>
                         </TouchableOpacity >
                         <View style={{ flex: 0.5, flexDirection: "row"}}>
@@ -657,7 +665,7 @@ import LottieView from 'lottie-react-native';
                                 <Feather name="mail" size={24} color="#fff" />
                             </View>
                             <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5 }}>
-                                    <Text style={[styles.text, { color: "#ffff" }]}>{this.state.item.clinicname.email}</Text>
+                                    <Text style={[styles.text, { color: "#ffff" }]}>{this.state?.item?.clinicname?.email}</Text>
                             </View>
                         </View>
                     </View>
@@ -756,4 +764,4 @@ const mapStateToProps = (state) => {
         workingClinics: state.selectedWorkingClinics,
     }
 }
-export default connect(mapStateToProps, { selectTheme, selectClinic, selectWorkingClinics, selectOwnedClinics })(PrescriptionView)
+export default connect(mapStateToProps, { selectTheme, selectClinic, selectWorkingClinics, selectOwnedClinics, setNoticationRecieved })(PrescriptionView)

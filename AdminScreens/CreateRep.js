@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView, ScrollView ,ActivityIndicator} from 'react-native';
 import settings from '../AppSettings';
 import axios from 'axios';
 import Modal from 'react-native-modal';
@@ -27,12 +27,12 @@ class CreateRep extends Component {
             showModal: false,
             openImageModal: false,
             Qualification: "B.pharm",
-            Name: "Rep 1",
-            Mobile: "7010117133",
+            Name: "email Rep",
+            Mobile: "7010117176",
             Age: "22",
             Specialization: "heart surgeon",
             Experience: "10",
-            NoOfClinics: "2",
+            NoOfClinics: "",
             Location: "bengaluru",
             Pan: "w54647866",
             Address: '4/120 vellacheri',
@@ -41,7 +41,9 @@ class CreateRep extends Component {
             City: "Bengaluru",
             firstEmergencyContactNo: "9869669867",
             secondEmergencyContactNo: '9778776767',
-            image: null
+            image: null,
+            email:"wdwd@gmail.com",
+            creating:false,
         };
     }
     showSimpleMessage(content, color, type = "info", props = {}) {
@@ -57,55 +59,64 @@ class CreateRep extends Component {
     }
 
     createDoctor = async () => {
+        this.setState({creating:true})
         let api = `${url}/api/profile/createRep/`
         if (this.state.Name == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill Name", "#dd7030",)
         
         }
 
         if (this.state.Mobile == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill Mobile", "#dd7030",)
         }
         if (this.state.Pan == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill Pan", "#dd7030",)
       
         }
         if (this.state.Age == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill Age", "#dd7030",)
             
         }
         if (this.state.Qualification == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill Qualification", "#dd7030",)
 
         }
      
         if (this.state.Experience == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill Experience", "#dd7030",)
             
         }
         if (this.state.Pan == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill Pan", "#dd7030",)
         }
         if (this.state.Address == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill Address", "#dd7030",)
             
         }
         if (this.state.Pincode == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill Pincode", "#dd7030",)
           
         }
         if (this.state.State == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill State", "#dd7030",)
      
         }
         if (this.state.City == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill City", "#dd7030",)
         
         }
-        if (this.state.NoOfClinics == "") {
-            return this.showSimpleMessage("Please fill No Of Medicals", "#dd7030",)
-           
-        }
+      
         let sendData = {
             name: this.state.Name,
             displayPicture: this.state.image,
@@ -119,8 +130,8 @@ class CreateRep extends Component {
             secondEmergencyContactNo: this.state.secondEmergencyContactNo,
             specialization: this.state.Specialization,
             qualification: this.state.Qualification,
-            clinicsHandling: this.state.NoOfClinics,
-            occupation: "MediacalRep"
+            occupation: "MediacalRep",
+            email:this.state.email
         }
         if (this.state.image) {
             sendData.bodyType = "formData"
@@ -129,12 +140,14 @@ class CreateRep extends Component {
         let post = await HttpsClient.post(api, sendData)
         console.log(post, "hhh")
         if (post.type == "success") {
+            this.setState({ creating: false })
             this.showSimpleMessage("created SuccessFully", "#00A300", "success")
             setTimeout(() => {
                 this.props.navigation.goBack();
             }, 2000)
 
         } else {
+            this.setState({ creating: false })
             this.showSimpleMessage("Try again", "#B22222", "danger")
         }
     }
@@ -289,7 +302,16 @@ class CreateRep extends Component {
                                     />
                                 </View>
 
-
+                                <View >
+                                    <Text style={styles.text}>Email</Text>
+                                    <TextInput
+                             
+                                        value={this.state.email}
+                                        onChangeText={(email) => { this.setState({ email }) }}
+                                        selectionColor={themeColor}
+                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                    />
+                                </View>
                                 <View>
                                     <Text style={styles.text}>Age</Text>
                                     <TextInput
@@ -389,7 +411,7 @@ class CreateRep extends Component {
                                         style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
-                                <View>
+                                {/* <View>
                                     <Text style={styles.text}>No of Medicals handling</Text>
                                     <TextInput
                                         value={this.state.NoOfClinics}
@@ -398,13 +420,13 @@ class CreateRep extends Component {
                                         selectionColor={themeColor}
                                         style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
-                                </View>
+                                </View> */}
 
                                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                                     <TouchableOpacity style={{ width: width * 0.4, height: height * 0.05, borderRadius: 10, alignItems: 'center', justifyContent: "center", backgroundColor: themeColor }}
                                         onPress={() => { this.createDoctor() }}
                                     >
-                                        <Text style={[styles.text, { color: "#fff" }]}>Create</Text>
+                                       {this.state.creating?<ActivityIndicator  size={"large"} color ={"#fff"}/>: <Text style={[styles.text, { color: "#fff" }]}>Create</Text>}
                                     </TouchableOpacity>
                                 </View>
 

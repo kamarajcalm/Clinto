@@ -24,7 +24,7 @@ const height = Dimensions.get("screen").height
 const screenHeight = Dimensions.get("screen").height
 
 import { connect } from 'react-redux';
-import { selectTheme, selectClinic, selectWorkingClinics, selectOwnedClinics } from '../actions';
+import { selectTheme, selectClinic, selectWorkingClinics, selectOwnedClinics ,setNoticationRecieved} from '../actions';
 import settings from '../AppSettings'
 import moment from 'moment';
 const url = settings.url
@@ -59,7 +59,11 @@ class PrescriptionView extends Component {
         const data = await HttpsClient.get(api)
         console.log(api)
         if (data.type == "success") {
-            this.setState({ item: data.data })
+            this.setState({ item: data.data },()=>{
+                this.validateAnimations()
+                this.filterMedicines()
+                this.filterDrugs()
+            })
         }
     }
     IssuePriscription = async () => {
@@ -125,11 +129,16 @@ class PrescriptionView extends Component {
         this.setState({ drugs})
     }
     componentDidMount() {
-        this.validateAnimations()
-        this.filterMedicines()
-        this.filterDrugs()
+        if(this.state.pk == null){
+            this.validateAnimations()
+            this.filterMedicines()
+            this.filterDrugs()
+        }
+     
         if (this.state.pk) {
+  
             this.getDetails()
+        
         }
 
     }
@@ -405,6 +414,7 @@ class PrescriptionView extends Component {
             //     this.props.navigation.goBack()
             //     break;
             case SWIPE_RIGHT:
+                this.props.setNoticationRecieved(null)
                 this.props.navigation.goBack()
                 break;
         }
@@ -467,7 +477,7 @@ class PrescriptionView extends Component {
                         <Text style={[styles.text, { color: "#000", }]}>Reason : </Text>
                     </View>
                     <View style={{ alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, {}]}>{this.state.item.ongoing_treatment}</Text>
+                        <Text style={[styles.text, {}]}>{this.state?.item?.ongoing_treatment}</Text>
                     </View>
                 </View>
                 <View style={{ marginHorizontal: 20, flexDirection: "row", marginTop: 10 }}>
@@ -475,7 +485,7 @@ class PrescriptionView extends Component {
                         <Text style={[styles.text, { color: "#000", }]}>Diagnosis : </Text>
                     </View>
                     <View style={{ alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, {}]}>{this.state.item.diseaseTitle}</Text>
+                        <Text style={[styles.text, {}]}>{this.state.item?.diseaseTitle}</Text>
                     </View>
                 </View>
 
@@ -838,7 +848,7 @@ class PrescriptionView extends Component {
                                         <Feather name="phone" size={24} color="#fff" />
                                     </View>
                                     <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5 }}>
-                                        <Text style={[styles.text, { color: "#ffff" }]}>{this.state.item.clinicname.mobile}</Text>
+                                        <Text style={[styles.text, { color: "#ffff" }]}>{this.state.item?.clinicname?.mobile}</Text>
                                     </View>
                                 </TouchableOpacity >
                                 <View style={{ flexDirection: "row" }}>
@@ -846,7 +856,7 @@ class PrescriptionView extends Component {
                                         <Feather name="mail" size={24} color="#fff" />
                                     </View>
                                     <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5 }}>
-                                        <Text style={[styles.text, { color: "#ffff" }]}>{this.state.item.clinicname.email}</Text>
+                                        <Text style={[styles.text, { color: "#ffff" }]}>{this.state.item?.clinicname?.email}</Text>
                                     </View>
                                 </View>
                             </View>
@@ -947,4 +957,4 @@ const mapStateToProps = (state) => {
         medical: state.selectedMedical
     }
 }
-export default connect(mapStateToProps, { selectTheme, selectClinic, selectWorkingClinics, selectOwnedClinics })(PrescriptionView)
+export default connect(mapStateToProps, { selectTheme, selectClinic, selectWorkingClinics, selectOwnedClinics, setNoticationRecieved })(PrescriptionView)

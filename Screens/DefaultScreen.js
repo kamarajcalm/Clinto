@@ -2,40 +2,18 @@ import React, { Component } from 'react';
 import { View, Text, SafeAreaView, Dimensions, StyleSheet, ActivityIndicator, StatusBar, AsyncStorage} from 'react-native';
 import settings from '../AppSettings';
 import { connect, connectAdvanced } from 'react-redux';
-import { selectTheme ,selectUser} from '../actions';
+import { selectTheme ,selectUser,setNoticationRecieved} from '../actions';
 const { height, width } = Dimensions.get("window");
 import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import HttpsClient from '../api/HttpsClient';
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
+import notRef from '../notificationRef';
 const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
 const url = settings.url;
-Notifications.setNotificationCategoryAsync("welcome", [
-  {
-    identifier: "1",
-    buttonTitle: "accept",
 
-  },
-  {
-    identifier: "2",
-    buttonTitle: "reject",
-  },
-  
-],
-)
-Notifications.setNotificationChannelAsync('new-emails', {
-  name: 'E-mail notifications',
-  sound: 'starwar.wav', // Provide ONLY the base filename
-});
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
 
 
 
@@ -66,8 +44,7 @@ Notifications.setNotificationHandler({
          if (login) {
           
               const data = await HttpsClient.get(`${url}/api/HR/users/?mode=mySelf&format=json`);
-              console.log(data)
-           console.log(data.data[0].profile,"ppp")
+    
               if(data.type =="success"){
                  
                 this.props.selectUser(data.data[0]);
@@ -100,6 +77,10 @@ Notifications.setNotificationHandler({
                   )
                 }
                 if (data.data[0].profile.occupation == "Doctor" || data.data[0].profile.occupation == "ClinicRecoptionist" || data.data[0].profile.occupation == "Customer") {
+                  if (this.props.notification) {
+                   
+                   return this.props.navigation.navigate('PrescriptionViewOuter', { pk: 294 })
+                  }
                   return this.props.navigation.dispatch(
                     CommonActions.reset({
                       index: 0,
@@ -125,15 +106,20 @@ Notifications.setNotificationHandler({
      }
   componentDidMount(){
       this.getUserDetails()
-    const subscriptionn = Notifications.addNotificationReceivedListener(notification => {
-      console.log(notification,"ppppp");
+    // const subscriptionn = Notifications.addNotificationReceivedListener(notification => {
+    //   console.log(notification,"ppppp");
+    // });
+    Notifications.addNotificationResponseReceivedListener(response => {
+
+
+      this.props.navigation.navigate('PrescriptionViewOuter', { pk: 294 })
+
     });
-    const subscription = Notifications.addNotificationResponseReceivedListener(async (response) => {
-
-      console.log(response,"ppipip")
-
-
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+    
+      this.getUserDetails()
     });
+
   }
   
   render() {
@@ -168,6 +154,7 @@ const mapStateToProps = (state) => {
     return {
         theme: state.selectedTheme,
         user: state.selectedUser,
+        notification:state.notification
     }
 }
-export default connect(mapStateToProps, { selectTheme, selectUser})(DefaultScreen);
+export default connect(mapStateToProps, { selectTheme, selectUser, setNoticationRecieved})(DefaultScreen);

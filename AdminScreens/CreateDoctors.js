@@ -41,7 +41,8 @@ class CreateDoctors extends Component {
             City:"Bengaluru",
             firstEmergencyContactNo:"9869669867",
             secondEmergencyContactNo:'9778776767',
-            image:null
+            image:null,
+            email:""
         };
     }
     showSimpleMessage(content, color, type = "info", props = {}) {
@@ -64,6 +65,10 @@ class CreateDoctors extends Component {
 
         if (this.state.Mobile == "") {
             return this.showSimpleMessage("Please fill Mobile", "#dd7030",)
+        }
+
+        if (this.state.email == "") {
+            return this.showSimpleMessage("Please fill email", "#dd7030",)
         }
         if (this.state.Pan == "") {
             return this.showSimpleMessage("Please fill Pan", "#dd7030",)
@@ -115,7 +120,8 @@ class CreateDoctors extends Component {
           specialization:this.state.Specialization,
           qualification:this.state.Qualification,
           clinicsHandling:this.state.NoOfClinics,
-          occupation:"Doctor"
+          occupation:"Doctor",
+          email:this.state.email
       }
       if(this.state.image){
           sendData.bodyType= "formData"
@@ -285,7 +291,16 @@ class CreateDoctors extends Component {
                                         style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
-                           
+                                <View >
+                                    <Text style={styles.text}>email</Text>
+                                    <TextInput
+                                     
+                                        value={this.state.email}
+                                        onChangeText={(email) => { this.setState({ email }) }}
+                                        selectionColor={themeColor}
+                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                    />
+                                </View>
                                 
                                 <View>
                                     <Text style={styles.text}>Age</Text>

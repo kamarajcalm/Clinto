@@ -66,6 +66,7 @@ class LoginScreen extends Component {
         console.log(responseJson, "ress")
         AsyncStorage.setItem('csrf', responseJson.csrf_token)
         AsyncStorage.setItem('login', "true")
+  
         return this.props.navigation.dispatch(
           CommonActions.reset({
             index: 0,
@@ -83,71 +84,7 @@ class LoginScreen extends Component {
         this.setState({ loading: false })
         return this.showSimpleMessage(`${err?.toString()}`, "#dd7030")
       })
-    return
-    let api = `${url}/api/HR/login/?mode=api`
-    //  let sendData= new FormData();
-    //  sendData.append('username',this.state.username)
-    //  sendData.append('password',this.state.password)
-    //  console.log(sendData,"jjj")
-    let sendData = {
-      username: this.state.username,
-      password: this.state.password,
-      notificationId: this.state?.token,
-      bodyType: "formData"
-    }
 
-
-    let login = await HttpsClient.post(api, sendData)
-    console.log(login)
-
-    if (login.type == "success") {
-      AsyncStorage.setItem('csrf', login.data.csrf_token)
-      AsyncStorage.setItem('login', "true")
-      return this.props.navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [
-            {
-              name: 'DefaultScreen',
-
-            },
-
-          ],
-        })
-      )
-      if (login.data.title == "superadmin") {
-        return this.props.navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [
-              {
-                name: 'DefaultScreen',
-
-              },
-
-            ],
-          })
-        )
-      }
-      if (login.data.title == "Doctor") {
-        return this.props.navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [
-              {
-                name: 'DefaultScreen',
-
-              },
-
-            ],
-          })
-        )
-      }
-    }
-    else {
-      this.setState({ loading: false })
-      return this.showSimpleMessage(`${login?.error?.toString() || login.data.message}`, "#dd7030")
-    }
 
 
   }

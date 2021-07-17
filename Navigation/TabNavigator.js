@@ -31,7 +31,7 @@ class TabNavigator extends Component {
         // this.props.selectTheme(theme)
     }
     componentDidMount() {
-        console.log(this.props.user.profile.occupation,"hjhggjh")
+       
         this.getTheme()
     }
     getTabBarVisibility = (route) => {
@@ -183,7 +183,7 @@ class TabNavigator extends Component {
                                       {/* validating inventory and search  */}
 
 
-                {this.props.user.profile.occupation =="Customer" ?<Tab.Screen name="Search" component={DoctorsStack}
+                {this.props?.user.profile?.occupation =="Customer" ?<Tab.Screen name="Search" component={DoctorsStack}
                         options={({ route }) => ({
 
                             tabBarVisible: this.getTabBarVisibility3(route),

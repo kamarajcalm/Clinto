@@ -40,3 +40,15 @@ export const setShowLottie = (value) => {
         payload: value
     }
 }
+export const setNoticationRecieved = (value) => {
+    return {
+        type: 'NOTIFICATION_SELECTED',
+        payload: value
+    }
+}
+export const setFirstTime = (value) => {
+    return {
+        type: 'FIRST_SELECTED',
+        payload: value
+    }
+}
