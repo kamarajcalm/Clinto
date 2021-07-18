@@ -37,7 +37,7 @@ class ProfileEdit extends Component {
             image:null,
             updating:false,
             email: this.props.user.email,
-            healthIssues: [this.props.user.profile.health_issues]
+            healthIssues: this.props.user.profile.health_issues
         };
     }
     showSimpleMessage(content, color, type = "info", props = {}) {
