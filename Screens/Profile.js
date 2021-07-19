@@ -353,6 +353,7 @@ validateExpiry =()=>{
                       <Text style={[styles.text, { color: "#000", fontWeight: "bold", fontSize: 16 }]}>Select Clinic</Text>
                     </View>
                     <FlatList
+                      showsVerticalScrollIndicator={false}
                       data={this.state.clinics.workingclinics}
                       keyExtractor={(item, index) => index.toString()}
                       renderItem={({ item, index }) => {

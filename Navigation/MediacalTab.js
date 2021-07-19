@@ -47,6 +47,9 @@ class MediacalTab extends Component {
         if (routeName == "BillPrescription") {
             return false
         }
+        if (routeName == "SearchPateint") {
+            return false
+        }
 
         return true
     }

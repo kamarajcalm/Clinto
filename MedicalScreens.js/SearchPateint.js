@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, TextInput, FlatList, Image, SafeAreaView } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, TextInput, FlatList, Image, SafeAreaView, ActivityIndicator } from 'react-native';
 import { Ionicons, Entypo, AntDesign } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
@@ -7,25 +7,29 @@ import settings from '../AppSettings';
 import medicine from '../components/Medicine';
 import Medicine from '../components/Medicine';
 import HttpsClient from '../api/HttpsClient';
+import Modal from 'react-native-modal';
 const { height, width } = Dimensions.get("window");
 const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
 const url = settings.url;
+const screenHeight = Dimensions.get("screen").height
 class SearchPateint extends Component {
     constructor(props) {
         super(props);
         this.state = {
-           pateints:[]
+           pateints:[],
+           loading:false
         };
     }
     SearchPateint = async(query)=>{
         if(query.length>9){
+            this.setState({ loading:true})
             let api = `${url}/api/profile/userss/?search=${query}&role=Customer`
 
             const data = await HttpsClient.get(api)
             console.log(api)
             if (data.type == "success") {
-                this.setState({ pateints: data.data })
+                this.setState({ pateints: data.data,loading:false })
             }
         }
      
@@ -45,7 +49,8 @@ class SearchPateint extends Component {
                             </TouchableOpacity>
                             <View style={{ flex: 0.7, alignItems: "center", justifyContent: "center" }}>
                                 <TextInput
-                                
+                                    maxLength={10}
+                                     keyboardType={"numeric"}
                                     autoFocus={true}
                                     selectionColor={themeColor}
                                     style={{ height: "45%", backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10, width: "100%" }}
@@ -81,7 +86,14 @@ class SearchPateint extends Component {
                                )
                            }}
                         />
-                
+                        <Modal
+                         isVisible ={this.state.loading}
+                         deviceHeight = {screenHeight}
+                        >
+                            <View style ={{flex:1,alignItems:"center",justifyContent:"center",}}>
+                                   <ActivityIndicator size ={"large"} color={themeColor}/>
+                            </View>
+                        </Modal>
                 </SafeAreaView>
             </>
         );

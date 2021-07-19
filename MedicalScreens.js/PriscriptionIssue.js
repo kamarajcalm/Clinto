@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView, Appearance,Animated,TextInput,RefreshControl,ActivityIndicator} from 'react-native';
+import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView, Appearance,Animated,TextInput,RefreshControl,ActivityIndicator,Keyboard} from 'react-native';
 import settings from '../AppSettings';
 import { connect } from 'react-redux';
 import { selectTheme,selectMedical} from '../actions';
@@ -35,7 +35,8 @@ class PriscriptionIssue extends Component {
             showCalender:false,
             isFetching:false,
             offset:0,
-            next:true
+            next:true,
+            showTab:true
         };
         this.scrollY = new Animated.Value(0)
         this.translateYNumber = React.createRef()
@@ -119,18 +120,31 @@ class PriscriptionIssue extends Component {
        
     }
 
+    componentWillUnmount() {
+        Keyboard.removeListener('keyboardDidShow', this._keyboardDidShow);
+        Keyboard.removeListener('keyboardDidHide', this._keyboardDidHide);
+    }
+    _keyboardDidShow = () => {
+        this.setState({ showTab: false })
+    };
+
+    _keyboardDidHide = () => {
+        this.setState({ showTab: true })
+    };
     componentDidMount() {
        
               this.getClinic();
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
-            
-            this.getPriscriptions(this.props?.medical?.clinicpk)
-
+            this.setState({ isFetching: true, priscriptions: [], offset: 0 }, () => {
+                this.getPriscriptions(this?.props?.medical?.clinicpk)
+            })
+            Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+            Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
         });
     }
     onRefresh = () => {
         this.setState({ isFetching: true, priscriptions:[],offset:0},()=>{
-            this.getPriscriptions(this.props.medical.clinicpk)
+            this.getPriscriptions(this?.props?.medical?.clinicpk)
         })
      
       
@@ -299,7 +313,7 @@ class PriscriptionIssue extends Component {
                             data={this.state.priscriptions}
                             keyExtractor={(item, index) => index.toString()}
                             scrollEventThrottle={16}
-                            contentContainerStyle={{ paddingTop: headerHeight - 20, paddingBottom: 90 }}
+                            contentContainerStyle={{ paddingTop: headerHeight - 20, paddingBottom: 150 }}
                             onScroll={handleScroll}
                             onMomentumScrollEnd={handleSnap}
                             onEndReached={() => { this.handleEndReached() }}
@@ -337,7 +351,7 @@ class PriscriptionIssue extends Component {
                                 )
                             }}
                         />
-                        <View style={{
+                       {this.state.showTab&& <View style={{
                             position: "absolute",
                             bottom: 100,
                             left: 20,
@@ -352,7 +366,7 @@ class PriscriptionIssue extends Component {
                             >
                                 <AntDesign name="pluscircle" size={40} color={themeColor} />
                             </TouchableOpacity>
-                        </View>
+                        </View>}
                     </View>
                 
                 </SafeAreaView>

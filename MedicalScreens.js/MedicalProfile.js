@@ -173,6 +173,7 @@ class MedicalProfile extends Component {
                                         </View>
 
                                         <FlatList
+                                            showsVerticalScrollIndicator= {false}
                                             data={this.state.medicals}
                                             keyExtractor={(item, index) => index.toString()}
                                             renderItem={({ item, index }) => {
@@ -253,6 +254,7 @@ class MedicalProfile extends Component {
                                     <Text style={[styles.text, { color: "#000", fontSize: 18 }]}>Select Clinic</Text>
                                 </View>
                                 <FlatList
+                                     showsVerticalScrollIndicator ={false}
                                     data={this.state.medicals}
                                     keyExtractor={(item, index) => index.toString()}
                                     renderItem={({ item, index }) => {

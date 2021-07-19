@@ -20,17 +20,22 @@ class ListPriscriptions extends Component {
             pateints: [],
             priscriptions:[],
             item: this.props.route.params.item,
-            loading: true
+            loading: true,
+            offset:0,
+            next:true
         };
     }
     getPateintPrescription = async () => {
         console.log(this.state.item,'kkk')
-        let api = `${url}/api/prescription/prescriptions/?forUser=${this.state.item.user.id}`
+        let api = `${url}/api/prescription/prescriptions/?forUser=${this.state.item.user.id}&limit=8&offset=${this.state.offset}`
         console.log(api)
         let data = await HttpsClient.get(api)
     
         if (data.type == "success") {
-            this.setState({ priscriptions: data.data, loading:false})
+            this.setState({ priscriptions: this.state.priscriptions.concat(data.data.results), loading:false})
+            if(data.data.next==null){
+                this.setState({next:false})
+            }
         }
     }
     showDifferentPriscription = (item, index) => {
@@ -42,7 +47,7 @@ class ListPriscriptions extends Component {
 
             return (
                 <TouchableOpacity style={[styles.card, { flexDirection: "row", borderRadius: 5 }]}
-                    onPress={() => { this.props.navigation.navigate('PrescriptionView', { item, }) }}
+                    onPress={() => { this.props.navigation.navigate('PrescriptionView', {item,}) }}
                 >
                     <View style={{ flex: 0.3, alignItems: 'center', justifyContent: "center" }}>
                         <Image
@@ -64,7 +69,7 @@ class ListPriscriptions extends Component {
 
                         </View>
                         <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
-                            <Text>{moment(item.created).format("h:mm a")}</Text>
+                            <Text style={[styles.text]}> Id : {item.id}</Text>
                         </View>
 
                     </View>
@@ -72,9 +77,26 @@ class ListPriscriptions extends Component {
             )
         
     }
+    renderFooter =()=>{
+        if (this.state.next){
+            return (
+                <ActivityIndicator  size ={"large"} color={themeColor}/>
+            )
+        }
+        else{
+            return null
+        }
+    }
   componentDidMount(){
       this.getPateintPrescription()
   }
+    loadMore =()=>{
+        if(this.state.next){
+            this.setState({offset:this.state.offset+8},()=>{
+                this.getPateintPrescription()
+            })
+        }
+    }
     render() {
         const {item} =this.state
         return (
@@ -101,11 +123,11 @@ class ListPriscriptions extends Component {
                         <View style={{ flex: 0.2 }}>
                         </View>
                     </View>
-                    {
-                        this.state.loading ? <View style={{ flex: 1, alignItems: 'center', justifyContent: "center" }}>
-                            <ActivityIndicator color={themeColor} size="large" />
-                        </View> : <FlatList
-                           
+                    
+                         <FlatList
+                            ListFooterComponent ={this.renderFooter()}
+                            onEndReachedThreshold ={0.1}
+                            onEndReached ={()=>{this.loadMore()}}
                             data={this.state.priscriptions}
                             keyExtractor={(item, index) =>  index.toString() }
                             renderItem={({ item, index }) => {
@@ -120,7 +142,7 @@ class ListPriscriptions extends Component {
 
                             }}
                         />
-                    }
+                    
 
                 </SafeAreaView>
             </>
