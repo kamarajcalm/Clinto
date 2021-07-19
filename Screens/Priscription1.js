@@ -627,7 +627,7 @@ const screenHeight =Dimensions.get('screen').height;
 
         const translateY = scrollYClamped.interpolate({
             inputRange: [0, headerHeight],
-            outputRange: Platform.OS=="android"?[0, -(headerHeight / 2)]:[0, -(headerHeight / 2+statusBarHeight)],
+            outputRange: Platform.OS=="android"?[0, -(headerHeight / 2)]:[0, -(headerHeight / 2+statusBarHeight-30)],
         });
 
 

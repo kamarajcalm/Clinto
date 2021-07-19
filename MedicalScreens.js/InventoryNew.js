@@ -269,7 +269,7 @@ class InventoryNew extends Component {
                 index: 0,
                 routes: [
                     {
-                        name: 'MedicalTab',
+                        name: 'DefaultScreen',
 
                     },
 

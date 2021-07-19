@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView, Appearance,Animated,TextInput,RefreshControl,ActivityIndicator,Keyboard} from 'react-native';
+import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView, Appearance,Animated,TextInput,RefreshControl,ActivityIndicator,Keyboard,Platform} from 'react-native';
 import settings from '../AppSettings';
 import { connect } from 'react-redux';
 import { selectTheme,selectMedical} from '../actions';
@@ -10,6 +10,8 @@ import authAxios from '../api/authAxios';
 import HttpsClient from '../api/HttpsClient';
 import moment from 'moment';
 import Modal from 'react-native-modal';
+import Constants from 'expo-constants'; 
+const {statusBarHeight} =Constants
 const fontFamily = settings.fontFamily;
 let themeColor = settings.themeColor;
 const url = settings.url;
@@ -241,7 +243,7 @@ class PriscriptionIssue extends Component {
 
         const translateY = scrollYClamped.interpolate({
             inputRange: [0, headerHeight],
-            outputRange: [0, -(headerHeight / 2)],
+            outputRange: Platform.OS=="android"?[0, -(headerHeight / 2)]:[0, -(headerHeight / 2+statusBarHeight-30)],
         });
 
 
