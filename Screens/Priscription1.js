@@ -16,7 +16,8 @@ import {
     TextInput,
     BackHandler,
     RefreshControl,
-    Keyboard
+    Keyboard,
+    Platform
 
 } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
@@ -36,13 +37,14 @@ const url =settings.url
 const fontFamily = settings.fontFamily;
 const themeColor =settings.themeColor
 import * as Location from 'expo-location';
-const { height,width } = Dimensions.get("window");
-const screenHeight =Dimensions.get('screen').height;
+
 const { diffClamp } = Animated;
-const headerHeight = height * 0.2;
+
 import { Swipeable } from "react-native-gesture-handler";
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import { LinearGradient } from 'expo-linear-gradient';
+import Constants from 'expo-constants'; 
+const {statusBarHeight} =Constants
 class Priscription extends React.Component {
     constructor(props) {
         const Date1 = new Date()
@@ -301,6 +303,7 @@ hideDatePicker = () => {
         }
     }
     rightSwipe =(progress,dragX,item,index)=>{
+        const { height,width } = Dimensions.get("window");
       
         const scale = dragX.interpolate({
             inputRange:[0,100],
@@ -352,7 +355,7 @@ hideDatePicker = () => {
         }
     }
     showDifferentPriscription = (item, index) => {
-
+        const { height,width } = Dimensions.get("window");
         if (this.state.isDoctor){
           return(
             <Swipeable
@@ -361,7 +364,7 @@ hideDatePicker = () => {
                 ref={ref=>this.swipeRef[index]=ref}
                 renderRightActions={(progress, dragX) => this.rightSwipe(progress, dragX, item, index)}
             >
-                <TouchableOpacity style={[styles.card, { flexDirection: "row",}]}
+                <TouchableOpacity style={[styles.card, { flexDirection: "row",    height: height * 0.1,}]}
                     // onPress={() => { props.navigation.navigate('showCard', { item }) }}
                     onPress={() => { this.props.navigation.navigate('PrescriptionViewDoctor',{item})}}
                 >
@@ -413,7 +416,7 @@ hideDatePicker = () => {
             }
 
             return (
-                <TouchableOpacity style={[styles.card, { flexDirection: "row", borderRadius: 5 }]}
+                <TouchableOpacity style={[styles.card, { flexDirection: "row", borderRadius: 5,    height: height * 0.1, }]}
                     onPress={() => { this.props.navigation.navigate('PrescriptionViewDoctor', { item }) }}
                 >
                     <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
@@ -451,7 +454,7 @@ hideDatePicker = () => {
 
         // if patient
         return (
-            <TouchableOpacity style={[styles.card2, { flexDirection: "row", borderRadius: 5 }]}
+            <TouchableOpacity style={[styles.card2, { flexDirection: "row", borderRadius: 5 ,       height: height * 0.2,}]}
                 onPress={() => { this.props.navigation.navigate('PrescriptionView', { item, }) }}
             >
                 <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
@@ -535,6 +538,8 @@ hideDatePicker = () => {
         }
     }
     renderFilter = () => {
+        const { height,width } = Dimensions.get("window");
+        const headerHeight = height*0.2   
         if (this.state.isDoctor || this.state.isReceptionist) {
             return (
 
@@ -569,7 +574,8 @@ hideDatePicker = () => {
     }
 
   validateHeaders = () => {
-     
+    const { height,width } = Dimensions.get("window");
+    const headerHeight = height*0.2
         return (
             <View>
                 <View style={{ height: headerHeight / 2,flexDirection:"row",}}>
@@ -614,12 +620,14 @@ hideDatePicker = () => {
     getCloser = (value, checkOne, checkTwo) =>
         Math.abs(value - checkOne) < Math.abs(value - checkTwo) ? checkOne : checkTwo;
     render() { 
-       
+        const { height,width } = Dimensions.get("window");
+        const headerHeight = height * 0.2;
+const screenHeight =Dimensions.get('screen').height;
         const scrollYClamped = diffClamp(this.scrollY, 0, headerHeight);
 
         const translateY = scrollYClamped.interpolate({
             inputRange: [0, headerHeight],
-            outputRange: [0, -(headerHeight / 2)],
+            outputRange: Platform.OS=="android"?[0, -(headerHeight / 2)]:[0, -(headerHeight / 2+statusBarHeight)],
         });
 
 
@@ -691,7 +699,7 @@ hideDatePicker = () => {
                             contentContainerStyle={{ paddingTop: headerHeight-20, paddingBottom: 90 }}
                             onScroll={handleScroll}
                             ref={ref=>this.ref=ref}
-                            onMomentumScrollEnd={handleSnap}
+                             
                             onEndReached ={()=>{this.handleEndReached()}}
                             ListFooterComponent={this.renderFooter()}
                             onEndReachedThreshold={0.1}
@@ -783,7 +791,7 @@ const styles = StyleSheet.create({
         elevation: 6
     },
     subHeader: {
-        height: headerHeight / 2,
+     
         width: '100%',
         paddingHorizontal: 10,
     },
@@ -801,15 +809,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1
     },
-    content: {
-        height: height * 2
-    },
     card: {
-    
-     
-       
         backgroundColor: "#fff",
-        height: height * 0.1,
+    
         borderColor:"gray",
         borderBottomWidth:0.5
        
@@ -826,7 +828,7 @@ const styles = StyleSheet.create({
         elevation: 5,
         borderRadius: 10,
         backgroundColor: "#fff",
-        height: height * 0.2,
+     
         marginHorizontal: 10,
         marginVertical: 3
     },

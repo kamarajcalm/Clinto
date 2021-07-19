@@ -248,14 +248,14 @@ class InventoryNew extends Component {
     }
     handleNavigate = async()=>{
     
-        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
         if (this?.props?.clinic?.inventory){
             return this.props.navigation.dispatch(
                 CommonActions.reset({
                     index: 0,
                     routes: [
                         {
-                            name: 'MainTab',
+                            name: 'DefaultScreen',
 
                         },
 
