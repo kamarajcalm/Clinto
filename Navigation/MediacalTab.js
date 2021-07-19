@@ -83,6 +83,7 @@ class MediacalTab extends Component {
         if (routeName == "AddRackItem") {
             return false
         }
+        
         return true
     }
     render() {

@@ -453,7 +453,14 @@ const styles = StyleSheet.create({
     text: {
         fontFamily
     },
-
+    topSafeArea: {
+        flex: 0,
+        backgroundColor: themeColor
+    },
+    bottomSafeArea: {
+        flex: 1,
+        backgroundColor: "#fff"
+    },
 
 })
 const mapStateToProps = (state) => {

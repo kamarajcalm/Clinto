@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, TextInput, SafeAreaView, ActivityIndicator } from 'react-native';
+import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, TextInput, SafeAreaView, ActivityIndicator ,KeyboardAvoidingView} from 'react-native';
 import settings from '../AppSettings';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
@@ -526,6 +526,9 @@ sendMessage =async()=>{
           <>
             <SafeAreaView style={styles.topSafeArea} />
             <SafeAreaView style={styles.bottomSafeArea}>
+               
+
+            <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled  keyboardVerticalOffset={45} >     
       <View style={{flex:1}}>
             {/* HEADERS */}
             <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
@@ -894,6 +897,9 @@ sendMessage =async()=>{
             
               }}
             />
+ 
+
+          
             <View style={{flexDirection:'row',alignItems:"center",justifyContent:"center",minHeight:height*0.07,elevation:5,backgroundColor:"#eee"}}> 
                 <View style={{ backgroundColor: "#fafafa",minHeight: height * 0.05, maxHeight: height * 0.2, borderRadius: 15,flex:1,marginLeft:20,flexDirection:"row",alignItems:"center",justifyContent:"center"}}>
                     <View style={{ flex:0.8 ,alignItems:"center",justifyContent:"center"}}>
@@ -938,6 +944,7 @@ sendMessage =async()=>{
                 
                
             </View>
+ 
           {this.state.selectedType=="image"&&<View style={{position:"absolute",height:height*0.07,bottom:60,backgroundColor:"#fafafa",left:20,width:width*0.2,borderRadius:10}}>
                     <TouchableOpacity style={{alignSelf:"flex-end",marginTop:-15,marginRight:-10}}
                       onPress={()=>{this.setState({selectedFile:null,selectedType:null})}}
@@ -952,6 +959,7 @@ sendMessage =async()=>{
             </View>}
                     {this.renderModal()}
       </View>
+    </KeyboardAvoidingView>
             </SafeAreaView>
         </>
     );

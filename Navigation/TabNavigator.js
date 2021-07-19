@@ -154,6 +154,9 @@ class TabNavigator extends Component {
         if (routeName == "AddRackItem"){
             return false
         }
+        if (routeName == "SoldMedicinesView"){
+            return false
+        }
         return true
     }
   
