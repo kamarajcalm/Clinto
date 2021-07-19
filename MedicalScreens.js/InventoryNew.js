@@ -293,6 +293,7 @@ class InventoryNew extends Component {
         this._unsubscribe()
     }
     toggleSoldMedicines =() =>{
+
         this.props.navigation.navigate('SoldMedicinesView')
     }
     header =()=>{
@@ -729,7 +730,7 @@ class InventoryNew extends Component {
                          )
                      }}
                    />
-                <View style={{position:"absolute",bottom:30,right:20}}>
+                <View style={{position:"absolute",bottom:30,right:40,zIndex:999}}>
                     <View>
                         <Text style={[styles.text, { color: "#000" }]}>Medicines View</Text>
                     </View>

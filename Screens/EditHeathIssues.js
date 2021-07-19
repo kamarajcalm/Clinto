@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView, TextInput, ActivityIndicator ,FlatList} from 'react-native';
+import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView, TextInput, ActivityIndicator ,FlatList,KeyboardAvoidingView} from 'react-native';
 import settings from '../AppSettings';
 import axios from 'axios';
 import Modal from 'react-native-modal';
@@ -115,7 +115,7 @@ class EditHeathIssues extends Component {
             <>
                 <SafeAreaView style={styles.topSafeArea} />
                 <SafeAreaView style={styles.bottomSafeArea}>
-                    <View style={{ flex: 1, }}>
+                    <View style={{ flex: 1, backgroundColor:"#fff"}}>
                         <StatusBar backgroundColor={themeColor} />
                         {/* Headers */}
                         <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, justifyContent: "center", flexDirection: "row" }}>
@@ -132,6 +132,7 @@ class EditHeathIssues extends Component {
 
                             </View>
                         </View>
+                        <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={45}>
                         <View style={{ flex: 1 }}>
                             <FlatList
                                ListFooterComponent ={this.renderFooter()} 
@@ -172,7 +173,7 @@ class EditHeathIssues extends Component {
                             </View>
                         </View>
 
-  
+                        </KeyboardAvoidingView>
                     </View>
 
                 
