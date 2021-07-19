@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView, Appearance,Animated,TextInput,RefreshControl} from 'react-native';
+import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView, Appearance,Animated,TextInput,RefreshControl,ActivityIndicator} from 'react-native';
 import settings from '../AppSettings';
 import { connect } from 'react-redux';
 import { selectTheme,selectMedical} from '../actions';
@@ -34,6 +34,8 @@ class PriscriptionIssue extends Component {
             medicals:[],
             showCalender:false,
             isFetching:false,
+            offset:0,
+            next:true
         };
         this.scrollY = new Animated.Value(0)
         this.translateYNumber = React.createRef()
@@ -67,12 +69,15 @@ class PriscriptionIssue extends Component {
         showMessage(message);
     }
     getPriscriptions =async(pk)=>{
-        let api = `${url}/api/prescription/issued/?clinic=${pk}&date=${moment(this.state.date).format("YYYY-MM-DD")}`
-        console.log(api,"[kjk")
+        let api = `${url}/api/prescription/issued/?clinic=${pk}&date=${moment(this.state.date).format("YYYY-MM-DD")}&limit=10&offset=${this.state.offset}`
+       
         const data = await HttpsClient.get(api)
-        console.log(data)
+        console.log(api)
         if(data.type =="success"){
-            this.setState({ priscriptions:data.data,isFetching:false})
+            this.setState({ priscriptions: this.state.priscriptions.concat(data.data.results),isFetching:false})
+            if(data.data.next==null){
+                this.setState({next:false})
+            }
         }else{
             this.setState({  isFetching: false })
            this.showSimpleMessage("Something Went Wrong", "#dd7030",)
@@ -124,9 +129,18 @@ class PriscriptionIssue extends Component {
         });
     }
     onRefresh = () => {
-        this.setState({ isFetching: true })
-        console.log(this.props.medical)
-        this.getPriscriptions(this.props.medical.clinicpk)
+        this.setState({ isFetching: true, priscriptions:[],offset:0},()=>{
+            this.getPriscriptions(this.props.medical.clinicpk)
+        })
+     
+      
+    }
+    handleEndReached =()=>{
+         if(this.state.next){
+               this.setState({offset:this.state.offset+10},()=>{
+                   this.getPriscriptions(this.props.medical.clinicpk)
+               })
+         }
     }
     componentWillUnmount(){
         this._unsubscribe();
@@ -298,7 +312,7 @@ class PriscriptionIssue extends Component {
                                     >
                                         <View style={{ flex: 0.3, alignItems: 'center', justifyContent: "center" }}>
                                             <Image
-                                                source={{ uri: "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" }}
+                                                source={{ uri: `${url}${item.patientdetails.dp}`||"https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" }}
                                                 style={{ height: 60, width: 60, borderRadius: 30 }}
                                             />
                                         </View>

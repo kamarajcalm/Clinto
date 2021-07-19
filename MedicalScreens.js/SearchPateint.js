@@ -23,6 +23,7 @@ class SearchPateint extends Component {
             let api = `${url}/api/profile/userss/?search=${query}&role=Customer`
 
             const data = await HttpsClient.get(api)
+            console.log(api)
             if (data.type == "success") {
                 this.setState({ pateints: data.data })
             }
@@ -64,7 +65,7 @@ class SearchPateint extends Component {
                                    >
                                        <View style={{ flex: 0.3, alignItems: 'center', justifyContent: "center" }}>
                                            <Image
-                                               source={{ uri: "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" }}
+                                               source={{ uri: item.displayPicture||"https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" }}
                                                style={{ height: 60, width: 60, borderRadius: 30 }}
                                            />
                                        </View>

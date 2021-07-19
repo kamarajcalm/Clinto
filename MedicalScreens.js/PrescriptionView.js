@@ -489,7 +489,7 @@ class PrescriptionView extends Component {
                     </View>
                 </View>
 
-                <View style={{ marginHorizontal: 20, flexDirection: "row", marginTop: 10, alignItems: "center", justifyContent: "space-around" }}>
+                {/* <View style={{ marginHorizontal: 20, flexDirection: "row", marginTop: 10, alignItems: "center", justifyContent: "space-around" }}>
                     <TouchableOpacity
                         onPress={() => { this.setState({ selected: "Prescribed" }) }}
                         style={{ height: height * 0.04, width: width * 0.4, backgroundColor: this.state.selected == "Prescribed" ? themeColor : "gray", alignItems: "center", justifyContent: "center", borderRadius: 5 }}
@@ -502,7 +502,7 @@ class PrescriptionView extends Component {
                     >
                         <Text style={[styles.text, { color: "#fff" }]}>Medicines Given</Text>
                     </TouchableOpacity>
-                </View>
+                </View> */}
             </View>
         )
     }

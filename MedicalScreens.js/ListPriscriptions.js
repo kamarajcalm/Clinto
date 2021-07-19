@@ -90,7 +90,7 @@ class ListPriscriptions extends Component {
                         <View style={{ flex: 0.5, alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
 
                             <Image
-                                source={{ uri: "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" }}
+                                source={{ uri:item.displayPicture ||"https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" }}
                                 style={{ height: 60, width: 60, borderRadius: 30, }}
 
                             />

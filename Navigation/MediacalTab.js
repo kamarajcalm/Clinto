@@ -44,7 +44,10 @@ class MediacalTab extends Component {
         if (routeName == "ListPriscriptions") {
             return false
         }
-    
+        if (routeName == "BillPrescription") {
+            return false
+        }
+
         return true
     }
     getTabBarVisibility8 = (route) => {

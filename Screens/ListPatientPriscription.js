@@ -109,6 +109,7 @@ componentDidMount (){
         if (this.state.item.displayPicture){
             dp = this.state.item.displayPicture
         }
+        console.warn(this.state.item.displayPicture)
         return (
             <>
                 <SafeAreaView style={styles.topSafeArea} />

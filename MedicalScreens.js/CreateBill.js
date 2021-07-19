@@ -17,8 +17,8 @@ class CreateBill extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            customerNo:"8973591775",
-            customerName:"kamaraj",
+            customerNo:"",
+            customerName:"",
             Amount:"0",
             Discount:"0",
             show:false,
