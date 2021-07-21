@@ -31,11 +31,19 @@ class ViewMedicals extends Component {
             this.setState({ receptionList: data.data })
         }
     }
+    getClinicDetails = async()=>{
+        let api = `${url}/api/prescription/clinics/${this.state.item.id}/`
+        const data =await HttpsClient.get(api)
+        if(data.type =="success"){
+            this.setState({item:data.data})
+        }
+    }
     componentDidMount() {
         this.getReceptionList()
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
 
             this.getReceptionList()
+            this.getClinicDetails()
         });
     }
     render() {
@@ -55,10 +63,11 @@ class ViewMedicals extends Component {
                             <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
                                 <Text style={[styles.text, { color: '#fff', fontWeight: 'bold', fontSize: 18 }]}>{this.state.item.companyName}</Text>
                             </View>
-                            <TouchableOpacity style={{ flex: 0.2 }}
-
+                            <TouchableOpacity style={{ flex: 0.2, flexDirection: "row", alignItems: "center", justifyContent: 'center' }}
+                                onPress={() => { this.props.navigation.navigate('EditClinicDetails', { clinic: this.state.item }) }}
                             >
-
+                                <Entypo name="back-in-time" size={24} color="#fff" />
+                                <Text style={[styles.text, { marginLeft: 10, color: "#fff" }]}>Edit </Text>
                             </TouchableOpacity>
                         </View>
 

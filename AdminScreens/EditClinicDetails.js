@@ -225,25 +225,6 @@ class EditClinicDetails extends Component {
                      >
 
                         <View style={{ alignItems: 'center', justifyContent: "center"}}>
-                            <View style={{ alignItems: "center", justifyContent: "center", marginTop: 10, flexDirection: "row", marginLeft: 10 }}>
-                                <Image
-                                    source={{ uri: this.state?.image?.uri|| dp || "https://img.icons8.com/cotton/2x/clinic.png" }}
-                                    style={{ height: 60, width: 60, borderRadius: 30, borderColor: "gray", borderWidth: 1, resizeMode: "cover" }}
-                                />
-                                <TouchableOpacity style={{}}
-                                    onPress={() => { this.setState({ openImageModal: true, }) }}
-                                >
-                                    <Entypo name="edit" size={20} color={themeColor} />
-                                </TouchableOpacity>
-                            
-                                
-                            </View>
-                           
-                             <View style={{alignItems:'center',justifyContent:"center",marginTop:10}}>
-                                <Text style={[styles.text,{color:"#000"}]}>DisplayPicture</Text>
-                             </View>
-                           
-                        
                          </View>
                         <View style={{marginTop:20}}>
                             <Text style={styles.text}>Clinic Name</Text>

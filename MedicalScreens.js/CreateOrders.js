@@ -377,6 +377,7 @@ class CreateOrders extends Component {
       this.setState({ medicines:duplicate})
     }
     createOrder = async()=>{
+        this.setState({ creating: true })
         if (this.state.contactName==""){
             this.setState({ creating: false })
             return this.showSimpleMessage("Please fill contactName", "#dd7030",)

@@ -207,7 +207,7 @@ class ViewOrders extends Component {
                                     this.calculateQuantity()
                                 })
                             }}
-                            style={{ height: height * 0.05, width: width * 0.5, backgroundColor: "#fff", borderRadius: 10, paddingLeft: 10, marginTop: 5 }}
+                            style={{ height: height * 0.1, width: width * 0.5, backgroundColor: "#fff", borderRadius: 10, paddingLeft: 10, marginTop: 5 }}
                             selectionColor={themeColor}
                         />
 
@@ -226,7 +226,7 @@ class ViewOrders extends Component {
                                     this.calculateQuantity()
                                 })
                             }}
-                            style={{ height: height * 0.05, width: width * 0.5, backgroundColor: "#fff", borderRadius: 10, paddingLeft: 10, marginTop: 5 }}
+                            style={{ height: height * 0.1, width: width * 0.5, backgroundColor: "#fff", borderRadius: 10, paddingLeft: 10, marginTop: 5 }}
                             selectionColor={themeColor}
                         />
 
@@ -250,7 +250,7 @@ class ViewOrders extends Component {
                                 this.calculateQuantity()
                             })
                         }}
-                        style={{ height: height * 0.05, width: width * 0.5, backgroundColor: "#fff", borderRadius: 10, paddingLeft: 10, marginTop: 5 }}
+                        style={{ height: height * 0.1, width: width * 0.5, backgroundColor: "#fff", borderRadius: 10, paddingLeft: 10, marginTop: 5 }}
                         selectionColor={themeColor}
                     />
 
@@ -269,7 +269,7 @@ class ViewOrders extends Component {
                                 this.calculateQuantity()
                             })
                         }}
-                        style={{ height: height * 0.05, width: width * 0.5, backgroundColor: "#fff", borderRadius: 10, paddingLeft: 10, marginTop: 5 }}
+                        style={{ height: height * 0.1, width: width * 0.5, backgroundColor: "#fff", borderRadius: 10, paddingLeft: 10, marginTop: 5 }}
                         selectionColor={themeColor}
                     />
 
@@ -288,7 +288,7 @@ class ViewOrders extends Component {
                                 this.calculateQuantity()
                             })
                         }}
-                        style={{ height: height * 0.05, width: width * 0.5, backgroundColor: "#fff", borderRadius: 10, paddingLeft: 10, marginTop: 5 }}
+                        style={{ height: height * 0.1, width: width * 0.5, backgroundColor: "#fff", borderRadius: 10, paddingLeft: 10, marginTop: 5 }}
                         selectionColor={themeColor}
                     />
 
@@ -306,9 +306,11 @@ class ViewOrders extends Component {
                 isVisible={this.state.singledit}
                 onBackdropPress={() => { this.setState({ singledit: false }) }}
             >
-                <View style={{ flex: 1, justifyContent: "center" }}>
-                    <View style={{ height: height * 0.5, backgroundColor: "#eee", borderRadius: 10, }}>
-                        <ScrollView>
+                <View style={{ flex: 1, justifyContent: "center",alignSelf:"center" }}>
+                    <View style={{ height: height * 0.8, backgroundColor: "#eee", borderRadius: 10,width:width*0.7 }}>
+                        <ScrollView
+                          contentContainerStyle={{alignItems:"center",justifyContent:"center"}}
+                        >
                                  <View style={{alignItems:"center",justifyContent:"center",marginVertical:20}}>
                                      <Text style={[styles.text,{color:"#000",fontSize:22}]}>Add Medicines</Text>
                                  </View>
@@ -330,7 +332,7 @@ class ViewOrders extends Component {
                                             this.calculateQuantity()
                                         })
                                     }}
-                                    style={{ height: height * 0.05, width: width * 0.5, backgroundColor: "#fff", borderRadius: 10, paddingLeft: 10, marginTop: 5 }}
+                                    style={{ height: height * 0.1, width: width * 0.5, backgroundColor: "#fff", borderRadius: 10, paddingLeft: 10, marginTop: 5 }}
                                     selectionColor={themeColor}
                                 />
 
@@ -338,7 +340,7 @@ class ViewOrders extends Component {
                             </View>
                             
                             <View style={{ alignItems:"center" ,justifyContent:"center",marginVertical:20}}>
-                                  <TouchableOpacity style={{height:height*0.05,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor}}
+                                  <TouchableOpacity style={{height:height*0.1,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor}}
                                     onPress={()=>{
                                         this.setState({editing:true},()=>{
                                             this.editItem()
@@ -487,7 +489,11 @@ class ViewOrders extends Component {
     renderHeader =()=>{
         const { height, width } = Dimensions.get("window");
         return(
-            <View style={{flexDirection:"row",flex:1}}>
+            <>
+             <View style={{ alignItems: "center", marginVertical: 10 }}>
+                    <Text style={[styles.text, { color: "#000", fontSize: 22,}]}>Medicines</Text>
+                </View>
+            <View style={{flexDirection:"row",flex:1,marginTop:10}}>
                 <View style={{flex:0.05,alignItems:"center",justifyContent:"center"}}>
                     <Text style={[styles.text,{color:"#000"}]}>#</Text>
                 </View>
@@ -519,12 +525,15 @@ class ViewOrders extends Component {
                     
                 </View>
             </View>
+            </>
         )
     }
     renderFooter =()=>{
         const { height, width } = Dimensions.get("window");
         return(
             <>
+               
+            <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around",flexWrap:"wrap",borderColor:"#333",borderBottomWidth:0.5}}>
                 <View style={{ marginTop: 10, marginHorizontal: 10 }}>
                     <Text style={[styles.text, { color: "#000" }]}>Order Details :</Text>
                     <View style={{ marginTop: 5, marginLeft: 10 }}>
@@ -558,26 +567,17 @@ class ViewOrders extends Component {
                     </View>
                 </View>
                 <View style={{ marginTop: 20, marginHorizontal: 10 }}>
-                    <Text style={[styles.text, { color: "#000" }]}>Status</Text>
-                    <View style={{ marginTop: 5, marginLeft: 10, flexDirection: 'row' }}>
-
+                    <View>
+                            <Text style={[styles.text, { color: "#000" }]}>Status</Text>
+                    </View>
+                 
+                    <View style={{ marginTop: 5,}}>
+               
                         <Text style={[styles.text, { color: this.validateColor(this.state.selectedStatus) }]}> {this.state.selectedStatus}</Text>
                     </View>
                 </View>
-                <View style={{width, alignItems: "center", justifyContent: "space-around",flexDirection: 'row' ,paddingVertical:height*0.03}}>
-                    {this.state.item.status != "Received" && <TouchableOpacity
-                        style={{ height: height * 0.1, width: width * 0.3, backgroundColor: themeColor, alignItems: "center", justifyContent: "center", borderRadius: 5 }}
-                        onPress={() => { this.setState({ modal: true, }) }}
-                    >
-                        <Text style={[styles.text], { color: "#fff" }}>Edit</Text>
-                    </TouchableOpacity>}
-                    <TouchableOpacity
-                        style={{ height: height * 0.1, width: width * 0.3, backgroundColor: "red", alignItems: "center", justifyContent: "center", borderRadius: 5 }}
-                        onPress={() => { this.createAlert2() }}
-                    >
-                        <Text style={[styles.text], { color: "#fff" }}>Delete</Text>
-                    </TouchableOpacity>
-                </View>
+         
+            </View>
             </>
         )
     }
@@ -618,15 +618,18 @@ class ViewOrders extends Component {
                         </View>
                     </View>
                     <View style={{flex:1}}>
-                        <View style={{alignItems:"center",marginVertical:10}}>
-                            <Text style={[styles.text,{color:"#000",fontSize:16}]}>Medicines</Text>
-                        </View>
-                 
+                        <ScrollView>
+
+              
+                       
+                             {
+                                 this.renderFooter()
+                             }
                             <FlatList 
                               data= {this.state.item.items}
                               keyExtractor ={(item,index)=>index.toString()}
                               ListHeaderComponent ={this.renderHeader()}
-                              ListFooterComponent ={this.renderFooter()}
+                        
                               renderItem ={({item,index})=>{
                                     return(
                                         <View style={{ flexDirection: "row" ,marginTop:5,flex:1}}>
@@ -680,8 +683,21 @@ class ViewOrders extends Component {
                                     )
                               }}
                             />
-                
-                    
+                            <View style={{ width, alignItems: "center", justifyContent: "space-around", flexDirection: 'row', paddingVertical: height * 0.03 }}>
+                                {this.state.item.status != "Received" && <TouchableOpacity
+                                    style={{ height: height * 0.1, width: width * 0.3, alignItems: "center", justifyContent: "center", borderRadius: 5 }}
+                                    onPress={() => { this.setState({ modal: true, }) }}
+                                >
+                                    <Text style={[styles.text], { color:"green" ,textDecorationLine:"underline",fontSize:22}}>Edit</Text>
+                                </TouchableOpacity>}
+                                <TouchableOpacity
+                                    style={{ height: height * 0.1, width: width * 0.3,  alignItems: "center", justifyContent: "center", borderRadius: 5 }}
+                                    onPress={() => { this.createAlert2() }}
+                                >
+                                    <Text style={[styles.text], { color: "red",textDecorationLine:"underline" ,fontSize:22}}>Delete</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
                     </View>
                 
                     <DateTimePickerModal

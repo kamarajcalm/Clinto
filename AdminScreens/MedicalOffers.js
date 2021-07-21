@@ -13,7 +13,7 @@ const date = new Date()
 import { Linking } from 'react-native';
 import { Feather, Entypo } from '@expo/vector-icons';
 import HttpsClient from '../api/HttpsClient';
-
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 class MedicalOffers extends Component {
     constructor(props) {  
         super(props);
@@ -27,12 +27,33 @@ class MedicalOffers extends Component {
             discount:""
         };
     }
+    showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
 
-    componentDidMount() {
-
+        showMessage(message);
     }
-    save =()=>{
-        
+    componentDidMount() {
+        this.setState({ discount: this.state?.item?.discount_percent.toString()})
+    }
+    save = async()=>{
+        let api = `${url}/api/prescription/clinics/${this.state.item.id}/`
+        let sendData = {
+            discount_percent:this.state.discount
+
+        }
+        let patch =await HttpsClient.patch(api,sendData)
+        if(patch.type =="success"){
+           this.showSimpleMessage("edited successfully","green","success")
+           this.setState({edit:false})
+        }else{
+            this.showSimpleMessage("Try Again", "red", "danger")
+        }
     }
     render() {
         return (
@@ -67,7 +88,9 @@ class MedicalOffers extends Component {
                                 </View>
                                 <View style={{ marginTop: 10, marginLeft: 20}}>
                                    <TextInput 
-                                    value={this.state.discount}
+                                      keyboardType={"numeric"}
+                                      ref ={ref=>this.keyRef=ref}
+                                      value={this.state.discount}
                                       editable={this.state.edit}
                                       style={{height:height*0.05,width:width*0.6,backgroundColor:"#fafafa"}}
                                       selectionColor={themeColor}
@@ -118,7 +141,11 @@ class MedicalOffers extends Component {
                               <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around",marginTop:50}}>
                                    <TouchableOpacity 
                                      style={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:"#333"}}
-                                     onPress={()=>{this.setState({edit:true})}}
+                                     onPress={()=>{
+                                         this.setState({edit:true},()=>{
+                                             this.keyRef.focus()
+                                         })
+                                        }}
                                    >
                                        <Text style={[styles.text,{color:"#fff"}]}>Edit</Text>
                                    </TouchableOpacity>

@@ -4,12 +4,14 @@ import settings from '../AppSettings';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
 const { height, width } = Dimensions.get("window");
-import { Ionicons, AntDesign } from '@expo/vector-icons';
+import { Ionicons, AntDesign, MaterialCommunityIcons} from '@expo/vector-icons';
 import HttpsClient from '../api/HttpsClient';
 const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
 const url =settings.url
-
+const screenHeight =Dimensions.get("screen").height
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+import Modal from 'react-native-modal';
 class Medicals extends Component {
   constructor(props) {
     super(props);
@@ -17,6 +19,17 @@ class Medicals extends Component {
       search:false,
       medicals:[]
     };
+  }
+  showSimpleMessage(content, color, type = "info", props = {}) {
+    const message = {
+      message: content,
+      backgroundColor: color,
+      icon: { icon: "auto", position: "left" },
+      type,
+      ...props,
+    };
+
+    showMessage(message);
   }
   searchMedicals =async(query)=>{
     const api = `${url}/api/prescription/clinics/?storeType=MedicalStore&search=${query}`
@@ -33,6 +46,20 @@ class Medicals extends Component {
 
     if (data.type == "success") {
       this.setState({ medicals: data.data })
+    }
+  }
+  deleteClinic = async () => {
+    const api = `${url}/api/prescription/clinics/${this.state.selectedClinic.id}/`
+    let delette = await HttpsClient.delete(api)
+    if (delette.type == "success") {
+      this.showSimpleMessage("deleted SuccessFully","green","success")
+      let duplicate = this.state.medicals
+      duplicate.splice(this.state.selectedClinicIndex, 1)
+      this.setState({ medicals: duplicate, showModal: false })
+    } else {
+      this.showSimpleMessage("Try again", "red", "danger")
+      this.setState({ showModal: false })
+      SimpleToast.show("Try again")
     }
   }
   componentDidMount() {
@@ -101,7 +128,7 @@ class Medicals extends Component {
                         style={{ height: 60, width: 60, borderRadius: 30, }}
                       />
                     </View>
-                    <View style={{ flex: 0.7, }}>
+                    <View style={{ flex: 0.5, }}>
                       <View style={{ flex: 0.4, justifyContent: "center" }}>
                         <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>{item.companyName}</Text>
                       </View>
@@ -109,6 +136,12 @@ class Medicals extends Component {
                         <Text style={[styles.text]}>{item.city}</Text>
                       </View>
                     </View>
+                    <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}
+                      onPress={() => { this.setState({ selectedClinic: item, showModal: true, selectedClinicIndex: index }) }}
+
+                    >
+                      <MaterialCommunityIcons name="delete-empty" size={24} color="black" />
+                    </TouchableOpacity>
                   </TouchableOpacity>
                 )
               }}
@@ -131,6 +164,34 @@ class Medicals extends Component {
               </TouchableOpacity>
             </View>
           </View>
+          <Modal
+            statusBarTranslucent={true}
+            deviceHeight={screenHeight}
+            animationIn="slideInUp"
+            animationOut="slideOutDown"
+            isVisible={this.state.showModal}
+            onBackdropPress={() => { this.setState({ showModal: false }) }}
+          >
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+              <View style={{ height: height * 0.3, width: width * 0.9, backgroundColor: "#fff", borderRadius: 20, alignItems: "center", justifyContent: "space-around" }}>
+                <View>
+                  <Text style={[styles.text, { fontWeight: "bold", color: themeColor, fontSize: 20 }]}>Are you want to Delete?</Text>
+                </View>
+                <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "space-around", width, }}>
+                  <TouchableOpacity style={{ backgroundColor: themeColor, height: height * 0.05, width: width * 0.2, alignItems: "center", justifyContent: 'center', borderRadius: 10 }}
+                    onPress={() => { this.deleteClinic() }}
+                  >
+                    <Text style={[styles.text, { color: "#fff" }]}>Yes</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={{ backgroundColor: themeColor, height: height * 0.05, width: width * 0.2, alignItems: "center", justifyContent: "center", borderRadius: 10 }}
+                    onPress={() => { this.setState({ showModal: false }) }}
+                  >
+                    <Text style={[styles.text, { color: "#fff" }]}>No</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
         </SafeAreaView>
       </>
     );

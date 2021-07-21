@@ -110,8 +110,7 @@ const url = settings.url;
     //   console.log(notification,"ppppp");
     // });
     Notifications.addNotificationResponseReceivedListener(response => {
-
-
+         console.log(response.notification.request.content)
       this.props.navigation.navigate('PrescriptionViewOuter', { pk: 294 })
 
     });

@@ -125,7 +125,8 @@ class AddRackItem extends Component {
             this.setState({ modal: false })
             this.setState({ creating: false })
             this.showSimpleMessage("Added SuccessFully", "#00A300", "success")
-        
+            await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+          return  this.props.navigation.goBack()
         } else {
             this.setState({ creating: false })
             this.showSimpleMessage("Try again", "#B22222", "danger")
@@ -152,7 +153,7 @@ class AddRackItem extends Component {
             return (
                 <>
                     <View style={{ margin: 20 }}>
-                        <Text style={[styles.text, { color: '#000' }]}>No of Strips</Text>
+                        <Text style={[styles.text, { color: '#000' }]}>No of Strips per box</Text>
                         <TextInput
                             keyboardType={"numeric"}
                             style={{ width: width * 0.8, height: height * 0.05, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 10 }}
@@ -162,7 +163,7 @@ class AddRackItem extends Component {
                         />
                     </View>
                     <View style={{ margin: 20 }}>
-                        <Text style={[styles.text, { color: '#000' }]}>No of Medicines </Text>
+                        <Text style={[styles.text, { color: '#000' }]}>No of {this.state.type == "Tablet" ? "Tablets" :"Capsules"} Per Strip </Text>
                         <TextInput
                             keyboardType={"numeric"}
                             style={{ width: width * 0.8, height: height * 0.05, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 10 }}
@@ -271,7 +272,7 @@ class AddRackItem extends Component {
 
                                 </View>
                                 <View style={{ margin: 20 }}>
-                                    <Text style={[styles.text, { color: '#000' }]}>Selling Price</Text>
+                                    <Text style={[styles.text, { color: '#000' }]}>Selling Price per Piece</Text>
                                     <TextInput
                                         keyboardType={"numeric"}
                                         style={{ width: width * 0.8, height: height * 0.05, backgroundColor: "#fafafafa", borderRadius: 5, marginTop: 10 }}
