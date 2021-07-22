@@ -188,6 +188,7 @@ class ViewItem extends Component {
        return this.setState({ boxes: boxes.toString(), NoofMedicines: medicines.toString(), converted: true })
     }
     showDiffrentFields =()=>{
+        const { height, width } = Dimensions.get("window");
         if (this.props.route.params.item.type == "Tablet" || this.props.route.params.item.type =="Capsules"){
             return (
                 <>

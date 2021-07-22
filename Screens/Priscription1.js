@@ -598,7 +598,7 @@ hideDatePicker = () => {
                         <TextInput
                             selectionColor={themeColor}
                             style={{ height: "99%", flex: 0.8, backgroundColor: "#eee", paddingLeft: 10, }}
-                            placeholder={`search ${this.props?.clinic?.name}`}
+                            placeholder={`search ${this.props?.clinic?.name ||"prescription"}`}
                             onChangeText={(text) => { this.searchPriscriptions(text) }}
                         />
                     </View>

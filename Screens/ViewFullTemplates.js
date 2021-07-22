@@ -21,19 +21,19 @@ const screenHeight= Dimensions.get("screen").height
 const url = settings.url;
 const ages = [
     {
-        label: "0to3", value:"0to3"
+        label: "0-3", value:"0-3"
     },
     {
-        label: "4to18", value: "4to18"
+        label: "4-18", value: "4-18"
     },
     {
-        label: "18to35", value: "18to35"
+        label: "18-35", value: "18-35"
     },
     {
-        label: "35to60", value: "35to60"
+        label: "35-60", value: "35-60"
     },
     {
-        label: "60to120", value: "60to120"
+        label: "60-120", value: "60-120"
     },
 ]
 class ViewFullTemplates extends Component {
@@ -260,7 +260,7 @@ class ViewFullTemplates extends Component {
         return (
             <>
             <View style={{ marginVertical: 20, alignItems: "center" }}>
-                <Text style={[styles.text, { color: "#000", fontSize: 22, textDecorationLine: "underline" }]}>Priscribed :</Text>
+                <Text style={[styles.text, { color: "#000", fontSize: 22, textDecorationLine: "underline" }]}>Prescribed :</Text>
             </View>
         {
             this.state.edit &&

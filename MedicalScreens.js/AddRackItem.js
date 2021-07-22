@@ -229,20 +229,24 @@ class AddRackItem extends Component {
                                         value={this.state.MedicineName}
                                         onChangeText={(MedicineName) => { this.searchMedicine(MedicineName) }}
                                     />
-                                    {this.state.medicines.length > 0 && <View style={{ position: "relative", width: width * 0.8, height: height * 0.2, alignItems: 'center', justifyContent: 'space-around', top: 5, backgroundColor: "#fff", borderRadius: 10 }}>
+                                    {this.state.medicines.length > 0 && <View style={{
+                                        width: width * 0.9, backgroundColor: '#fafafa', borderColor: "#333", borderTopWidth: 0.5
+
+                                    }}>
                                         {
                                             this.state.medicines.map((item, index) => {
                                                 return (
                                                     <TouchableOpacity
+                                               
                                                         onPress={() => {
                                                             this.setState({ MedicineName: item.title, type: item.type }, () => {
                                                                 this.setState({ medicines: [] })
                                                             })
                                                         }}
                                                         key={index}
-                                                        style={{ padding: 5, backgroundColor: "blue", marginVertical: 5, borderRadius: 5 }}
+                                                        style={{ padding: 15, justifyContent: "center", width: width * 0.9, borderColor: "#333", borderBottomWidth: 0.3, height: 35 }}
                                                     >
-                                                        <Text style={[styles.text, { color: "#fff" }]}>{item.title}</Text>
+                                                        <Text style={[styles.text, { color: themeColor }]}>{item.title}</Text>
                                                     </TouchableOpacity>
                                                 )
                                             })

@@ -453,16 +453,20 @@ class PrescriptionViewDoctor extends Component {
                 <SafeAreaView style={styles.topSafeArea} />
                 <SafeAreaView style={styles.bottomSafeArea}>
                     <StatusBar backgroundColor={themeColor} />
-                    <View style={{ height: height * 0.1, backgroundColor: themeColor, flexDirection: "row" }}>
+                    <View style={{ height: height * 0.12, backgroundColor: themeColor, flexDirection: "row" }}>
                         <View style={{ flex: 0.7 }}>
                             <View style={{ flex: 0.5, justifyContent: "center", marginLeft: 20 }}>
-                                <Text style={[styles.text, { color: "#ffff", fontWeight: 'bold', fontSize: 20 }]}>{this.state?.item?.clinicname?.name?.toUpperCase()}</Text>
-
+                                <Text 
+                                 numberOfLines={2}
+                                style={[styles.text, { color: "#ffff", fontWeight: 'bold', fontSize: height*0.03 }]}
+                                
+                                >{this.state?.item?.clinicname?.name?.toUpperCase()}</Text>
+  
                             </View>
                             <View style={{ flex: 0.5, marginLeft: 20 }}>
-                                <Text style={[styles.text, { color: "#fff" }]}>{this.state?.item?.clinicname?.address}</Text>
+                                <Text style={[styles.text, { color: "#fff",fontSize:height*0.02 }]}>{this.state?.item?.clinicname?.address}</Text>
                                 <View style={{}}>
-                                    <Text style={[styles.text, { color: "#fff" }]}>{this.state?.item?.clinicname?.city}-{this.state?.item?.clinicname?.pincode}</Text>
+                                    <Text style={[styles.text, { color: "#fff", fontSize: height * 0.02 }]}>{this.state?.item?.clinicname?.city}-{this.state?.item?.clinicname?.pincode}</Text>
                                 </View>
                             </View>
 
@@ -484,8 +488,8 @@ class PrescriptionViewDoctor extends Component {
                     >
 
 
-                        <View style={{ flex: 1 }}>
-                            <View style={{ flex: 0.1, borderColor: "#eee", borderBottomWidth: 0.5 }}>
+                        <View style={{ flex: 1 ,}}>
+                            <View style={{ flex: 0.15, borderColor: "#eee", borderBottomWidth: 0.5 ,}}>
                                 <View style={{ marginHorizontal: 20, flexDirection: "row", alignItems: 'center', justifyContent: 'space-around', marginVertical: 15 }}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <View>
@@ -524,12 +528,12 @@ class PrescriptionViewDoctor extends Component {
                              
                             </View>
 
-                            <View style={{ flex: 0.15 }}>
+                            <View style={{ flex: 0.2 }}>
                                 {
                                     this.renderHeader()
                                 }
                             </View>
-                            <View style={{ flex: 0.58, }}>
+                            <View style={{ flex: 0.48, }}>
                                 
                                {this.state.selected=="Prescribed"?<FlatList
                                     data={this.state.prescribed}

@@ -275,7 +275,7 @@ class AddItem extends Component {
                 >
                     <ScrollView 
                       contentContainerStyle ={{paddingBottom:40}}
-                     showsVerticalScrollIndicator ={false}
+                      showsVerticalScrollIndicator ={false}
                     >
                         <View style={{flexDirection:"row"}}>
                             <Text>Enter Medicine or </Text>

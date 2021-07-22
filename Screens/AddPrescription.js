@@ -293,7 +293,7 @@ class AddPrescription extends Component {
             sex:this.state.selectedSex,
             next_visit:this.state.nextVisit,
             address:this.state.Address,
-            new_disease:this.state.Disease,
+            diagonsis:this.state.Disease,
             type:"mobile"
         }
     

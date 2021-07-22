@@ -468,7 +468,7 @@ sendMessage =async()=>{
         }
         if (this.state.message.length > 0 || this.state.selectedFile){
             return(
-                <TouchableOpacity style={{ alignItems: "center", justifyContent: "center", height: height * 0.07, backgroundColor: themeColor, borderRadius: 30, height: height * 0.05, width: 40, margin: 10 }}
+                <TouchableOpacity style={{ alignItems: "center", justifyContent: "center", height: height * 0.07, backgroundColor: themeColor, borderRadius: 20, height:40, width: 40, margin: 10 }}
                     onPress={() => { this.sendMessage() }}
                 >
                     <Feather name="send" size={24} color="#fff" />
@@ -476,7 +476,7 @@ sendMessage =async()=>{
             )
         }
         return(
-            <TouchableOpacity style={{ alignItems: "center", justifyContent: "center", height: height * 0.07, backgroundColor: themeColor, borderRadius: 30, height: height * 0.05, width: 40, margin: 10 }}
+            <TouchableOpacity style={{ alignItems: "center", justifyContent: "center", height: height * 0.07, backgroundColor: themeColor, borderRadius: 20, height: 40, width: 40, margin: 10 }}
                 onPress={() => { this.showMessage() }}
                 onPressOut={() => { this.stopRecording() }}
                 onLongPress={() => { this.startRecording() }}
@@ -509,7 +509,7 @@ sendMessage =async()=>{
       }
       if (this.props.user.profile.occupation == "Doctor") {
           console.log(this.state.item,"opop")
-          chatTitle = this.state.item?.customertitle
+          chatTitle = this.state.item?.doctortitle
       }
       if (this.props.user.profile.occupation == "ClinicRecoptionist") {
           chatTitle = this.state?.item?.customertitle||this.state.item.clinictitle

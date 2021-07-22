@@ -310,7 +310,7 @@ componentWillUnmount(){
            }
            return (
              <TouchableOpacity style={{ height: height * 0.1, backgroundColor: "#fafafa", marginTop: 1, flexDirection: 'row' }}
-               onPress={() => { this.navigate(item, "doctor") }}
+               onPress={() => { this.navigate(item, "clinic") }}
                onLongPress={() => { this.addToDelete(item) }}
              >
                <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
@@ -348,7 +348,7 @@ if(type=="clinic"){
     itemArrange = {
       groupPk: item.threadpk,
       uid: item.uid,
-      customertitle: item.title||"doctor"
+      doctortitle: item.title||"doctor"
     }
   }
 

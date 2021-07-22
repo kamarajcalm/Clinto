@@ -283,7 +283,7 @@ validateExpiry =()=>{
               <View style={{ alignItems: "center", justifyContent: "center", flexDirection: "row", marginLeft: 20 }}>
                 <Image
                   source={{ uri: this.props.user.profile.displayPicture || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" }}
-                  style={{ height: 100, width: 100, borderRadius: 50 }}
+                  style={{ height:height*0.15, width: height*0.15, borderRadius: height*0.07}}
                 />
                 <TouchableOpacity style={{}}
                   onPress={() => { this.props.navigation.navigate('ProfileEdit') }}
@@ -292,10 +292,10 @@ validateExpiry =()=>{
                 </TouchableOpacity>
               </View>
               <View style={{ alignItems: 'center', justifyContent: "center", }}>
-                <Text style={[styles.text, { fontWeight: "bold", fontSize: 18, color: "#000" }]}>{this.props.user.first_name}</Text>
+                <Text style={[styles.text, { fontWeight: "bold", fontSize: height*0.022, color: "#000" }]}>{this.props.user.first_name}</Text>
               </View>
               <View style={{ alignItems: 'center', justifyContent: "center", }}>
-                <Text style={[styles.text, { fontWeight: "bold", fontSize: 18, color: "gray" }]}>{this.props.user.profile.specialization}</Text>
+                <Text style={[styles.text, { fontWeight: "bold", fontSize: height*0.022, color: "gray" }]}>{this.props.user.profile.specialization}</Text>
               </View>
            </View>  
        

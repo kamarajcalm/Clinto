@@ -177,10 +177,10 @@ class PriscriptionIssue extends Component {
         return (
             <View>
                 <View style={{ height: headerHeight / 2, flexDirection: "row", }}>
-                    <View style={{ flex: 0.5, alignItems: "center", justifyContent: 'center' }}>
+                    <View style={{ flex: 0.6, justifyContent: "center" }}>
                         <Text style={{ color: '#fff', fontFamily: "openSans", marginLeft: 20, fontSize: 30, fontWeight: "bold" }}>Prescription</Text>
                     </View>
-                    <View style={{ flex: 0.5, alignItems: "center", justifyContent: 'center' }}>
+                    <View style={{ flex: 0.4, alignItems: "center", justifyContent: 'center' }}>
                         {
                             this.renderFilter()
                         }
@@ -188,14 +188,14 @@ class PriscriptionIssue extends Component {
                 </View>
 
                 <View style={{ marginHorizontal: 20, height: headerHeight / 3, alignItems: 'center', justifyContent: "center", marginBottom: 5 }}>
-                    <View style={{ flexDirection: 'row', borderRadius: 10, backgroundColor: "#eee", width: "100%", height: height * 0.05, }}>
+                    <View style={{ flexDirection: 'row', borderRadius: 10, backgroundColor: "#eee", width: "100%", height: "90%" }}>
                         <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5, flex: 0.1 }}>
                             <EvilIcons name="search" size={24} color="black" />
                         </View>
                         <TextInput
                             selectionColor={themeColor}
-                            style={{ height: "90%", flex: 0.8, backgroundColor: "#eee", paddingLeft: 10, marginTop: 3 }}
-                            placeholder={`search ${this.props?.medical?.name}`}
+                            style={{ height: "99%", flex: 0.8, backgroundColor: "#eee", paddingLeft: 10, }}
+                            placeholder={`search ${this.props?.clinic?.name || "prescription"}`}
                             onChangeText={(text) => { this.searchPriscriptions(text) }}
                         />
                     </View>

@@ -53,7 +53,7 @@ class SearchPateint extends Component {
                                      keyboardType={"numeric"}
                                     autoFocus={true}
                                     selectionColor={themeColor}
-                                    style={{ height: "45%", backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10, width: "100%" }}
+                                    style={{ height:35, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10, width: "100%" }}
                                     placeholder="Enter Phone number"
                                     onChangeText ={(text)=>{this.SearchPateint(text)}}
                                 />
