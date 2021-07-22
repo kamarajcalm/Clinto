@@ -76,6 +76,23 @@ class ViewDoctorProfile extends Component {
                             </View>
                             <View style={{ flexDirection: "row", marginTop: 10, marginLeft: 10 }}>
                                 <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                    <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Qualification : </Text>
+                                </View>
+                             
+                                    {
+                                        this.state.item.qualifications.map((item,index)=>{
+                                                return(
+                                                    <View style={{flexDirection:"row",alignItems:"center",justifyContent:"center"}}>
+                                                        <Text style={[styles.text, { fontSize: 22 }]}>{item},</Text>
+                                                    </View>
+                                              
+                                                )
+                                        })
+                                    }
+                        
+                            </View>
+                            <View style={{ flexDirection: "row", marginTop: 10, marginLeft: 10 }}>
+                                <View style={{ alignItems: "center", justifyContent: "center" }}>
                                     <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Specialization : </Text>
                                 </View>
                                 <View style={{ alignItems: "center", justifyContent: "center" }}>

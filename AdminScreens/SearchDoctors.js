@@ -11,6 +11,7 @@ const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
 const url = settings.url;
 import HttpsClient from '../api/HttpsClient';
+import { LinearGradient } from 'expo-linear-gradient';
 class SearchDoctors extends Component {
     constructor(props) {
         let clinic = props?.route?.params?.addDoctor
@@ -43,6 +44,13 @@ class SearchDoctors extends Component {
         }
        
     }
+    getFirstLetter = (name) => {
+
+        let doctorName = name.split("")
+
+        return doctorName[0].toUpperCase();
+
+    }
     render() {
         return (
               <>
@@ -57,7 +65,7 @@ class SearchDoctors extends Component {
                         <TextInput
                             autoFocus={true}
                             selectionColor={themeColor}
-                            style={{ height: "45%", backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10, width: "100%" }}
+                            style={{ height:35, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10, width: "100%" }}
                             placeholder="search Doctors"
                           onChangeText={(text) => { this.searchDoctor(text) }}
                         />
@@ -80,10 +88,14 @@ class SearchDoctors extends Component {
                                       }}
                                 >
                                     <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
-                                        <Image
-                                            source={{ uri: item.displayPicture || "https://s3-ap-southeast-1.amazonaws.com/practo-fabric/practices/711061/lotus-multi-speciality-health-care-bangalore-5edf8fe3ef253.jpeg" }}
-                                            style={{ height: 60, width: 60, borderRadius: 30, }}
-                                        />
+                                        <LinearGradient
+                                            style={{ height: 50, width: 50, borderRadius: 25, alignItems: "center", justifyContent: "center" }}
+                                            colors={["#333", themeColor, themeColor]}
+                                        >
+                                            <View >
+                                                <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 22 }]}>{this.getFirstLetter(item.name)}</Text>
+                                            </View>
+                                        </LinearGradient>
                                     </View>
                                     <View style={{ flex: 0.7, justifyContent: "center" }}>
                                         <View style={{ flex: 0.4, justifyContent: "center" }}>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView, ScrollView, ActivityIndicator } from 'react-native';
 import settings from '../AppSettings';
 import axios from 'axios';
 import Modal from 'react-native-modal';
@@ -26,21 +26,22 @@ class CreateDoctors extends Component {
         this.state = {
             showModal: false,
             openImageModal: false,
-            Qualification:"mbbs",
-            Name: "kamaraj",
-            Mobile: "7010117133",
-            Age: "22",
-            Specialization: "heart surgeon",
-            Experience: "10",
-            NoOfClinics: "2",
-            Location: "bengaluru",
-            Pan:"w54647866",
-            Address:'4/120 vellacheri',
-            Pincode:"634085",
-            State:"Karnataka",
-            City:"Bengaluru",
-            firstEmergencyContactNo:"9869669867",
-            secondEmergencyContactNo:'9778776767',
+            Qualifications:[],
+            Qualification:"",
+            Name: "",
+            Mobile: "",
+            Age: "",
+            Specialization: "",
+            Experience: "",
+            NoOfClinics: "",
+            Location: "",
+            Pan:"",
+            Address:'',
+            Pincode:"",
+            State:"",
+            City:"",
+            firstEmergencyContactNo:"",
+            secondEmergencyContactNo:'',
             image:null,
             email:""
         };
@@ -57,88 +58,93 @@ class CreateDoctors extends Component {
         showMessage(message);
     }
     createDoctor = async()=>{
+        this.setState({creating:true})
       let api = `${url}/api/profile/createUser/`
 
       if(this.state.Name ==""){
+          this.setState({ creating: false })
           return this.showSimpleMessage("Please fill Name", "#dd7030",)
       }
 
         if (this.state.Mobile == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill Mobile", "#dd7030",)
         }
 
         if (this.state.email == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill email", "#dd7030",)
         }
         if (this.state.Pan == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill Pan", "#dd7030",)
         }
         if (this.state.Age == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill Age", "#dd7030",)
           
         }
-        if (this.state.Qualification == "") {
-            return this.showSimpleMessage("Please fill Qualification", "#dd7030",)
+        if (this.state.Qualifications.length==0){
+            this.setState({ creating: false })
+            return this.showSimpleMessage("Please fill Qualifications", "#dd7030",)
+
         }
         if (this.state.Specialization == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill Specialization", "#dd7030",)
 
         }
         if (this.state.Experience == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill Experience", "#dd7030",)
         }
         if (this.state.Pan == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill Pan", "#dd7030",)
         }
         if (this.state.Address == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill Address", "#dd7030",)
         }
         if (this.state.Pincode == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill Pincode", "#dd7030",)
         }
         if (this.state.State == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill State", "#dd7030",)
            
         }
         if (this.state.City == "") {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please fill City", "#dd7030",)
         }
-        if (this.state.NoOfClinics == "") {
-            return this.showSimpleMessage("Please fill NoOfClinics", "#dd7030",)
-        }
+
       let sendData ={
           name:this.state.Name,
-          displayPicture:this.state.image,
           mobile:this.state.Mobile,
           pan:this.state.Pan,
           address:this.state.Address,
           pincode:this.state.Pincode,
           state:this.state.State,
           city:this.state.City,
-          firstEmergencyContactNo:this.state.firstEmergencyContactNo,
-          secondEmergencyContactNo:this.state.secondEmergencyContactNo,
+        //   firstEmergencyContactNo:this.state.firstEmergencyContactNo,
+        //   secondEmergencyContactNo:this.state.secondEmergencyContactNo,
           specialization:this.state.Specialization,
-          qualification:this.state.Qualification,
-          clinicsHandling:this.state.NoOfClinics,
+          qualifications:this.state.Qualifications,
           occupation:"Doctor",
           email:this.state.email
       }
-      if(this.state.image){
-          sendData.bodyType= "formData"
-      }
-      
       let post = await HttpsClient.post(api,sendData)
       console.log(post,"hhh")
         if (post.type =="success"){
+            this.setState({ creating: false })
             this.showSimpleMessage("created SuccessFully", "#00A300", "success")
-      
-          setTimeout(()=>{
-              this.props.navigation.goBack();
-          },2000)
-         
-      }else{
+           return   this.props.navigation.goBack();
 
-            this.showSimpleMessage("Try again", "#B22222", "danger")
+      }else{
+            this.setState({ creating: false })
+         return   this.showSimpleMessage("Try again", "#B22222", "danger")
       }
     }
     
@@ -230,6 +236,18 @@ class CreateDoctors extends Component {
     componentDidMount() {
        
     }
+    removeQualification =(item,index)=>{
+          let duplicate = this.state.Qualifications
+          duplicate.splice(index,1)
+          this.setState({ duplicate:this.state.Qualifications})
+    }
+    addQualification =()=>{
+        if (this.state.Qualification == "") {
+            return this.showSimpleMessage("Please fill Qualification", "#dd7030",)
+        }
+        this.state.Qualifications.push(this.state.Qualification)
+        this.setState({ Qualifications: this.state.Qualifications, Qualification:""})
+    }
     render() {
         
         return (
@@ -259,26 +277,26 @@ class CreateDoctors extends Component {
                             <ScrollView style={{ margin: 20 }}
                                 showsVerticalScrollIndicator={false}
                             >
-                                <View style={{ height: height * 0.12, alignItems: "center", justifyContent: 'center' }}>
+                                {/* <View style={{ height: height * 0.12, alignItems: "center", justifyContent: 'center' }}>
                                     <Image
                                         source={{ uri:this.state?.image?.uri ||"https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" }}
                                         style={{ height: 60, width: 60, borderRadius: 30 }}
                                     />
 
-                                    <TouchableOpacity style={{ position: "absolute", right: 140 }}
+                                    <TouchableOpacity style={{ position: "absolute", right: width*0.3}}
 
                                         onPress={() => { this.setState({ openImageModal: true, }) }}
                                     >
                                         <Entypo name="edit" size={20} color={themeColor} />
                                     </TouchableOpacity>
-                                </View>
+                                </View> */}
                                 <View >
                                     <Text style={styles.text}>Name</Text>
                                     <TextInput
                                         value={this.state.Name}
                                         onChangeText={(Name) => { this.setState({ Name }) }}
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.7, height:35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
                                 <View >
@@ -288,7 +306,7 @@ class CreateDoctors extends Component {
                                         value={this.state.Mobile}
                                         onChangeText={(Mobile) => { this.setState({ Mobile }) }}
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.7, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
                                 <View >
@@ -298,7 +316,7 @@ class CreateDoctors extends Component {
                                         value={this.state.email}
                                         onChangeText={(email) => { this.setState({ email }) }}
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.7, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
                                 
@@ -309,18 +327,44 @@ class CreateDoctors extends Component {
                                         onChangeText={(Age) => { this.setState({ Age }) }}
                                         keyboardType="numeric"
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.7, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
                                  <View>
                                     <Text style={styles.text}>Qualification</Text>
-                                    <TextInput
-                                    autoCapitalize={"characters"}
-                                        onChangeText={(Qualification) => { this.setState({ Qualification }) }}
-                                        value={this.state.Qualification}
-                                        selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
-                                    />
+                                    {
+                                        this.state.Qualifications.map((item,index)=>{
+                                                return(
+                                                    <View style={{flexDirection:"row",marginTop:10,alignItems:"center",justifyContent:"center"}} key={index}>
+                                                        <View>
+                                                            <Text style={[styles.text, { color: "#000" }]}>{item}</Text>
+                                                        </View>
+                                                  
+                                                         <TouchableOpacity 
+                                                           style={{marginLeft:10}}
+                                                          onPress ={()=>{this.removeQualification(item,index)}}
+                                                         >
+                                                            <Entypo name="circle-with-cross" size={24} color="red" />
+                                                         </TouchableOpacity>
+                                                    </View>
+                                                )
+                                        })
+                                    }
+                                    <View style={{flexDirection:"row",alignItems:"center",justifyContent:"center"}}>
+                                        <TextInput
+                                            autoCapitalize={"characters"}
+                                            onChangeText={(Qualification) => { this.setState({ Qualification }) }}
+                                            value={this.state.Qualification}
+                                            selectionColor={themeColor}
+                                            style={{ width: width * 0.6, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        />
+                                        <TouchableOpacity style={{height:height*0.05,width:width*0.2,backgroundColor:themeColor,alignItems:"center",justifyContent:"center",borderRadius:5}}
+                                         onPress ={()=>{this.addQualification()}}
+                                        >
+                                              <Text style={[styles.text,{color:"#fff"}]}>Add</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                
                                 </View>
                                 <View>
                                     <Text style={styles.text}>Specialization</Text>
@@ -328,7 +372,7 @@ class CreateDoctors extends Component {
                                         onChangeText={(Specialization) => { this.setState({ Specialization }) }}
                                         value={this.state.Specialization}
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.7, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
                                 <View>
@@ -338,7 +382,7 @@ class CreateDoctors extends Component {
                                         value={this.state.Experience}
                                         keyboardType="numeric"
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.7, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
                                 <View>
@@ -348,7 +392,7 @@ class CreateDoctors extends Component {
                                         onChangeText={(Pan) => { this.setState({ Pan }) }}
                                         autoCapitalize="characters"
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.7, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
                                 <View>
@@ -358,7 +402,7 @@ class CreateDoctors extends Component {
                                         onChangeText={(Address) => { this.setState({ Address }) }}
                                         multiline={true}
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.15, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.7, height:height*0.1, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10,textAlignVertical:"top"}}
                                     />
                                 </View>
                                 <View>
@@ -368,7 +412,7 @@ class CreateDoctors extends Component {
                                         onChangeText={(Pincode) => { this.setState({ Pincode }) }}
                                         keyboardType="numeric"
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.7, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
                                 <View>
@@ -377,7 +421,7 @@ class CreateDoctors extends Component {
                                         value={this.state.State}
                                         onChangeText={(State) => { this.setState({ State }) }}
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.7, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
                                 <View>
@@ -386,17 +430,17 @@ class CreateDoctors extends Component {
                                         value={this.state.City}
                                         onChangeText={(City) => { this.setState({ City }) }}
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.7, height:35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
-                                <View>
+                                {/* <View>
                                     <Text style={styles.text}>Emergency Contact 1</Text>
                                     <TextInput
                                         value={this.state.firstEmergencyContactNo}
                                         onChangeText={(firstEmergencyContactNo) => { this.setState({ firstEmergencyContactNo }) }}
                                         keyboardType="numeric"
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.8, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
                                 <View>
@@ -406,16 +450,18 @@ class CreateDoctors extends Component {
                                         onChangeText={(secondEmergencyContactNo) => { this.setState({ secondEmergencyContactNo }) }}
                                         keyboardType="numeric"
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.8, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
-                                </View>
+                                </View> */}
                               
                            
                                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                                     <TouchableOpacity style={{ width: width * 0.4, height: height * 0.05, borderRadius: 10, alignItems: 'center', justifyContent: "center", backgroundColor: themeColor }}
                                       onPress={()=>{this.createDoctor()}}
                                     >
-                                        <Text style={[styles.text, { color: "#fff" }]}>Create</Text>
+                                        {this.state.creating?
+                                        <ActivityIndicator color={"#fff"} size={"large"}/>:
+                                        <Text style={[styles.text, { color: "#fff" }]}>Create</Text>}
                                     </TouchableOpacity>
                                 </View>
 

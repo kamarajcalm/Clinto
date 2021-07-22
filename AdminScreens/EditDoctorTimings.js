@@ -37,46 +37,25 @@ class EditDoctorTimings extends Component {
             doctor: null,
             clinic,
             Sun: {
-                day: "Sun",
-                index: 0,
-                starttime: "6:00 am",
-                endtime: "7:00 pm"
+          
             },
             Mon: {
-                day: "Mon",
-                index: 1,
-                starttime: "6:00 am",
-                endtime: "7:00 pm"
+         
             },
             Tue: {
-                day: "Tue",
-                starttime: "6:00 am",
-                endtime: "7:00 pm",
-                index: 2,
+     
             },
             Wed: {
-                day: "Wed",
-                starttime: "6:00 am",
-                endtime: "7:00 pm",
-                index: 3,
+      
             },
             Thu: {
-                day: "Thu",
-                starttime: "6:00 am",
-                endtime: "7:00 pm",
-                index: 4,
+            
             },
             Fri: {
-                day: "Fri",
-                starttime: "6:00 am",
-                endtime: "7:00 pm",
-                index: 5,
+            
             },
             Sat: {
-                day: "Sat",
-                starttime: "6:00 am",
-                endtime: "7:00 pm",
-                index: 6,
+            
             },
             SunArray: [],
             MonArray: [],

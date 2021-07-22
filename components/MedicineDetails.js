@@ -845,7 +845,7 @@ export default class MedicineDetails extends Component {
                           value={this.state.name}
                           selectionColor={themeColor}
                           onChangeText={(name) => { this.changeName(name) }}
-                          style={{ width: width * 0.8, height: height * 0.05, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 }}
+                          style={{ width: width * 0.8, height:35, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 }}
                       />
                   </View>
                {this.state.name.length>0&&<View style={{margin:15}}>

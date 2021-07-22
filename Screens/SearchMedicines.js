@@ -107,7 +107,7 @@ import axios from 'axios';
                     <TextInput
                         autoFocus={true}
                         selectionColor={themeColor}
-                        style={{  height:"45%", backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 ,width:"100%"}}
+                        style={{  height:35, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 ,width:"100%"}}
                         placeholder="search Medicines"
                         onChangeText ={(text)=>{this.SearchMedicines(text)}}
                     />
@@ -124,7 +124,7 @@ import axios from 'axios';
                 }}
             />}
             {
-                this.state.medicines.length ==0&&this.state.search&&<View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+                this.state.medicines.length ==0&&this.state.search&& !this.state.toGive&&<View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
                     <View>
                         <Text style={[styles.text]}>No results Found</Text>
                     </View>

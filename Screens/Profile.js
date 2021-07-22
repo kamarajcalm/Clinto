@@ -65,6 +65,10 @@ const DATA =["clinic 1","clinic 2","clinic3","clinic4"]
 
      if (data.type == "success") {
        this.setState({ clinics: data.data})
+       let activeClinic = data.data.workingclinics.filter((i) => {
+         return i.active
+       })
+       this.props.selectClinic(activeClinic[0] || data.data.workingclinics[0])
      }
    }
    findUser = () => {

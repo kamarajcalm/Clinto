@@ -13,6 +13,7 @@ const themeColor = settings.themeColor;
 const url = settings.url
 import Modal from 'react-native-modal';
 import SimpleToast from 'react-native-simple-toast';
+import { LinearGradient } from 'expo-linear-gradient';
 const screenHeight = Dimensions.get("screen").height
 class Clinics extends Component {
     constructor(props) {
@@ -65,6 +66,13 @@ class Clinics extends Component {
     componentWillUnmount() {
         this._unsubscribe();
     }
+    getFirstLetter = (clinic ) => {
+      
+        let clinicName = clinic.split("")
+  
+            return clinicName[0].toUpperCase();
+      
+    }
     render() {
         return (
             <>
@@ -96,7 +104,7 @@ class Clinics extends Component {
                             <View style={{ flex: 0.8 }}>
                                 <TextInput
                                     
-                                     style={{ height: height * 0.047, width: width * 0.7, backgroundColor: "#fff", borderRadius: 10, paddingLeft: 20 }}
+                                     style={{ height: 35, width: width * 0.7, backgroundColor: "#fff", borderRadius: 10, paddingLeft: 20 }}
                                     placeholder="search"
                                     onChangeText={(text) => { this.searchClincs(text) }}
                                 />
@@ -116,10 +124,14 @@ class Clinics extends Component {
                                         onPress={() => { this.props.navigation.navigate('ClinicDetails',{item}) }}
                                     >
                                         <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
-                                            <Image
-                                                source={{ uri: item.displayPicture||"https://s3-ap-southeast-1.amazonaws.com/practo-fabric/practices/711061/lotus-multi-speciality-health-care-bangalore-5edf8fe3ef253.jpeg" }}
-                                                style={{ height: 60, width: 60, borderRadius: 30, }}
-                                            />
+                                            <LinearGradient
+                                                style={{ height: 50, width: 50, borderRadius: 25, alignItems: "center", justifyContent: "center" }}
+                                                colors={["#333", themeColor, themeColor]}
+                                            >
+                                                <View >
+                                                    <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 22 }]}>{this.getFirstLetter(item.companyName)}</Text>
+                                                </View>
+                                            </LinearGradient>
                                         </View>
                                         <View style={{ flex: 0.5, }}>
                                             <View style={{ flex: 0.4, justifyContent: "center" }}>

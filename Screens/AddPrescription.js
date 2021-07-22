@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, SafeAreaView, ToastAndroid, Pressable, Switch, ActivityIndicator, TouchableWithoutFeedback, TextInput,Alert } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, SafeAreaView, ToastAndroid, Pressable, Switch, ActivityIndicator, TextInput, Alert, TouchableWithoutFeedback, ScrollView,} from 'react-native';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
 import settings from '../AppSettings';
@@ -8,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 const { height ,width} = Dimensions.get("window");
 const fontFamily =settings.fontFamily;
 const themeColor=settings.themeColor;
+const inputColor=settings.TextInput;
 const url =settings.url;
 const screenHeight =Dimensions.get('screen').height
 import Modal from 'react-native-modal';
@@ -20,7 +21,7 @@ import SimpleToast from 'react-native-simple-toast';
 import DropDownPicker from 'react-native-dropdown-picker';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { ScrollView} from 'react-native-gesture-handler';
+
 import moment from 'moment';
 
 class AddPrescription extends Component {
@@ -218,7 +219,7 @@ class AddPrescription extends Component {
     }
     searchTemplates = async (age=null,disease="") => {
         this.setState({ loading: true })
-        let api = `${url}/api/prescription/getTemplate/?clinic=${this.state?.appoinment?.clinic || this.props.clinic.clinicpk}&age=${age}&diagonsis=${disease}`
+        let api = `${url}/api/prescription/getTemplate/?clinic=${this.state?.appoinment?.clinic || this.props.clinic.clinicpk}&age=${age}&diagonsis=${disease}&type=mobile`
          console.log(api)
         let data = await HttpsClient.get(api)
       
@@ -429,6 +430,19 @@ class AddPrescription extends Component {
     toggleSwitch =()=>{
          this.setState({containDrugs:!this.state.containDrugs})
     }
+    handleCheck = ()=>{
+       
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => {
+            this.searchTemplates(this.state.Age, this.state.Disease);
+        }, 500);
+    }
+    componentDidUpdate(prevProps, prevState){
+        if (prevState.Age !== this.state.Age) {
+         
+           this.handleCheck()
+        }
+    }
   render() {
       const { loading } = this.state;
    
@@ -436,10 +450,7 @@ class AddPrescription extends Component {
         <>
             <SafeAreaView style={styles.topSafeArea} />
             <SafeAreaView style={styles.bottomSafeArea}>
-                <TouchableWithoutFeedback
-                    onPress={() => { this.setState({ Diseases:[]})}}
-                >
-
+            
                
         <View style={{flex:1}}>
                     {/* HEADERS */}
@@ -458,7 +469,7 @@ class AddPrescription extends Component {
             {/* FORMS */}
 
             <ScrollView 
-             contentContainerStyle={{ marginHorizontal:20}}
+             contentContainerStyle={{ paddingHorizontal:20}}
              showsVerticalScrollIndicator={false}
              keyboardShouldPersistTaps={"handled"}
             >
@@ -470,8 +481,8 @@ class AddPrescription extends Component {
                          value ={this.state.mobileNo}
                          selectionColor={themeColor}
                          keyboardType="numeric"
-                                onChangeText={(mobileNo) => { this.searchUser(mobileNo)}}
-                         style={{ width: width * 0.7, height: height * 0.05, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10}}
+                         onChangeText={(mobileNo) => { this.searchUser(mobileNo)}}
+                                style={{ width: width * 0.7, height: 35, backgroundColor: inputColor, borderRadius: 15, padding: 10, marginTop: 10}}
                     />
                 </View>
                 <View style={{ marginTop: 20 }}>
@@ -480,7 +491,7 @@ class AddPrescription extends Component {
                         value ={this.state.patientsName}
                         selectionColor={themeColor}
                         onChangeText={(patientsName) => { this.setState({ patientsName }) }}
-                        style={{ width: width * 0.7, height: height * 0.05, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 }}
+                                style={{ width: width * 0.7, height: 35, backgroundColor: inputColor, borderRadius: 15, padding: 10, marginTop: 10 }}
                     />
                 </View>
                         <View style={{ marginTop: 20 }}>
@@ -489,10 +500,8 @@ class AddPrescription extends Component {
                                keyboardType ={"numeric"}
                                 value={this.state.Age}
                                 selectionColor={themeColor}
-                                onChangeText={(Age) => { this.setState({ Age },()=>{
-                                    this.searchTemplates(this.state.Age, this.state.Disease)
-                                }) }}
-                                style={{ width: width * 0.7, height: height * 0.05, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 }}
+                                onChangeText={(Age) => { this.setState({ Age })}}
+                                style={{ width: width * 0.7, height: 35, backgroundColor:inputColor, borderRadius: 15, padding: 10, marginTop: 10 }}
                             />
                         </View>
                         <View style={{ marginTop: 20 ,flexDirection:"row"}}>
@@ -506,11 +515,11 @@ class AddPrescription extends Component {
                                     items={this.state.sex}
                                     defaultValue={this.state.sex[0]?.value}
                                     containerStyle={{ height: 40, width: width * 0.4 }}
-                                    style={{ backgroundColor: '#fafafa' }}
+                                    style={{ backgroundColor: inputColor }}
                                     itemStyle={{
                                         justifyContent: 'flex-start'
                                     }}
-                                    dropDownStyle={{ backgroundColor: '#fafafa', width: width * 0.4 }}
+                                    dropDownStyle={{ backgroundColor: inputColor, width: width * 0.4 }}
                                     onChangeItem={item => this.setState({
                                         selectedSex: item.value
                                     })}
@@ -557,7 +566,7 @@ class AddPrescription extends Component {
                                     selectionColor={themeColor}
                                     multiline={true}
                                     onChangeText={(healthIssue) => { this.setState({ healthIssue}) }}
-                                    style={{ width: width * 0.6, height: height * 0.07, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10, }}
+                                    style={{ width: width * 0.6, height: 35, backgroundColor:inputColor, borderRadius: 15, padding: 10, marginTop: 10, }}
                                 />
                                 <TouchableOpacity 
                                   style={{height:height*0.05,alignItems:"center",justifyContent:'center',width:width*0.2,borderRadius:10,backgroundColor:themeColor,marginTop:10}}
@@ -587,7 +596,7 @@ class AddPrescription extends Component {
                                 onChangeText={(Reason) => { this.setState({ Reason}) }}
                                 selectionColor={themeColor}
                                 multiline={true}
-                                style={{ width: width * 0.7, height: height * 0.15, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10, textAlignVertical:"top"}}
+                                style={{ width: width * 0.7, height: height * 0.15, backgroundColor: inputColor, borderRadius: 15, padding: 10, marginTop: 10, textAlignVertical:"top"}}
                             />
                         </View>
                         <View style={{ marginTop: 20 }}>
@@ -597,31 +606,26 @@ class AddPrescription extends Component {
                                 onChangeText={(Disease) => { this.searchDiseases(Disease) }}
                                 selectionColor={themeColor}
                                 multiline={true}
-                                style={{ width: width * 0.9, height: height * 0.07, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10, textAlignVertical: "top" }}
+                                style={{ width: width * 0.9, height:35, backgroundColor: inputColor,  padding: 10, marginTop: 10, textAlignVertical: "top" }}
                             />
                         </View>
                         {this.state.Diseases.length>0&&<ScrollView 
                         showsVerticalScrollIndicator ={false}
                                 style={{
-                                    position: "relative", width: width * 0.9, height: height * 0.2, backgroundColor: "#eee", bottom: 0, shadowColor: "#000",
-                                    shadowOffset: {
-                                        width: 0,
-                                        height: 2
-                                    },
-                                    shadowOpacity: 0.25,
-                                    shadowRadius: 4,
-                                    elevation: 5,}}>
+                                    width: width * 0.9, backgroundColor: '#fafafa', borderColor: "#333", borderTopWidth: 0.5
+                                 
+                                   }}>
                            {
                                this.state.Diseases.map((i,index)=>{
                                    return(
                                        <TouchableOpacity 
                                            key ={index}
-                                           style={{margin:20,justifyContent:"center",width:width*0.9}}
+                                           style={{padding:15,justifyContent:"center",width:width*0.9,borderColor:"#333",borderBottomWidth:0.3,height:35}}
                                            onPress={() => { this.setState({ Disease: i.title,Diseases:[]},()=>{
                                                this.searchTemplates(this.state.Age, this.state.Disease)
                                            })}}
                                        >
-                                           <Text style={[styles.text,{color:themeColor}]}>{i.title}</Text>
+                                           <Text style={[styles.text,{color:themeColor,}]}>{i.title}</Text>
                                        </TouchableOpacity>
                                    )
                                })
@@ -676,7 +680,7 @@ class AddPrescription extends Component {
                                 selectionColor={themeColor}
                                 keyboardType="numeric"
                                 onChangeText={(doctorFees) => { this.setState({ doctorFees }) }}
-                                style={{ width: width * 0.7, height: height * 0.05, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 }}
+                                style={{ width: width * 0.7, height: height * 0.05, backgroundColor: inputColor, borderRadius: 15, padding: 10, marginTop: 10 }}
                             />
                         </View>
                             <View >
@@ -685,7 +689,7 @@ class AddPrescription extends Component {
                             </View>
                             <TouchableOpacity 
                               onPress={() => { this.setState({ show1: true }) }}
-                              style={{ width: width * 0.9, height: height * 0.05, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 ,flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
+                              style={{ width: width * 0.9, height: height * 0.05, backgroundColor: inputColor, borderRadius: 15, padding: 10, marginTop: 10 ,flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
                               
                               
                               <View style={{alignItems:"center",justifyContent:"center"}}>
@@ -743,7 +747,7 @@ class AddPrescription extends Component {
                         onCancel={this.hideDatePicker}
                     />
         </View>
-    </TouchableWithoutFeedback>
+
      </SafeAreaView>
        </>
         

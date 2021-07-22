@@ -162,7 +162,9 @@ class ClinicDetails extends Component {
                         </View>
                     
                         
-                       <ScrollView style={{flex:1,}}>
+                       <ScrollView 
+                        contentContainerStyle ={{paddingBottom:30}}
+                       style={{flex:1,}}>
                                 {/* image */}
                             <View style={{ height: height * 0.25, }}>
                                 <SliderBox
@@ -176,7 +178,7 @@ class ClinicDetails extends Component {
                             </View>
                       
                               {/* Details */}
-                              <View style={{flexDirection:"row",marginHorizontal:20,marginTop:10}}>
+                            <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 10, alignItems: "center", justifyContent: "space-between"}}>
                                   <View style={{alignItems:"center",justifyContent:"center"}}>
                                     <Text style={[styles.text,{fontWeight:"bold",fontSize:18}]}>Owned By:</Text>
                                   </View>
@@ -184,7 +186,7 @@ class ClinicDetails extends Component {
                                     <Text style={[styles.text,{marginLeft:10}]}>{this.state?.item?.owner.first_name}</Text>
                                 </View>
                               </View>
-                            <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 10 }}>
+                            <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 10, alignItems: "center", justifyContent: "space-between"}}>
                                 <View style={{ alignItems: "center", justifyContent: "center" }}>
                                     <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Owned Number:</Text>
                                 </View>
@@ -196,7 +198,7 @@ class ClinicDetails extends Component {
                                 <View style={{ }}>
                                     <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Address:</Text>
                                 </View>
-                                <View style={{  marginTop:10}}>
+                                <View style={{  marginTop:10,flexDirection:"row"}}>
                                     <Text style={[styles.text, { marginLeft: 10 }]}>{this.state?.item?.address}</Text>
                                     <Text style={[styles.text, { marginLeft: 10 }]}>{this.state?.item?.city}</Text>
                                     <Text style={[styles.text, { marginLeft: 10 }]}>{this.state?.item?.state}</Text>
@@ -206,10 +208,10 @@ class ClinicDetails extends Component {
                             </View>
                             <View style={{ marginHorizontal: 20, marginTop: 10,flexDirection:'row',alignItems:'center',justifyContent:"space-between"}}>
                                 <View>
-                                    <Text style={[styles.text,{fontWeight:"bold",fontSize:18}]}>OpeningTime:</Text>
+                                    <Text style={[styles.text,{fontWeight:"bold",fontSize:18}]}>Opening Time:</Text>
                                 </View>
                                 <View>
-                                    <Text style={[styles.text,{fontWeight:"bold",fontSize:18}]}>ClosingTime:</Text>
+                                    <Text style={[styles.text,{fontWeight:"bold",fontSize:18}]}>Closing Time:</Text>
                                 </View>
                             </View>
                             <View style={{ marginHorizontal: 20, marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
@@ -298,7 +300,7 @@ class ClinicDetails extends Component {
                                     <Feather name="phone" size={20} color="black" />
                                 </TouchableOpacity>
                             </View>
-                            <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 10 }}>
+                            {/* <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 10 }}>
                                 <View style={{ alignItems: "center", justifyContent: "center" }}>
                                     <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Emergency Contact 1</Text>
                                 </View>
@@ -337,7 +339,7 @@ class ClinicDetails extends Component {
                                 >
                                     <Feather name="phone" size={20} color="black" />
                                 </TouchableOpacity>
-                            </View>
+                            </View> */}
                             <View style={{margin:20}}>
                                 <Text style={[styles.text,{fontWeight:"bold",fontSize:18}]}> Receptionist List:</Text>
                                  <FlatList 

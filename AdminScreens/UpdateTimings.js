@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView, TextInput } from 'react-native';
+import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView, TextInput, ScrollView} from 'react-native';
 import settings from '../AppSettings';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
@@ -29,46 +29,25 @@ class UpdateTimings extends Component {
             date: new Date(),
             clinicPk,
             Sun: {
-                day: "Sun",
-                index: 0,
-                starttime: "6:00 am",
-                endtime: "7:00 pm"
+            
             },
             Mon: {
-                day: "Mon",
-                index: 1,
-                starttime: "6:00 am",
-                endtime: "7:00 pm"
+            
             },
             Tue: {
-                day: "Tue",
-                starttime: "6:00 am",
-                endtime: "7:00 pm",
-                index: 2,
+             
             },
             Wed: {
-                day: "Wed",
-                starttime: "6:00 am",
-                endtime: "7:00 pm",
-                index: 3,
+             
             },
             Thu: {
-                day: "Thu",
-                starttime: "6:00 am",
-                endtime: "7:00 pm",
-                index: 4,
+        
             },
             Fri: {
-                day: "Fri",
-                starttime: "6:00 am",
-                endtime: "7:00 pm",
-                index: 5,
+         
             },
             Sat: {
-                day: "Sat",
-                starttime: "6:00 am",
-                endtime: "7:00 pm",
-                index: 6,
+              
             },
         };
     }
@@ -280,128 +259,7 @@ class UpdateTimings extends Component {
 
         this.hideDatePicker2();
     };
-    // onChange1 = (selectedDate) => {
-    //     if (selectedDate.type == "set") {
-    //         this.setState({ show1: false, }, () => {
-    //             if (this.state.day == "Sun") {
-    //                 let duplicate = this.state.Sun
 
-    //                 duplicate.day = "Sun",
-    //                     duplicate.index = 0,
-    //                     duplicate.starttime = moment(new Date(selectedDate.nativeEvent.timestamp)).format('h:mm a')
-
-    //                 return this.setState({ Sun: duplicate })
-    //             }
-    //             if (this.state.day == "Mon") {
-    //                 let duplicate = this.state.Mon
-
-    //                 duplicate.day = "Mon",
-    //                     duplicate.index = 1,
-    //                     duplicate.starttime = moment(new Date(selectedDate.nativeEvent.timestamp)).format('h:mm a')
-
-    //                 return this.setState({ Mon: duplicate })
-    //             }
-    //             if (this.state.day == "Tue") {
-    //                 let duplicate = this.state.Tue
-
-    //                 duplicate.day = "Tue",
-    //                     duplicate.index = 2,
-    //                     duplicate.starttime = moment(new Date(selectedDate.nativeEvent.timestamp)).format('h:mm a')
-
-    //                 return this.setState({ Tue: duplicate })
-    //             }
-    //             if (this.state.day == "Wed") {
-    //                 let duplicate = this.state.Wed
-    //                 duplicate.day = "Wed",
-    //                     duplicate.index = 3,
-    //                     duplicate.starttime = moment(new Date(selectedDate.nativeEvent.timestamp)).format('h:mm a')
-
-    //                 return this.setState({ Wed: duplicate })
-    //             }
-    //             if (this.state.day == "Thu") {
-    //                 let duplicate = this.state.Thu
-
-    //                 duplicate.day = "Thu",
-    //                     duplicate.index = 4,
-    //                     duplicate.starttime = moment(new Date(selectedDate.nativeEvent.timestamp)).format('h:mm a')
-
-    //                 return this.setState({ Thu: duplicate })
-    //             }
-    //             if (this.state.day == "Fri") {
-    //                 let duplicate = this.state.Fri
-
-    //                 duplicate.day = "Fri",
-    //                     duplicate.index = 5,
-    //                     duplicate.starttime = moment(new Date(selectedDate.nativeEvent.timestamp)).format('h:mm a')
-
-    //                 return this.setState({ Fri: duplicate })
-    //             }
-    //             if (this.state.day == "Sat") {
-    //                 let duplicate = this.state.Sat
-
-    //                 duplicate.day = "Sat",
-    //                     duplicate.index = 6,
-    //                     duplicate.starttime = moment(new Date(selectedDate.nativeEvent.timestamp)).format('h:mm a')
-
-    //                 return this.setState({ Sat: duplicate })
-    //             }
-
-    //         })
-
-    //     } else {
-    //         return null
-    //     }
-
-    // }
-    // onChange2 = (selectedDate) => {
-    //     if (selectedDate.type == "set") {
-    //         this.setState({ show2: false, }, () => {
-
-    //             if (this.state.day == "Sun") {
-    //                 let duplicate = this.state.Sun
-    //                 duplicate.endtime = moment(new Date(selectedDate.nativeEvent.timestamp)).format('h:mm a')
-    //                 return this.setState({ Sun: duplicate })
-    //             }
-    //             if (this.state.day == "Mon") {
-    //                 let duplicate = this.state.Mon
-    //                 duplicate.endtime = moment(new Date(selectedDate.nativeEvent.timestamp)).format('h:mm a')
-    //                 return this.setState({ Mon: duplicate })
-    //             }
-    //             if (this.state.day == "Tue") {
-    //                 let duplicate = this.state.Tue
-    //                 duplicate.endtime = moment(new Date(selectedDate.nativeEvent.timestamp)).format('h:mm a')
-    //                 return this.setState({ Tue: duplicate })
-    //             }
-    //             if (this.state.day == "Wed") {
-    //                 let duplicate = this.state.Wed
-    //                 duplicate.endtime = moment(new Date(selectedDate.nativeEvent.timestamp)).format('h:mm a')
-    //                 return this.setState({ Wed: duplicate })
-    //             }
-    //             if (this.state.day == "Thu") {
-    //                 let duplicate = this.state.Thu
-    //                 duplicate.endtime = moment(new Date(selectedDate.nativeEvent.timestamp)).format('h:mm a')
-    //                 return this.setState({ Thu: duplicate })
-    //             }
-    //             if (this.state.day == "Fri") {
-    //                 let duplicate = this.state.Fri
-    //                 duplicate.endtime = moment(new Date(selectedDate.nativeEvent.timestamp)).format('h:mm a')
-    //                 return this.setState({ Fri: duplicate })
-    //             }
-    //             if (this.state.day == "Sat") {
-    //                 let duplicate = this.state.Sat
-    //                 duplicate.endtime = moment(new Date(selectedDate.nativeEvent.timestamp)).format('h:mm a')
-    //                 return this.setState({ Sat: duplicate })
-    //             }
-
-
-
-    //         })
-
-    //     } else {
-    //         return null
-    //     }
-
-    // }
     render() {
         return (
             <>
@@ -426,7 +284,7 @@ class UpdateTimings extends Component {
                         </View>
 
                                {/* TIMINGS */}
-                <View style={{padding:20}}>
+                <ScrollView style={{padding:20}}>
                         <View>
                             <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Sun :</Text>
                         </View>
@@ -710,14 +568,15 @@ class UpdateTimings extends Component {
                                 onConfirm={this.handleConfirm2}
                                 onCancel={this.hideDatePicker2}
                             />
-                        </View>
-                        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                            <TouchableOpacity style={{ width: width * 0.4, height: height * 0.05, borderRadius: 10, alignItems: 'center', justifyContent: "center", backgroundColor: themeColor }}
-                                onPress={() => { this.UpdateTimings() }}
-                            >
-                                <Text style={[styles.text, { color: "#fff" }]}>Update</Text>
-                            </TouchableOpacity>
-                        </View>
+                            <View style={{ alignItems: 'center', justifyContent: 'center' ,marginVertical:40}}>
+                                <TouchableOpacity style={{ width: width * 0.4, height: height * 0.05, borderRadius: 10, alignItems: 'center', justifyContent: "center", backgroundColor: themeColor }}
+                                    onPress={() => { this.UpdateTimings() }}
+                                >
+                                    <Text style={[styles.text, { color: "#fff" }]}>Update</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
+                    
                     </View>
                 </SafeAreaView>
             </>

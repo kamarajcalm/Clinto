@@ -7,6 +7,7 @@ const { height, width } = Dimensions.get("window");
 import { Ionicons } from '@expo/vector-icons';
 import HttpsClient from '../api/HttpsClient';
 import { TextInput } from 'react-native-gesture-handler';
+import { LinearGradient } from 'expo-linear-gradient';
 const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
 const url= settings.url;
@@ -47,6 +48,13 @@ class DoctorsAdmin extends Component {
       return null
     }
   }
+  getFirstLetter = (name) => {
+
+    let doctorName = name.split("")
+
+    return doctorName[0].toUpperCase();
+
+  }
   render() {
     return (
       <>
@@ -81,7 +89,7 @@ class DoctorsAdmin extends Component {
                  </TouchableOpacity>
                   <View style={{flex:0.8}}>
                        <TextInput 
-                         style={{height:height*0.05,width:width*0.7,backgroundColor:"#fff",borderRadius:10,paddingLeft:20}}
+                         style={{height:35,width:width*0.7,backgroundColor:"#fff",borderRadius:10,paddingLeft:20}}
                          placeholder="search"
                          onChangeText ={(text)=>{this.searchDoctor(text)}}
                        />
@@ -101,10 +109,14 @@ class DoctorsAdmin extends Component {
                     onPress={() => { this.props.navigation.navigate('ViewDoctorProfile',{item})}}
                   >
                     <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
-                      <Image
-                        source={{ uri: item.displayPicture||"https://s3-ap-southeast-1.amazonaws.com/practo-fabric/practices/711061/lotus-multi-speciality-health-care-bangalore-5edf8fe3ef253.jpeg" }}
-                        style={{ height: 60, width: 60, borderRadius: 30, }}
-                      />
+                      <LinearGradient
+                        style={{ height: 50, width: 50, borderRadius: 25, alignItems: "center", justifyContent: "center" }}
+                        colors={["#333", themeColor, themeColor]}
+                      >
+                        <View >
+                          <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 22 }]}>{this.getFirstLetter(item.name)}</Text>
+                        </View>
+                      </LinearGradient>
                     </View>
                     <View style={{ flex: 0.7,justifyContent:"center" }}>
                       <View style={{ flex: 0.4, justifyContent: "center" }}>

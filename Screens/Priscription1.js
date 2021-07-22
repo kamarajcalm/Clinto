@@ -17,7 +17,8 @@ import {
     BackHandler,
     RefreshControl,
     Keyboard,
-    Platform
+    Platform,
+    Linking
 
 } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
@@ -579,10 +580,10 @@ hideDatePicker = () => {
         return (
             <View>
                 <View style={{ height: headerHeight / 2,flexDirection:"row",}}>
-                     <View style={{flex:0.5,alignItems: "center", justifyContent: 'center'}}>
+                     <View style={{flex:0.6,justifyContent:"center"}}>
                         <Text style={{ color: '#fff', fontFamily: "openSans", marginLeft: 20, fontSize: 30, fontWeight: "bold" }}>Prescription</Text>
                      </View>
-                    <View style={{flex:0.5,alignItems: "center", justifyContent: 'center'}}>
+                    <View style={{flex:0.4,alignItems: "center", justifyContent: 'center'}}>
                         {
                             this.renderFilter()
                         }
@@ -590,13 +591,13 @@ hideDatePicker = () => {
                 </View>
 
                 <View style={{ marginHorizontal: 20, height: headerHeight / 3, alignItems: 'center', justifyContent: "center", marginBottom: 5 }}>
-                    <View style={{ flexDirection: 'row', borderRadius: 10, backgroundColor: "#eee", width: "100%", height: height * 0.05, }}>
+                    <View style={{ flexDirection: 'row', borderRadius: 10, backgroundColor: "#eee", width: "100%", height:"90%" }}>
                         <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5, flex: 0.1 }}>
                             <EvilIcons name="search" size={24} color="black" />
                         </View>
                         <TextInput
                             selectionColor={themeColor}
-                            style={{ height: "90%", flex: 0.8, backgroundColor: "#eee", paddingLeft: 10, marginTop: 3 }}
+                            style={{ height: "99%", flex: 0.8, backgroundColor: "#eee", paddingLeft: 10, }}
                             placeholder={`search ${this.props?.clinic?.name}`}
                             onChangeText={(text) => { this.searchPriscriptions(text) }}
                         />
@@ -696,7 +697,7 @@ const screenHeight =Dimensions.get('screen').height;
                             }
                             data={this.state.prescriptions}
                             scrollEventThrottle={16}
-                            contentContainerStyle={{ paddingTop: headerHeight-20, paddingBottom: 90 }}
+                            contentContainerStyle={{ paddingTop: headerHeight-12, paddingBottom: 90 }}
                             onScroll={handleScroll}
                             ref={ref=>this.ref=ref}
                              

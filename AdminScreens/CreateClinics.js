@@ -26,26 +26,26 @@ class CreateClinics extends Component {
             openImageModal: false,
             latitude: "",
             longitude: '',
-            clinicName: "new clinic",
+            clinicName: "",
             openingTime: null,
             closingTime: null,
             show1: false,
             show2: false,
-            mobile:"9060606060",
-            GST:"adadad",
-            address:"sdddkgkfjskfka",
-            pincode:"465482",
-            state:"karnataka",
-            city:"bengaluru",
-            firstEmergencyContactNo: "9698564241",
-            secondEmergencyContactNo: '9568659596',
+            mobile:"",
+            GST:"",
+            address:"",
+            pincode:"",
+            state:"",
+            city:"",
+            firstEmergencyContactNo: "",
+            secondEmergencyContactNo: '',
             startingArray:[],
             closingArray: [],
             day: "",
             isFetching:false,
             doctor:null,
             images:[],
-            email:"abcty@gmail.com",
+            email:"",
             creating:false
         };
     }
@@ -152,8 +152,6 @@ class CreateClinics extends Component {
             pincode:this.state.pincode,
             state:this.state.state,
             city:this.state.city,
-            firstEmergencyContactNo:this.state.firstEmergencyContactNo,
-            secondEmergencyContactNo:this.state.secondEmergencyContactNo,
             lat:this.state.latitude,
             long:this.state.longitude,
             offical_email:this.state.email
@@ -348,7 +346,7 @@ class CreateClinics extends Component {
                                 <View >
                                     <Text style={styles.text}>Owner Name</Text>
                                     <TouchableOpacity 
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 ,justifyContent:"center"}}
+                                        style={{ width: width * 0.8, height:35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 ,justifyContent:"center"}}
                                         onPress={() => { this.props.navigation.navigate('SearchDoctors', { backFunction: (item) => { this.backFunction(item) } })}}
                                     >
                                         <Text>{this.state?.doctor?.name}</Text>
@@ -367,7 +365,7 @@ class CreateClinics extends Component {
                                         value={this.state.clinicName}
                                         onChangeText={(clinicName) => { this.setState({ clinicName }) }}
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.8, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
 
@@ -382,7 +380,7 @@ class CreateClinics extends Component {
                                         onChangeText={(mobile) => { this.setState({ mobile }) }}
                                         keyboardType="numeric"
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.8, height:35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
                                 <View>
@@ -391,7 +389,7 @@ class CreateClinics extends Component {
                                         value={this.state.email}
                                         onChangeText={(email) => { this.setState({ email }) }}
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.8, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
                                 <View>
@@ -401,7 +399,7 @@ class CreateClinics extends Component {
                                         onChangeText={(GST) => { this.setState({ GST }) }}
                                   
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.8, height:35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
                                 <View>
@@ -410,7 +408,7 @@ class CreateClinics extends Component {
                                         onChangeText={(address) => { this.setState({ address }) }}
                                         value={this.state.address}
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.15, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.8, height: height * 0.15, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 ,textAlignVertical:"top"}}
                                     />
                                 </View>
                                 <View>
@@ -420,7 +418,7 @@ class CreateClinics extends Component {
                                         value={this.state.pincode}
                                         keyboardType="numeric"
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.8, height:35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
                                 <View>
@@ -429,7 +427,7 @@ class CreateClinics extends Component {
                                         value={this.state.state}
                                         onChangeText={(state) => { this.setState({ state }) }}
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.8, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
                                 <View>
@@ -438,10 +436,10 @@ class CreateClinics extends Component {
                                         value={this.state.city}
                                         onChangeText={(city) => { this.setState({ city }) }}
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.8, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
-                                <View>
+                                {/* <View>
                                     <Text style={styles.text}>Emergency Contact 1</Text>
                                     <TextInput
                                         value={this.state.firstEmergencyContactNo}
@@ -460,7 +458,7 @@ class CreateClinics extends Component {
                                         selectionColor={themeColor}
                                         style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
-                                </View>
+                                </View> */}
                              
                                 <View>
                                     <Text style={styles.text}>Latitude</Text>
@@ -470,7 +468,7 @@ class CreateClinics extends Component {
                                         value={this.state?.latitude.toString()}
                                         multiline={true}
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.8, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
                                 <View>
@@ -480,7 +478,7 @@ class CreateClinics extends Component {
                                         value={this.state?.longitude.toString()}
                                         multiline={true}
                                         selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                        style={{ width: width * 0.8, height:35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
                                  {/* <View>
