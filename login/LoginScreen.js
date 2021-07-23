@@ -149,6 +149,7 @@ class LoginScreen extends Component {
             </View>
 
             <TextInput
+              textContentType={"username"}
               value={this.state.username}
               selectionColor={themeColor}
               placeholder="your username or mobile"
@@ -164,11 +165,13 @@ class LoginScreen extends Component {
 
 
             <TextInput
+              textContentType={"password"}
               selectionColor={themeColor}
               value={this.state.password}
               placeholder="Your Password"
               style={styles.textInput}
               onChangeText={(password) => { this.setState({ password }) }}
+              secureTextEntry ={true}
             />
           </View>
           <View style={{ marginTop: 20, flexDirection: "row", justifyContent: "space-between" }}>

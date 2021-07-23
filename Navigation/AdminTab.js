@@ -6,7 +6,7 @@ import {
 } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 ,AntDesign} from '@expo/vector-icons';
 import settings from '../AppSettings';
 const themeColor = settings.themeColor
 const fontFamily =settings.fontFamily
@@ -18,6 +18,7 @@ import ClincsStack from '../stacks/ClincsStack';
 import DoctorsAdminStack from '../stacks/DoctorsAdminStack';
 import MedicalStack from '../stacks/MedicalStack';
 import AdminProfileStack from '../stacks/AdminProfileStack';
+import AdminMedicineStack from '../stacks/AdminMedicineStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -96,14 +97,14 @@ class AdminTab extends Component {
                     }}
 
                 />
-                <Tab.Screen name="AdminProfileStack" component={AdminProfileStack}
+                <Tab.Screen name="AdminMedicineStack" component={AdminMedicineStack}
                     options={{
                         tabBarIcon: ({ focused, color, size }) => {
-                            return <Ionicons name="ios-person-circle-sharp" size={24} color={focused?"#fff":"gray"} />
-
+                            return <AntDesign name="medicinebox" size={24} color={focused ? "#fff" : "gray"}/>
+                            
                         },
                         tabBarLabel: ({ focused }) => {
-                            return <Text style={{ color: focused ? "#fff" : "gray", fontFamily }}>Profile</Text>
+                            return <Text style={{ color: focused ? "#fff" : "gray", fontFamily }}>Medicines</Text>
                         }
 
                     }}
