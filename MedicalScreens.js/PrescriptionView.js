@@ -691,12 +691,12 @@ class PrescriptionView extends Component {
                                 </View>
                             </View>
 
-                            <View style={{ flex: 0.15 }}>
+                            <View style={{ flex: 0.2 }}>
                                 {
                                     this.renderHeader()
                                 }
                             </View>
-                            <View style={{ flex: 0.58, }}>
+                            <View style={{ flex: 0.48, }}>
 
                                 {this.state.selected == "Prescribed" ? 
                                 

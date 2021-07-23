@@ -525,13 +525,13 @@ import LottieView from 'lottie-react-native';
                             <Text style={[styles.text,{textAlign:"right"}]}>{moment(this.state?.item?.created).format('DD/MM/YYYY')}</Text>
                         </View>
                     </View>
-                    <View style={{flex:0.15}}>
+                    <View style={{flex:0.2}}>
                             {
                                 this.renderHeader()
                             }
                     </View>
                   
-                        <View style={{flex:0.53,}}>
+                        <View style={{flex:0.48,}}>
 
                             {this.state.selected =="Prescribed"?
                             <FlatList

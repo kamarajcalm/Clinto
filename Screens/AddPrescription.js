@@ -680,7 +680,7 @@ class AddPrescription extends Component {
                                 selectionColor={themeColor}
                                 keyboardType="numeric"
                                 onChangeText={(doctorFees) => { this.setState({ doctorFees }) }}
-                                style={{ width: width * 0.7, height: height * 0.05, backgroundColor: inputColor, borderRadius: 15, padding: 10, marginTop: 10 }}
+                                style={{ width: width * 0.7, height: 35, backgroundColor: inputColor, borderRadius: 15, padding: 10, marginTop: 10 }}
                             />
                         </View>
                             <View >

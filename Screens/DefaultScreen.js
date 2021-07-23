@@ -78,8 +78,8 @@ const url = settings.url;
                 }
                 if (data.data[0].profile.occupation == "Doctor" || data.data[0].profile.occupation == "ClinicRecoptionist" || data.data[0].profile.occupation == "Customer") {
                   if (this.props.notification) {
-                   
-                   return this.props.navigation.navigate('PrescriptionViewOuter', { pk: 294 })
+                     
+                    return this.props.navigation.navigate('PrescriptionViewOuter', { pk: this.props.notification.notification?.request?.content?.data?.id})
                   }
                   return this.props.navigation.dispatch(
                     CommonActions.reset({
@@ -110,8 +110,9 @@ const url = settings.url;
     //   console.log(notification,"ppppp");
     // });
     Notifications.addNotificationResponseReceivedListener(response => {
-         console.log(response.notification.request.content)
-      this.props.navigation.navigate('PrescriptionViewOuter', { pk: 294 })
+        
+        
+      this.props.navigation.navigate('PrescriptionViewOuter', { pk: response?.notification?.request?.content?.data?.id })
 
     });
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
