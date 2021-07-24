@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView } from 'react-native';
+import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView, ActivityIndicator } from 'react-native';
 import settings from '../AppSettings';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
@@ -17,15 +17,24 @@ class DoctorsAdmin extends Component {
     this.state = {
       doctors :[],
       search:false,
+      next:true,
+      first:true,
+      refreshing:false,
+      offset:0
     };
   }
   getDoctors = async()=>{
-    let api = `${url}/api/profile/userss/?position=Doctor`
+    this.setState({refreshing:true,first:false})
+    let api = `${url}/api/profile/userss/?position=Doctor&limit=10&offset=${this.state.offset}`
      const data = await HttpsClient.get(api)
     console.log(api)
      if(data.type=="success"){
-       this.setState({ doctors:data.data})
+       this.setState({ doctors: this.state.doctors.concat(data.data.results),refreshing:false})
+       if(data.data.next == null){
+         this.setState({next:false})
+       }
      }else{
+       this.setState({ refreshing: false})
        return null
      }
   }
@@ -33,7 +42,11 @@ class DoctorsAdmin extends Component {
     this.getDoctors()
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
     
-      this.getDoctors()
+      if(!this.state.first){
+        this.setState({ next: true, offset: 0, doctors: [] }, () => {
+          this.getDoctors()
+        })
+      }
     });
   }
   componentWillUnmount() {
@@ -54,6 +67,27 @@ class DoctorsAdmin extends Component {
 
     return doctorName[0].toUpperCase();
 
+  }
+  renderFooter =()=>{
+    if(this.state.next){
+        return (
+          <ActivityIndicator size={"large"} color={themeColor}/>
+        )
+    }else{
+      return null
+    }
+  }
+  loadMore =()=>{
+      if(this.state.next){
+           this.setState({offset:this.state.offset+10},()=>{
+                this.getDoctors();
+           })
+      }
+  }
+  refresh =()=>{
+      this.setState({next:true,offset:0,doctors:[]},()=>{
+           this.getDoctors()
+      })
   }
   render() {
     return (
@@ -97,8 +131,11 @@ class DoctorsAdmin extends Component {
               </View>}
             {/* CHATS */}
             <FlatList
-
-
+            refreshing={this.state.refreshing}
+               onRefresh ={()=>{this.refresh()}}
+              ListFooterComponent ={this.renderFooter()}
+              onEndReachedThreshold={0.1}
+              onEndReached={()=>{this.loadMore()}}
               data={this.state.doctors}
 
               keyExtractor={(item, index) => index.toString()}

@@ -18,7 +18,8 @@ export default class MedicinesForVerification extends Component {
       offset: 0,
       next: true,
       cancelToken: undefined,
-      refreshing: false
+      refreshing: false,
+    
     };
   }
   showSimpleMessage(content, color, type = "info", props = {}) {

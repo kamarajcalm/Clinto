@@ -172,13 +172,19 @@ componentWillUnmount(){
                      style={{ height: 60, width: 60, borderRadius: 30, }}
                    />
                  </View>
-                 <View style={{ flex: 0.7, }}>
-                   <View style={{ flex: 0.4, justifyContent: "center" }}>
-                     <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>{item.title}</Text>
+                 <View style={{ flex: 0.4, justifyContent: "space-around" }}>
+                   <View style={{ justifyContent: "center" }}>
+                     <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16, }]} numberOfLines={1}>{item.title}</Text>
+
                    </View>
-                   <View style={{ flex: 0.6, }}>
-                     <Text style={[styles.text]}>{item.lastmsg}</Text>
+                   <View style={{ justifyContent: "center" }}>
+                     <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>Lst Msg</Text>
+
                    </View>
+
+                 </View>
+                 <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                   <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>Date</Text>
                  </View>
                </TouchableOpacity>
              )
@@ -247,13 +253,19 @@ componentWillUnmount(){
                    style={{ height: 60, width: 60, borderRadius: 30, }}
                  />
                </View>
-               <View style={{ flex: 0.7, }}>
-                 <View style={{ flex: 0.4, justifyContent: "center" }}>
-                   <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>{item.title}</Text>
+               <View style={{ flex: 0.4, justifyContent: "space-around" }}>
+                 <View style={{ justifyContent: "center" }}>
+                   <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16, }]} numberOfLines={1}>{item.title}</Text>
+
                  </View>
-                 <View style={{ flex: 0.6, }}>
-                   <Text style={[styles.text]}>{item.lastmsg}</Text>
+                 <View style={{ justifyContent: "center" }}>
+                   <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>Lst Msg</Text>
+
                  </View>
+
+               </View>
+               <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                 <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>Date</Text>
                </View>
              </TouchableOpacity>
            )
@@ -321,13 +333,19 @@ componentWillUnmount(){
                    style={{ height: 60, width: 60, borderRadius: 30, }}
                  />
                </View>
-               <View style={{ flex: 0.7, }}>
-                 <View style={{ flex: 0.4, justifyContent: "center" }}>
-                   <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>{item.title}</Text>
+               <View style={{ flex: 0.4, justifyContent: "space-around" }}>
+                 <View style={{ justifyContent: "center" }}>
+                   <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16, }]} numberOfLines={1}>{item.title}</Text>
+
                  </View>
-                 <View style={{ flex: 0.6, }}>
-                   <Text style={[styles.text]}>{item.lastmsg}</Text>
+                 <View style={{ justifyContent: "center" }}>
+                   <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>Lst Msg</Text>
+
                  </View>
+
+               </View>
+               <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                 <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>Date</Text>
                </View>
              </TouchableOpacity>
            )
@@ -430,7 +448,7 @@ if(type=="clinic"){
                         style={{ height: 60, width: 60, borderRadius: 30, }}
                       />
                     </View>
-                    <View style={{ flex: 0.6, }}>
+                    <View style={{ flex: 0.6,}}>
                       <View style={{ flex: 0.4, justifyContent: "center" }}>
                         <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>{item.title}</Text>
                       </View>
@@ -442,7 +460,7 @@ if(type=="clinic"){
                 )
               }
               return (
-                <TouchableOpacity style={{ height: height * 0.1, backgroundColor: "#fafafa", marginTop: 1, flexDirection: 'row' }}
+                <TouchableOpacity style={{ height: height * 0.1, backgroundColor: "#fafafa", marginTop: 1, flexDirection: 'row',  }}
                   onPress={() => { this.navigate(item, "clinic") }}
                   onLongPress={() => { this.addToDelete(item) }}
                 >
@@ -454,13 +472,19 @@ if(type=="clinic"){
                       style={{ height: 60, width: 60, borderRadius: 30, }}
                     />
                   </View>
-                  <View style={{ flex: 0.7, }}>
-                    <View style={{ flex: 0.4, justifyContent: "center" }}>
-                      <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>{item.title}</Text>
+                  <View style={{ flex: 0.4, justifyContent: "space-around" }}>
+                    <View style={{ justifyContent: "center" }}>
+                      <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16, }]} numberOfLines={1}>{item.title}</Text>
+
                     </View>
-                    <View style={{ flex: 0.6, }}>
-                      <Text style={[styles.text]}>{item.lastmsg}</Text>
+                    <View style={{ justifyContent: "center" }}>
+                      <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>Lst Msg</Text>
+
                     </View>
+
+                  </View>
+                  <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                    <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>Date</Text>
                   </View>
                 </TouchableOpacity>
               )
@@ -480,7 +504,7 @@ if(type=="clinic"){
            renderItem={({ item, index }) => {
              if (this.state.edit) {
                return (
-                 <TouchableOpacity style={{ height: height * 0.1, backgroundColor: this.validateColor(item), marginTop: 1, flexDirection: 'row' }}
+                 <TouchableOpacity style={{ height: height * 0.1, backgroundColor: this.validateColor(item), marginTop: 1, flexDirection: 'row',}}
                    onPress={() => {
                      this.selectChat(item)
                    }}
@@ -516,7 +540,7 @@ if(type=="clinic"){
                )
              }
              return (
-               <TouchableOpacity style={{ height: height * 0.1, backgroundColor: "#fafafa", marginTop: 1, flexDirection: 'row' }}
+               <TouchableOpacity style={{ height: height * 0.1, backgroundColor: "#fafafa", marginTop: 1, flexDirection: 'row',}}
                  onPress={() => { this.navigate(item, "doctor") }}
                  onLongPress={() => { this.addToDelete(item) }}
                >
@@ -528,13 +552,19 @@ if(type=="clinic"){
                      style={{ height: 60, width: 60, borderRadius: 30, }}
                    />
                  </View>
-                 <View style={{ flex: 0.7, }}>
-                   <View style={{ flex: 0.4, justifyContent: "center" }}>
-                     <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>{item.title}</Text>
+                 <View style={{ flex: 0.4,justifyContent:"space-around"}}>
+                   <View style={{ justifyContent: "center" }}>
+                     <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 ,}]} numberOfLines={1}>{item.title}</Text>
+                 
                    </View>
-                   <View style={{ flex: 0.6, }}>
-                     <Text style={[styles.text]}>{item.lastmsg}</Text>
+                   <View style={{ justifyContent: "center" }}>
+                     <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>Lst Msg</Text>
+
                    </View>
+                
+                 </View>
+                 <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                   <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>Date</Text>
                  </View>
                </TouchableOpacity>
              )

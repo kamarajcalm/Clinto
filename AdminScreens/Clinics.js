@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView, TextInput} from 'react-native';
+import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView, TextInput, ActivityIndicator} from 'react-native';
 import settings from '../AppSettings';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
@@ -14,6 +14,7 @@ const url = settings.url
 import Modal from 'react-native-modal';
 import SimpleToast from 'react-native-simple-toast';
 import { LinearGradient } from 'expo-linear-gradient';
+
 const screenHeight = Dimensions.get("screen").height
 class Clinics extends Component {
     constructor(props) {
@@ -22,7 +23,11 @@ class Clinics extends Component {
             clinics:[],
             showModal:false,
             selectedClinic:null,
-            selectedClinicIndex:null
+            selectedClinicIndex:null,
+            refreshing:false,
+            offset:0,
+            next:true,
+            first:true
         };
     }
     deleteClinic = async()=>{
@@ -38,12 +43,18 @@ class Clinics extends Component {
         }
     }
     getClinics =async()=>{
-        const api = `${url}/api/prescription/clinics/?storeType=Clinic`
+        this.setState({refreshing:true}) 
+        const api = `${url}/api/prescription/clinics/?storeType=Clinic&limit=10&offset=${this.state.offset}`
         console.log(api)
         const data =await HttpsClient.get(api)
         
         if(data.type=="success"){
-            this.setState({ clinics:data.data})
+            this.setState({ clinics: this.state.clinics.concat(data.data.results),refreshing:false})
+            if(data.data.next==null){
+                this.setState({next:false})
+            }
+        }else{
+            this.setState({ refreshing: false })
         }
     }
     searchClincs = async(query)=>{
@@ -59,8 +70,12 @@ class Clinics extends Component {
     componentDidMount() {
       this.getClinics()
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
-             
-            this.getClinics()
+             if(!this.state.first) {
+                 this.setState({ next: true, offset: 0, clinics: [] }, () => {
+                     this.getClinics()
+                 })
+             }
+          
         });
     }
     componentWillUnmount() {
@@ -72,6 +87,27 @@ class Clinics extends Component {
   
             return clinicName[0].toUpperCase();
       
+    }
+    refresh =()=>{
+        this.setState({ next: true, offset: 0, clinics: [] }, () => {
+            this.getClinics()
+        })
+    }
+    renderFooter = ()=>{
+        if(this.state.next){
+            return(
+                <ActivityIndicator size={"large"} color={themeColor}/>
+            )
+        }else{
+            return null
+        }
+    }
+    loadMore =()=>{
+        if(this.state.next){
+            this.setState({offset:this.state.offset+10},()=>{
+                this.getClinics()
+            })
+        }
     }
     render() {
         return (
@@ -112,8 +148,11 @@ class Clinics extends Component {
                         </View>}
                         {/* CHATS */}
                         <FlatList
-                         
-                           
+                            onEndReached={()=>{this.loadMore()}}
+                            onEndReachedThreshold={0.1}
+                            ListFooterComponent ={this.renderFooter()}
+                            onRefresh ={()=>{this.refresh()}}
+                            refreshing ={this.state.refreshing}
                             data={this.state.clinics}
 
                             keyExtractor={(item, index) => index.toString()}

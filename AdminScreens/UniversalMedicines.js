@@ -18,11 +18,12 @@ export default class UniversalMedicines extends Component {
        offset:0,
        next:true,
        cancelToken: undefined,
-       refreshing:false
+       refreshing:false,
+       first:true,
     };
   }
   getMedicines = async()=>{
-   
+   this.setState({first:false})
     const api = `${url}/api/prescription/medicines/?limit=10&offset=${this.state.offset}`
     const data = await HttpsClient.get(api)
     console.log(api)
@@ -49,9 +50,14 @@ export default class UniversalMedicines extends Component {
    componentDidMount(){
      this.getMedicines()
      this._unsubscribe = this.props.navigation.addListener('focus', () => {
-       this.setState({ offset: 0, next: true, medicines: []},()=>{
-         this.getMedicines()
-       })
+       if(!this.state.first){
+
+         this.setState({ offset: 0, next: true, medicines: [] }, () => {
+           this.getMedicines()
+         })
+       }
+
+     
     
      });
    }
