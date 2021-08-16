@@ -22,6 +22,7 @@ import ClincicPriscriptionStack from '../stacks/ClincicPriscriptionStack';
 import MedicalInventoryStack from '../stacks/MedicalInventoryStack';
 import ChatStack from '../stacks/ChatStack';
 import MedicalTabBar from '../components/MedicalTabBar';
+import OrdersStack from '../stacks/OrdersStack';
 const Tab = createBottomTabNavigator();
 
 
@@ -108,10 +109,18 @@ class MediacalTab extends Component {
                     })}
 
                 />
-                <Tab.Screen name="Inventory" component={MedicalInventoryStack}
+                {/* <Tab.Screen name="Inventory" component={MedicalInventoryStack}
                     options={({ route }) => ({
 
                         tabBarVisible: this.getTabBarVisibility8(route),
+
+                    })}
+
+                /> */}
+                   <Tab.Screen name="Orders" component={OrdersStack}
+                    options={({ route }) => ({
+
+                        tabBarVisible: this.getTabBarVisibility(route),
 
                     })}
 

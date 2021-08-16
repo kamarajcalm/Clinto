@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Keyboard, Alert } from 'react-native';
-import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, AntDesign } from '@expo/vector-icons';
+import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, AntDesign ,FontAwesome5} from '@expo/vector-icons';
 import settings from '../AppSettings';
 const themeColor = settings.themeColor
 export default class MedicalTabBar extends Component {
@@ -54,7 +54,12 @@ export default class MedicalTabBar extends Component {
 
             )
         }
-        if (label == "Chats") {
+        if (label == "Orders") {
+            return (
+                <FontAwesome5 name="business-time"  size={24} color={isFocused ? "#fff" : "gray"}/>
+            )
+        }
+            if (label == "Chats") {
             return (
                 <Ionicons name="chatbubble-ellipses" size={30} color={isFocused ? "#fff" : "gray"} />
             )

@@ -33,6 +33,7 @@ import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures'
 import Modal from 'react-native-modal';
 import {FlatList}  from 'react-native-gesture-handler';
 import LottieView from 'lottie-react-native';
+import * as Progress from 'react-native-progress';
 // import Image from 'react-native-scalable-image';
  class PrescriptionView extends Component {
   constructor(props) {
@@ -45,9 +46,22 @@ import LottieView from 'lottie-react-native';
          showModal2:false,
          selected:"Prescribed",
          prescribed:[],
-         medicinesGiven:[]
+         medicinesGiven:[],
+         counter:0,
+         progress:0
     };
-    } 
+    }
+    renderContent = () => (
+    <View
+      style={{
+        backgroundColor: '#fafafa',
+        padding: 16,
+        height: 450,
+      }}
+    >
+      <Text>Swipe down to close</Text>
+    </View>
+  ); 
      getDetails = async () => {
          let api = `${url}/api/prescription/prescriptions/${this.state.pk}/`
          const data = await HttpsClient.get(api)
@@ -202,8 +216,9 @@ import LottieView from 'lottie-react-native';
              </View>
          )
      }
+
     renderItem = (item) => {
-        console.log(item, "kkk")
+      
 
         if (item.medicinename.type == "Tablet" || item.medicinename.type == "Capsules") {
             return (
@@ -211,7 +226,7 @@ import LottieView from 'lottie-react-native';
                 <View style={{ marginTop: 10, flexDirection: "row" }}>
 
 
-                    <View style={{ flex: 0.8, paddingLeft: 20 }}>
+                    <View style={{ flex: 0.8, paddingLeft: 20, }}>
                         {item.morning_count != 0 && <View style={{}}>
                             <View style={{ flexDirection: "row" }}>
                                 <Text style={{ borderColor: "#000", borderRightWidth: 1, width: width * 0.2 }}>Morning </Text>
@@ -250,7 +265,26 @@ import LottieView from 'lottie-react-native';
                             <Text>Qty: {item.total_qty}</Text>
                         </View>
                     </View>
-
+                     <View style={{flex:0.2,}}>
+                          <TouchableOpacity 
+                             style={{height:height*0.04,width:"80%",backgroundColor:themeColor,alignItems:"center",justifyContent:"center",borderRadius:5}}
+                            onPress={()=>{
+                                this.setState({showModal:true},()=>{
+                                     this.interval = setInterval(() =>{
+                               
+                                       this.setState({ counter:this.state.counter+1000},()=>{
+                                           this.setState({progress:(this.state.counter*100/60000)/100})
+                            
+                                       })
+                                     }  ,1000);
+                                     this.searchanimation.play()
+                                });
+                                
+                           }}
+                          >
+                                <Text style={[styles.text,{color:"#fff"}]}>Buy</Text>
+                          </TouchableOpacity>
+                     </View>
 
                 </View>
             )
@@ -300,7 +334,14 @@ import LottieView from 'lottie-react-native';
                             <Text>Qty: {item.total_qty}</Text>
                         </View>
                     </View>
-
+                    <View style={{flex:0.2,}}>
+                          <TouchableOpacity 
+                             style={{height:height*0.04,width:"80%",backgroundColor:themeColor,alignItems:"center",justifyContent:"center",borderRadius:5}}
+                            onPress={()=>{}}
+                          >
+                                <Text style={[styles.text,{color:"#fff"}]}>Buy</Text>
+                          </TouchableOpacity>
+                     </View>
 
                 </View>
             )
@@ -350,7 +391,14 @@ import LottieView from 'lottie-react-native';
                             <Text>Qty: {1}</Text>
                         </View>
                     </View>
-
+                        <View style={{flex:0.2,}}>
+                          <TouchableOpacity 
+                             style={{height:height*0.04,width:"80%",backgroundColor:themeColor,alignItems:"center",justifyContent:"center",borderRadius:5}}
+                            onPress={()=>{}}
+                          >
+                                <Text style={[styles.text,{color:"#fff"}]}>Buy</Text>
+                          </TouchableOpacity>
+                     </View>
 
                 </View>
             )
@@ -398,7 +446,14 @@ import LottieView from 'lottie-react-native';
                             <Text>Qty: {item.total_qty}</Text>
                         </View>
                     </View>
-
+                        <View style={{flex:0.2,}}>
+                          <TouchableOpacity 
+                             style={{height:height*0.04,width:"80%",backgroundColor:themeColor,alignItems:"center",justifyContent:"center",borderRadius:5}}
+                            onPress={()=>{}}
+                          >
+                                <Text style={[styles.text,{color:"#fff"}]}>Buy</Text>
+                          </TouchableOpacity>
+                     </View>
 
                 </View>
             )
@@ -408,20 +463,28 @@ import LottieView from 'lottie-react-native';
 
                 <View style={{ marginTop: 10, flexDirection: "row", flex: 1 }}>
 
-                    <View style={{ flex: 0.77, paddingLeft: 20 }}>
+                    <View style={{ flex: 0.8, paddingLeft: 20 }}>
                         <View style={{ marginTop: 10 }}>
                             <Text style={[styles.text, { fontWeight: "bold" }]}>Comments:</Text>
                             <View>
                                 <Text style={[styles.text, { marginLeft: 10 }]}>{item.command}</Text>
                             </View>
                         </View>
+                          <View style={{ alignSelf: "flex-end" }}>
+                            <Text>Qty: {item.total_qty}</Text>
+                        </View>
                     </View>
-
-                    <View style={{}}>
-                        <Text>Qty: {item.total_qty}</Text>
-                    </View>
-
-
+                <View style={{flex:0.2,}}>
+                          <TouchableOpacity 
+                             style={{height:height*0.04,width:"80%",backgroundColor:themeColor,alignItems:"center",justifyContent:"center",borderRadius:5}}
+                            onPress={()=>{}}
+                          >
+                                <Text style={[styles.text,{color:"#fff"}]}>Buy</Text>
+                          </TouchableOpacity>
+                     </View>
+                
+                     
+                     
                 </View>
             )
         }
@@ -450,6 +513,106 @@ import LottieView from 'lottie-react-native';
                  break;
          }
      }
+     footer =()=>{
+         return(
+             <View style={{alignItems:"center",justifyContent:"center",marginVertical:20}}>
+                  <TouchableOpacity style={{height:height*0.04,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}>
+                         <Text style={[styles.text,{color:"#fff"}]}>Buy All</Text>
+                  </TouchableOpacity>
+             </View>
+         )
+     }
+    milliconverter = (millis)=>{
+        if (millis){
+            var minutes = Math.floor(millis / 60000);
+            var seconds = ((millis % 60000) / 1000).toFixed(0);
+            return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+        }
+      
+    }
+      bottomModal =()=>{
+        return(
+           <Modal 
+            swipeThreshold={100}
+            onSwipeComplete={() => { this.setState({ showModal:false})}}
+            swipeDirection="down"
+            animationOutTiming={50}
+            animationOut={"slideOutDown"}
+             onBackdropPress={() => { this.setState({ showModal:false})}}
+            style={{alignItems:"flex-end",marginHorizontal:0,flexDirection:"row",marginVertical:0}}
+             statusBarTranslucent={true}
+             deviceHeight={screenHeight}
+             isVisible={this.state.showModal}
+           >
+               <View style={{height:height*0.9,backgroundColor:"#fff",width,elevation:5,borderTopRightRadius:15,borderTopLeftRadius:15}}>
+                   <View style={{flexDirection:"row"}}>
+                       <View style={{flex:0.3}}>
+
+                       </View>
+                       <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
+                            <View style={{height:5,width:width*0.1,backgroundColor:"gray",marginVertical:10,borderRadius:5}}>
+                             </View>
+                       </View>
+                        <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                             <Text style={[styles.text,{color:"#000"}]}>{this.milliconverter(this.state.counter)}</Text> 
+                         </View>
+                   </View>
+        
+                   <View style={{flex:1}}>
+                     
+                         <View style={{flex:0.7,}}>
+                              <Progress.Bar 
+                               height={2}
+                               progress={this.state.progress}
+                               color={themeColor}
+                               width={width} 
+                               borderWidth={0}
+                               borderRadius={0}
+                              />
+                         </View>
+                        <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                        <LottieView
+                                ref={animation => {
+                                    this.searchanimation = animation;
+                                }}
+                                style={{
+
+                                      marginLeft:10,
+                                    width: width,
+                                    height: "80%",
+
+                                }}
+                         source={require('../assets/lottie/search.json')}
+                 
+                        />
+                         <View style={{marginTop:-50}}>
+                             <View>
+                                   <Text style={[styles.text,{color:"#000"}]}>Waiting For Medical Response</Text>
+                             </View>
+                             <View style={{alignItems:"center",justifyContent:"center"}}>
+                                  <TouchableOpacity style={{height:height*0.04,width:width*0.2,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,marginTop:5,borderRadius:5}}
+                                    onPress={()=>{this.setState({showModal:false,counter:0},()=>{
+                                           clearInterval(this.interval)
+                                          this.searchanimation.pause()
+                                    })}}
+                                  >
+                                      <Text style={[styles.text,{color:"#fff"}]}>Cancel</Text>
+                                  </TouchableOpacity>
+                             </View>
+                         </View>
+                         </View>
+                   </View>
+               
+               </View>
+           </Modal>
+        )
+     
+    }
+    componentDidUpdate(){
+        if(this.state.counter===60000){
+           clearInterval(this.interval);
+        }
+    }
   render() {
       const config = {
           velocityThreshold: 0.3,
@@ -535,6 +698,7 @@ import LottieView from 'lottie-react-native';
 
                             {this.state.selected =="Prescribed"?
                             <FlatList
+                             ListFooterComponent={this.footer()}
                              style={{height:"100%"}}
                             data={this.state.prescribed}
                             keyExtractor={(item, index) => index.toString()}
@@ -720,6 +884,9 @@ import LottieView from 'lottie-react-native';
                 </Modal>
                 {
                     this.lottieModal()
+                }
+                {
+                    this.bottomModal()
                 }
             </SafeAreaView>
 

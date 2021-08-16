@@ -33,6 +33,7 @@ class ViewMedicals extends Component {
     }
     getClinicDetails = async()=>{
         let api = `${url}/api/prescription/clinics/${this.state.item.id}/`
+        console.log(api)
         const data =await HttpsClient.get(api)
         if(data.type =="success"){
             this.setState({item:data.data})
@@ -40,6 +41,7 @@ class ViewMedicals extends Component {
     }
     componentDidMount() {
         this.getReceptionList()
+   
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
 
             this.getReceptionList()
