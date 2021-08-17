@@ -46,14 +46,14 @@ class AddPrescription extends Component {
                 medicines:[],
                 mobileNo:"",
                 patientsName:'',
-                Reason:'',
+                Reason:"",
                 healthIssues:[],
                 loading: false,
                 doctorFees:"",
                 sex,
                 healthIssue:"",
                 Age:"",
-                selectedSex:sex[0].value,
+                selectedSex:null,
                 nextVisit:null,
                 show1:false,
                 appointment_taken:false,
@@ -66,7 +66,8 @@ class AddPrescription extends Component {
                 containDrugs:false,
                 validityTimes:"0",
                 MedicinesGiven:[],
-                check:true
+                check:true,
+                selectedDiagonosis:[]
     };
   }
 
@@ -164,6 +165,10 @@ class AddPrescription extends Component {
             duplicate[index].is_drug = value
             return this.setState({ medicines: duplicate })
         }
+        if (type == "diagnosis") {
+            duplicate[index].diagonsis = value
+            return this.setState({ medicines: duplicate })
+        }
 }
 
     changeFunction2 = (type, value, index) => {
@@ -196,6 +201,7 @@ class AddPrescription extends Component {
                     i.invalid_count=0,
                     i.is_given = false,
                     i.command = ""
+                    i.diagonsis=null
             })
         }catch(e){
           
@@ -222,11 +228,11 @@ class AddPrescription extends Component {
         let api = `${url}/api/prescription/getTemplate/?clinic=${this.state?.appoinment?.clinic || this.props.clinic.clinicpk}&age=${age}&diagonsis=${disease}&type=mobile`
          console.log(api)
         let data = await HttpsClient.get(api)
-      
+       console.log(data)
         if(data.type=="success"){
     
             this.setState({ loading: false })
-            this.setState({ medicines: data.data.prescribed_medicines, MedicinesGiven: data.data.medicines_given})
+            this.setState({ medicines: this.state.medicines.concat(data.data.prescribed_medicines), MedicinesGiven:this.state.MedicinesGiven.concat(data.data.medicines_given)})
         }else{
             this.setState({ loading: false })
         }
@@ -293,7 +299,7 @@ class AddPrescription extends Component {
             sex:this.state.selectedSex,
             next_visit:this.state.nextVisit,
             address:this.state.Address,
-            diagonsis:this.state.Disease,
+            diagonsis:this.state.selectedDiagonosis,
             type:"mobile"
         }
     
@@ -318,7 +324,7 @@ class AddPrescription extends Component {
                     })
          
                 } else {
-                    this.showSimpleMessage("Try again", "#B22222", "danger")
+                    this.showSimpleMessage("Try again", "#B22222","danger")
                     this.setState({ modal: false })
                 }
            }else{
@@ -377,6 +383,7 @@ class AddPrescription extends Component {
                        Reason: data.data.user.appointment_reason,
                        appointment_taken: data.data.user.appointment_taken,
                        appointmentId: data.data.user.appointment,
+                       selectedSex:data.data.user.sex
                     },()=>{
                        this.searchTemplates(this.state.Age,this.state.Disease)
                     })
@@ -442,6 +449,15 @@ class AddPrescription extends Component {
          
            this.handleCheck()
         }
+    }
+    removeSelectedDiagonis =(item,index) =>{
+         let duplicate = this.state.selectedDiagonosis
+         duplicate.splice(index,1)
+         this.setState({selectedDiagonosis:duplicate,medicines:[],MedicinesGiven:[]},()=>{
+             this.state.selectedDiagonosis.forEach((item)=>{
+                 this.searchTemplates(this.state.Age, item)
+             })
+         })
     }
   render() {
       const { loading } = this.state;
@@ -513,7 +529,7 @@ class AddPrescription extends Component {
                              <View style={{marginLeft:10}}>
                                 <DropDownPicker
                                     items={this.state.sex}
-                                    defaultValue={this.state.sex[0]?.value}
+                                    defaultValue={this.state.selectedSex}
                                     containerStyle={{ height: 40, width: width * 0.4 }}
                                     style={{ backgroundColor: inputColor }}
                                     itemStyle={{
@@ -601,6 +617,22 @@ class AddPrescription extends Component {
                         </View>
                         <View style={{ marginTop: 20 }}>
                                 <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Diagnosis</Text>
+                                {
+                                    this.state.selectedDiagonosis.map((item,index)=>{
+                                            return(
+                                                <View style={{flexDirection:"row",alignItems:"center",justifyContent:"center",marginTop:5}} key={index}>
+                                                       <View>
+                                                              <Text style={[styles.text,{color:"#000"}]}>{item}</Text>
+                                                       </View>
+                                                       <TouchableOpacity 
+                                                         onPress={()=>{this.removeSelectedDiagonis(item,index)}}
+                                                       >
+                                                            <Entypo name="circle-with-cross" size={24} color="red" />
+                                                       </TouchableOpacity>
+                                                </View>
+                                            )
+                                    })
+                                }
                             <TextInput
                                 value={this.state.Disease}
                                 onChangeText={(Disease) => { this.searchDiseases(Disease) }}
@@ -621,8 +653,9 @@ class AddPrescription extends Component {
                                        <TouchableOpacity 
                                            key ={index}
                                            style={{padding:15,justifyContent:"center",width:width*0.9,borderColor:"#333",borderBottomWidth:0.3,height:35}}
-                                           onPress={() => { this.setState({ Disease: i.title,Diseases:[]},()=>{
-                                               this.searchTemplates(this.state.Age, this.state.Disease)
+                                           onPress={() => { this.setState({ Disease: "",Diseases:[]},()=>{
+                                               this.state.selectedDiagonosis.push(i.title)
+                                               this.searchTemplates(this.state.Age, i.title)
                                            })}}
                                        >
                                            <Text style={[styles.text,{color:themeColor,}]}>{i.title}</Text>
@@ -668,7 +701,13 @@ class AddPrescription extends Component {
                 {
                    this.state.medicines.map((item,index)=>{
                         return(
-                            <MedicineDetails item={item} index={index} changeFunction={(type, value, index) => { this.changeFunction(type, value, index)}} />
+                            <MedicineDetails 
+                              item={item} 
+                              index={index} 
+                              changeFunction={(type, value, index) => { this.changeFunction(type, value, index)}} 
+                              diagonsis={[...this.state.selectedDiagonosis]}
+
+                              />
                         )
                     })
                 }

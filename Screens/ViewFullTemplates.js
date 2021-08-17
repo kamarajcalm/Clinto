@@ -60,6 +60,7 @@ class ViewFullTemplates extends Component {
     }
     getMedicines= async()=>{
         let api = `${url}/api/prescription/templateEdit/?templateid=${this.state.item.id}`
+        console.log(api)
         const data = await HttpsClient.get(api)
         if(data.type =="success"){
             this.setState({ medicines: data.data.medicines, template:data.data,selectedCategory:data.data.category},()=>{
@@ -195,9 +196,7 @@ class ViewFullTemplates extends Component {
             return this.showSimpleMessage("try again","red","danger")
         }
     }
-    componentDidMount() {
-     
-    }
+
 
     _keyboardDidShow = () => {
         this.setState({ showTab: false })

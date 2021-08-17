@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView, AsyncStorage, ScrollView,TextInput } from 'react-native';
+import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView, AsyncStorage, ScrollView,TextInput, ActivityIndicator } from 'react-native';
 import settings from '../AppSettings';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
@@ -12,11 +12,24 @@ import * as  ImagePicker from 'expo-image-picker';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import moment from 'moment';
 import HttpsClient from '../api/HttpsClient';
+import DropDownPicker from 'react-native-dropdown-picker';
 const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
+const inputColor=settings.TextInput;
 const url =settings.url
 class CreateAccount extends Component {
     constructor(props) {
+        let sex= [
+          {
+             label:"Male",value:'Male'
+          },
+          {
+              label: "Female", value: 'Female'
+          },
+          {
+              label: "Others", value: 'Others'
+          },
+    ]
         super(props);
         this.state = {
             name:"",
@@ -31,11 +44,52 @@ class CreateAccount extends Component {
             show:false,
             Password:'',
             Password2:"",
-            lastname:""
+            lastname:"",
+            sex,
+            selectedSex:null
         };
     }
      CreateAccount = async()=>{
+         this.setState({creating:true})
+         if(this.state.name==""){
+                 this.setState({creating:false})
+            return this.showSimpleMessage("Please Enter Name", "#dd7030")
+         }
+         if(this.state.lastname==""){
+               this.setState({creating:false})
+            return this.showSimpleMessage("Please Enter lastname", "#dd7030")
+         }
+         if(this.state.dob==""){
+               this.setState({creating:false})
+            return this.showSimpleMessage("Please Enter dob", "#dd7030")
+         }
+         if(this.state.mobileNO.length!=10){
+               this.setState({creating:false})
+            return this.showSimpleMessage("Please Enter 10 digit phone Number", "#dd7030")
+         }
+        if(this.state.email=""){
+              this.setState({creating:false})
+            return this.showSimpleMessage("Please Enter email", "#dd7030")
+         }
+        if(this.state.bloodGroup=""){
+              this.setState({creating:false})
+            return this.showSimpleMessage("Please Enter bloodGroup", "#dd7030")
+         }
+         if(this.state.Password==""){
+               this.setState({creating:false})
+            return this.showSimpleMessage("Please Enter Password", "#dd7030")
+         }
+             if(this.state.Password2==""){
+                   this.setState({creating:false})
+            return this.showSimpleMessage("Please Enter Confirm Password  ", "#dd7030")
+         }
+        if(this.state.selectedSex==null){
+              this.setState({creating:false})
+            return this.showSimpleMessage("Please Select Sex", "#dd7030")
+         }
+      
          if(this.state.Password!=this.state.Password2){
+               this.setState({creating:false})
             return this.showSimpleMessage("Password not matched", "#dd7030")
          }
        let api = `${url}/api/profile/userRegister/`
@@ -47,13 +101,16 @@ class CreateAccount extends Component {
            email:this.state.email,
            blood_group:this.state.bloodGroup,
            password:this.state.Password,
+           sex:this.state.selectedSex,
            bodyType:'formData'
        }
        let post  =await HttpsClient.post(api,sendData)
       if(post.type =="success"){
+            this.setState({creating:false})
           this.showSimpleMessage("Account Created SuccessFully", "#00A300", "success")
           return this.props.navigation.goBack()
       }else{
+            this.setState({creating:false})
           this.showSimpleMessage(`${post?.data?.failed}`, "#B22222", "danger")
       }
     }
@@ -244,7 +301,32 @@ class CreateAccount extends Component {
                                         style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
-                                <View >
+                                       <View style={{ marginTop: 20 ,flexDirection:"row"}}>
+                            <View style={{alignItems:"center",justifyContent:"center"}}>
+                                    <Text style={[styles.text]}>Sex</Text>
+
+                            </View>
+                           
+                             <View style={{marginLeft:10}}>
+                                <DropDownPicker
+                                    placeholder={"select sex"}
+                                    items={this.state.sex}
+                                    defaultValue={this.state.selectedSex}
+                                    containerStyle={{ height: 30, width: width * 0.4 }}
+                                    style={{ backgroundColor: inputColor }}
+                                    itemStyle={{
+                                        justifyContent: 'flex-start'
+                                    }}
+                                    dropDownStyle={{ backgroundColor: inputColor, width: width * 0.4 }}
+                                    onChangeItem={item => this.setState({
+                                        selectedSex: item.value
+                                    })}
+
+                                />
+                             </View>
+                          
+                        </View>
+                                <View style={{marginTop:10}}>
                                     <Text style={styles.text}>Date of Birth</Text>
                                     <View style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10,flexDirection:"row" }}>
                                         <TouchableOpacity style={{alignItems:'center',justifyContent:'center'}}
@@ -262,7 +344,8 @@ class CreateAccount extends Component {
                                 <View >
                                     <Text style={styles.text}>Mobile No</Text>
                                     <TextInput
-                                       keyboardType ="numeric"
+                                        maxLength={10}
+                                        keyboardType ="numeric"
                                         value={this.state.mobileNO}
                                         onChangeText={(mobileNO) => { this.setState({ mobileNO }) }}
                                         selectionColor={themeColor}
@@ -368,11 +451,15 @@ class CreateAccount extends Component {
 
                                 </View> */}
                                 <View style={{ alignItems: 'center', justifyContent: 'center' ,marginVertical:40}}>
-                                    <TouchableOpacity style={{ width: width * 0.4, height: height * 0.05, borderRadius: 10, alignItems: 'center', justifyContent: "center", backgroundColor: themeColor }}
+                                    {!this.state.creating?<TouchableOpacity style={{ width: width * 0.4, height: height * 0.05, borderRadius: 10, alignItems: 'center', justifyContent: "center", backgroundColor: themeColor }}
                                       onPress ={()=>{this.CreateAccount()}}
                                     >
                                         <Text style={[styles.text, { color: "#fff" }]}>Create</Text>
-                                    </TouchableOpacity>
+                                    </TouchableOpacity>:
+                                      <View  style={{ width: width * 0.4, height: height * 0.05, borderRadius: 10, alignItems: 'center', justifyContent: "center", backgroundColor: themeColor }}>
+                                            <ActivityIndicator size={"large"} color={"#fff"}/>
+                                      </View>
+                                    }
                                 </View>
                                 <DateTimePickerModal
                                     isVisible={this.state.show}

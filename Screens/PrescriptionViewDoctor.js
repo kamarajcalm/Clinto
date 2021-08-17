@@ -334,7 +334,13 @@ class PrescriptionViewDoctor extends Component {
         }
 
     }
-
+sepeartor =()=>{
+    return(
+        <View>
+            <Text style={[styles.text,{color:"#000"}]}> , </Text>
+        </View>
+    )
+}
     renderHeader =()=>{
         return(
             <View>
@@ -350,9 +356,24 @@ class PrescriptionViewDoctor extends Component {
                     <View style={{ alignItems: "center", justifyContent: "center" }}>
                         <Text style={[styles.text, { }]}>Diagnosis : </Text>
                     </View>
-                    <View style={{ alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, {color:"#000"}]}>{this.state.item.diseaseTitle}</Text>
+                    <View style={{flexDirection:"row"}}>
+                                    <FlatList 
+                                      horizontal={true}
+                       data={this.state.item.diseaseTitle}
+                       keyExtractor={(item,index)=>index.toString()}
+                       ItemSeparatorComponent={this.sepeartor}
+                       renderItem ={({item,index})=>{
+                            return(
+                             <View style={{ alignItems: "center", justifyContent: "center" ,flexDirection:"row"}}>
+                                 <Text style={[styles.text, {color:"#000"}]}>{item}</Text>
+                              </View>
+                            )
+                       }}
+                    
+                    />
                     </View>
+            
+                  
                 </View>
            
                 <View style={{ marginHorizontal: 20, flexDirection: "row", marginTop: 10 ,alignItems:"center",justifyContent:"space-around"}}>

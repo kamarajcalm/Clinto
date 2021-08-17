@@ -15,7 +15,7 @@ import {
      ActivityIndicator,
      AsyncStorage
 } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { Feather ,FontAwesome,FontAwesome5} from '@expo/vector-icons';
 const width = Dimensions.get("screen").width
 const height = Dimensions.get("screen").height
 const deviceHeight = Dimensions.get("screen").height
@@ -48,7 +48,18 @@ import * as Progress from 'react-native-progress';
          prescribed:[],
          medicinesGiven:[],
          counter:0,
-         progress:0
+         progress:0,
+         clinics:[
+             {
+                 name:"Muthu Clinic"
+             },
+               {
+                 name:"Sai Clinic"
+             },
+                {
+                 name:"dev Clinic"
+             },
+         ]
     };
     }
     renderContent = () => (
@@ -179,6 +190,13 @@ import * as Progress from 'react-native-progress';
 
          )
      }
+     sepeartor =()=>{
+    return(
+        <View>
+            <Text style={[styles.text,{color:"#000"}]}> , </Text>
+        </View>
+    )
+}
      renderHeader = () => {
          return (
              <View>
@@ -194,9 +212,22 @@ import * as Progress from 'react-native-progress';
                      <View style={{ alignItems: "center", justifyContent: "center" }}>
                          <Text style={[styles.text, { color: "#000", }]}>Diagnosis : </Text>
                      </View>
-                     <View style={{ alignItems: "center", justifyContent: "center" }}>
-                         <Text style={[styles.text, {}]}>{this.state.item?.new_disease}</Text>
-                     </View>
+                        <View style={{flexDirection:"row"}}>
+                                    <FlatList 
+                                      horizontal={true}
+                       data={this.state.item.diseaseTitle}
+                       keyExtractor={(item,index)=>index.toString()}
+                       ItemSeparatorComponent={this.sepeartor}
+                       renderItem ={({item,index})=>{
+                            return(
+                             <View style={{ alignItems: "center", justifyContent: "center" ,flexDirection:"row"}}>
+                                 <Text style={[styles.text, {color:"#000"}]}>{item}</Text>
+                              </View>
+                            )
+                       }}
+                    
+                    />
+                    </View>
                  </View>
 
                  <View style={{ marginHorizontal: 20, flexDirection: "row", marginTop: 10, alignItems: "center", justifyContent: "space-around" }}>
@@ -516,7 +547,20 @@ import * as Progress from 'react-native-progress';
      footer =()=>{
          return(
              <View style={{alignItems:"center",justifyContent:"center",marginVertical:20}}>
-                  <TouchableOpacity style={{height:height*0.04,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}>
+                  <TouchableOpacity style={{height:height*0.04,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}
+                   onPress={()=>{
+                             this.setState({showModal:true},()=>{
+                                     this.interval = setInterval(() =>{
+                               
+                                       this.setState({ counter:this.state.counter+1000},()=>{
+                                           this.setState({progress:(this.state.counter*100/60000)/100})
+                            
+                                       })
+                                     }  ,1000);
+                                     this.searchanimation.play()
+                                });
+                   }}
+                  >
                          <Text style={[styles.text,{color:"#fff"}]}>Buy All</Text>
                   </TouchableOpacity>
              </View>
@@ -529,6 +573,20 @@ import * as Progress from 'react-native-progress';
             return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
         }
       
+    }
+    headers =()=>{
+        return(
+            <View style={{alignItems:"center",justifyContent:"center",marginTop:10}}>
+                <Text style={[styles.text,{color:"#000",textDecorationLine:"underline",fontSize:20}]}>Available Clinics :</Text>
+            </View>
+        )
+    }
+    seperator =() =>{
+        return(
+            <View style={{height:0.3,backgroundColor:"gray"}}>
+
+            </View>
+        )
     }
       bottomModal =()=>{
         return(
@@ -567,7 +625,60 @@ import * as Progress from 'react-native-progress';
                                color={themeColor}
                                width={width} 
                                borderWidth={0}
-                               borderRadius={0}
+                               borderRadius={1}
+                              />
+                              <FlatList 
+                                // ItemSeparatorComponent={this.seperator}
+                                ListHeaderComponent={this.headers()}
+                                data={this.state.clinics}
+                                keyExtractor={(item,index)=>index.toString()}
+                                renderItem={({item,index})=>{
+                                    return(
+                                        <View style={{flexDirection:"row",marginVertical:20}}>
+                                                 <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
+                                                         <Text style={[styles.text,{color:"#000"}]}>{index+1} .</Text>
+                                                 </View>
+                                                <View style={{flex:0.6,alignItems:"center",justifyContent:"space-around"}}>
+                                                    <View>
+                                                        <Text style={[styles.text,{color:"#000"}]}>{item.name}</Text>
+
+                                                    </View>
+                                                     <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around",marginTop:10}}>
+                                                          <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                                        onPress={() => {
+                                            if (Platform.OS == "android") {
+                                                Linking.openURL(`tel:${this.state?.clinicDetails?.mobile}`)
+                                            } else {
+
+                                                Linking.canOpenURL(`telprompt:${this.state?.clinicDetails?.mobile}`)
+                                            }
+                                         }}
+                                    >
+                                        <FontAwesome name="phone" size={20} color="#63BCD2" />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                                        onPress={() => {
+                                            Linking.openURL(
+                                                `https://www.google.com/maps/dir/?api=1&destination=` +
+                                                this.state.item.lat +
+                                                `,` +
+                                                this.state.item.long +
+                                                `&travelmode=driving`
+                                            );
+                                        }}
+                                    >
+                                        <FontAwesome5 name="directions" size={20} color="#63BCD2" />
+                                    </TouchableOpacity>
+                                                     </View>
+                                                </View>
+                                                <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                                                    <TouchableOpacity style={{height:height*0.04,width:"80%",alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}>
+                                                          <Text style={[styles.text,{color:"#fff"}]}>Place Order</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                        </View>
+                                    )
+                                }}
                               />
                          </View>
                         <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
@@ -577,7 +688,7 @@ import * as Progress from 'react-native-progress';
                                 }}
                                 style={{
 
-                                      marginLeft:10,
+                                    marginLeft:10,
                                     width: width,
                                     height: "80%",
 
@@ -919,6 +1030,13 @@ const styles = StyleSheet.create({
         shadowOpacity: 0,
         shadowRadius: 4.65,
         elevation: 6,
+    },
+        boxWithShadow: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        elevation: 5
     }
 });
 
