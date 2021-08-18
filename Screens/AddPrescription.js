@@ -680,7 +680,12 @@ class AddPrescription extends Component {
                                 this.state.MedicinesGiven.map((item, index) => {
                                     return (
                                       
-                                        <MedicineDetails2 item={item} index={index} changeFunction={(type, value, index) => { this.changeFunction2(type, value, index) }}/>
+                                        <MedicineDetails2 
+                                        item={item} 
+                                        index={index} 
+                                        changeFunction={(type, value, index) => { this.changeFunction2(type, value, index) }}
+                                        diagonsis={[...this.state.selectedDiagonosis]}
+                                        />
                                       
                                     )
                                 })

@@ -899,14 +899,14 @@ class PrescriptionView extends Component {
                      </TouchableOpacity>
                
                  </View>}
-                    <View style={{ position: "absolute", width, justifyContent: "center", bottom: 130, left: 20 }}>
+                    {/* <View style={{ position: "absolute", width, justifyContent: "center", bottom: 130, left: 20 }}>
                       <TouchableOpacity 
                             onPress={() => { this.props.navigation.navigate("BillPrescription",{item:this.state.item})}}
                             style={{ backgroundColor: themeColor, height: height * 0.05, width: width * 0.4, alignItems: 'center', justifyContent: 'center', borderRadius: 5 }}
                       >
                             <Text style={[styles.text, { color: "#fff" }]}>Create Bill</Text>
                       </TouchableOpacity>
-                  </View>
+                  </View> */}
                     {
                         this.lottieModal()
                     }

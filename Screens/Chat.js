@@ -17,7 +17,7 @@ import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
     const routes = [
       { key: 'Clinics', title: 'Clinics' },
       { key: 'Doctors', title: 'Doctors' },
-      { key: 'Medicals', title: 'Medicals'},
+      { key: 'Medicals', title: 'Pharmacy'},
     ];
     super(props);
     this.state = {

@@ -67,7 +67,7 @@ const url =settings.url
    }
   render() {
     const {location} =this.state
-   console.log(this.state.ma)
+ 
     return (
         <>
         

@@ -12,24 +12,33 @@ import CheckBox from '@react-native-community/checkbox';
    {
      medicineName:"Dolomites",
      requiredQuantity:5,
-     customerName:"kamaraj"
+     customerName:"kamaraj",
+     age:22,
+     sex:"Male",
+     Reason:"Fever"
    },
    {
      customerName:"kamaraj",
      medicineName:"Cipla",
-     requiredQuantity:5
+     requiredQuantity:5,
+     age:22,
+     sex:"Male",
+     Reason:"Fever"
    },
    {
-    customerName:"kamaraj",
+     customerName:"kamaraj",
      medicineName:"paracetomol",
-     requiredQuantity:5
+     requiredQuantity:5,
+      age:22,
+     sex:"Male",
+     Reason:"Fever"
    },
  ]
 export default class Requests extends Component {
       constructor(props) {
         super(props);
        this.state = {
-         availabilityModal:true,
+         availabilityModal:false,
          orderRequestModal:false,
          medicines:[
            {
@@ -139,11 +148,15 @@ export default class Requests extends Component {
                                 />
                     </View>
                     <View style={{flex:0.2,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}>
-                         <TouchableOpacity style={{height:height*0.04,alignItems:"center",justifyContent:"center",backgroundColor:"green",width:width*0.23,borderRadius:5}}>
+                         <TouchableOpacity style={{height:height*0.04,alignItems:"center",justifyContent:"center",backgroundColor:"green",width:width*0.23,borderRadius:5}}
+                          onPress={()=>{this.setState({availabilityModal:false})}}
+                         >
                               <Text style={[styles.text,{color:"#fff"}]}>Yes</Text>
                          </TouchableOpacity>
-                             <TouchableOpacity style={{height:height*0.04,alignItems:"center",justifyContent:"center",backgroundColor:"red",width:width*0.23,borderRadius:5}}>
-                              <Text style={[styles.text,{color:"#fff"}]}>NO</Text>
+                             <TouchableOpacity style={{height:height*0.04,alignItems:"center",justifyContent:"center",backgroundColor:"red",width:width*0.23,borderRadius:5}}
+                              onPress={()=>{this.setState({availabilityModal:false})}}
+                             >
+                              <Text style={[styles.text,{color:"#fff"}]}>No</Text>
                          </TouchableOpacity>
                     </View>
               </View>
@@ -160,25 +173,49 @@ export default class Requests extends Component {
             ItemSeparatorComponent={this.separator}
             renderItem ={({item,index})=>{
                    return(
-                     <View style={{height:height*0.2,backgroundColor:"#fafafa",}}>
-                          <View style={{flex:0.6,alignItems:"center",justifyContent:"space-around"}}>
-                            <View>
-                               <Text style={[styles.text]}>Name: {item.customerName}</Text>
+                     <View style={{height:height*0.1,backgroundColor:"#fafafa",flexDirection:"row",marginVertical:10}}>
+                          <View style={{flex:0.6,}}>
+                            <View style={{flexDirection:"row",marginHorizontal:15}}>
+                              <View style={{height: 30, alignItems:"center",justifyContent:"center"}}>
+                                   <Text style={[styles.text,{color:"#000"}]}>{index+1} .</Text>
+                              </View>
+                                <View style={{marginLeft:10,height:30,alignItems:"center",justifyContent:"center"}}>
+                                    <Text style={[styles.text,{color:"#000",fontWeight:"bold"}]}>{item.customerName}</Text>
+                                </View>
+                                <View style={{marginLeft:10,height:30,alignItems:"center",justifyContent:"center"}}>
+                                    <Text style={[styles.text]}>({item.age}-{item.sex})</Text>
+                                </View>
+                                <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                                        onPress={() => {
+                                            if (Platform.OS == "android") {
+                                                Linking.openURL(`tel:${this.state?.clinicDetails?.mobile}`)
+                                            } else {
+
+                                                Linking.canOpenURL(`telprompt:${this.state?.clinicDetails?.mobile}`)
+                                            }
+                                          }}
+                                    >
+                                        <FontAwesome name="phone" size={20} color="#63BCD2" />
+                             </TouchableOpacity>
+                                {/* <View>
+                                      <Text style={[styles.text,{color:"#000"}]}>{item.medicineName} :{item.requiredQuantity}</Text>
+                                </View> */}
                             </View>
-                              <View>
-                                    <Text style={[styles.text,{color:"#000"}]}>{item.medicineName} :{item.requiredQuantity}</Text>
+                              <View style={{marginLeft:30}}>
+                                    <Text style={[styles.text,{color:"#000"}]}>Reason : {item.Reason}</Text>
                               </View>
                                
                           </View>
-                          <View style={{flex:0.4,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}>
+
+                          <View style={{flex:0.4,alignItems:"center",justifyContent:"space-around",}}>
                                   <View>
-                                      <TouchableOpacity style={{height:height*0.05,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:"#238a1c",borderRadius:5}}>
-                                            <Text style={[styles.text,{color:"#fff"}]}>Accept</Text>
+                                      <TouchableOpacity style={{}}>
+                                            <Text style={[styles.text,{color:"green",textDecorationLine:"underline"}]}>Accept</Text>
                                       </TouchableOpacity>
                                   </View>
                                   <View>
-                              <TouchableOpacity style={{height:height*0.05,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:"#94240d",borderRadius:5}}>
-                                            <Text style={[styles.text,{color:"#fff"}]}>Reject</Text>
+                              <TouchableOpacity style={{}}>
+                                            <Text style={[styles.text,{color:"red",textDecorationLine:"underline"}]}>Reject</Text>
                                       </TouchableOpacity>
                                   </View>
                           </View>

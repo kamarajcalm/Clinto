@@ -15,7 +15,7 @@ import {
      ActivityIndicator,
      AsyncStorage
 } from 'react-native';
-import { Feather ,FontAwesome,FontAwesome5} from '@expo/vector-icons';
+import { Feather ,FontAwesome,FontAwesome5,AntDesign,Entypo} from '@expo/vector-icons';
 const width = Dimensions.get("screen").width
 const height = Dimensions.get("screen").height
 const deviceHeight = Dimensions.get("screen").height
@@ -38,8 +38,10 @@ import * as Progress from 'react-native-progress';
  class PrescriptionView extends Component {
   constructor(props) {
     super(props);
+    let item =  this.props?.route?.params?.item||null
+
     this.state = {
-         item: this.props?.route?.params?.item||null,
+         item,
          valid: this.props.route?.params?.item?.active,
          load:false,
          pk: this.props?.route?.params?.pk ||null,
@@ -59,7 +61,9 @@ import * as Progress from 'react-native-progress';
                 {
                  name:"dev Clinic"
              },
-         ]
+         ],
+         buy:false,
+         selectedItems:[]
     };
     }
     renderContent = () => (
@@ -93,13 +97,16 @@ import * as Progress from 'react-native-progress';
          }
      }
      filterMedicines = () => {
-         const prescribed = this.state.item.medicines.filter((item) => !item.is_given)
+         let prescribed = this.state.item.medicines.filter((item) => !item.is_given)
          const medicinesGiven = this.state.item.medicines.filter((item) => item.is_given)
-         this.setState({ prescribed, medicinesGiven })
+         prescribed.forEach((item)=>{
+            item.isAdded = true,
+            item.addedQuantity = item.total_qty
+         })
+         this.setState({medicinesGiven,prescribed})
      }
 
     componentDidMount(){
-
         this.validateAnimations()
         if(this.state.pk ==null){
             this.filterMedicines()
@@ -193,7 +200,7 @@ import * as Progress from 'react-native-progress';
      sepeartor =()=>{
     return(
         <View>
-            <Text style={[styles.text,{color:"#000"}]}> , </Text>
+            <Text style={[styles.text,{color:"#000"}]}></Text>
         </View>
     )
 }
@@ -247,8 +254,75 @@ import * as Progress from 'react-native-progress';
              </View>
          )
      }
+     addMedicine =(item,index) =>{
+         let duplicate = this.state.prescribed
+         duplicate[index].isAdded = true
+         duplicate[index].addedQuantity = item.total_qty
+         this.setState({prescribed:duplicate})
+     }
+     decreaseQuantity = (item,index)=>{
+        let duplicate = this.state.prescribed
+         duplicate[index].addedQuantity -= 1
+         if(duplicate[index].addedQuantity==0){
+            duplicate[index].isAdded = false
+         }
+         this.setState({prescribed:duplicate})
+     }
+     addQuantity =(item,index) =>{
+        let duplicate = this.state.prescribed
+        if(duplicate[index].addedQuantity==duplicate[index].total_qty){
+             return this.showSimpleMessage("Max Qty Reached","orange","info")
+        }
+         duplicate[index].addedQuantity += 1
+     
+         this.setState({prescribed:duplicate})
+     }
+validateButton = (item,index) =>{
+    if(this.state.buy){
 
-    renderItem = (item) => {
+           return(
+    
+            <>
+                  {! item.isAdded&&<TouchableOpacity 
+                             style={{height:height*0.04,width:"80%",backgroundColor:themeColor,alignItems:"center",justifyContent:"center",borderRadius:5}}
+                             onPress={()=>{
+                               this.addMedicine(item,index)
+                                
+                           }}
+                          >
+                                <Text style={[styles.text,{color:"#fff"}]}>Add</Text>
+              </TouchableOpacity>}
+               {
+                   item.isAdded &&<View
+                     style={{height:height*0.04,width:"90%",backgroundColor:themeColor,alignItems:"center",justifyContent:"space-around",borderRadius:5,flexDirection:"row"}}
+                   >
+                         <TouchableOpacity 
+                           onPress={()=>{
+                               this.decreaseQuantity(item,index)
+                           }}
+                         >
+                             <AntDesign name={"minus"} size={14} color="#fff" />
+                         </TouchableOpacity>
+                         <Text style={[styles.text,{color:"#fff"}]}>{item.addedQuantity}</Text>
+                           <TouchableOpacity 
+                             onPress={()=>{
+                               this.addQuantity(item,index)
+                           }}
+                           >
+                                 <AntDesign name="plus" size={14} color="#fff" />
+                         </TouchableOpacity>
+                   </View>
+               }
+            </>
+            
+    )
+    }else{
+        return null
+    }
+
+        
+}
+    renderItem = (item,index) => {
       
 
         if (item.medicinename.type == "Tablet" || item.medicinename.type == "Capsules") {
@@ -297,26 +371,11 @@ import * as Progress from 'react-native-progress';
                         </View>
                     </View>
                      <View style={{flex:0.2,}}>
-                          <TouchableOpacity 
-                             style={{height:height*0.04,width:"80%",backgroundColor:themeColor,alignItems:"center",justifyContent:"center",borderRadius:5}}
-                            onPress={()=>{
-                                this.setState({showModal:true},()=>{
-                                     this.interval = setInterval(() =>{
-                               
-                                       this.setState({ counter:this.state.counter+1000},()=>{
-                                           this.setState({progress:(this.state.counter*100/60000)/100})
-                            
-                                       })
-                                     }  ,1000);
-                                     this.searchanimation.play()
-                                });
-                                
-                           }}
-                          >
-                                <Text style={[styles.text,{color:"#fff"}]}>Buy</Text>
-                          </TouchableOpacity>
+                         {
+                             this.validateButton(item,index)
+                         }
                      </View>
-
+                  
                 </View>
             )
         }
@@ -546,10 +605,26 @@ import * as Progress from 'react-native-progress';
      }
      footer =()=>{
          return(
-             <View style={{alignItems:"center",justifyContent:"center",marginVertical:20}}>
-                  <TouchableOpacity style={{height:height*0.04,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}
+             <View style={{alignItems:"center",justifyContent:"space-around",marginVertical:20,flexDirection:"row"}}>
+                 {!this.state.buy&& <TouchableOpacity style={{height:height*0.04,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}
                    onPress={()=>{
-                             this.setState({showModal:true},()=>{
+                         this.setState({buy:true})
+                   }}
+                  >
+                         <Text style={[styles.text,{color:"#fff"}]}>Buy</Text>
+                  </TouchableOpacity>}
+                  {
+                        this.state.buy&&<>
+                           <TouchableOpacity style={{height:height*0.04,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}
+                   onPress={()=>{
+                       
+                    }}
+                  >
+                         <Text style={[styles.text,{color:"#fff"}]}>Place Order</Text>
+                  </TouchableOpacity>
+                       <TouchableOpacity style={{height:height*0.04,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}
+                   onPress={()=>{
+                           this.setState({showModal:true},()=>{
                                      this.interval = setInterval(() =>{
                                
                                        this.setState({ counter:this.state.counter+1000},()=>{
@@ -559,10 +634,12 @@ import * as Progress from 'react-native-progress';
                                      }  ,1000);
                                      this.searchanimation.play()
                                 });
-                   }}
+                    }}
                   >
-                         <Text style={[styles.text,{color:"#fff"}]}>Buy All</Text>
+                         <Text style={[styles.text,{color:"#fff"}]}>Cancel</Text>
                   </TouchableOpacity>
+                        </>
+                  }
              </View>
          )
      }
@@ -724,6 +801,11 @@ import * as Progress from 'react-native-progress';
            clearInterval(this.interval);
         }
     }
+    removeMedicine =(item,index)=>{
+       let duplicate = this.state.prescribed
+       duplicate[index].isAdded = false
+       this.setState({prescribed:duplicate})
+    }
   render() {
       const config = {
           velocityThreshold: 0.3,
@@ -815,7 +897,7 @@ import * as Progress from 'react-native-progress';
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item, index }) => {
                                 return (
-                                    <TouchableOpacity style={{
+                                    <View style={{
                                         paddingBottom:10,
                                         flex: 1,
                                         borderBottomWidth: 0.5,
@@ -838,10 +920,16 @@ import * as Progress from 'react-native-progress';
                                         </View>
 
                                         {
-                                            this.renderItem(item)
+                                            this.renderItem(item,index)
                                         }
-                                     
-                                    </TouchableOpacity>
+                                    {item.isAdded&&this.state.buy&&<View style={{position:"absolute",right:20,}}>
+                                                <TouchableOpacity
+                                                  onPress={()=>{this.removeMedicine(item,index)}}
+                                                >
+                                                    <Entypo name="circle-with-cross" size={24} color="red" />
+                                                </TouchableOpacity>
+                                         </View>}
+                                    </View>
                                 )
                             }}
                         />:
@@ -850,7 +938,7 @@ import * as Progress from 'react-native-progress';
                           keyExtractor={(item,index)=>index.toString()}
                           renderItem ={({item,index})=>{
                                return(
-                                   <TouchableOpacity style={{
+                                   <View style={{
                                        paddingBottom: 10,
                                        flex: 1,
                                        borderBottomWidth: 0.5,
@@ -892,7 +980,7 @@ import * as Progress from 'react-native-progress';
                                                <Text style={[styles.text]}>count : {item.total_qty} </Text>
                                            </View>
                                        </View>
-                                   </TouchableOpacity>
+                                   </View>
                                )
                           }}
                         />

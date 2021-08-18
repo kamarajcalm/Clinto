@@ -4,13 +4,17 @@ import { AntDesign, Entypo } from '@expo/vector-icons';
 import settings from '../AppSettings'
 const fontFamily = settings.fontFamily
 const themeColor =settings.themeColor
-const {height,width} = Dimensions.get("window")
+const {height,width} = Dimensions.get("window");
+const inputColor = settings.TextInput;
+import DropDownPicker from 'react-native-dropdown-picker';
 export default class MedicineDetails2 extends Component {
   constructor(props) {
     super(props);
     this.state = {
         qty: this.props.item.total_qty.toString()||"",
-        comment: this.props.item.command||""
+        comment: this.props.item.command||"",
+        diagnosis: [],
+         selectedDiagnosis: null
     };
   }
     changeQty = (text) => {
@@ -22,6 +26,37 @@ export default class MedicineDetails2 extends Component {
         this.setState({ comment: comment }, () => {
             this.props.changeFunction("comment", this.state.comment, this.props.index)
         })
+    }
+        getDiagnosis = () => {
+        let diagnosis = []
+        this.props.diagonsis.forEach((item) => {
+            let pushObj = {
+                label: item,
+                value: item
+            }
+            diagnosis.push(pushObj)
+        })
+        this.setState({ diagnosis }, () => {
+            if (this.props.item.diagonsis) {
+                let index = this.props.diagonsis.findIndex((item) => {
+                    return item == this.props.item.diagonsis
+                })
+                if (index != -1) {
+                    this.setState({ selectedDiagnosis: this.state.diagnosis[index].value })
+                }
+            }
+        })
+    }
+
+    componentDidMount() {
+        this.getDiagnosis()
+
+    }
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.diagonsis != this.props.diagonsis) {
+            this.getDiagnosis()
+        }
+
     }
   render() {
       const {index,item} =this.props
@@ -59,6 +94,21 @@ export default class MedicineDetails2 extends Component {
                     />
                 </View>
             </View>
+                  <View style={{ marginLeft: 10, alignItems: "center", marginTop: 10 }}>
+                        <DropDownPicker
+                            placeholder={"select diagnosis"}
+                            items={this.state.diagnosis}
+                            defaultValue={this.state.selectedDiagnosis}
+                            containerStyle={{ height: 40, width: width * 0.5 }}
+                            style={{ backgroundColor: inputColor }}
+                            itemStyle={{
+                                justifyContent: 'flex-start'
+                            }}
+                            dropDownStyle={{ backgroundColor: inputColor, width: width * 0.5 }}
+                            onChangeItem={(item) => { this.changeDiagnosis(item.value) }}
+
+                        />
+                    </View>
             <View style={{ margin: 10, flex: 0.6, }}>
                 <Text>Comments:</Text>
                 <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -119,7 +169,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         elevation: 6,
         margin: 10,
-        height: height * 0.25,
+        height: height * 0.3,
         borderRadius: 10,
         shadowOffset: {
             width: 0,
