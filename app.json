@@ -47,6 +47,7 @@
           "apiKey": "AIzaSyCOSH383cU0Ywb6J1JZA_vlRq6Y6I6DgtE"
         }
       },
+      "permissions":["ACCESS_COARSE_LOCATION","ACCESS_FINE_LOCATION"],
       "package": "in.poa.medportal"
     },
     "notification": {

@@ -455,7 +455,7 @@ hideDatePicker = () => {
 
         // if patient
         return (
-            <TouchableOpacity style={[styles.card2, { flexDirection: "row", borderRadius: 5 ,       height: height * 0.2,}]}
+            <TouchableOpacity style={[styles.card2, { flexDirection: "row", borderRadius: 5 ,       height: height * 0.25,}]}
                 onPress={() => { this.props.navigation.navigate('PrescriptionView', { item, }) }}
             >
                 <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>

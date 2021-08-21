@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack';
 import Orders from '../MedicalScreens.js/Orders';
+import RequestView from '../MedicalScreens.js/RequestView';
 const Stack = createStackNavigator();
 export default class OrdersStack extends Component {
     constructor(props) {
@@ -23,7 +24,7 @@ export default class OrdersStack extends Component {
                 }}
             >
                 <Stack.Screen name="Orders" component={Orders} options={{ headerShown: false }} />
-          
+                <Stack.Screen name="RequestView" component={RequestView} options={{ headerShown: false }} />
             </Stack.Navigator>
         );
     }

@@ -14,6 +14,7 @@ import ChatScreen from '../Screens/ChatScreen';
 import Priscription1 from '../Screens/Priscription1';
 import PrescriptionViewDoctor from '../Screens/PrescriptionViewDoctor';
 import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack';
+import SelectAddress from '../Screens/SelectAddress';
 
 
 const Stack = createStackNavigator();
@@ -48,6 +49,7 @@ export default class PriscriptionStack extends Component {
                 <Stack.Screen name="SearchPatient" component={SearchPatient} options={{ headerShown: false }} />
                 <Stack.Screen name="ListPatientPriscription" component={ListPatientPriscription} options={{ headerShown: false }} />
                 <Stack.Screen name="Chat" component={ChatScreen} options={{ headerShown: false }} />
+                  <Stack.Screen name="SelectAddress" component={SelectAddress} options={{ headerShown: false }} />
             </Stack.Navigator>
         );
     }

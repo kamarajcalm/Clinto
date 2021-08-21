@@ -17,6 +17,7 @@ let themeColor = settings.themeColor;
 const url = settings.url;
 const { diffClamp } = Animated;
 const headerHeight = height * 0.2;
+import { LinearGradient } from 'expo-linear-gradient';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 class PriscriptionIssue extends Component {
     constructor(props) {
@@ -127,6 +128,7 @@ class PriscriptionIssue extends Component {
         Keyboard.removeListener('keyboardDidHide', this._keyboardDidHide);
     }
     _keyboardDidShow = () => {
+       
         this.setState({ showTab: false })
     };
 
@@ -169,8 +171,13 @@ class PriscriptionIssue extends Component {
         }
         return null
     }
-    searchPriscriptions = ()=>{
-        
+    searchPriscriptions = (text)=>{
+          let filter = this.state.priscriptions.filter((i) => {
+            let match = i.patientdetails.name.toUpperCase()
+            console.log(match,"gjhgjh")
+            return match.includes(text.toUpperCase())
+        })
+        this.setState({ priscriptions: filter })
     }
     validateHeaders = () => {
 
@@ -234,6 +241,11 @@ class PriscriptionIssue extends Component {
 
         )
 
+    }
+        getFirstLetter =(item ,clinic=null)=>{
+        let name = item.patientdetails.name.split("")
+     
+        return name[0].toUpperCase()
     }
     getCloser = (value, checkOne, checkTwo) =>
         Math.abs(value - checkOne) < Math.abs(value - checkTwo) ? checkOne : checkTwo;
@@ -324,14 +336,19 @@ class PriscriptionIssue extends Component {
                             renderItem={({ item, index }) => {
                                 return (
                                     <TouchableOpacity style={[styles.card, { flexDirection: "row", borderRadius: 5 ,marginTop:15}]}
-                                        // onPress={() => { this.props.navigation.navigate('PrescriptionView', { item, }) }}
+                                        onPress={() => { this.props.navigation.navigate('PrescriptionView', { pk:item.prescription,})}}
                                     >
-                                        <View style={{ flex: 0.3, alignItems: 'center', justifyContent: "center" }}>
-                                            <Image
-                                                source={{ uri: `${url}${item.patientdetails.dp}`||"https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" }}
-                                                style={{ height: 60, width: 60, borderRadius: 30 }}
-                                            />
-                                        </View>
+                                          <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
+                        <LinearGradient 
+                              style={{ height: 50, width: 50, borderRadius: 25,alignItems: "center", justifyContent: "center" }}
+                              colors={["#333", themeColor, themeColor]}
+                        >
+                              <View >
+                                  <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 22 }]}>{this.getFirstLetter(item)}</Text>
+                              </View>
+                        </LinearGradient>
+                       
+                    </View>
                                         <View style={{ flex: 0.4, justifyContent: 'center', alignItems: 'center' }}>
                                             <View >
                                                 <Text style={[styles.text,{ fontSize: 18, }]}>{item.patientdetails.name}</Text>

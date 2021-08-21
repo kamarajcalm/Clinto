@@ -111,7 +111,7 @@ const mapStateToProps = (state) => {
 
     return {
         theme: state.selectedTheme,
-
+        medical:state.selectedMedical
     }
 }
 export default connect(mapStateToProps, { selectTheme })(Orders);

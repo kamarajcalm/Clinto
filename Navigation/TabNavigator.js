@@ -55,6 +55,9 @@ class TabNavigator extends Component {
         if (routeName == "Chat") {
             return false
         }
+        if (routeName == "SelectAddress") {
+            return false
+        }
         return true
     }
     getTabBarVisibility2 = (route) => {

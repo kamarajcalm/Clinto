@@ -15,7 +15,7 @@ import {
      ActivityIndicator,
      AsyncStorage
 } from 'react-native';
-import { Feather ,FontAwesome,FontAwesome5,AntDesign,Entypo} from '@expo/vector-icons';
+import { Feather ,FontAwesome,FontAwesome5,AntDesign,Entypo,Ionicons} from '@expo/vector-icons';
 const width = Dimensions.get("screen").width
 const height = Dimensions.get("screen").height
 const deviceHeight = Dimensions.get("screen").height
@@ -63,7 +63,12 @@ import * as Progress from 'react-native-progress';
              },
          ],
          buy:false,
-         selectedItems:[]
+         selectedItems:[],
+         checkoutModal:false,
+         address:null,
+         showModal:false,
+         orderPk:null,
+         acceptedClinics:[]
     };
     }
     renderContent = () => (
@@ -117,6 +122,9 @@ import * as Progress from 'react-native-progress';
         }
   
     }
+    componentWillUnmount(){
+
+    }
     showSimpleMessage(content, color, type = "info", props = {}) {
         const message = {
             message: content,
@@ -146,6 +154,14 @@ import * as Progress from 'react-native-progress';
             this.showSimpleMessage("Try again", "#B22222", "danger")
         }
 
+    }
+    getAvailableClinics = async() =>{
+       let api =`${url}/api/prescription/medicalaccepted/?for_order=${this.state.orderPk}&status=accepted`
+       console.log(api)
+       let data = await HttpsClient.get(api)
+       if(data.type=="success"){
+            this.setState({acceptedClinics:data.data})
+       }
     }
      lottieModal = () => {
          const config = {
@@ -200,7 +216,7 @@ import * as Progress from 'react-native-progress';
      sepeartor =()=>{
     return(
         <View>
-            <Text style={[styles.text,{color:"#000"}]}></Text>
+            <Text style={[styles.text,{color:"#000"}]}> , </Text>
         </View>
     )
 }
@@ -603,6 +619,26 @@ validateButton = (item,index) =>{
                  break;
          }
      }
+     placeOrder =() =>{
+         let selectedItems = []
+         let medicines =  this.state.prescribed.filter((item)=>{
+             return item.isAdded === true
+         })
+         if(medicines.length == 0){
+             return this.showSimpleMessage("Please Add Medicines to Place Order","orange","info")
+         }
+        medicines.forEach((item)=>{
+              let pushObj = {
+                  isAdded :true,
+                  quantity:item.addedQuantity,
+                  medicine:item.id,
+                  name:item.medicinename.name
+              }
+             selectedItems.push(pushObj) 
+        })
+        this.setState({selectedItems,checkoutModal:true})
+        
+     }
      footer =()=>{
          return(
              <View style={{alignItems:"center",justifyContent:"space-around",marginVertical:20,flexDirection:"row"}}>
@@ -617,23 +653,14 @@ validateButton = (item,index) =>{
                         this.state.buy&&<>
                            <TouchableOpacity style={{height:height*0.04,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}
                    onPress={()=>{
-                       
+                       this.placeOrder()
                     }}
                   >
                          <Text style={[styles.text,{color:"#fff"}]}>Place Order</Text>
                   </TouchableOpacity>
                        <TouchableOpacity style={{height:height*0.04,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}
                    onPress={()=>{
-                           this.setState({showModal:true},()=>{
-                                     this.interval = setInterval(() =>{
-                               
-                                       this.setState({ counter:this.state.counter+1000},()=>{
-                                           this.setState({progress:(this.state.counter*100/60000)/100})
-                            
-                                       })
-                                     }  ,1000);
-                                     this.searchanimation.play()
-                                });
+                         this.setState({buy:false})
                     }}
                   >
                          <Text style={[styles.text,{color:"#fff"}]}>Cancel</Text>
@@ -665,15 +692,184 @@ validateButton = (item,index) =>{
             </View>
         )
     }
+    backFunction =(address)=>{
+        this.setState({address,checkoutModal:true})
+    }
+    confirmOrder = async() =>{
+        this.setState({confirming:true})
+        if(this.state.address==null){
+            this.setState({confirming:false})
+            return this.showSimpleMessage("Please Select Address","orange","info")
+        }
+        let api = `${url}/api/prescription/placeOrder/`
+         let sendData = {
+             prescription:this.state.item.id,
+             order_mode:"Dunzo",
+             lat:this.state.address.latitude,
+             lang:this.state.address.longitude,
+             medicines:this.state.selectedItems
+         }
+         let post  =await HttpsClient.post(api,sendData)
+         
+         if(post.type =="success"){
+             this.setState({checkoutModal:false,confirming:false,orderPk:post.data.pk},()=>{
+                        this.setState({showModal:true},()=>{
+                                     this.interval = setInterval(() =>{
+                               
+                                           this.setState({ counter:this.state.counter+1000},()=>{
+                                           this.setState({progress:(this.state.counter*100/60000)/100})
+                            
+                                       })
+                                     }  ,1000);
+                                     this.requestInterVal = setInterval(()=>{
+                                         this.getAvailableClinics()
+                                     },20000)
+                                     this.searchanimation.play()
+                        });
+             })
+         }else{
+              this.showSimpleMessage("Something Went Wrong","red","danger")
+              this.setState({confirming:false})
+         }
+    }
+    decreaseQuantity2 =(item,index)=>{
+        let duplicate = this.state.selectedItems
+        duplicate[index].quantity -=1
+        this.setState({selectedItems:duplicate})
+    }
+    addQuantity2 =(item,index) =>{
+       let duplicate = this.state.selectedItems
+        duplicate[index].quantity +=1
+        this.setState({selectedItems:duplicate})
+    }
+    confirmPharmacy = async(item)=>{
+        let api = `${url}/api/prescription/medicalAccept/`
+        let sendData ={
+            order:this.state.orderPk,
+            medicalorder:item.id
+        }
+        let post = await HttpsClient.post(api,sendData)
+        console.log(post)
+    }
+    checkoutModal =() =>{
+      return(
+           <Modal 
+            swipeThreshold={100}
+            onSwipeComplete={() => { this.setState({checkoutModal:false})}}
+            swipeDirection="down"
+            animationOutTiming={50}
+            animationOut={"slideOutDown"}
+            onBackdropPress={() => { this.setState({ showModal:false})}}
+            style={{alignItems:"flex-end",marginHorizontal:0,flexDirection:"row",marginVertical:0}}
+            statusBarTranslucent={true}
+            deviceHeight={screenHeight}
+            isVisible={this.state.checkoutModal}
+           >
+            <View style={{height:height*0.8,backgroundColor:"#fff",width,elevation:5,borderTopRightRadius:15,borderTopLeftRadius:15}}>
+                    <View style={{flexDirection:"row"}}>
+                       <View style={{flex:0.3}}>
+
+                       </View>
+                       <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
+                            <View style={{height:5,width:width*0.1,backgroundColor:"gray",marginVertical:10,borderRadius:5}}>
+                             </View>
+                       </View>
+                        <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                             
+                         </View>
+                   </View>
+              
+                  <View style={{flexDirection:"row",paddingHorizontal:10,borderBottomWidth:0.19,borderColor:"gray",paddingVertical:10}}>
+                        <View>
+                            <Entypo name="location-pin" size={24} color="#40b455" />
+                        </View>
+                        <TouchableOpacity 
+                          onPress={() => { 
+                              this.setState({checkoutModal:false},()=>{
+                                this.props.navigation.navigate("SelectAddress", { backFunction: (address) => { this.backFunction(address)}})
+                              })
+                     
+                            }}
+                           style={{flex:1}}
+                        >
+                           
+                              <View style={{flex:1,flexDirection:"row"}}>
+                                  <View style={{flex:0.25}}>
+                                              <Text style={[styles.text]}>Delivery at - </Text>
+                                  </View>
+                                  <View style={{flex:0.75}}>
+                                            <Text style={[styles.text,{color:"#000"}]} numberOfLines={1} >{this.state.address?.address} </Text>
+                                  </View>
+                                   <View style={{flex:0.1}}>
+                                  <Ionicons name="md-chevron-down" size={24} color="black" />
+                                  </View>
+                       
+                             
+                            </View>
+                    
+                        </TouchableOpacity>
+                  </View>
+                   <FlatList 
+                      data={this.state.selectedItems}
+                      keyExtractor={(item,index)=>index.toString()}
+                      renderItem ={({item,index})=>{
+                          return(
+                              <View style={{flexDirection:"row",marginTop:10,paddingHorizontal:10}}>
+                                   <View style={{flex:0.1}}>
+                                        <FontAwesome name="dot-circle-o" size={24} color="#e25e6e"/>
+                                   </View>
+                                   <View style={{flex:0.7,alignItems:"center",justifyContent:"center"}}>
+                                            <Text style={[styles.text,{color:"#000"}]}>{item.name}</Text>
+                                   </View>
+                                   <View style={{flexDirection:"row",flex:0.2,backgroundColor:"#e25e6e",height:height*0.04,alignItems:"center",justifyContent:"space-around"}}>
+                                          <TouchableOpacity 
+                                                    onPress={()=>{
+                                                        this.decreaseQuantity2(item,index)
+                                                    }}
+                                            >
+                                            <AntDesign name={"minus"} size={14} color="#fff" />
+                                        </TouchableOpacity>
+                                        <Text style={[styles.text,{color:"#fff"}]}>{item.quantity}</Text>
+                                        <TouchableOpacity 
+                                            onPress={()=>{
+                                            this.addQuantity2(item,index)
+                                        }}
+                                        >
+                                         <AntDesign name="plus" size={14} color="#fff" />
+                                    </TouchableOpacity>
+                                   </View>
+                              </View>
+                          )
+                      }}
+                   />
+                  <View style={{height:height*0.08,borderTopWidth:0.19,borderColor:"gray",flexDirection:"row",alignItems:"center",justifyContent:"center"}}>
+                      {!this.state.confirming? <TouchableOpacity style={{height:"80%",width:"50%",backgroundColor:"#e25e6e",borderRadius:10,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}
+                         onPress={()=>{
+                             this.confirmOrder()
+                         }}
+                       >
+                           <View>
+                                     <Text style={[styles.text,{color:"#fff"}]}>Confirm</Text>
+                           </View>
+                         
+                       </TouchableOpacity>:
+                        <View  style={{height:"80%",width:"50%",backgroundColor:"#e25e6e",borderRadius:10,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}>
+                                <ActivityIndicator size={"large"} color={"#fff"}/>
+                        </View>
+                       }
+                  </View>
+            </View>
+           </Modal>
+        )
+    }
       bottomModal =()=>{
         return(
            <Modal 
             swipeThreshold={100}
-            onSwipeComplete={() => { this.setState({ showModal:false})}}
+            // onSwipeComplete={() => { this.setState({ showModal:false})}}
             swipeDirection="down"
             animationOutTiming={50}
             animationOut={"slideOutDown"}
-             onBackdropPress={() => { this.setState({ showModal:false})}}
             style={{alignItems:"flex-end",marginHorizontal:0,flexDirection:"row",marginVertical:0}}
              statusBarTranslucent={true}
              deviceHeight={screenHeight}
@@ -707,7 +903,7 @@ validateButton = (item,index) =>{
                               <FlatList 
                                 // ItemSeparatorComponent={this.seperator}
                                 ListHeaderComponent={this.headers()}
-                                data={this.state.clinics}
+                                data={this.state.acceptedClinics}
                                 keyExtractor={(item,index)=>index.toString()}
                                 renderItem={({item,index})=>{
                                     return(
@@ -716,8 +912,8 @@ validateButton = (item,index) =>{
                                                          <Text style={[styles.text,{color:"#000"}]}>{index+1} .</Text>
                                                  </View>
                                                 <View style={{flex:0.6,alignItems:"center",justifyContent:"space-around"}}>
-                                                    <View>
-                                                        <Text style={[styles.text,{color:"#000"}]}>{item.name}</Text>
+                                                    <View style={{flexDirection:"row",alignItems:"center",justifyContent:"center",width:"100%"}}>
+                                                        <Text style={[styles.text,{color:"#000",textAlign:"center"}]}>{item.otherDetails.name} ₹{item.otherDetails.price} </Text>
 
                                                     </View>
                                                      <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around",marginTop:10}}>
@@ -737,19 +933,24 @@ validateButton = (item,index) =>{
                                         onPress={() => {
                                             Linking.openURL(
                                                 `https://www.google.com/maps/dir/?api=1&destination=` +
-                                                this.state.item.lat +
+                                                item.lat +
                                                 `,` +
-                                                this.state.item.long +
+                                               item.lang +
                                                 `&travelmode=driving`
                                             );
                                         }}
                                     >
                                         <FontAwesome5 name="directions" size={20} color="#63BCD2" />
                                     </TouchableOpacity>
+                                    <View style={{marginLeft:10}}>
+                                        <Text style={[styles.text]}>({item.distance}) km</Text>
+                                    </View>
                                                      </View>
                                                 </View>
                                                 <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
-                                                    <TouchableOpacity style={{height:height*0.04,width:"80%",alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}>
+                                                    <TouchableOpacity style={{height:height*0.04,width:"80%",alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}
+                                                      onPress={()=>{this.confirmPharmacy(item)}}
+                                                    >
                                                           <Text style={[styles.text,{color:"#fff"}]}>Place Order</Text>
                                                     </TouchableOpacity>
                                                 </View>
@@ -780,7 +981,8 @@ validateButton = (item,index) =>{
                              <View style={{alignItems:"center",justifyContent:"center"}}>
                                   <TouchableOpacity style={{height:height*0.04,width:width*0.2,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,marginTop:5,borderRadius:5}}
                                     onPress={()=>{this.setState({showModal:false,counter:0},()=>{
-                                           clearInterval(this.interval)
+                                           clearInterval(this.interval);
+                                           clearInterval(this.requestInterVal);
                                           this.searchanimation.pause()
                                     })}}
                                   >
@@ -798,6 +1000,7 @@ validateButton = (item,index) =>{
     }
     componentDidUpdate(){
         if(this.state.counter===60000){
+           clearInterval(this.requestInterVal);
            clearInterval(this.interval);
         }
     }
@@ -1086,6 +1289,9 @@ validateButton = (item,index) =>{
                 }
                 {
                     this.bottomModal()
+                }
+                {
+                    this.checkoutModal()
                 }
             </SafeAreaView>
 

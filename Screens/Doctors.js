@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, StatusBar, TouchableOpacity, SafeAreaView, Image, ActivityIndicator} from 'react-native';
+import { View, Text, StyleSheet, Dimensions, StatusBar, TouchableOpacity, SafeAreaView, Image, ActivityIndicator, Alert,PermissionsAndroid} from 'react-native';
 import MapView,{Marker,PROVIDER_GOOGLE,Callout} from 'react-native-maps';
 import settings from '../AppSettings';
 import { connect } from 'react-redux';
@@ -11,6 +11,7 @@ import png from '../assets/marker/stethoscope.png'
 import { WebView } from 'react-native-webview';
 import HttpsClient from '../api/HttpsClient';
 import mapstyle from '../map.json';
+import GetLocation from 'react-native-get-location';
 const { height, width } = Dimensions.get("window");
 const themeColor = settings.themeColor;
 const fontFamily =settings.fontFamily;
@@ -39,19 +40,48 @@ const url =settings.url
         }
    }
    getLocation =async()=>{
+ 
      let { status } = await Location.requestForegroundPermissionsAsync()
      if (status !== 'granted') {
-       console.warn('Permission to access location was denied');
+        Alert.alert(
+        "User location not detected",
+        "You haven't granted permission to detect your location.",
+        [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+      );
        return;
      }
-     let location = await Location.getCurrentPositionAsync({});
-     console.log(location,"hjhj")
-     this.getMarkers(location.coords.latitude,location.coords.longitude)
-     this.setState({ location: {
+     try {
+       let isLocationServicesEnabled = await Location.hasServicesEnabledAsync();
+       Location.installWebGeolocationPolyfill();
+       let location = await Location.getCurrentPositionAsync();
+           this.setState({ location: {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude, 
-        latitudeDelta: 0.0922, 
-        longitudeDelta: 0.0421}})
+        latitudeDelta: 0.01, 
+        longitudeDelta: 0.01}})
+     } catch (err){
+       GetLocation.getCurrentPosition({
+    enableHighAccuracy: true,
+    timeout: 15000,
+})
+.then(location => {
+    console.log(location,"kkkkkk");
+           this.getMarkers(location.latitude,location.longitude)
+      this.setState({ location: {
+        latitude: location.latitude,
+        longitude: location.longitude, 
+        latitudeDelta: 0.001, 
+        longitudeDelta: 0.001}})
+})
+.catch(error => {
+    const { code, message } = error;
+    console.warn(code, message);
+})
+      //     let location = await Location.getLastKnownPositionAsync()
+      //     console.log(location,"hjhj")
+   
+     }
+
    }
  componentDidMount(){
    this.getLocation()

@@ -54,6 +54,9 @@ class MediacalTab extends Component {
         if (routeName == "ChatScreen") {
             return false
         }
+        if (routeName == "RequestView") {
+            return false
+        }
         return true
     }
     getTabBarVisibility8 = (route) => {

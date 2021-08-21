@@ -16,6 +16,7 @@ import * as  ImagePicker from 'expo-image-picker';
 import { TextInput } from 'react-native-gesture-handler';
 import * as Location from 'expo-location';
 import HttpsClient from '../api/HttpsClient';
+import GetLocation from 'react-native-get-location';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 class CreateMedicals extends Component {
     constructor(props) {
@@ -234,13 +235,19 @@ class CreateMedicals extends Component {
             console.warn('Permission to access location was denied');
             return;
         }
-        let location = await Location.getCurrentPositionAsync({});
-        console.log(location, "jjjj")
-        this.setState({
-            isFetching: false,
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
+         Location.installWebGeolocationPolyfill();
+                GetLocation.getCurrentPosition({
+            enableHighAccuracy: true,
+            timeout: 15000,
         })
+        .then(async(location) => {
+            this.setState({
+                    isFetching: false,
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                })
+        })
+      
     }
     onRefresh = () => {
         this.setState({ isFetching: true })
