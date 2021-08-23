@@ -209,7 +209,7 @@ class EditClinicDetails extends Component {
                             <Text style={[styles.text, { color: '#fff', fontWeight: 'bold', fontSize: 18 }]}>Edit Detail</Text>
                         </View>
                         <TouchableOpacity style={{ flex: 0.2, flexDirection: "row", alignItems: "center", justifyContent: 'center' }}
-                            onPress={() => { this.props.navigation.navigate('UpdateTimings', { item:this.state.item,})}}
+                            onPress={() => { this.props.navigation.navigate('UpdateTimings',{ item:this.state.item,})}}
                         >
                            
                                 <Entypo name="back-in-time" size={24} color="#fff" />

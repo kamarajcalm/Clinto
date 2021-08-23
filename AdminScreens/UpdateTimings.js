@@ -1,25 +1,30 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView, TextInput, ScrollView} from 'react-native';
+import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView, ScrollView } from 'react-native';
 import settings from '../AppSettings';
+import axios from 'axios';
+import Modal from 'react-native-modal';
+const { height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
+import { Ionicons, Entypo, AntDesign, Feather, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
+const themeColor = settings.themeColor;
+const fontFamily = settings.fontFamily;
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
-const { height, width } = Dimensions.get("window");
-import { Ionicons ,Entypo} from '@expo/vector-icons';
-import authAxios from '../api/authAxios';
-import HttpsClient from '../api/HttpsClient';
-const fontFamily = settings.fontFamily;
-const themeColor = settings.themeColor;
-const url = settings.url
+import { NavigationContainer, CommonActions } from '@react-navigation/native';
+import * as  ImagePicker from 'expo-image-picker';
+import { TextInput } from 'react-native-gesture-handler';
+import * as Location from 'expo-location';
+
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import moment from 'moment';
+import HttpsClient from '../api/HttpsClient';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
-import { StackActions, CommonActions} from '@react-navigation/native';
 
+import authAxios from '../api/authAxios';
+const url = settings.url
 
 class UpdateTimings extends Component {
     constructor(props) {
-       
-        let clinicPk = props?.route?.params?.item?.id || props?.route?.params?.clinicPk
         super(props);
         this.state = {
             isMedical:this.props.route.params.medical||false,
@@ -27,7 +32,7 @@ class UpdateTimings extends Component {
             show2:false,
             mode: 'time',
             date: new Date(),
-            clinicPk,
+            clinicPk:this.props?.route?.params?.item?.id || this.props?.route?.params?.clinicPk||null,
             Sun: {
             
             },
@@ -49,6 +54,14 @@ class UpdateTimings extends Component {
             Sat: {
               
             },
+            SunArray: [],
+            MonArray: [],
+            TueArray: [],
+            WedArray: [],
+            ThuArray: [],
+            FriArray: [],
+            SatArray: [],
+            clinic:this.props?.route?.params?.item||null
         };
     }
     showSimpleMessage(content, color, type = "info", props = {}) {
@@ -63,37 +76,51 @@ class UpdateTimings extends Component {
         showMessage(message);
     }
     componentDidMount() {
-       
+        if(this.state.clinic){
+                      this.setTimings()
+        }
+
     }
     componentWillUnmount() {
        
     }
     UpdateTimings = async()=>{
-        let times = []
-        times.push(
-            this.state.Sun,
-            this.state.Mon,
-            this.state.Tue,
-            this.state.Wed,
-            this.state.Thu,
-            this.state.Fri,
-            this.state.Sat
-        )
-        times.forEach((i) => {
-
-            if (i.endtime == undefined) {
-                return this.showSimpleMessage(`please fill the endtime of ${i.day}`, "#dd7030",)
-             
-            }
-            if (i.starttime == undefined) {
-                return this.showSimpleMessage(`please fill the starttime of ${i.day}`, "#dd7030",)
-            }
-        })
+         let timings = [
+            {
+                type: "Monday",
+                timings: this.state.MonArray
+            },
+            {
+                type: "Tuesday",
+                timings: this.state.TueArray
+            },
+            {
+                type: "Wednesday",
+                timings: this.state.WedArray
+            },
+            {
+                type: "Thursday",
+                timings: this.state.ThuArray
+            },
+            {
+                type: "Friday",
+                timings: this.state.FriArray
+            },
+            {
+                type: "Saturday",
+                timings: this.state.SatArray
+            },
+            {
+                type: "Sunday",
+                timings: this.state.SunArray
+            },
+        ]
+  
         let api = `${url}/api/prescription/updateTime/`
 
         let sendData ={
             clinic:this.state.clinicPk,
-            times
+            timings
         }
         console.log(this.state.clinicPk,"pppppppppp")
         let post =  await HttpsClient.post(api,sendData)
@@ -147,11 +174,10 @@ class UpdateTimings extends Component {
     hideDatePicker2 = () => {
         this.setState({ show2: false })
     };
-    handleConfirm = (date) => {
+       handleConfirm = (date) => {
         this.setState({ show1: false, }, () => {
             if (this.state.day == "Sun") {
                 let duplicate = this.state.Sun
-
                 duplicate.day = "Sun",
                     duplicate.index = 0,
                     duplicate.starttime = moment(date).format('h:mm a')
@@ -216,7 +242,7 @@ class UpdateTimings extends Component {
 
         this.hideDatePicker();
     };
-    handleConfirm2 = (date) => {
+     handleConfirm2 = (date) => {
         this.setState({ show2: false, }, () => {
             if (this.state.day == "Sun") {
                 let duplicate = this.state.Sun
@@ -260,6 +286,215 @@ class UpdateTimings extends Component {
         this.hideDatePicker2();
     };
 
+ setTimings =()=>{
+        if (this.state.clinic.clinicShifts.Sunday.length > 0) {
+            this.state.clinic.clinicShifts.Sunday[0].timings.forEach((i,index) => {
+                let arr = this.state.SunArray
+                let pushObject = {
+                    starttime: i[0],
+                    endtime: i[1],
+                    index:index
+                }
+                arr.push(pushObject)
+                this.setState({ SunArray: arr })
+            })
+        }
+        if (this.state.clinic.clinicShifts.Monday.length>0){
+            this.state.clinic.clinicShifts.Monday[0].timings.forEach((i,index)=>{
+                let arr =this.state.MonArray
+                let pushObject ={
+                    starttime:i[0],
+                    endtime:i[1],
+                    index: index
+                }
+                arr.push(pushObject)
+                this.setState({ MonArray:arr})
+            })
+        }
+   
+        if (this.state.clinic.clinicShifts.Tuesday.length > 0) {
+            this.state.clinic.clinicShifts.Tuesday[0].timings.forEach((i,index) => {
+                let arr = this.state.TueArray
+                let pushObject = {
+                    starttime: i[0],
+                    endtime: i[1],
+                    index: index
+                }
+                arr.push(pushObject)
+                this.setState({ TueArray: arr })
+            })
+        }
+      
+        if (this.state.clinic.clinicShifts.Wednesday.length > 0) {
+            this.state.clinic.clinicShifts.Wednesday[0].timings.forEach((i,index) => {
+                let arr = this.state.WedArray
+                let pushObject = {
+                    starttime: i[0],
+                    endtime: i[1],
+                    index: index
+                }
+                arr.push(pushObject)
+                this.setState({ WedArray: arr })
+            })
+        }
+
+        if (this.state.clinic.clinicShifts.Thursday.length > 0) {
+            this.state.clinic.clinicShifts.Thursday[0].timings.forEach((i,index) => {
+                let arr = this.state.ThuArray
+                let pushObject = {
+                    starttime: i[0],
+                    endtime: i[1],
+                    index: index
+                }
+                arr.push(pushObject)
+                this.setState({ ThuArray: arr })
+            })
+        }
+        if (this.state.clinic.clinicShifts.Friday.length > 0) {
+            this.state.clinic.clinicShifts.Friday[0].timings.forEach((i,index) => {
+                let arr = this.state.FriArray
+                let pushObject = {
+                    starttime: i[0],
+                    endtime: i[1],
+                    index: index
+                }
+                arr.push(pushObject)
+                this.setState({ FriArray: arr })
+            })
+        }
+        if (this.state.clinic.clinicShifts.Saturday.length > 0) {
+            this.state.clinic.clinicShifts.Saturday[0].timings.forEach((i,index) => {
+                let arr = this.state.SatArray
+                let pushObject = {
+                    starttime: i[0],
+                    endtime: i[1],
+                    index: index
+                }
+                arr.push(pushObject)
+                this.setState({ SatArray: arr })
+            })
+        }
+    }
+     pushSun = () => {
+        let duplicate = this.state.SunArray
+        if (this.state.Sun.starttime == undefined) {
+            return this.showSimpleMessage("please add from Time", "#dd7030",)
+         
+        }
+        if (this.state.Sun.endtime == undefined) {
+            return this.showSimpleMessage("please add end Time", "#dd7030",)
+          
+        }
+        duplicate.push(this.state.Sun)
+        this.setState({ Sun: {}, SunArray: duplicate })
+    }
+    removeSunArray = (item, index) => {
+        let duplicate = this.state.SunArray
+        duplicate.splice(index, 1)
+        this.setState({ SunArray: duplicate })
+    }
+    pushMon = () => {
+        let duplicate = this.state.MonArray
+
+        if (this.state.Mon.starttime == undefined) {
+            return this.showSimpleMessage("please add from Time", "#dd7030",)
+        }
+        if (this.state.Mon.endtime == undefined) {
+            return this.showSimpleMessage("please add end Time", "#dd7030",)
+        }
+        duplicate.push(this.state.Mon)
+        this.setState({ Mon: {}, MonArray: duplicate })
+    }
+    removeMonArray = (item, index) => {
+        let duplicate = this.state.MonArray
+        duplicate.splice(index, 1)
+        this.setState({ MonArray: duplicate })
+    }
+    pushTue = () => {
+        let duplicate = this.state.TueArray
+
+        if (this.state.Tue.starttime == undefined) {
+            return this.showSimpleMessage("please add from Time", "#dd7030",)
+        }
+        if (this.state.Tue.endtime == undefined) {
+            return this.showSimpleMessage("please add end Time", "#dd7030",)
+        }
+        duplicate.push(this.state.Tue)
+        this.setState({ Tue: {}, TueArray: duplicate })
+    }
+    removeTueArray = (item, index) => {
+        let duplicate = this.state.TueArray
+        duplicate.splice(index, 1)
+        this.setState({ TueArray: duplicate })
+    }
+    pushWed = () => {
+        let duplicate = this.state.WedArray
+
+        if (this.state.Wed.starttime == undefined) {
+            return this.showSimpleMessage("please add from Time", "#dd7030",)
+        }
+        if (this.state.Wed.endtime == undefined) {
+            return this.showSimpleMessage("please add end Time", "#dd7030",)
+        }
+        duplicate.push(this.state.Wed)
+        this.setState({ Wed: {}, WedArray: duplicate })
+    }
+    removeWedArray = (item, index) => {
+        let duplicate = this.state.WedArray
+        duplicate.splice(index, 1)
+        this.setState({ WedArray: duplicate })
+    }
+    pushThu = () => {
+        let duplicate = this.state.ThuArray
+
+        if (this.state.Thu.starttime == undefined) {
+            return this.showSimpleMessage("please add from Time", "#dd7030",)
+        }
+        if (this.state.Thu.endtime == undefined) {
+            return this.showSimpleMessage("please add end Time", "#dd7030",)
+        }
+        duplicate.push(this.state.Thu)
+        this.setState({ Thu: {}, ThuArray: duplicate })
+    }
+    removeThuArray = (item, index) => {
+        let duplicate = this.state.ThuArray
+        duplicate.splice(index, 1)
+        this.setState({ ThuArray: duplicate })
+    }
+    pushFri = () => {
+        let duplicate = this.state.FriArray
+
+        if (this.state.Fri.starttime == undefined) {
+            return this.showSimpleMessage("please add from Time", "#dd7030",)
+        }
+        if (this.state.Fri.endtime == undefined) {
+            return this.showSimpleMessage("please add end Time", "#dd7030",)
+        }
+        duplicate.push(this.state.Fri)
+        this.setState({ Fri: {}, FriArray: duplicate })
+    }
+    removeFriArray = (item, index) => {
+        let duplicate = this.state.FriArray
+        duplicate.splice(index, 1)
+        this.setState({ FriArray: duplicate })
+    }
+    pushSat = () => {
+        let duplicate = this.state.SatArray
+
+        if (this.state.Sat.starttime == undefined) {
+            return this.showSimpleMessage("please add from Time", "#dd7030",)
+        }
+        if (this.state.Sat.endtime == undefined) {
+            return this.showSimpleMessage("please add end Time", "#dd7030",)
+        }
+        duplicate.push(this.state.Sat)
+        this.setState({ Sat: {}, SatArray: duplicate })
+    }
+    removeSatArray = (item, index) => {
+        let duplicate = this.state.SatArray
+        duplicate.splice(index, 1)
+        this.setState({ SatArray: duplicate })
+    }
     render() {
         return (
             <>
@@ -284,257 +519,458 @@ class UpdateTimings extends Component {
                         </View>
 
                                {/* TIMINGS */}
-                <ScrollView style={{padding:20}}>
-                        <View>
-                            <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Sun :</Text>
-                        </View>
-                        <View style={{ height: height * 0.07, flexDirection: "row", }}>
+              <View style={{ flex: 1 }}>
 
-                            <View style={{ flex: 0.5 }}>
-                                <Text style={styles.text}>Opening Time</Text>
-                                <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
-                                    <TouchableOpacity
-                                        onPress={() => { this.setState({ show1: true, day: "Sun" }) }}
-                                    >
-                                        <Entypo name="clock" size={24} color="black" />
 
-                                    </TouchableOpacity>
+                            <ScrollView style={{ margin: 20 }}
+                                showsVerticalScrollIndicator={false}
+                            >
 
-                                    <Text style={{ marginLeft: 10 }}>{this.state.Sun?.starttime}</Text>
+                                
+                                {/* TIMINGS... */}
+
+                                <View style={{ padding: 20 }}>
+                                    <View>
+                                        <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Sun :</Text>
+                                    </View>
+                                    {
+                                        this.state.SunArray.map((i, index) => {
+                                            return (
+                                                <View
+                                                    style={{ flexDirection: "row", marginTop: 7 }}
+                                                    key={index}
+                                                >
+                                                    <View style={{ flexDirection: 'row' }}>
+                                                        <Text style={[styles.text, { color: "gray" }]}>{i.starttime}</Text>
+                                                        <Text style={[styles.text, { color: "gray" }]}>-</Text>
+                                                        <Text style={[styles.text, { color: "gray" }]}>{i.endtime}</Text>
+                                                    </View>
+                                                    <TouchableOpacity
+                                                        style={{ marginLeft: 10 }}
+                                                        onPress={() => { this.removeSunArray(i, index) }}
+                                                    >
+                                                        <Entypo name="circle-with-cross" size={24} color="red" />
+                                                    </TouchableOpacity>
+                                                </View>
+                                            )
+                                        })
+                                    }
+                                    <View style={{ height: height * 0.08, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+
+                                        <View style={{ flex: 0.33 }}>
+                                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                                <Text style={styles.text}>From Time</Text>
+                                            </View>
+
+                                            <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
+                                                <TouchableOpacity
+                                                    onPress={() => { this.setState({ show1: true, day: "Sun" }) }}
+                                                >
+                                                    <Entypo name="clock" size={24} color="black" />
+
+                                                </TouchableOpacity>
+
+                                                <Text style={{ marginLeft: 10 }}>{this.state.Sun?.starttime}</Text>
+                                            </View>
+
+                                        </View>
+
+                                        <View style={{ flex: 0.33, }}>
+                                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                                <Text style={styles.text}>To Time</Text>
+                                            </View>
+
+                                            <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
+                                                <TouchableOpacity
+                                                    onPress={() => { this.setState({ show2: true, day: "Sun" }) }}
+                                                >
+                                                    <Entypo name="clock" size={24} color="black" />
+
+                                                </TouchableOpacity>
+
+                                                <Text style={{ marginLeft: 10 }}>{this.state.Sun?.endtime}</Text>
+                                            </View>
+
+                                        </View>
+                                        <TouchableOpacity style={{ height: height * 0.05, backgroundColor: themeColor, alignItems: 'center', justifyContent: 'center', borderRadius: 10, flex: 0.33 }}
+                                            onPress={() => { this.pushSun() }}
+                                        >
+                                            <Text style={[styles.text, { color: "#fff" }]}>Add</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View>
+                                        <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Mon :</Text>
+                                    </View>
+                                    {
+                                        this.state.MonArray.map((i, index) => {
+                                            return (
+                                                <View
+                                                    style={{ flexDirection: "row", marginTop: 7 }}
+                                                    key={index}
+                                                >
+                                                    <View style={{ flexDirection: 'row' }}>
+                                                        <Text style={[styles.text, { color: "gray" }]}>{i.starttime}</Text>
+                                                        <Text style={[styles.text, { color: "gray" }]}>-</Text>
+                                                        <Text style={[styles.text, { color: "gray" }]}>{i.endtime}</Text>
+                                                    </View>
+                                                    <TouchableOpacity
+                                                        onPress={() => { this.removeMonArray(i, index) }}
+                                                    >
+                                                        <Entypo name="circle-with-cross" size={24} color="red" />
+                                                    </TouchableOpacity>
+                                                </View>
+                                            )
+                                        })
+                                    }
+                                    <View style={{ height: height * 0.08, flexDirection: "row", }}>
+
+                                        <View style={{ flex: 0.33, }}>
+                                            <Text style={styles.text}>From Time</Text>
+                                            <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
+                                                <TouchableOpacity
+                                                    onPress={() => { this.setState({ show1: true, day: "Mon" }) }}
+                                                >
+                                                    <Entypo name="clock" size={24} color="black" />
+
+                                                </TouchableOpacity>
+
+                                                <Text style={{ marginLeft: 10 }}>{this.state.Mon?.starttime}</Text>
+                                            </View>
+
+                                        </View>
+
+                                        <View style={{ flex: 0.33, }}>
+                                            <Text style={styles.text}>To Time</Text>
+                                            <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
+                                                <TouchableOpacity
+                                                    onPress={() => { this.setState({ show2: true, day: "Mon" }) }}
+                                                >
+                                                    <Entypo name="clock" size={24} color="black" />
+
+                                                </TouchableOpacity>
+
+                                                <Text style={{ marginLeft: 10 }}>{this.state.Mon?.endtime}</Text>
+                                            </View>
+
+                                        </View>
+                                        <TouchableOpacity style={{ height: height * 0.05, backgroundColor: themeColor, alignItems: 'center', justifyContent: 'center', borderRadius: 10, flex: 0.33 }}
+                                            onPress={() => { this.pushMon() }}
+                                        >
+                                            <Text style={[styles.text, { color: "#fff" }]}>Add</Text>
+                                        </TouchableOpacity>
+                                    </View>
+
+                                    <View>
+                                        <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Tue :</Text>
+                                    </View>
+                                    {
+                                        this.state.TueArray.map((i, index) => {
+                                            return (
+                                                <View style={{ flexDirection: "row", marginTop: 7 }}>
+                                                    <View style={{ flexDirection: 'row' }}>
+                                                        <Text style={[styles.text, { color: "gray" }]}>{i.starttime}</Text>
+                                                        <Text style={[styles.text, { color: "gray" }]}>-</Text>
+                                                        <Text style={[styles.text, { color: "gray" }]}>{i.endtime}</Text>
+                                                    </View>
+                                                    <TouchableOpacity
+                                                        onPress={() => { this.removeTueArray(i, index) }}
+                                                    >
+                                                        <Entypo name="circle-with-cross" size={24} color="red" />
+                                                    </TouchableOpacity>
+                                                </View>
+                                            )
+                                        })
+                                    }
+                                    <View style={{ height: height * 0.07, flexDirection: "row", }}>
+
+                                        <View style={{ flex: 0.33 }}>
+                                            <Text style={styles.text}>From Time</Text>
+                                            <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
+                                                <TouchableOpacity
+                                                    onPress={() => { this.setState({ show1: true, day: "Tue" }) }}
+                                                >
+                                                    <Entypo name="clock" size={24} color="black" />
+
+                                                </TouchableOpacity>
+
+                                                <Text style={{ marginLeft: 10 }}>{this.state.Tue?.starttime}</Text>
+                                            </View>
+
+                                        </View>
+
+                                        <View style={{ flex: 0.33, }}>
+                                            <Text style={styles.text}>To Time</Text>
+                                            <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
+                                                <TouchableOpacity
+                                                    onPress={() => { this.setState({ show2: true, day: "Tue" }) }}
+                                                >
+                                                    <Entypo name="clock" size={24} color="black" />
+
+                                                </TouchableOpacity>
+
+                                                <Text style={{ marginLeft: 10 }}>{this.state.Tue?.endtime}</Text>
+                                            </View>
+
+                                        </View>
+                                        <TouchableOpacity style={{ height: height * 0.05, backgroundColor: themeColor, alignItems: 'center', justifyContent: 'center', borderRadius: 10, flex: 0.33 }}
+                                            onPress={() => { this.pushTue() }}
+                                        >
+                                            <Text style={[styles.text, { color: "#fff" }]}>Add</Text>
+                                        </TouchableOpacity>
+                                    </View>
+
+                                    <View>
+                                        <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Wed :</Text>
+                                    </View>
+                                    {
+                                        this.state.WedArray.map((i, index) => {
+                                            return (
+                                                <View
+                                                    style={{ flexDirection: "row", marginTop: 7 }}
+                                                    key={index}
+                                                >
+                                                    <View style={{ flexDirection: 'row' }}>
+                                                        <Text style={[styles.text, { color: "gray" }]}>{i.starttime}</Text>
+                                                        <Text style={[styles.text, { color: "gray" }]}>-</Text>
+                                                        <Text style={[styles.text, { color: "gray" }]}>{i.endtime}</Text>
+                                                    </View>
+                                                    <TouchableOpacity
+                                                        onPress={() => { this.removeWedArray(i, index) }}
+                                                    >
+                                                        <Entypo name="circle-with-cross" size={24} color="red" />
+                                                    </TouchableOpacity>
+                                                </View>
+                                            )
+                                        })
+                                    }
+                                    <View style={{ height: height * 0.08, flexDirection: "row", }}>
+
+                                        <View style={{ flex: 0.33 }}>
+                                            <Text style={styles.text}>From Time</Text>
+                                            <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
+                                                <TouchableOpacity
+                                                    onPress={() => { this.setState({ show1: true, day: "Wed" }) }}
+                                                >
+                                                    <Entypo name="clock" size={24} color="black" />
+
+                                                </TouchableOpacity>
+
+                                                <Text style={{ marginLeft: 10 }}>{this.state.Wed?.starttime}</Text>
+                                            </View>
+
+                                        </View>
+
+                                        <View style={{ flex: 0.33, }}>
+                                            <Text style={styles.text}>To Time</Text>
+                                            <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
+                                                <TouchableOpacity
+                                                    onPress={() => { this.setState({ show2: true, day: "Wed" }) }}
+                                                >
+                                                    <Entypo name="clock" size={24} color="black" />
+
+                                                </TouchableOpacity>
+
+                                                <Text style={{ marginLeft: 10 }}>{this.state.Wed?.endtime}</Text>
+                                            </View>
+
+                                        </View>
+                                        <TouchableOpacity style={{ height: height * 0.05, backgroundColor: themeColor, alignItems: 'center', justifyContent: 'center', borderRadius: 10, flex: 0.33 }}
+                                            onPress={() => { this.pushWed() }}
+                                        >
+                                            <Text style={[styles.text, { color: "#fff" }]}>Add</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View>
+                                        <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Thu :</Text>
+                                    </View>
+                                    {
+                                        this.state.ThuArray.map((i, index) => {
+                                            return (
+                                                <View style={{ flexDirection: "row", marginTop: 7 }}>
+                                                    <View style={{ flexDirection: 'row' }}>
+                                                        <Text style={[styles.text, { color: "gray" }]}>{i.starttime}</Text>
+                                                        <Text style={[styles.text, { color: "gray" }]}>-</Text>
+                                                        <Text style={[styles.text, { color: "gray" }]}>{i.endtime}</Text>
+                                                    </View>
+                                                    <TouchableOpacity
+                                                        onPress={() => { this.removeThuArray(i, index) }}
+                                                    >
+                                                        <Entypo name="circle-with-cross" size={24} color="red" />
+                                                    </TouchableOpacity>
+                                                </View>
+                                            )
+                                        })
+                                    }
+                                    <View style={{ height: height * 0.08, flexDirection: "row", }}>
+
+                                        <View style={{ flex: 0.33 }}>
+                                            <Text style={styles.text}>From Time</Text>
+                                            <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
+                                                <TouchableOpacity
+                                                    onPress={() => { this.setState({ show1: true, day: "Thu" }) }}
+                                                >
+                                                    <Entypo name="clock" size={24} color="black" />
+
+                                                </TouchableOpacity>
+
+                                                <Text style={{ marginLeft: 10 }}>{this.state.Thu?.starttime}</Text>
+                                            </View>
+
+                                        </View>
+
+                                        <View style={{ flex: 0.33, }}>
+                                            <Text style={styles.text}>To Time</Text>
+                                            <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
+                                                <TouchableOpacity
+                                                    onPress={() => { this.setState({ show2: true, day: "Thu" }) }}
+                                                >
+                                                    <Entypo name="clock" size={24} color="black" />
+
+                                                </TouchableOpacity>
+
+                                                <Text style={{ marginLeft: 10 }}>{this.state.Thu?.endtime}</Text>
+                                            </View>
+
+                                        </View>
+                                        <TouchableOpacity style={{ height: height * 0.05, backgroundColor: themeColor, alignItems: 'center', justifyContent: 'center', borderRadius: 10, flex: 0.33 }}
+                                            onPress={() => { this.pushThu() }}
+                                        >
+                                            <Text style={[styles.text, { color: "#fff" }]}>Add</Text>
+                                        </TouchableOpacity>
+                                    </View>
+
+
+                                    <View>
+                                        <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Fri :</Text>
+                                    </View>
+                                    {
+                                        this.state.FriArray.map((i, index) => {
+                                            return (
+                                                <View style={{ flexDirection: "row", marginTop: 7 }}>
+                                                    <View style={{ flexDirection: 'row' }}>
+                                                        <Text style={[styles.text, { color: "gray" }]}>{i.starttime}</Text>
+                                                        <Text style={[styles.text, { color: "gray" }]}>-</Text>
+                                                        <Text style={[styles.text, { color: "gray" }]}>{i.endtime}</Text>
+                                                    </View>
+                                                    <TouchableOpacity
+                                                        onPress={() => { this.removeFriArray(i, index) }}
+                                                    >
+                                                        <Entypo name="circle-with-cross" size={24} color="red" />
+                                                    </TouchableOpacity>
+                                                </View>
+                                            )
+                                        })
+                                    }
+                                    <View style={{ height: height * 0.08, flexDirection: "row", }}>
+
+                                        <View style={{ flex: 0.33 }}>
+                                            <Text style={styles.text}>From Time</Text>
+                                            <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
+                                                <TouchableOpacity
+                                                    onPress={() => { this.setState({ show1: true, day: "Fri" }) }}
+                                                >
+                                                    <Entypo name="clock" size={24} color="black" />
+
+                                                </TouchableOpacity>
+
+                                                <Text style={{ marginLeft: 10 }}>{this.state.Fri?.starttime}</Text>
+                                            </View>
+
+                                        </View>
+
+                                        <View style={{ flex: 0.33, }}>
+                                            <Text style={styles.text}>To Time</Text>
+                                            <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
+                                                <TouchableOpacity
+                                                    onPress={() => { this.setState({ show2: true, day: "Fri" }) }}
+                                                >
+                                                    <Entypo name="clock" size={24} color="black" />
+
+                                                </TouchableOpacity>
+
+                                                <Text style={{ marginLeft: 10 }}>{this.state.Fri?.endtime}</Text>
+                                            </View>
+
+                                        </View>
+                                        <TouchableOpacity style={{ height: height * 0.05, backgroundColor: themeColor, alignItems: 'center', justifyContent: 'center', borderRadius: 10, flex: 0.33 }}
+                                            onPress={() => { this.pushFri() }}
+                                        >
+                                            <Text style={[styles.text, { color: "#fff" }]}>Add</Text>
+                                        </TouchableOpacity>
+                                    </View>
+
+
+                                    <View>
+                                        <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Sat :</Text>
+                                    </View>
+                                    {
+                                        this.state.SatArray.map((i, index) => {
+                                            return (
+                                                <View style={{ flexDirection: "row", marginTop: 7 }}>
+                                                    <View style={{ flexDirection: 'row' }}>
+                                                        <Text style={[styles.text, { color: "gray" }]}>{i.starttime}</Text>
+                                                        <Text style={[styles.text, { color: "gray" }]}>-</Text>
+                                                        <Text style={[styles.text, { color: "gray" }]}>{i.endtime}</Text>
+                                                    </View>
+                                                    <TouchableOpacity
+                                                        onPress={() => { this.removeSatArray(i, index) }}
+                                                    >
+                                                        <Entypo name="circle-with-cross" size={24} color="red" />
+                                                    </TouchableOpacity>
+                                                </View>
+                                            )
+                                        })
+                                    }
+                                    <View style={{ height: height * 0.08, flexDirection: "row", }}>
+
+                                        <View style={{ flex: 0.33 }}>
+                                            <Text style={styles.text}>From Time</Text>
+                                            <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
+                                                <TouchableOpacity
+                                                    onPress={() => { this.setState({ show1: true, day: "Sat" }) }}
+                                                >
+                                                    <Entypo name="clock" size={24} color="black" />
+
+                                                </TouchableOpacity>
+
+                                                <Text style={{ marginLeft: 10 }}>{this.state.Sat?.starttime}</Text>
+                                            </View>
+
+                                        </View>
+
+                                        <View style={{ flex: 0.33, }}>
+                                            <Text style={styles.text}>To Time</Text>
+                                            <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
+                                                <TouchableOpacity
+                                                    onPress={() => { this.setState({ show2: true, day: "Sat" }) }}
+                                                >
+                                                    <Entypo name="clock" size={24} color="black" />
+
+                                                </TouchableOpacity>
+
+                                                <Text style={{ marginLeft: 10 }}>{this.state.Sat?.endtime}</Text>
+                                            </View>
+
+                                        </View>
+                                        <TouchableOpacity style={{ height: height * 0.05, backgroundColor: themeColor, alignItems: 'center', justifyContent: 'center', borderRadius: 10, flex: 0.33 }}
+                                            onPress={() => { this.pushSat() }}
+                                        >
+                                            <Text style={[styles.text, { color: "#fff" }]}>Add</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                           
                                 </View>
 
-                            </View>
-
-                            <View style={{ flex: 0.5, }}>
-                                <Text style={styles.text}>Closing Time</Text>
-                                <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
-                                    <TouchableOpacity
-                                        onPress={() => { this.setState({ show2: true, day: "Sun" }) }}
+                                <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
+                                    <TouchableOpacity style={{ width: width * 0.4, height: height * 0.05, borderRadius: 10, alignItems: 'center', justifyContent: "center", backgroundColor: themeColor }}
+                                        onPress={() => { this.UpdateTimings() }}
                                     >
-                                        <Entypo name="clock" size={24} color="black" />
-
+                                        <Text style={[styles.text, { color: "#fff" }]}>Update</Text>
                                     </TouchableOpacity>
-
-                                    <Text style={{ marginLeft: 10 }}>{this.state.Sun?.endtime}</Text>
                                 </View>
 
-                            </View>
-                        </View>
-                        <View>
-                            <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Mon :</Text>
-                        </View>
-                        <View style={{ height: height * 0.07, flexDirection: "row", }}>
+                            </ScrollView>
 
-                            <View style={{ flex: 0.5 }}>
-                                <Text style={styles.text}>Opening Time</Text>
-                                <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
-                                    <TouchableOpacity
-                                        onPress={() => { this.setState({ show1: true, day: "Mon" }) }}
-                                    >
-                                        <Entypo name="clock" size={24} color="black" />
-
-                                    </TouchableOpacity>
-
-                                    <Text style={{ marginLeft: 10 }}>{this.state.Mon?.starttime}</Text>
-                                </View>
-
-                            </View>
-
-                            <View style={{ flex: 0.5, }}>
-                                <Text style={styles.text}>Closing Time</Text>
-                                <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
-                                    <TouchableOpacity
-                                        onPress={() => { this.setState({ show2: true, day: "Mon" }) }}
-                                    >
-                                        <Entypo name="clock" size={24} color="black" />
-
-                                    </TouchableOpacity>
-
-                                    <Text style={{ marginLeft: 10 }}>{this.state.Mon?.endtime}</Text>
-                                </View>
-
-                            </View>
-                        </View>
-
-                        <View>
-                            <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Tue :</Text>
-                        </View>
-                        <View style={{ height: height * 0.07, flexDirection: "row", }}>
-
-                            <View style={{ flex: 0.5 }}>
-                                <Text style={styles.text}>Opening Time</Text>
-                                <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
-                                    <TouchableOpacity
-                                        onPress={() => { this.setState({ show1: true, day: "Tue" }) }}
-                                    >
-                                        <Entypo name="clock" size={24} color="black" />
-
-                                    </TouchableOpacity>
-
-                                    <Text style={{ marginLeft: 10 }}>{this.state.Tue?.starttime}</Text>
-                                </View>
-
-                            </View>
-
-                            <View style={{ flex: 0.5, }}>
-                                <Text style={styles.text}>Closing Time</Text>
-                                <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
-                                    <TouchableOpacity
-                                        onPress={() => { this.setState({ show2: true, day: "Tue" }) }}
-                                    >
-                                        <Entypo name="clock" size={24} color="black" />
-
-                                    </TouchableOpacity>
-
-                                    <Text style={{ marginLeft: 10 }}>{this.state.Tue?.endtime}</Text>
-                                </View>
-
-                            </View>
-                        </View>
-
-                        <View>
-                            <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Wed :</Text>
-                        </View>
-                        <View style={{ height: height * 0.07, flexDirection: "row", }}>
-
-                            <View style={{ flex: 0.5 }}>
-                                <Text style={styles.text}>Opening Time</Text>
-                                <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
-                                    <TouchableOpacity
-                                        onPress={() => { this.setState({ show1: true, day: "Wed" }) }}
-                                    >
-                                        <Entypo name="clock" size={24} color="black" />
-
-                                    </TouchableOpacity>
-
-                                    <Text style={{ marginLeft: 10 }}>{this.state.Wed?.starttime}</Text>
-                                </View>
-
-                            </View>
-
-                            <View style={{ flex: 0.5, }}>
-                                <Text style={styles.text}>Closing Time</Text>
-                                <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
-                                    <TouchableOpacity
-                                        onPress={() => { this.setState({ show2: true, day: "Wed" }) }}
-                                    >
-                                        <Entypo name="clock" size={24} color="black" />
-
-                                    </TouchableOpacity>
-
-                                    <Text style={{ marginLeft: 10 }}>{this.state.Wed?.endtime}</Text>
-                                </View>
-
-                            </View>
-                        </View>
-                        <View>
-                            <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Thu :</Text>
-                        </View>
-                        <View style={{ height: height * 0.07, flexDirection: "row", }}>
-
-                            <View style={{ flex: 0.5 }}>
-                                <Text style={styles.text}>Opening Time</Text>
-                                <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
-                                    <TouchableOpacity
-                                        onPress={() => { this.setState({ show1: true, day: "Thu" }) }}
-                                    >
-                                        <Entypo name="clock" size={24} color="black" />
-
-                                    </TouchableOpacity>
-
-                                    <Text style={{ marginLeft: 10 }}>{this.state.Thu?.starttime}</Text>
-                                </View>
-
-                            </View>
-
-                            <View style={{ flex: 0.5, }}>
-                                <Text style={styles.text}>Closing Time</Text>
-                                <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
-                                    <TouchableOpacity
-                                        onPress={() => { this.setState({ show2: true, day: "Thu" }) }}
-                                    >
-                                        <Entypo name="clock" size={24} color="black" />
-
-                                    </TouchableOpacity>
-
-                                    <Text style={{ marginLeft: 10 }}>{this.state.Thu?.endtime}</Text>
-                                </View>
-
-                            </View>
-                        </View>
-
-
-                        <View>
-                            <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Fri :</Text>
-                        </View>
-                        <View style={{ height: height * 0.07, flexDirection: "row", }}>
-
-                            <View style={{ flex: 0.5 }}>
-                                <Text style={styles.text}>Opening Time</Text>
-                                <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
-                                    <TouchableOpacity
-                                        onPress={() => { this.setState({ show1: true, day: "Fri" }) }}
-                                    >
-                                        <Entypo name="clock" size={24} color="black" />
-
-                                    </TouchableOpacity>
-
-                                    <Text style={{ marginLeft: 10 }}>{this.state.Fri?.starttime}</Text>
-                                </View>
-
-                            </View>
-
-                            <View style={{ flex: 0.5, }}>
-                                <Text style={styles.text}>Closing Time</Text>
-                                <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
-                                    <TouchableOpacity
-                                        onPress={() => { this.setState({ show2: true, day: "Fri" }) }}
-                                    >
-                                        <Entypo name="clock" size={24} color="black" />
-
-                                    </TouchableOpacity>
-
-                                    <Text style={{ marginLeft: 10 }}>{this.state.Fri?.endtime}</Text>
-                                </View>
-
-                            </View>
-                        </View>
-
-
-                        <View>
-                            <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Sat :</Text>
-                        </View>
-                        <View style={{ height: height * 0.07, flexDirection: "row", }}>
-
-                            <View style={{ flex: 0.5 }}>
-                                <Text style={styles.text}>Opening Time</Text>
-                                <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
-                                    <TouchableOpacity
-                                        onPress={() => { this.setState({ show1: true, day: "Sat" }) }}
-                                    >
-                                        <Entypo name="clock" size={24} color="black" />
-
-                                    </TouchableOpacity>
-
-                                    <Text style={{ marginLeft: 10 }}>{this.state.Sat?.starttime}</Text>
-                                </View>
-
-                            </View>
-
-                            <View style={{ flex: 0.5, }}>
-                                <Text style={styles.text}>Closing Time</Text>
-                                <View style={{ flexDirection: "row", marginTop: 5, alignItems: "center", }}>
-                                    <TouchableOpacity
-                                        onPress={() => { this.setState({ show2: true, day: "Sat" }) }}
-                                    >
-                                        <Entypo name="clock" size={24} color="black" />
-
-                                    </TouchableOpacity>
-
-                                    <Text style={{ marginLeft: 10 }}>{this.state.Sat?.endtime}</Text>
-                                </View>
-
-                            </View>
                         </View>
                         {/* {this.state.show1 && (
                             <DateTimePicker
@@ -568,14 +1004,8 @@ class UpdateTimings extends Component {
                                 onConfirm={this.handleConfirm2}
                                 onCancel={this.hideDatePicker2}
                             />
-                            <View style={{ alignItems: 'center', justifyContent: 'center' ,marginVertical:40}}>
-                                <TouchableOpacity style={{ width: width * 0.4, height: height * 0.05, borderRadius: 10, alignItems: 'center', justifyContent: "center", backgroundColor: themeColor }}
-                                    onPress={() => { this.UpdateTimings() }}
-                                >
-                                    <Text style={[styles.text, { color: "#fff" }]}>Update</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </ScrollView>
+
+                 
                     
                     </View>
                 </SafeAreaView>

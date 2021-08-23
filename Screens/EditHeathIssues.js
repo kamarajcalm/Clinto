@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView, TextInput, ActivityIndicator ,FlatList,KeyboardAvoidingView} from 'react-native';
+import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView, TextInput, ActivityIndicator ,FlatList,KeyboardAvoidingView, Platform} from 'react-native';
 import settings from '../AppSettings';
 import axios from 'axios';
 import Modal from 'react-native-modal';
@@ -110,6 +110,27 @@ class EditHeathIssues extends Component {
             </View>
         )
     }
+    header =()=>{
+        return(
+            <View style={{flexDirection:"row",marginTop:5}}>
+                    <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
+                         <Text style={[styles.text,{color:"#000"}]}>#</Text>
+                    </View>
+                    <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                        <Text style={[styles.text,{color:"#000"}]}>Issue</Text>
+                    </View>
+                    <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                        <Text style={[styles.text,{color:"#000"}]}>From</Text>
+                    </View>
+                    <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                        <Text style={[styles.text,{color:"#000"}]}>Till</Text>
+                    </View>
+                      <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                        <Text style={[styles.text,{color:"#000"}]}>Action</Text>
+                    </View>
+            </View>
+        )
+    }
     render() {
         return (
             <>
@@ -118,7 +139,7 @@ class EditHeathIssues extends Component {
                     <View style={{ flex: 1, backgroundColor:"#fff"}}>
                         <StatusBar backgroundColor={themeColor} />
                         {/* Headers */}
-                        <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, justifyContent: "center", flexDirection: "row" }}>
+                        <View style={{ height: height * 0.1, backgroundColor: themeColor,  justifyContent: "center", flexDirection: "row" }}>
 
                             <TouchableOpacity style={{ flex: 0.2, alignItems: 'center', justifyContent: "center" }}
                                 onPress={() => { this.props.navigation.goBack() }}
@@ -126,20 +147,34 @@ class EditHeathIssues extends Component {
                                 <Ionicons name="chevron-back-circle" size={30} color="#fff" />
                             </TouchableOpacity>
                             <View style={{ flex: 0.6, alignItems: 'center', justifyContent: "center" }}>
-                                <Text style={[styles.text, { color: "#fff" }]}>Edit HealthIssues</Text>
+                                <Text style={[styles.text, { color: "#fff" }]}>Edit Health Issues</Text>
                             </View>
                             <View style={{ flex: 0.2, alignItems: 'center', justifyContent: "center" }}>
 
                             </View>
                         </View>
-                        <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={45}>
-                        <View style={{ flex: 1 }}>
+                          <View style={[styles.boxWithShadow,{height:height*0.08,width,backgroundColor:"#333",alignItems:"center",justifyContent:"space-around",flexDirection:"row"}]}>
+                                <TextInput
+                                  value ={this.state.healthIssue}
+                                  style={{height:35,width:"70%",backgroundColor:"#fff",paddingLeft:10,borderRadius:5}}
+                                  selectionColor={themeColor}
+                                  onChangeText={(healthIssue) => { this.setState({ healthIssue})}}
+                                
+                                />
+                                <TouchableOpacity style={{height:height*0.06,width:'20%',alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}
+                                  onPress ={()=>{this.add()}}
+                                >
+                                        <Text style={[styles.text,{color:"#fff"}]}>Add</Text>
+                                </TouchableOpacity>
+                            </View>
+                       
                             <FlatList
+                               ListHeaderComponent={this.header}
                                ListFooterComponent ={this.renderFooter()} 
-                               contentContainerStyle={{alignItems:"center",justifyContent:"space-around",flex:1}}
-                              data={this.state.item}
-                              keyExtractor= {(item,index)=>index.toString()}
-                              renderItem ={({item,index})=>{
+                               contentContainerStyle={{}}
+                               data={this.state.item}
+                               keyExtractor= {(item,index)=>index.toString()}
+                               renderItem ={({item,index})=>{
                                     return(
                                         <View style={{ flexDirection: "row",  marginTop: 5 }}>
                                             <View>
@@ -157,24 +192,11 @@ class EditHeathIssues extends Component {
                                     )
                               }}
                             />
-                           <View style={[styles.boxWithShadow,{height:height*0.08,width,backgroundColor:"#333",alignItems:"center",justifyContent:"space-around",flexDirection:"row"}]}>
-                                <TextInput
-                                  value ={this.state.healthIssue}
-                                  style={{height:height*0.06,width:"70%",backgroundColor:"#fff",paddingLeft:10,borderRadius:5}}
-                                  selectionColor={themeColor}
-                                  onChangeText={(healthIssue) => { this.setState({ healthIssue})}}
-                                
-                                />
-                                <TouchableOpacity style={{height:height*0.06,width:'20%',alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}
-                                  onPress ={()=>{this.add()}}
-                                >
-                                        <Text style={[styles.text,{color:"#fff"}]}>Add</Text>
-                                </TouchableOpacity>
-                            </View>
+                 
                         </View>
 
-                        </KeyboardAvoidingView>
-                    </View>
+              
+
 
                 
                 </SafeAreaView>

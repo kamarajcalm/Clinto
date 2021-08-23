@@ -397,7 +397,7 @@ if(type=="clinic"){
              <TabBar
                {...props}
                renderLabel={({ route, focused, color }) => (
-                 <Text style={[styles.text,{ color: focused ? themeColor : 'gray', margin: 8, fontWeight: "bold" }]}>
+                 <Text style={[styles.text,{ color: focused ? themeColor : 'gray',  }]}>
                    {route.title}
                  </Text>
                )}

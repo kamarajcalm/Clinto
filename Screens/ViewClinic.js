@@ -12,7 +12,7 @@ const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
 const url = settings.url;
 import { SliderBox } from "react-native-image-slider-box";
-
+ let weekdays =["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
 import moment from 'moment-timezone';
 const date = new Date();
 const day = date.getDay();
@@ -86,27 +86,49 @@ class ViewClinic extends Component {
            
         )
     }
-    getTodayTimings2 = (item) => {
-        let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-        let today = days[date.getDay()]
-        return (
-            item.clinicShits[today][0].timings.map((i, index) => {
-                return (
-                    <View
-                        key={index}
-                        style={{ flexDirection: "row", marginTop: 5 }}>
-                        <Text style={[styles.text, { fontWeight: "bold" }]}>{index + 1}.</Text>
-                        <Text style={[styles.text, { marginLeft: 5 }]}>{i[0]}</Text>
-                        <Text style={[styles.text]}>-</Text>
-                        <Text style={[styles.text]}>{i[1]}</Text>
-                    </View>
-                )
-            })
-           
-        )
+    getTodayTimings2 = (item)=>{
+         let  days =["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+      let today =days[date.getDay()]
+  if( item.clinicShifts){
+    return(
+          item.clinicShifts[today][0].timings.map((i, index) => {
+                console.log(i,"hhh")
+              return (
+                  
+                 <View 
+                key={index}
+                style={{ flexDirection: "row",marginTop:5,paddingHorizontal:10}}>
+              
+              
+                     <View style={{flex:1,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}>
+                                <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
+                            <Text style={[styles.text,{color:"#000"}]}>{index+1} .</Text>
+                     </View>
+                       <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
+                              <Text style={[styles.text, { marginLeft: 5 }]}>{i[0]}</Text>
+                       </View>
+                        <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                            
+                        </View> 
+                        <View style={{flex:0.4,}}>
+                            <Text style={[styles.text]}>{i[1]}</Text>
+                        </View>
+    
+                   </View>
+                
+               </View>
+              )
+          })
+      ) 
+  }else{
+     return(
+         <View style={{alignItems:"center",justifyContent:"center"}}>
+             <Text>No Timings Updated</Text>
+         </View>
+     )
+  }
 
-
-
+      
     }
     chatClinic = async () => {
         let api = `${url}/api/prescription/createClinicChat/?clinic=${this.state.item.pk}&customer=${this.props.user.id}`
@@ -146,48 +168,92 @@ class ViewClinic extends Component {
         return days[day]
      
     }
-    validateOpen =()=>{
-        if(this.getOpened()=="open"){
-            return(
-                <View style={{flexDirection:'row',}}>
-                    <View style={{alignItems:"center",justifyContent:"center"}}> 
-                        <Text style={[styles.text, { color: "green" }]}>Open</Text>
-
-                    </View>
-                    <TouchableOpacity style={{alignItems:"center",justifyContent:"center",flexDirection:"row"}}
-                        onPress={() => { this.setState({ showAll: !this.state.showAll }) }}
-                    >
-                        <Text style={[styles.text, { marginLeft: 10 }]}>closes at {this.state.clinicDetails?.working_hours[date.getDay()][1]}</Text>
-                        <View style={{ alignItems: "center", justifyContent: "center", marginTop: 3 }}>
-                            <AntDesign name={this.state.showAll ? "up" : "down"} size={15} color="black" />
+         getTodayTimings3 = (today) => {
+    
+   return(
+       this.state.clinicDetails?.clinicShifts[today][0].timings.map((i, index) => {
+           console.log(i,"ppp")
+           return (
+               <View 
+                key={index}
+                style={{ flexDirection: "row",marginTop:5,paddingHorizontal:10}}>
+              
+              
+                     <View style={{flex:1,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}>
+                                <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
+                            <Text style={[styles.text,{color:"#000"}]}>{index+1} .</Text>
+                     </View>
+                       <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
+                              <Text style={[styles.text, { marginLeft: 5 }]}>{i[0]}</Text>
+                       </View>
+                        <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                             
+                        </View> 
+                        <View style={{flex:0.4,}}>
+                            <Text style={[styles.text]}>{i[1]}</Text>
                         </View>
-                      
-                    </TouchableOpacity>
-                </View>
+    
+                   </View>
                 
-            )
-        }else{
-            return (
-                <View style={{flexDirection:"row",}}>
-                    <View style={{alignItems:"center",justifyContent:"center"}}>
-                        <Text style={[styles.text, { fontSize: 18, color: "red" }]}>Closed</Text>
+               </View>
+           )
+       })
+   )
+       
+       
 
-                    </View>
-                    <TouchableOpacity style={{alignItems:"center",justifyContent:"center",flexDirection:"row"}}
-                        onPress={() => { this.setState({ showAll: !this.state.showAll }) }}
-                    >
-                        <Text style={[styles.text, { marginLeft: 10 }]}>opens at {this.state?.clinicDetails?.working_hours[date.getDay() + 1][0]} {this.getDay(date.getDay() + 1)}</Text>
-                        <View style={{alignItems:"center",justifyContent:"center",marginTop:3}}>
-                            <AntDesign name={this.state.showAll ? "up" : "down"} size={15} color="black" />
-                        </View>
+
+
+    }
+     validateOpen = ()=>{
+         if(this.state?.clinicDetails?.clinicOpened=="opened"){
+             return "green"
+         }else{
+             return "red"
+         }
+     }
+    // validateOpen =()=>{
+    //     if(this.getOpened()=="open"){
+    //         return(
+    //             <View style={{flexDirection:'row',}}>
+    //                 <View style={{alignItems:"center",justifyContent:"center"}}> 
+    //                     <Text style={[styles.text, { color: "green" }]}>Open</Text>
+
+    //                 </View>
+    //                 <TouchableOpacity style={{alignItems:"center",justifyContent:"center",flexDirection:"row"}}
+    //                     onPress={() => { this.setState({ showAll: !this.state.showAll }) }}
+    //                 >
+    //                     <Text style={[styles.text, { marginLeft: 10 }]}>closes at {this.state.clinicDetails?.working_hours[date.getDay()][1]}</Text>
+    //                     <View style={{ alignItems: "center", justifyContent: "center", marginTop: 3 }}>
+    //                         <AntDesign name={this.state.showAll ? "up" : "down"} size={15} color="black" />
+    //                     </View>
+                      
+    //                 </TouchableOpacity>
+    //             </View>
+                
+    //         )
+    //     }else{
+    //         return (
+    //             <View style={{flexDirection:"row",}}>
+    //                 <View style={{alignItems:"center",justifyContent:"center"}}>
+    //                     <Text style={[styles.text, { fontSize: 18, color: "red" }]}>Closed</Text>
+
+    //                 </View>
+    //                 <TouchableOpacity style={{alignItems:"center",justifyContent:"center",flexDirection:"row"}}
+    //                     onPress={() => { this.setState({ showAll: !this.state.showAll }) }}
+    //                 >
+    //                     <Text style={[styles.text, { marginLeft: 10 }]}>opens at {this.state?.clinicDetails?.working_hours[date.getDay() + 1][0]} {this.getDay(date.getDay() + 1)}</Text>
+    //                     <View style={{alignItems:"center",justifyContent:"center",marginTop:3}}>
+    //                         <AntDesign name={this.state.showAll ? "up" : "down"} size={15} color="black" />
+    //                     </View>
  
-                    </TouchableOpacity>
-                </View>
+    //                 </TouchableOpacity>
+    //             </View>
                
             
-            )
-        }
-    }
+    //         )
+    //     }
+    // }
     render() {
         let dp =null
         if (this.state.item.displayPicture){
@@ -232,8 +298,13 @@ class ViewClinic extends Component {
                        {/* Clinic Details */}
                             <View style={{ margin: 20 }}>
 
-                                <View>
-                                    <Text style={{ fontWeight: "bold", fontSize: 18, color: "#000" }}>{this.state.item.title.toUpperCase()}</Text>
+                                <View style={{flexDirection:"row"}}>
+                                    <View>
+                                            <Text style={{ fontWeight: "bold", fontSize: 18, color: "#000" }}>{this.state.item.title.toUpperCase()}</Text>
+                                    </View>
+                                    <View style={{height:10,width:10,borderRadius:5,marginLeft:10,backgroundColor:this.validateOpen(),marginTop:8}}>
+                                        
+                                    </View>
                                 </View>
 
 
@@ -296,17 +367,7 @@ class ViewClinic extends Component {
                             </View>
 
                                            {/* clinic Timings */}
-                            <View style={[styles.boxWithShadow, { height: height * 0.07, width, backgroundColor: "#eee", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 20 }]}>
-                                <View>
-                                    <Text style={[styles.text]}>Opening Hours</Text>
-                                </View>
-                                {
-                                    this.validateOpen()
-                                }
-                                {/* <View>
-                                    <AntDesign name="down" size={20} color="black" />
-                                </View> */}
-                            </View>
+               
                             <View style={{ padding: 10, }}>
                                 
                                 {/* <View style={{ marginHorizontal: 20, marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
@@ -337,41 +398,58 @@ class ViewClinic extends Component {
                                         <Text>{this.state.showAll ? "showLess" : "showAll"}</Text>
                                     </TouchableOpacity>
                                 </View> */}
-                              
-                                {this.state.showAll &&
-                                    this.state?.clinicDetails?.sortedTimings.map((i) => {
-                                        let day = ""
-                                        let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday"]
-                                    
-                                        day = days[i[2]]
-                                       
-                                     
-                                        return (
-                                            <View style={{ marginHorizontal: 20, marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                                <View style={{flexDirection:"row",width:width*0.6}}>
-                                                    <View style={{ flex:0.5,flexDirection:"row"}}>
-                                                        <View style={{flex: 0.9,}}>
-                                                            <Text style={[styles.text, { fontWeight: "bold", fontSize: 18, color: "gray" }]}>{day}</Text>
-                                                        </View>
-                                                       <View style={{flex: 0.1,}}>
-                                                            <Text style={[styles.text, { fontWeight: "bold", fontSize: 18, color: "gray",  }]}>:</Text>
+                                 <View style={{ marginHorizontal: 20, marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
+                                <View>
+                                    <Text style={[styles.text, { color:"#000", fontSize: 18 }]}>Opening Time:</Text>
+                                </View>
+                                <View>
+                                    <Text style={[styles.text, { color:"#000", fontSize: 18 }]}>Closing Time:</Text>
+                                </View>
+                            </View>
+                            <View style={{ marginHorizontal: 20, marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
+                                <View>
+                                    <View style={{ alignSelf: "flex-start" }}>
+                                        <Text style={[styles.text, {color:"#000",fontSize: 18,}]}>Today:</Text>
+                                    </View>
 
-                                                       </View>
-                                                    </View>
-                                                    <View style={{flexDirection:"row",flex:0.5}}>
-                                                        <View style={{flexDirection:"row"}}>
-                                                            <Text style={[styles.text, { fontWeight:"bold"}]}>{i[0]}</Text>
-                                                            <Text style={[styles.text, { fontWeight: "bold" }]}>-</Text>
-                                                            <Text style={[styles.text, { fontWeight: "bold" }]}>{i[1]}</Text>
-                                                        </View>
-                                                    
-                                                    </View>
-                                                </View>
-                                               
-                                            </View>
-                                        )
-                                    })
-                                }
+                                   
+                                </View>
+
+                            </View>
+                             <View style={{}}>
+                                    {this.state.clinicDetails&&
+                                         this.getTodayTimings2(this.state.clinicDetails)
+                                      }
+                               
+                            </View>
+                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                <TouchableOpacity
+                                    onPress={() => { this.setState({ showAll: !this.state.showAll }) }}
+                                >
+                                    <Text style={[styles.text,{color:"#000"}]}>{this.state.showAll ? "show Less" : "show All"}</Text>
+                                </TouchableOpacity>
+                            </View>
+                              
+                                         {this.state.showAll&&
+                               weekdays.map((item)=>{
+                                 return (
+                                     <View style={{marginTop:5}}>
+                                         <View style={{alignItems:"center",justifyContent:"center"}}>
+                                                 <Text style={[styles.text, { fontWeight: "bold" }]}>{item} : </Text>
+                                         </View>
+                                         <View style={{}}>
+                                                  {this.state.clinicDetails&&
+                                            this.getTodayTimings3(item)
+                                        }
+                                         </View>
+                                  
+                                     </View>
+                                 ) 
+                               })
+                           
+                             }
+
+
                             </View>
                             <View style={[styles.boxWithShadow, { height: height * 0.07, width, backgroundColor: "#eee", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 20 }]}>
                                 <View>

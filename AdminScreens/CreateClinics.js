@@ -17,6 +17,7 @@ import { TextInput } from 'react-native-gesture-handler';
 import * as Location from 'expo-location';
 import HttpsClient from '../api/HttpsClient';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+import GetLocation from 'react-native-get-location';
 
 class CreateClinics extends Component {
     constructor(props) {
@@ -237,19 +238,25 @@ class CreateClinics extends Component {
         this.setState({ images: duplicate })
         this.setState({ image: photo, changedImage: true })
     }
-    getLocation = async () => {
+     getLocation = async () => {
         let { status } = await Location.requestForegroundPermissionsAsync()
         if (status !== 'granted') {
             console.warn('Permission to access location was denied');
             return;
         }
-        let location = await Location.getCurrentPositionAsync({});
-        console.log(location, "jjjj")
-        this.setState({
-            isFetching:false,
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
+         Location.installWebGeolocationPolyfill();
+        GetLocation.getCurrentPosition({
+            enableHighAccuracy: true,
+            timeout: 15000,
         })
+        .then(async(location) => {
+            this.setState({
+                    isFetching: false,
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                })
+        })
+      
     }
     onRefresh =()=>{
         this.setState({isFetching:true})

@@ -18,6 +18,7 @@ import HttpsClient from '../api/HttpsClient';
 import Modal from 'react-native-modal';
 import Toast from 'react-native-simple-toast';
 import { SliderBox } from "react-native-image-slider-box";
+   let weekdays =["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
 class ClinicDetails extends Component {
     constructor(props) {
         let item = props.route.params.item
@@ -114,7 +115,7 @@ class ClinicDetails extends Component {
     getTodayTimings =(item)=>{
       let  days =["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
       let today =days[date.getDay()]
-
+      console.log(today,"kkkkkk")
       return(
           item.clinicShits[today][0].timings.map((i, index) => {
               return (
@@ -129,9 +130,76 @@ class ClinicDetails extends Component {
               )
           })
       )
+    }
+    getTodayTimings2 = (item)=>{
+         let  days =["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+      let today =days[date.getDay()]
+      console.log(today,"kkkkkk")
+      return(
+          item.clinicShifts[today][0].timings.map((i, index) => {
+              return (
+                 <View 
+                key={index}
+                style={{ flexDirection: "row",marginTop:5,paddingHorizontal:10}}>
+              
+              
+                     <View style={{flex:1,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}>
+                                <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
+                            <Text style={[styles.text,{color:"#000"}]}>{index+1} .</Text>
+                     </View>
+                       <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
+                              <Text style={[styles.text, { marginLeft: 5 }]}>{i[0]}</Text>
+                       </View>
+                        <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                            
+                        </View> 
+                        <View style={{flex:0.4,}}>
+                            <Text style={[styles.text]}>{i[1]}</Text>
+                        </View>
+    
+                   </View>
+                
+               </View>
+              )
+          })
+      ) 
+    }
+     getTodayTimings3 = (today) => {
+    
+   return(
+       this.state.item.clinicShifts[today][0].timings.map((i, index) => {
+           console.log(i,"ppp")
+           return (
+               <View 
+                key={index}
+                style={{ flexDirection: "row",marginTop:5,paddingHorizontal:10}}>
+              
+              
+                     <View style={{flex:1,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}>
+                                <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
+                            <Text style={[styles.text,{color:"#000"}]}>{index+1} .</Text>
+                     </View>
+                       <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
+                              <Text style={[styles.text, { marginLeft: 5 }]}>{i[0]}</Text>
+                       </View>
+                        <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                             
+                        </View> 
+                        <View style={{flex:0.4,}}>
+                            <Text style={[styles.text]}>{i[1]}</Text>
+                        </View>
+    
+                   </View>
+                
+               </View>
+           )
+       })
+   )
+       
+       
 
-       
-       
+
+
     }
     componentWillUnmount() {
         this._unsubscribe();
@@ -217,63 +285,47 @@ class ClinicDetails extends Component {
                             <View style={{ marginHorizontal: 20, marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
                                 <View>
                                     <View style={{ alignSelf: "flex-start" }}>
-                                        <Text style={[styles.text, { fontWeight: "bold", fontSize: 18, color: "gray" }]}>Today:</Text>
+                                        <Text style={[styles.text, { fontWeight: "bold", fontSize: 18, color: "gray" }]}>Today: {weekdays[date.getDay()]}</Text>
                                     </View>
-
-                                    { this.state?.item?.working_hours?.length>0&& <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>{this.state?.item?.working_hours[date?.getDay()][0]}</Text>}
-                                </View>
-                                <View>
-                                    {this.state?.item?.working_hours?.length > 0&&<Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>{this.state?.item?.working_hours[date?.getDay()][1]}</Text>}
+                             
+                                    
+                          
+                                 
+                                  
                                 </View>
                                
+                               
                             </View>
+                                   <View>
+                                          {
+                                         this.getTodayTimings2(this.state.item)
+                                      }
+                                    </View>
                             <View style={{alignItems:"center",justifyContent:"center"}}>
                                 <TouchableOpacity
                                   onPress={()=>{this.setState({showAll:!this.state.showAll})}}
                                 >
-                                    <Text>{this.state.showAll?"showLess":"showAll"}</Text>
+                                    <Text>{this.state.showAll?"show Less":"show All"}</Text>
                                 </TouchableOpacity>
                             </View>
-                            {this.state.showAll && this.state.item.working_hours?.length>0&&
-                                    this.state.item.working_hours.map((i,index)=>{
-                                     let day= ""
-                                     if(i[2]=="0"){
-                                         day ="Sun"
-                                     }else if(i[2]=="1"){
-                                         day ="Mon"
-                                     } else if (i[2] == "2") {
-                                         day = "Tue"
-                                     } else if (i[2] == "3") {
-                                         day = "Wed"
-                                     } else if (i[2] == "4") {
-                                         day = "Thu"
-                                     } else if (i[2] == "5") {
-                                         day = "Fri"
-                                     } else if (i[2] == "6") {
-                                         day = "Sat"
-                                     }else{
-                                         day ==""
-                                     }
-                                        
-                                        return(
-                                            <View 
-                                             style={{ marginHorizontal: 20, marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}
-                                             key ={index}
-                                            >
-                                                <View>
-                                                    <View style={{alignSelf:"flex-start"}}>
-                                                        <Text style={[styles.text, { fontWeight: "bold", fontSize: 18,color:"gray" }]}>{day}:</Text>
-                                                    </View>
-                                                    
-                                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>{i[0]}</Text>
-                                                </View>
-                                                <View>
-                                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>{i[1]}</Text>
-                                                </View>
-                                            </View>
-                                        )
-                                    })
-                           }
+                            {this.state.showAll&&
+                               weekdays.map((item)=>{
+                                 return (
+                                     <View style={{marginTop:5}}>
+                                         <View style={{alignItems:"center",justifyContent:"center"}}>
+                                                 <Text style={[styles.text, { fontWeight: "bold" }]}>{item} : </Text>
+                                         </View>
+                                         <View style={{}}>
+                                                  {
+                                            this.getTodayTimings3(item)
+                                        }
+                                         </View>
+                                  
+                                     </View>
+                                 ) 
+                               })
+                           
+                             }
                                    
                             
                              

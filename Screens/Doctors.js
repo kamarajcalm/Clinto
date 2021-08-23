@@ -50,21 +50,15 @@ const url =settings.url
       );
        return;
      }
-     try {
-       let isLocationServicesEnabled = await Location.hasServicesEnabledAsync();
+
+
        Location.installWebGeolocationPolyfill();
-       let location = await Location.getCurrentPositionAsync();
-           this.setState({ location: {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude, 
-        latitudeDelta: 0.01, 
-        longitudeDelta: 0.01}})
-     } catch (err){
-       GetLocation.getCurrentPosition({
+
+    GetLocation.getCurrentPosition({
     enableHighAccuracy: true,
     timeout: 15000,
-})
-.then(location => {
+    })
+    .then(location => {
     console.log(location,"kkkkkk");
            this.getMarkers(location.latitude,location.longitude)
       this.setState({ location: {
@@ -80,7 +74,7 @@ const url =settings.url
       //     let location = await Location.getLastKnownPositionAsync()
       //     console.log(location,"hjhj")
    
-     }
+     
 
    }
  componentDidMount(){
@@ -180,9 +174,12 @@ const url =settings.url
             <TouchableOpacity style={{position:"absolute",top:15,width:width*0.9,height:height*0.05,borderRadius:20,backgroundColor:"#fff",justifyContent:"space-around",paddingHorizontal:20,flexDirection:"row",alignItems:"center"}}
           onPress={() => this.props.navigation.navigate('SearchDoctors')}
             >
-                 <AntDesign name="search1" size={24} color={themeColor} />
-                 <View style={{alignItems:"center",justifyContent:"center"}}>
-                    <Text style={[styles.text,{fontSize:12}]}>doctor, clinic, specialization or health issues</Text>
+                 <View style={{flex:0.1}}>
+                      <AntDesign name="search1" size={24} color={themeColor} />
+                 </View>
+    
+                 <View style={{alignItems:"center",justifyContent:"center",flex:0.9}}>
+                    <Text style={[styles.text,{fontSize:12}]} numberOfLines={1}>doctor, clinic, specialization or health issues</Text>
                  </View>
                  
             </TouchableOpacity>

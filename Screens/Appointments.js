@@ -27,7 +27,7 @@ class Appointments extends Component {
     constructor(props) {
         const routes = [
             { key: 'Pending', title: 'Pending' },
-            { key: 'InProgress', title: 'In Progress' },
+            { key: 'InProgress', title: 'Progress' },
             { key: 'AllAppointments', title: 'All '}
 
         ];
@@ -489,7 +489,7 @@ class Appointments extends Component {
             return "green"
         }
         if (status == "Accepted") {
-            return "blue"
+            return "#63BCD2"
         }
         if (status == "Pending") {
             return "orange"
@@ -596,6 +596,7 @@ class Appointments extends Component {
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 10,}}>
                                     <View style={{flex:0.7}}>
                                         <Text style={[styles.text,{color:this.validateColor(item?.status)}]}>{item?.status}</Text>
+                                      {item.status=="Accepted" && <Text style={[styles.text]}>{item.accepteddate}|{item.acceptedtime}</Text>}
                                     </View>
                                     <View style={{flexDirection:'row',justifyContent:"space-around",alignItems:"center",flex:0.3}}>
                                          <TouchableOpacity style={[styles.boxWithShadow,{backgroundColor:"#fff",height:30,width:30,borderRadius:15,alignItems:"center",justifyContent:'center'}]}
@@ -713,7 +714,7 @@ class Appointments extends Component {
             return "red"
         }
         if (status == "Accepted") {
-            return "Yellow"
+            return "#63BCD2"
         }
       
     }
@@ -932,6 +933,7 @@ class Appointments extends Component {
                                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 10, }}>
                                             <View style={{ flex: 0.7 }}>
                                                 <Text style={[styles.text, { color: this.validateColor(item?.status) }]}>{item?.status}</Text>
+                                                {item.status=="Accepted" && <Text style={[styles.text]}>{item.accepteddate}|{item.acceptedtime}</Text>}
                                             </View>
                                             <View style={{ flexDirection: 'row', justifyContent: "space-around", alignItems: "center", flex: 0.3 }}>
                                                 <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center' }]}
@@ -1519,7 +1521,7 @@ class Appointments extends Component {
                                 <TabBar
                                     {...props}
                                     renderLabel={({ route, focused, color }) => (
-                                        <Text style={{ color: focused ? themeColor : 'gray', margin: 8, fontWeight: "bold" }}>
+                                        <Text style={[styles.text,{ color: focused ? themeColor : 'gray', }]}>
                                             {route.title}
                                         </Text>
                                     )}

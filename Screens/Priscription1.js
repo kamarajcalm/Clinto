@@ -355,6 +355,20 @@ hideDatePicker = () => {
             this.showSimpleMessage("try again ","orange","info")
         }
     }
+    separator = () =>{
+      return(
+          <View>
+              <Text style={[styles.text]}> , </Text>
+          </View>
+      )
+    }
+    footer =()=>{
+        return(
+            <View>
+                    <Text style={[styles.text]}> . </Text>
+            </View>
+        )
+    }
     showDifferentPriscription = (item, index) => {
         const { height,width } = Dimensions.get("window");
         if (this.state.isDoctor){
@@ -393,14 +407,23 @@ hideDatePicker = () => {
                                 <Text>#{this.getIndex(index)}</Text>
                             </View>
                         </View>
-                        <View style={{ marginTop: 10 ,flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
-                            <View style={{flexDirection: "row"}}>
-                                <Text style={[styles.text,{color:"#000", fontWeight:"bold"}]}>Reason :</Text>
-                                <Text style={[styles.text]}>{item.ongoing_treatment}</Text>
+                     <View style={{ marginTop: 10 }}>
+                            <View style={{flexDirection:"row"}}>
+                                <Text style={[styles.text]}>Reason : </Text>
                             </View>
-                              <View>
-                                  <Text style={[styles.text]}>{moment(item.created).format("h:mm a")}</Text>
-                              </View>
+                            <FlatList 
+                               horizontal={true}
+                               ItemSeparatorComponent={this.separator}
+                               data={item.diseaseTitle}
+                               keyExtractor={(item,index)=>index.toString()}
+                               renderItem={({item,index})=>{
+                                    return(
+                                        <View>
+                                            <Text style={[styles.text]}>{item}</Text>    
+                                        </View>
+                                    )
+                               }}
+                            />
                         </View>
                   
                     </View>
@@ -436,9 +459,22 @@ hideDatePicker = () => {
                             </View>
                         </View>
                         <View style={{ marginTop: 10 }}>
-                            <View>
-                                <Text style={[styles.text]}>Reason : {item.ongoing_treatment}</Text>
+                            <View style={{flexDirection:"row"}}>
+                                <Text style={[styles.text]}>Reason : </Text>
                             </View>
+                            <FlatList 
+                               horizontal={true}
+                               ItemSeparatorComponent={this.separator}
+                               data={item.diseaseTitle}
+                               keyExtractor={(item,index)=>index.toString()}
+                               renderItem={({item,index})=>{
+                                    return(
+                                        <View>
+                                            <Text style={[styles.text]}>{item}</Text>    
+                                        </View>
+                                    )
+                               }}
+                            />
                         </View>
                         <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
                             <View>
@@ -455,7 +491,7 @@ hideDatePicker = () => {
 
         // if patient
         return (
-            <TouchableOpacity style={[styles.card2, { flexDirection: "row", borderRadius: 5 ,       height: height * 0.25,}]}
+            <TouchableOpacity style={[styles.card2, { flexDirection: "row", borderRadius: 10 ,}]}
                 onPress={() => { this.props.navigation.navigate('PrescriptionView', { item, }) }}
             >
                 <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
@@ -463,38 +499,39 @@ hideDatePicker = () => {
                         <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 18 }]}>{this.getFirstLetter(item,"clinic")}</Text>
                     </View>
                 </View>
-                <View style={{ flex: 0.7, marginHorizontal: 10, justifyContent: 'center' }}>
+                <View style={{ flex: 0.7,justifyContent: 'center',}}>
                     <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
                         <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                            <Text style={[styles.text, { color: "#000", fontWeight: 'bold' }]}>Patient : {item?.username.name}</Text>
-
+                          
+                         <Text style={[styles.text,{color:"#000",fontSize:18}]} numberOfLines={1}>{item.clinicname.name}</Text>
                         </View>
                         <View style={{ alignItems: "center", justifyContent: "center" }}>
-                            <Text>#{this.getIndex(index)}</Text>
+                            <Text style={[styles.text,{marginRight:10}]}>#{this.getIndex(index)}</Text>
                         </View>
                     </View>
-                    <View style={{ marginTop: 10 }}>
-                        <View>
-                            <Text style={[styles.text]}>Reason : {item.ongoing_treatment}</Text>
-                        </View>
-                    </View>
-                    <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                        <View>
-                            <Text style={[styles.text]}>Clinic :{item.clinicname.name}</Text>
-                        </View>
-                        <View>
-                            <View style={{ alignSelf: "flex-end" }}>
-                                <Text style={[styles.text]}>{moment(item.created).format("h:mm a")}</Text>
-
+                      <View style={{ marginTop: 10,flexDirection:"row" }}>
+                            <View style={{flexDirection:"row"}}>
+                                <Text style={[styles.text]}>Reason : </Text>
                             </View>
-                            <View>
-                                <Text style={[styles.text]}>{moment(item.created).format('DD/MM/YYYY')}</Text>
-                            </View>
+                            <FlatList
+                               ListFooterComponent={this.footer} 
+                               horizontal={true}
+                               ItemSeparatorComponent={this.separator}
+                               data={item.diseaseTitle}
+                               keyExtractor={(item,index)=>index.toString()}
+                               renderItem={({item,index})=>{
+                                    return(
+                                        <View>
+                                            <Text style={[styles.text]}>{item}</Text>    
+                                        </View>
+                                    )
+                               }}
+                            />
                         </View>
-
-                    </View>
-                    <View style={{ flexDirection: "row", marginTop: 10 }}>
-                        <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                  
+                    <View style={{ flexDirection: "row", marginVertical:10 }}>
+                        <View style={{flex:0.5,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}>
+                                            <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
                             onPress={() => { this.chatClinic(item) }}
                         >
                             <Ionicons name="chatbox" size={24} color="#63BCD2" />
@@ -513,6 +550,18 @@ hideDatePicker = () => {
                         >
                             <FontAwesome5 name="directions" size={20} color="#63BCD2" />
                         </TouchableOpacity>
+                        </View>
+                
+                         <View style={{alignItems:"center",justifyContent:"center",flex:0.5}}>
+                            <View style={{}}>
+                                <Text style={[styles.text]}>{moment(item.created).format("h:mm A")}</Text>
+
+                            </View>
+                            <View style={{}}>
+                                <Text style={[styles.text]}>{moment(item.created).format('DD/MM/YYYY')}</Text>
+                            </View>
+                         </View>
+                         
                     </View>
 
                 </View>
@@ -590,14 +639,14 @@ hideDatePicker = () => {
                     </View>
                 </View>
 
-                <View style={{ marginHorizontal: 20, height: headerHeight / 3, alignItems: 'center', justifyContent: "center", marginBottom: 5 }}>
-                    <View style={{ flexDirection: 'row', borderRadius: 10, backgroundColor: "#eee", width: "100%", height:"90%" }}>
+                <View style={{ marginHorizontal: 20, height: headerHeight/2, alignItems: 'center', justifyContent: "center", }}>
+                    <View style={{ flexDirection: 'row', borderRadius: 10, backgroundColor: "#eee", width: "100%", height:"65%" }}>
                         <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5, flex: 0.1 }}>
                             <EvilIcons name="search" size={24} color="black" />
                         </View>
                         <TextInput
                             selectionColor={themeColor}
-                            style={{ height: "99%", flex: 0.8, backgroundColor: "#eee", paddingLeft: 10, }}
+                            style={{ height: "98%", flex: 0.8, backgroundColor: "#eee", paddingLeft: 10, }}
                             placeholder={`search ${this.props?.clinic?.name ||"prescription"}`}
                             onChangeText={(text) => { this.searchPriscriptions(text) }}
                         />
@@ -628,7 +677,7 @@ const screenHeight =Dimensions.get('screen').height;
 
         const translateY = scrollYClamped.interpolate({
             inputRange: [0, headerHeight],
-            outputRange: Platform.OS=="android"?[0, -(headerHeight / 2)]:[0, -(headerHeight / 2+statusBarHeight-30)],
+            outputRange: Platform.OS=="android"?[0, -(headerHeight / 2)-10]:[0, -(headerHeight / 2+statusBarHeight-30)],
         });
 
 
@@ -697,7 +746,7 @@ const screenHeight =Dimensions.get('screen').height;
                             }
                             data={this.state.prescriptions}
                             scrollEventThrottle={16}
-                            contentContainerStyle={{ paddingTop: headerHeight-12, paddingBottom: 90 }}
+                            contentContainerStyle={{ paddingTop: headerHeight+height*0.01, paddingBottom: 90 }}
                             onScroll={handleScroll}
                             ref={ref=>this.ref=ref}
                              
