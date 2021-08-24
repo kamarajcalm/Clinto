@@ -194,7 +194,7 @@ validateExpiry =()=>{
      if(this.state.isPatient){
        return(
          <>
-           <PatientProfile />
+           <PatientProfile  navigation={this.props.navigation}/>
          </>
        )
     

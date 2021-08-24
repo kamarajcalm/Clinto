@@ -85,7 +85,7 @@ class AddPrescription extends Component {
                   'Go Back?',
                   'Are you sure to discard them and leave the screen?',
                   [
-                      { text: "Don't leave", style: 'cancel', onPress: () => { } },
+                      { text: "Don't leave", style: 'cancel', onPress: () => {}},
                       {
                           text: 'Discard',
                           style: 'destructive',
@@ -223,16 +223,35 @@ class AddPrescription extends Component {
 
         this.setState({ MedicinesGiven: this.state.MedicinesGiven.concat(medicines) })
     }
+    createTemplateAlert =(prescribed_medicines,medicines_given) =>{
+              Alert.alert(
+                  'Template Available for?',
+                  `Age:${this.state.Age} & Diagnosis:${this.state.selectedDiagonosis}`,
+                  [
+                      { text: "No", style: 'cancel', onPress: () => { } },
+                      {
+                          text: 'use',
+                          style: 'destructive',
+                      
+                          onPress: () =>  this.setState({ medicines: this.state.medicines.concat(prescribed_medicines), MedicinesGiven:this.state.MedicinesGiven.concat(medicines_given)}),
+                      },
+                  ]
+              );
+    }
     searchTemplates = async (age=null,disease="") => {
         this.setState({ loading: true })
         let api = `${url}/api/prescription/getTemplate/?clinic=${this.state?.appoinment?.clinic || this.props.clinic.clinicpk}&age=${age}&diagonsis=${disease}&type=mobile`
          console.log(api)
         let data = await HttpsClient.get(api)
-       console.log(data)
+       
         if(data.type=="success"){
-    
+            
             this.setState({ loading: false })
-            this.setState({ medicines: this.state.medicines.concat(data.data.prescribed_medicines), MedicinesGiven:this.state.MedicinesGiven.concat(data.data.medicines_given)})
+            if(data.data.prescribed_medicines.length>0||data.data.medicines_given.length>0){
+                         this.createTemplateAlert(data.data.prescribed_medicines,data.data.medicines_given)
+            }
+       
+           
         }else{
             this.setState({ loading: false })
         }
@@ -241,11 +260,16 @@ class AddPrescription extends Component {
    
      this.setState({creating:true})
         let api =`${url}/api/prescription/addPrescription/`
+
      if (this.props.clinic?.validtill?.available == false){
          this.setState({ creating: false })
        return  this.showSimpleMessage("Please recharge to create Prescription", "#B22222", "danger")
      }
-  
+     if (this.state.Reason=="") {
+            this.setState({ creating: false })
+            return this.showSimpleMessage("Please fill Reason", "#dd7030",)
+       
+        }
         if(this.state.medicines.length == 0){
             this.setState({ creating: false })
             return this.showSimpleMessage("Please add medicine", "#dd7030",)
@@ -256,11 +280,7 @@ class AddPrescription extends Component {
             return this.showSimpleMessage("Please fill doctorFees", "#dd7030",)
             
         }
-        if (this.state.Reason =="") {
-            this.setState({ creating: false })
-            return this.showSimpleMessage("Please fill Reason", "#dd7030",)
-       
-        }
+     
         this.state.medicines.forEach((i)=>{
             try{
                 if (i.type == "Liquid"){

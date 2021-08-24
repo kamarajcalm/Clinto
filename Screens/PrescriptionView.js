@@ -285,10 +285,14 @@ import * as Progress from 'react-native-progress';
          this.setState({prescribed:duplicate})
      }
      addQuantity =(item,index) =>{
+        
         let duplicate = this.state.prescribed
-        if(duplicate[index].addedQuantity==duplicate[index].total_qty){
+        if(item.is_drug){
+            if(duplicate[index].addedQuantity==duplicate[index].total_qty){
              return this.showSimpleMessage("Max Qty Reached","orange","info")
+            }
         }
+     
          duplicate[index].addedQuantity += 1
      
          this.setState({prescribed:duplicate})
@@ -632,7 +636,9 @@ validateButton = (item,index) =>{
                   isAdded :true,
                   quantity:item.addedQuantity,
                   medicine:item.id,
-                  name:item.medicinename.name
+                  name:item.medicinename.name,
+                  is_drug:item.is_drug,
+                  total_qty:item.total_qty
               }
              selectedItems.push(pushObj) 
         })
@@ -701,6 +707,10 @@ validateButton = (item,index) =>{
             this.setState({confirming:false})
             return this.showSimpleMessage("Please Select Address","orange","info")
         }
+        if(this.state.selectedItems.length==0){
+            this.setState({confirming:false})
+            return this.showSimpleMessage("Please Select Medicines","orange","info")
+        }
         let api = `${url}/api/prescription/placeOrder/`
          let sendData = {
              prescription:this.state.item.id,
@@ -735,10 +745,21 @@ validateButton = (item,index) =>{
     decreaseQuantity2 =(item,index)=>{
         let duplicate = this.state.selectedItems
         duplicate[index].quantity -=1
-        this.setState({selectedItems:duplicate})
+        if(  duplicate[index].quantity==0){
+            duplicate.splice(index,1)
+              this.setState({selectedItems:duplicate})
+        }else{
+          this.setState({selectedItems:duplicate})
+        }
+      
     }
     addQuantity2 =(item,index) =>{
        let duplicate = this.state.selectedItems
+       if(item.is_drug){
+              if(duplicate[index].quantity==duplicate[index].total_qty){
+             return this.showSimpleMessage("Max Qty Reached","orange","info")
+            }
+       }
         duplicate[index].quantity +=1
         this.setState({selectedItems:duplicate})
     }
@@ -816,12 +837,12 @@ validateButton = (item,index) =>{
                           return(
                               <View style={{flexDirection:"row",marginTop:10,paddingHorizontal:10}}>
                                    <View style={{flex:0.1}}>
-                                        <FontAwesome name="dot-circle-o" size={24} color="#e25e6e"/>
+                                        <FontAwesome name="dot-circle-o" size={24} color={themeColor}/>
                                    </View>
                                    <View style={{flex:0.7,alignItems:"center",justifyContent:"center"}}>
                                             <Text style={[styles.text,{color:"#000"}]}>{item.name}</Text>
                                    </View>
-                                   <View style={{flexDirection:"row",flex:0.2,backgroundColor:"#e25e6e",height:height*0.04,alignItems:"center",justifyContent:"space-around"}}>
+                                   <View style={{flexDirection:"row",flex:0.2,backgroundColor:themeColor,height:height*0.04,alignItems:"center",justifyContent:"space-around"}}>
                                           <TouchableOpacity 
                                                     onPress={()=>{
                                                         this.decreaseQuantity2(item,index)
@@ -843,7 +864,7 @@ validateButton = (item,index) =>{
                       }}
                    />
                   <View style={{height:height*0.08,borderTopWidth:0.19,borderColor:"gray",flexDirection:"row",alignItems:"center",justifyContent:"center"}}>
-                      {!this.state.confirming? <TouchableOpacity style={{height:"80%",width:"50%",backgroundColor:"#e25e6e",borderRadius:10,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}
+                      {!this.state.confirming? <TouchableOpacity style={{height:"80%",width:"50%",backgroundColor:themeColor,borderRadius:10,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}
                          onPress={()=>{
                              this.confirmOrder()
                          }}
@@ -853,7 +874,7 @@ validateButton = (item,index) =>{
                            </View>
                          
                        </TouchableOpacity>:
-                        <View  style={{height:"80%",width:"50%",backgroundColor:"#e25e6e",borderRadius:10,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}>
+                        <View  style={{height:"80%",width:"50%",backgroundColor:themeColor,borderRadius:10,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}>
                                 <ActivityIndicator size={"large"} color={"#fff"}/>
                         </View>
                        }

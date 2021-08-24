@@ -222,11 +222,12 @@ hideDatePicker = () => {
     }
     getLocation = async () => {
         let { status } = await Location.requestForegroundPermissionsAsync()
+        
         if (status !== 'granted') {
             console.warn('Permission to access location was denied');
             return;
         }
-       
+        Location.getCurrentPositionAsync()
     }
     componentDidMount(){
        this.getLocation()
@@ -511,7 +512,7 @@ hideDatePicker = () => {
                     </View>
                       <View style={{ marginTop: 10,flexDirection:"row" }}>
                             <View style={{flexDirection:"row"}}>
-                                <Text style={[styles.text]}>Reason : </Text>
+                                <Text style={[styles.text]}>Diagnosis : </Text>
                             </View>
                             <FlatList
                                ListFooterComponent={this.footer} 
@@ -645,6 +646,7 @@ hideDatePicker = () => {
                             <EvilIcons name="search" size={24} color="black" />
                         </View>
                         <TextInput
+                            
                             selectionColor={themeColor}
                             style={{ height: "98%", flex: 0.8, backgroundColor: "#eee", paddingLeft: 10, }}
                             placeholder={`search ${this.props?.clinic?.name ||"prescription"}`}

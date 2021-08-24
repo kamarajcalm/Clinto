@@ -103,27 +103,7 @@ class ChatScreen extends Component {
     messageHandler = (args) => {
         var details = args[0]
         // console.log(details, 'socket');
-        if (details.thread == this.state.item.groupPk){
-            if (details.attachment){
-                details.attachment =`${url}${details.attachment}`
-            }
-       
-            let list = this.state.Messages
-            if(details.msgType=="image"){
-                console.log("here")
-            
-                let pushObj = {
-                    index:this.state.Messages.length,
-                    url: details.attachment,
-                    message:details.message
-            }
-               this.state.images.push(pushObj)
-            }
-         
-            list.push(details)
-         
-            this.setState({Messages:list})
-        }
+
     }
     _pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -168,24 +148,51 @@ class ChatScreen extends Component {
         this.setConnection()
     }
     setConnection = () => {
-
-        this.connection = new wamp.Connection({ url: wampServer, realm: 'default' });
-        // console.log(this.state.item.uid, "jhu")
-        console.log(this.connection)
-        if (this.connection != null ) {
-            this.connection.onopen = (session, details) => {
+        //  console.log()
+        // this.connection = new wamp.Connection({ url: `${wampServer}/str/`, realm: 'default' });
+        // // console.log(this.state.item.uid, "jhu")
+        // console.log(this.connection,"cccccccccccc")
+        // if (this.connection != null ) {
+        //     this.connection.onopen = (session, details) => {
                
-                session.subscribe(this.state.item.uid, this.messageHandler).then(
-                    (sub) => {
-                    },
-                    (err) => {
-                    });
-            }
-            this.connection.open();
+        //         session.subscribe(this.state.item.uid, this.messageHandler).then(
+        //             (sub) => {
+        //             },
+        //             (err) => {
+        //             });
+        //     }
+        //     this.connection.open();
             
    
-        } 
+        // } 
        
+            this.ws = new WebSocket(`${wampServer}/${this.state.item.uid}/`)
+         
+     
+            this.ws.onmessage = (e) => {
+                const data = JSON.parse(e.data)
+                 console.log(e.data,"recived")
+                 const details =  JSON.parse(data)
+                 console.log(data.thread)
+                if (details.thread == this.state.item.groupPk){   
+                    if (details.attachment){
+                        details.attachment =`${url}${details.attachment}`
+                    }
+                    let list = this.state.Messages
+                    if(details.msgType=="image"){
+                        console.log("here")
+                    
+                        let pushObj = {
+                            index:this.state.Messages.length,
+                            url: details.attachment,
+                            message:details.message
+                    }
+                    this.state.images.push(pushObj)
+                    }
+                    list.push(details)
+                    this.setState({Messages:list})
+        }
+            }
     }
     validateChat =()=>{
         // console.log(this.props.user.profile.occupation,"ooo",this.state.item,"iii")
@@ -231,14 +238,14 @@ class ChatScreen extends Component {
   }
  componentWillUnmount(){
      try{
-         this.connection.close()
+         this.ws.close();
      }catch(e){
-       console.log(e)
+      
      }
 
  }
     playAudio =async(uri)=>{
-        console.log(uri,"uuu")
+        // console.log(uri,"uuu")
         const source = { uri: uri }
         const initialStatus = {}
         let onPlaybackStatusUpdate =(status)=>{
@@ -251,11 +258,11 @@ class ChatScreen extends Component {
      
             
         );
-        console.log('Playing Sound');
+        // console.log('Playing Sound');
         sound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
         await sound.playAsync();
       
-        console.log(onPlaybackStatusUpdate,"ppppp");
+        // console.log(onPlaybackStatusUpdate,"ppppp");
     }
 
     showMessage =()=>{
@@ -266,25 +273,25 @@ class ChatScreen extends Component {
     }
 startRecording =async()=>{
     try {
-        console.log('Requesting permissions..');
+        // console.log('Requesting permissions..');
         await Audio.requestPermissionsAsync();
         await Audio.setAudioModeAsync({
             allowsRecordingIOS: true,
             playsInSilentModeIOS: true,
         });
-        console.log('Starting recording..');
+        // console.log('Starting recording..');
         this.setState({ recording:true})
         const recording = new Audio.Recording();
         await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
         await recording.startAsync();
         this.setState({ audio: recording})
-        console.log('Recording started');
+        // console.log('Recording started');
       recording.getStatusAsync()
             .then(function (result) {
                 console.log(result.durationMillis)
             })
             .catch((err)=>{
-               console.log(err,"jjjj")
+            //    console.log(err,"jjjj")
             });
     } catch (err) {
         console.error('Failed to start recording', err);
@@ -293,10 +300,10 @@ startRecording =async()=>{
 stopRecording =async()=>{
     try{
       
-        console.log('Stopping recording..');
+        // console.log('Stopping recording..');
         await this.state.audio.stopAndUnloadAsync();
         const uri = this.state.audio.getURI();
-        console.log('Recording stopped and stored at',uri);
+        // console.log('Recording stopped and stored at',uri);
         this.setState({ recording: false })
         this.setState({ audio: undefined })
         let filename = uri.split('/').pop();
@@ -307,7 +314,7 @@ stopRecording =async()=>{
             type,
             name:filename
         }
-        console.log(selectedFile)
+        // console.log(selectedFile)
         var sendData = {
          
             bodyType: 'formData',
@@ -333,7 +340,7 @@ stopRecording =async()=>{
         }
    
     }catch(err){
-             console.log(err)
+            //  console.log(err)
     }
    
     }   
@@ -347,7 +354,7 @@ stopRecording =async()=>{
          
             return
         }
-        console.log(result,"jjj")
+        // console.log(result,"jjj")
         let filename = result.uri.split('/').pop();
         let match = /\.(\w+)$/.exec(filename);
         var type = match ? `image/${match[1]}` : `image`;
@@ -366,9 +373,9 @@ sendMessage =async()=>{
         sender: this.props.user.id,
         msgType: 'text'
     }
-    console.log(this.state.chatType,"chayyyy")
+    // console.log(this.state.chatType,"chayyyy")
     if (this.state.chatType == "clinic&pateint"){
-        console.log("jjjj")
+        // console.log("jjjj")
         sendData.clinicThread= this.state.item.groupPk
     }
     if (this.state.chatType == "doctor&pateint") {
@@ -381,11 +388,11 @@ sendMessage =async()=>{
             sendData.msgType = this.state.selectedType
         }
     }
-    console.log(sendData,"oooo")
+    // console.log(sendData,"oooo")
     let api = `${url}/api/prescription/chats/`
  
     var data = await HttpsClient.post(api,sendData)
-    console.log(data,"pooo")
+    console.log(data,"post")
     // console.log(data,sendData,api)
     if(data.type =="success"){
         this.setState({ message: "", selectedFile: null, selectedType:null,loading:false})
@@ -500,15 +507,15 @@ sendMessage =async()=>{
         
     }
   render() {
-      console.log(this.props.user.profile.occupation)
+    //   console.log(this.props.user.profile.occupation)
       const{ item }=this.state
-      console.log(item)
+    //   console.log(item)
       let chatTitle =""
       if (this.props.user.profile.occupation =="Customer"){
           chatTitle =this.state.item.clinictitle||this.state.item.doctortitle
       }
       if (this.props.user.profile.occupation == "Doctor") {
-          console.log(this.state.item,"opop")
+        //   console.log(this.state.item,"opop")
           chatTitle = this.state.item?.doctortitle
       }
       if (this.props.user.profile.occupation == "ClinicRecoptionist") {

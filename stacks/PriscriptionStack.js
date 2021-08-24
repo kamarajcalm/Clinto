@@ -49,7 +49,7 @@ export default class PriscriptionStack extends Component {
                 <Stack.Screen name="SearchPatient" component={SearchPatient} options={{ headerShown: false }} />
                 <Stack.Screen name="ListPatientPriscription" component={ListPatientPriscription} options={{ headerShown: false }} />
                 <Stack.Screen name="Chat" component={ChatScreen} options={{ headerShown: false }} />
-                  <Stack.Screen name="SelectAddress" component={SelectAddress} options={{ headerShown: false }} />
+                <Stack.Screen name="SelectAddress" component={SelectAddress} options={{ headerShown: false }} />
             </Stack.Navigator>
         );
     }

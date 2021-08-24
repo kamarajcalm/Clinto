@@ -16,9 +16,12 @@ class PatientProfile extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            address:null
         };
     }
-
+    backFunction =(address)=>{
+        this.setState({address,})
+    }
     changeClinic = () => {
 
     }
@@ -77,7 +80,36 @@ class PatientProfile extends Component {
                     </View>
 
                 </View>
+               <View style={{ borderColor: "#F0F0F0", borderTopWidth: 3, }}>
+                    <View style={{ marginHorizontal: 20 }}>
+                        <View style={{ marginTop: 5,flexDirection:"row", }}>
+                            <View style={{flex:0.6}}>
+                                                   <Text style={[styles.text]}>Delivery Location</Text>
+                            </View>
+                             <View style={{flex:0.4}}>
+                                 <TouchableOpacity style={{height:height*0.03,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}
+                                   onPress={()=>{
+                                        this.props.navigation.navigate("SelectAddress", { backFunction: (address) => { this.backFunction(address)}})
+                                   }}
+                                 >
+                                       <Text style={[styles.text,{color:"#fff"}]}>Change</Text>
+                                 </TouchableOpacity>
+                             </View>
+                        </View>
+                        <View style={{marginTop:5}}>
+                            {
+                                this.props.user?.profile?.health_issues?.map((item,index)=>{
+                                    return(
+                                   
+                                        <Text style={[styles.text,{color:'#000',marginLeft:5}]} key={index}>{item}</Text>
+                                    )   
+                                })
+                            }
+                        </View>
+                    </View>
 
+
+                </View>
 
                 <View style={{ borderColor: "#F0F0F0", borderTopWidth: 3, }}>
                     <View style={{ marginHorizontal: 20 }}>

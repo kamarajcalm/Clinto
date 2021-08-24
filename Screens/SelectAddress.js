@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView, ScrollView, Linking,ActivityIndicator, TextInput, KeyboardAvoidingView, Platform ,Keyboard,KeyboardEvent} from 'react-native';
+import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView, ScrollView, Linking,ActivityIndicator, TextInput, KeyboardAvoidingView, Platform ,Keyboard,KeyboardEvent, Alert} from 'react-native';
 import settings from '../AppSettings';
 import axios from 'axios';
 import Modal from 'react-native-modal';
@@ -35,7 +35,16 @@ class SelectAddress extends Component {
         };
     }
 
-   getCurrenLocation =() =>{
+   getCurrenLocation =async() =>{
+     let { status } = await Location.requestForegroundPermissionsAsync()
+     if (status !== 'granted') {
+        Alert.alert(
+        "User location not detected",
+        "You haven't granted permission to detect your location.",
+        [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+      );
+       return;
+     }
      Location.installWebGeolocationPolyfill();
           GetLocation.getCurrentPosition({
     enableHighAccuracy: true,
@@ -61,7 +70,7 @@ class SelectAddress extends Component {
 })
 .catch(error => {
     const { code, message } = error;
-    console.warn(code, message);
+    Alert.alert("Please enable Location")
 })
    }
        handleChange = async(region)=>{
@@ -293,12 +302,12 @@ class SelectAddress extends Component {
                 <TouchableOpacity
                     style={[styles.roundWithShadow]}
                     onPress={() => { 
-                        const address = {
-                            address:this.state.address,
-                            latitude:this.state.latitude,
-                            longitude:this.state.longitude
-                        }
-                        this.props.route.params.backFunction(address)
+                        // const address = {
+                        //     address:this.state.address,
+                        //     latitude:this.state.latitude,
+                        //     longitude:this.state.longitude
+                        // }
+                        // this.props.route.params.backFunction(address)
                         this.props.navigation.goBack() 
                     }}
                 >

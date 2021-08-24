@@ -76,7 +76,9 @@ class TabNavigator extends Component {
         if (routeName == "ViewFullTemplates") {
             return false
         }
-
+      if (routeName == "SelectAddress") {
+            return false
+        }
         return true
     }
     getTabBarVisibility4 = (route) => {
