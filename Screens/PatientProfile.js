@@ -87,12 +87,12 @@ class PatientProfile extends Component {
                                                    <Text style={[styles.text]}>Delivery Location</Text>
                             </View>
                              <View style={{flex:0.4}}>
-                                 <TouchableOpacity style={{height:height*0.03,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}
+                                 <TouchableOpacity style={{height:height*0.03,width:width*0.25,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}
                                    onPress={()=>{
                                         this.props.navigation.navigate("SelectAddress", { backFunction: (address) => { this.backFunction(address)}})
                                    }}
                                  >
-                                       <Text style={[styles.text,{color:"#fff"}]}>Change</Text>
+                                       <Text style={[styles.text,{color:"#fff",fontSize:height*0.02}]}>Change</Text>
                                  </TouchableOpacity>
                              </View>
                         </View>

@@ -641,14 +641,14 @@ hideDatePicker = () => {
                 </View>
 
                 <View style={{ marginHorizontal: 20, height: headerHeight/2, alignItems: 'center', justifyContent: "center", }}>
-                    <View style={{ flexDirection: 'row', borderRadius: 10, backgroundColor: "#eee", width: "100%", height:"65%" }}>
+                    <View style={{ flexDirection: 'row', borderRadius: 10, backgroundColor: "#eee", width: "100%", height:height*0.065,alignItems:"center",justifyContent:"center"}}>
                         <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5, flex: 0.1 }}>
                             <EvilIcons name="search" size={24} color="black" />
                         </View>
                         <TextInput
                             
                             selectionColor={themeColor}
-                            style={{ height: "98%", flex: 0.8, backgroundColor: "#eee", paddingLeft: 10, }}
+                            style={{ height: "99%", flex: 0.8, backgroundColor: "#eee", paddingLeft: 10,justifyContent:"center" }}
                             placeholder={`search ${this.props?.clinic?.name ||"prescription"}`}
                             onChangeText={(text) => { this.searchPriscriptions(text) }}
                         />
