@@ -38,7 +38,7 @@ const url =settings.url
 const fontFamily = settings.fontFamily;
 const themeColor =settings.themeColor
 import * as Location from 'expo-location';
-
+      const { height,width } = Dimensions.get("window");
 const { diffClamp } = Animated;
 
 import { Swipeable } from "react-native-gesture-handler";
@@ -215,6 +215,7 @@ hideDatePicker = () => {
             this.setState({ isReceptionist: true, })
         }
         else{
+            this.getLocation()
             this.getPateintPrescription()
         }
 
@@ -230,7 +231,7 @@ hideDatePicker = () => {
         Location.getCurrentPositionAsync()
     }
     componentDidMount(){
-       this.getLocation()
+       
        this.findUser()
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
             if(this.state.isDoctor){
@@ -408,11 +409,12 @@ hideDatePicker = () => {
                                 <Text>#{this.getIndex(index)}</Text>
                             </View>
                         </View>
-                     <View style={{ marginTop: 10 }}>
+                     <View style={{ marginTop: 10,flexDirection:"row" }}>
                             <View style={{flexDirection:"row"}}>
                                 <Text style={[styles.text]}>Reason : </Text>
                             </View>
-                            <FlatList 
+                            <View style={{flexDirection:"row"}}>
+                                           <FlatList 
                                horizontal={true}
                                ItemSeparatorComponent={this.separator}
                                data={item.diseaseTitle}
@@ -425,6 +427,8 @@ hideDatePicker = () => {
                                     )
                                }}
                             />
+                            </View>
+                     
                         </View>
                   
                     </View>
@@ -631,7 +635,7 @@ hideDatePicker = () => {
             <View>
                 <View style={{ height: headerHeight / 2,flexDirection:"row",}}>
                      <View style={{flex:0.6,justifyContent:"center"}}>
-                        <Text style={{ color: '#fff', fontFamily: "openSans", marginLeft: 20, fontSize: 30, fontWeight: "bold" }}>Prescription</Text>
+                        <Text style={{ color: '#fff', fontFamily: "openSans", marginLeft: 20, fontSize: height*0.04, fontWeight: "bold" }}>Prescription</Text>
                      </View>
                     <View style={{flex:0.4,alignItems: "center", justifyContent: 'center'}}>
                         {
@@ -646,7 +650,7 @@ hideDatePicker = () => {
                             <EvilIcons name="search" size={24} color="black" />
                         </View>
                         <TextInput
-                            
+                            placeholderStyle={[styles.text]}
                             selectionColor={themeColor}
                             style={{ height: "99%", flex: 0.8, backgroundColor: "#eee", paddingLeft: 10,justifyContent:"center" }}
                             placeholder={`search ${this.props?.clinic?.name ||"prescription"}`}
@@ -852,10 +856,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     text: {
-        fontFamily
+        fontFamily,
+         fontSize:height*0.02
     },
     root: {
-        flex: 1,
+        flex: 1, 
         marginHorizontal: 20
     },
     container: {

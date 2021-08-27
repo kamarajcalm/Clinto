@@ -179,30 +179,32 @@ class PriscriptionIssue extends Component {
         })
         this.setState({ priscriptions: filter })
     }
-    validateHeaders = () => {
-
+  validateHeaders = () => {
+    const { height,width } = Dimensions.get("window");
+    const headerHeight = height*0.2
         return (
             <View>
-                <View style={{ height: headerHeight / 2, flexDirection: "row", }}>
-                    <View style={{ flex: 0.6, justifyContent: "center" }}>
-                        <Text style={{ color: '#fff', fontFamily: "openSans", marginLeft: 20, fontSize: 30, fontWeight: "bold" }}>Prescription</Text>
-                    </View>
-                    <View style={{ flex: 0.4, alignItems: "center", justifyContent: 'center' }}>
+                <View style={{ height: headerHeight / 2,flexDirection:"row",}}>
+                     <View style={{flex:0.6,justifyContent:"center"}}>
+                        <Text style={{ color: '#fff', fontFamily: "openSans", marginLeft: 20, fontSize: height*0.04, fontWeight: "bold" }}>Prescription</Text>
+                     </View>
+                    <View style={{flex:0.4,alignItems: "center", justifyContent: 'center'}}>
                         {
                             this.renderFilter()
                         }
                     </View>
                 </View>
 
-                <View style={{ marginHorizontal: 20, height: headerHeight / 3, alignItems: 'center', justifyContent: "center", marginBottom: 5 }}>
-                    <View style={{ flexDirection: 'row', borderRadius: 10, backgroundColor: "#eee", width: "100%", height: "90%" }}>
+                <View style={{ marginHorizontal: 20, height: headerHeight/2, alignItems: 'center', justifyContent: "center", }}>
+                    <View style={{ flexDirection: 'row', borderRadius: 10, backgroundColor: "#eee", width: "100%", height:height*0.065,alignItems:"center",justifyContent:"center"}}>
                         <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5, flex: 0.1 }}>
                             <EvilIcons name="search" size={24} color="black" />
                         </View>
                         <TextInput
+                            placeholderStyle={[styles.text]}
                             selectionColor={themeColor}
-                            style={{ height: "99%", flex: 0.8, backgroundColor: "#eee", paddingLeft: 10, }}
-                            placeholder={`search ${this.props?.clinic?.name || "prescription"}`}
+                            style={{ height: "99%", flex: 0.8, backgroundColor: "#eee", paddingLeft: 10,justifyContent:"center" }}
+                            placeholder={`Search ${this.props?.clinic?.name ||"prescription"}`}
                             onChangeText={(text) => { this.searchPriscriptions(text) }}
                         />
                     </View>

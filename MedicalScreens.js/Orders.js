@@ -68,13 +68,13 @@ const url = settings.url;
                                           <TabBar
                                               {...props}
                                               renderLabel={({ route, focused, color }) => (
-                                                  <Text style={{ color: focused ? themeColor : 'gray', margin: 8, fontWeight: "bold" }}>
+                                                  <Text style={[styles.text,{ color: focused ? themeColor : 'gray',fontWeight:"bold" }]}>
                                                       {route.title}
                                                   </Text>
                                               )}
                                               style={{ backgroundColor: "#fff", height: 50, fontWeight: "bold", color: "red" }}
                                               labelStyle={{ fontWeight: "bold", color: "red" }}
-                                              indicatorStyle={{ backgroundColor: themeColor, height: 5 }}
+                                              indicatorStyle={{ backgroundColor: themeColor, height: height*0.007}}
                                           />
                                       }
 

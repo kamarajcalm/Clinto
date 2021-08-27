@@ -493,7 +493,8 @@ class ProfileEdit extends Component {
                                         style={{ width: width * 0.7, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
-                                <View>
+                               {this.props.user.profile.occupation == "Doctor"&& <>
+                               <View>
                                     <Text style={styles.text}>Address</Text>
                                     <TextInput
                                         value={this.state.address}
@@ -533,6 +534,8 @@ class ProfileEdit extends Component {
                                         style={{ width: width * 0.7, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
+                                </>
+                                }
                              
                                 <View style={{alignItems:'center',justifyContent:'center',marginVertical:20}}>
                                     <TouchableOpacity style={{ width: width * 0.4, height: height * 0.05, borderRadius: 10, alignItems: 'center', justifyContent: "center" ,backgroundColor:themeColor}}

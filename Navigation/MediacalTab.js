@@ -54,9 +54,24 @@ class MediacalTab extends Component {
         if (routeName == "ChatScreen") {
             return false
         }
-        if (routeName == "RequestView") {
+   
+     
+        return true
+    }
+    getTabBarVisibility7= (route) => {
+       const routeName = route.state ? route.state.routes[route.state.index].name : ''
+
+  
+        return true
+    }
+    getTabBarVisibilityOrders=(route)=>{
+           const routeName = route.state ? route.state.routes[route.state.index].name : ''
+             if (routeName == "RequestView") {
             return false
         }
+        return true
+    }
+    getTabBarVisibilityChats =()=>{
         return true
     }
     getTabBarVisibility8 = (route) => {
@@ -123,7 +138,7 @@ class MediacalTab extends Component {
                    <Tab.Screen name="Orders" component={OrdersStack}
                     options={({ route }) => ({
 
-                        tabBarVisible: this.getTabBarVisibility(route),
+                        tabBarVisible: this.getTabBarVisibilityOrders(route),
 
                     })}
 
@@ -131,7 +146,7 @@ class MediacalTab extends Component {
                 <Tab.Screen name="Chats" component={ChatStack}
                     options={({ route }) => ({
 
-                        tabBarVisible: this.getTabBarVisibility(route),
+                        tabBarVisible: this.getTabBarVisibilityChats(route),
 
                     })}
 
@@ -139,7 +154,7 @@ class MediacalTab extends Component {
                 <Tab.Screen name="AdminProfileStack" component={AdminProfileStack}
                     options={({ route }) => ({
 
-                        tabBarVisible: this.getTabBarVisibility(route),
+                        tabBarVisible: this.getTabBarVisibility7(route),
 
                     })}
 

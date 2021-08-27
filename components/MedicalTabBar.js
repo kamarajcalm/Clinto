@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Keyboard, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity,Dimensions, Keyboard, Alert } from 'react-native';
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, AntDesign ,FontAwesome5} from '@expo/vector-icons';
 import settings from '../AppSettings';
-const themeColor = settings.themeColor
+const themeColor = settings.themeColor;
+const {height,width} =Dimensions.get("window")
 export default class MedicalTabBar extends Component {
     constructor(props) {
 
@@ -45,28 +46,28 @@ export default class MedicalTabBar extends Component {
     icon = (label, isFocused) => {
         if (label == "ClincicPriscriptionStack") {
             return (
-                <MaterialCommunityIcons name="cards" size={30} color={isFocused ? "#fff" : "gray"} />
+                <MaterialCommunityIcons name="cards" size={height*0.04} color={isFocused ? "#fff" : "gray"} />
             )
         }
         if (label == "Inventory") {
             return (
-                <MaterialIcons name="inventory" size={30} color={isFocused ? "#fff" : "gray"} />
+                <MaterialIcons name="inventory" size={height*0.04} color={isFocused ? "#fff" : "gray"} />
 
             )
         }
         if (label == "Orders") {
             return (
-                <FontAwesome5 name="business-time"  size={24} color={isFocused ? "#fff" : "gray"}/>
+                <FontAwesome5 name="business-time"  size={height*0.04} color={isFocused ? "#fff" : "gray"}/>
             )
         }
             if (label == "Chats") {
             return (
-                <Ionicons name="chatbubble-ellipses" size={30} color={isFocused ? "#fff" : "gray"} />
+                <Ionicons name="chatbubble-ellipses" size={height*0.04} color={isFocused ? "#fff" : "gray"} />
             )
         }
         if (label == "AdminProfileStack") {
             return (
-                <Ionicons name="ios-person-circle-sharp" size={30} color={isFocused ? "#fff" : "gray"} />
+                <Ionicons name="ios-person-circle-sharp" size={height*0.04} color={isFocused ? "#fff" : "gray"} />
             )
         }
       
@@ -82,7 +83,7 @@ export default class MedicalTabBar extends Component {
                 return (
                     <View style={{
                         backgroundColor: themeColor,
-                        height: 60,
+                        height:height*0.072, 
                         flexDirection: "row",
                         position: "absolute",
                         bottom: 25,

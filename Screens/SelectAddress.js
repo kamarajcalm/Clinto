@@ -10,7 +10,7 @@ const url =settings.url
 const themeColor = settings.themeColor;
 const fontFamily = settings.fontFamily;
 import { connect } from 'react-redux';
-import { selectTheme } from '../actions';
+import { selectTheme ,selectUser} from '../actions';
 import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import * as Location from 'expo-location';
 import GetLocation from 'react-native-get-location';
@@ -91,7 +91,7 @@ class SelectAddress extends Component {
                     longitude: region.longitude,
                     latitudeDelta:0.012,
                     latitudeDelta:0.012
-              } ,
+                } ,
                latitude: region.latitude,
                 longitude: region.longitude,
         })
@@ -109,6 +109,7 @@ class SelectAddress extends Component {
         showMessage(message);
     }
     componentDidMount() {
+        console.log(this.props.user)
         Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
       this.getCurrenLocation();
@@ -128,21 +129,47 @@ class SelectAddress extends Component {
     _keyboardDidHide = () => {
         this.setState({ keyBoardHeight: 0 })
     };
-    saveAddress =() =>{
+        getSelfMode = async()=>{
+        const data = await HttpsClient.get(`${url}/api/HR/users/?mode=mySelf&format=json`);
+        if(data.type =="success"){
+            this.props.selectUser(data.data[0]);
+        }
+  
+    
+    }
+    saveAddress = async() =>{
+  
         this.setState({saving:true})
         if(this.state.completeAddress == ""){
               this.setState({saving:false})
             return this.showSimpleMessage("Please enter Complete Address","orange","info")
         }
+             let api = `${url}/api/profile/userss/${this.props.user.profile.id}/`
+        let sendData ={
+            address:this.state.completeAddress,
+            lat:this.state.latitude,
+            lang:this.state.longitude,
+            landmark:this.state.Floor,
+            location:this.state.address
+        }
+        let patch = await HttpsClient.patch(api,sendData)
+        if(patch.type =="success"){
+             this.setState({saving:false})
+            this.getSelfMode()
             const address = {
-                                address: this.state.address,
-                                latitude: this.state.latitude,
-                                longitude: this.state.longitude,
-                                completeAddress:this.state.completeAddress,
-                                floor:this.state.Floor
-                            }
-                            this.props.route.params.backFunction(address)
-                            this.props.navigation.goBack()
+                    address: this.state.address,
+                    latitude: this.state.latitude,
+                    longitude: this.state.longitude,
+                    completeAddress:this.state.completeAddress,
+                    floor:this.state.Floor
+                }
+                this.props.route.params.backFunction(address)
+                this.props.navigation.goBack()
+        }else{
+            this.showSimpleMessage("Try Again", "red", "danger")
+            this.setState({saving:false})
+        }
+
     }
     addressDetails =() =>{
         return(
@@ -344,4 +371,4 @@ const mapStateToProps = (state) => {
         user:state.selectedUser
     }
 }
-export default connect(mapStateToProps, { selectTheme })(SelectAddress)
+export default connect(mapStateToProps, { selectTheme ,selectUser})(SelectAddress)

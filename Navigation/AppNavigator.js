@@ -44,6 +44,9 @@ import * as Notifications from 'expo-notifications';
 import * as Linking from 'expo-linking';
 import EditHeathIssues from '../Screens/EditHeathIssues';
 import SelectAddress from '../Screens/SelectAddress';
+import ViewMedicalDetails from '../MedicalScreens.js/ViewMedicalDetails';
+import CreateReceptionistMedical from '../AdminScreens/CreateReceptionistMedical';
+import MedicalOffers from '../AdminScreens/MedicalOffers';
 
 const prefix = Linking.makeUrl('/')
 const Tab = createBottomTabNavigator();
@@ -119,6 +122,9 @@ const authScreens = {
                     <Stack.Screen name="PrescriptionView" component={PrescriptionView} options={{ headerShown: false }} />
                     <Stack.Screen name="ViewReceptionProfile" component={ViewReceptionProfile} options={{ headerShown: false }} />
                     <Stack.Screen name="EditHealthIssues" component={EditHeathIssues} options={{ headerShown: false }} />
+                    <Stack.Screen name="ViewMedicalDetails" component={ViewMedicalDetails} options={{ headerShown: false }} />
+                    <Stack.Screen name="CreateReceptionistMedical" component={CreateReceptionistMedical} options={{ headerShown: false }} />
+                    <Stack.Screen name="MedicalOffers" component={MedicalOffers} options={{ headerShown: false }} />
                   
                  </Stack.Navigator>
                 

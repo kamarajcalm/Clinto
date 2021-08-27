@@ -70,14 +70,14 @@ class PatientProfile extends Component {
                         </View>
 
                     </View>
-                    <View style={{ flexDirection: "row", marginTop: 15, }}>
+                    {/* <View style={{ flexDirection: "row", marginTop: 15, }}>
                         <View >
                             <Text style={[styles.text, { color: "gray" }]}>Address</Text>
                             <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.address}</Text>
                             <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.city}-{this.props.user.profile.pincode}</Text>
                         </View>
 
-                    </View>
+                    </View> */}
 
                 </View>
                <View style={{ borderColor: "#F0F0F0", borderTopWidth: 3, }}>
@@ -95,6 +95,10 @@ class PatientProfile extends Component {
                                        <Text style={[styles.text,{color:"#fff",fontSize:height*0.02}]}>Change</Text>
                                  </TouchableOpacity>
                              </View>
+                             
+                        </View>
+                        <View>
+                              <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.location}</Text>
                         </View>
                         <View style={{marginTop:5}}>
                             {

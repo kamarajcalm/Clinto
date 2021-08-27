@@ -257,18 +257,22 @@ class AddPrescription extends Component {
         }
     }
  addPriscription = async()=>{
-   
+ 
      this.setState({creating:true})
         let api =`${url}/api/prescription/addPrescription/`
 
-     if (this.props.clinic?.validtill?.available == false){
-         this.setState({ creating: false })
-       return  this.showSimpleMessage("Please recharge to create Prescription", "#B22222", "danger")
-     }
-     if (this.state.Reason=="") {
+        if (this.props.clinic?.validtill?.available == false){
+            this.setState({ creating: false })
+        return  this.showSimpleMessage("Please recharge to create Prescription", "#B22222", "danger")
+        }
+        if (this.state.Reason==""||this.state.Reason==undefined) {
             this.setState({ creating: false })
             return this.showSimpleMessage("Please fill Reason", "#dd7030",)
        
+        }
+        if(this.state.selectedSex==null){
+             this.setState({ creating: false })
+            return this.showSimpleMessage("Please Select Sex", "#dd7030",) 
         }
         if(this.state.medicines.length == 0){
             this.setState({ creating: false })

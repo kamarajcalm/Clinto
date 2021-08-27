@@ -168,7 +168,7 @@ class MedicalProfile extends Component {
                                                 onPress={()=>{this.setState({showModal2:true})}}
                                                style={{height:height*0.04,flex:0.4,backgroundColor:themeColor,alignItems:"center",justifyContent:"center",borderRadius:10,marginTop:6}}
                                              >
-                                                 <Text style={[styles.text,{color:"#fff"}]}>Change Medical</Text>
+                                                 <Text style={[styles.text,{color:"#fff",fontSize:height*0.015}]}>Change Medical</Text>
                                              </TouchableOpacity>
                                         </View>
 
@@ -197,9 +197,12 @@ class MedicalProfile extends Component {
                                                 )
                                             }}
                                         />
-                                    </View>}
+                                    </View>
+                                    
+                                    
+                                    }
                                 </View>
-
+                         
 
 
                             </View>

@@ -35,23 +35,7 @@ class MedicinesHome extends Component {
     componentDidMount() {
         this.getMedicines()
     }
-    logOut = async () => {
-        this.setState({ showModal: false })
-        await AsyncStorage.clear();
-     
-        return     this.props.navigation.dispatch(
-            CommonActions.reset({
-                index: 0,
-                routes: [
-                    {
-                        name: 'DefaultScreen',
 
-                    },
-
-                ],
-            })
-        )
-    }
     indexChange = async (index) => {
 
         this.setState({ index })
@@ -80,19 +64,14 @@ class MedicinesHome extends Component {
                         {/* HEADERS */}
                         <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
                             <TouchableOpacity style={{ flex: 0.3, alignItems: "center", justifyContent: 'center' }}
-
+                              onPress={()=>{this.props.navigation.goBack()}}
                             >
-
+                            <Ionicons name="chevron-back-circle" size={24} color="#fff" />
                             </TouchableOpacity>
                             <View style={{ flex: 0.4, alignItems: "center", justifyContent: "center" }}>
                                 <Text style={[styles.text, { color: '#fff', fontWeight: 'bold', fontSize: 18 }]}>Medicines</Text>
                             </View>
-                            <TouchableOpacity style={{ flex: 0.3, alignItems: "center", justifyContent: "center" ,flexDirection:"row"}}
-                                onPress={() => { this.setState({ showModal: true }) }}
-                            >
-                                <AntDesign name="logout" size={20} color="#fff" />
-                                <Text style={[styles.text, { marginLeft: 10, color: "#fff" }]}>Log out</Text>
-                            </TouchableOpacity>
+                           
                         </View>
                         {/* CHATS */}
                         <View style={{ flex: 1,}}>

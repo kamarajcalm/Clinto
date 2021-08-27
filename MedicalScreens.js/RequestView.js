@@ -92,56 +92,63 @@ class RequestView extends Component {
 
         showMessage(message);
     }
-    renderHeader = () => {
-        return (
-            <View>
-                <View style={{ marginHorizontal: 20, flexDirection: "row", marginTop: 10 }}>
-                    <View style={{ alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, { color: "#000", }]}>Reason : </Text>
-                    </View>
-                    <View style={{ alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, {}]}>{this.state?.item?.ongoing_treatment}</Text>
-                    </View>
-                </View>
-                <View style={{ marginHorizontal: 20, flexDirection: "row", marginTop: 10 }}>
-                    <View style={{ alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, { color: "#000", }]}>Diagnosis : </Text>
-                    </View>
-                      <View style={{flexDirection:"row"}}>
-                                    <FlatList 
-                                      horizontal={true}
-                       data={this.state?.item?.diseaseTitle}
-                       keyExtractor={(item,index)=>index.toString()}
-                       ItemSeparatorComponent={this.sepeartor}
-                       renderItem ={({item,index})=>{
-                            return(
-                             <View style={{ alignItems: "center", justifyContent: "center" ,flexDirection:"row"}}>
-                                 <Text style={[styles.text, {color:"#000"}]}>{item}</Text>
-                              </View>
-                            )
-                       }}
+     renderHeader = () => {
+         return (
+             <View style={{flex:1}}>
+                     <View style={{flex:1,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                            <View style={{flexDirection:"row"}}>
+                                  <View>
+                                             <Text style={[styles.text, { color: "#000",fontSize:height*0.02 }]}>Reason : </Text>
+                                  </View>
+                                  <View>
+                                             <Text style={[styles.text, {fontSize:height*0.02}]}>{this.state?.item?.ongoing_treatment}</Text>
+                                  </View>
+                            </View>
+                            <View style={{flexDirection:"row"}}>
+                                           <Text style={[styles.text, { color: "#000",fontSize:height*0.02 }]}>Diagnosis : </Text>
+                                           <View>
+                                                   <FlatList 
+                                        horizontal={true}
+                                        data={this.state?.item?.diseaseTitle}
+                                        keyExtractor={(item,index)=>index.toString()}
+                                        ItemSeparatorComponent={this.sepeartor}
+                                        renderItem ={({item,index})=>{
+                                                return(
+                                                <View style={{ alignItems: "center", justifyContent: "center" ,flexDirection:"row"}}>
+                                                    <Text style={[styles.text, {color:"#000",fontSize:height*0.02}]}>{item}</Text>
+                                                </View>
+                                                )
+                                        }}
                     
-                    />
+                                    />
+                                           </View>
+                                 
                     </View>
-                </View>
+                     </View>
+            
+             </View>
+            //  <View>
+            //      <View style={{ marginHorizontal: 20, flexDirection: "row", marginTop: 10 }}>
+            //          <View style={{ alignItems: "center", justifyContent: "center" }}>
+            //              <Text style={[styles.text, { color: "#000", }]}>Reason : </Text>
+            //          </View>
+            //          <View style={{ alignItems: "center", justifyContent: "center" }}>
+            //              <Text style={[styles.text, {}]}>{this.state?.item?.ongoing_treatment}</Text>
+            //          </View>
+            //      </View>
+            //      <View style={{ marginHorizontal: 20, flexDirection: "row", marginTop: 10 }}>
+            //          <View style={{ alignItems: "center", justifyContent: "center" }}>
+            //              <Text style={[styles.text, { color: "#000", }]}>Diagnosis : </Text>
+            //          </View>
+               
+                //  </View>
 
-                {/* <View style={{ marginHorizontal: 20, flexDirection: "row", marginTop: 10, alignItems: "center", justifyContent: "space-around" }}>
-                    <TouchableOpacity
-                        onPress={() => { this.setState({ selected: "Prescribed" }) }}
-                        style={{ height: height * 0.04, width: width * 0.4, backgroundColor: this.state.selected == "Prescribed" ? themeColor : "gray", alignItems: "center", justifyContent: "center", borderRadius: 5 }}
-                    >
-                        <Text style={[styles.text, { color: "#fff" }]}>Prescribed</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => { this.setState({ selected: "Medicines Given" }) }}
-                        style={{ height: height * 0.04, width: width * 0.4, backgroundColor: this.state.selected == "Medicines Given" ? themeColor : "gray", alignItems: "center", justifyContent: "center", borderRadius: 5 }}
-                    >
-                        <Text style={[styles.text, { color: "#fff" }]}>Medicines Given</Text>
-                    </TouchableOpacity>
-                </View> */}
-            </View>
-        )
-    }
+            //      <View style={{ marginHorizontal: 20, flexDirection: "row", marginTop: 10, alignItems: "center", justifyContent: "space-around" }}>
+              
+            //      </View>
+            //  </View>
+         )
+     }
    header =() =>{
      return(
        <View style={{flexDirection:"row",marginTop:5}}>
@@ -168,26 +175,30 @@ class RequestView extends Component {
                 <SafeAreaView style={styles.topSafeArea} />
                 <SafeAreaView style={styles.bottomSafeArea}>
                     <StatusBar backgroundColor={themeColor} />
-                    <View style={{ height: height * 0.1, backgroundColor: themeColor, flexDirection: "row" }}>
-                        <View style={{ flex: 0.7 }}>
-                            <View style={{ flex: 0.5, justifyContent: "center", marginLeft: 20 }}>
-                                <Text style={[styles.text, { color: "#ffff", fontWeight: 'bold', fontSize: 20 }]}>{this.state?.item?.clinicname?.name?.toUpperCase()}</Text>
+                     <View style={{ height: height * 0.1, backgroundColor:themeColor,flexDirection:"row"}}>
+                     <View style={{flex:0.7}}>
+                         <View style={{flex:0.5,justifyContent:"center",marginLeft:20}}>
+                            <Text style={[styles.text,{color:"#ffff",fontWeight:'bold',fontSize:height*0.03}]}>{this.state?.item?.clinicname?.name?.toUpperCase()}</Text>
 
+                         </View>
+                         <View style={{flex:0.5,marginLeft:20,}}>
+                             <View>
+                                   <Text style={[styles.text,{color:"#fff",fontSize:height*0.017}]}>{this.state?.item?.clinicname?.address}</Text>
+                             </View>
+                         
+                            <View style={{ }}>
+                                <Text style={[styles.text, { color: "#fff" ,fontSize:height*0.017}]}>{this.state?.item?.clinicname?.city}-{this.state?.item?.clinicname?.pincode}</Text>
                             </View>
-                            <View style={{ flex: 0.5, marginLeft: 20 }}>
-                                <Text style={[styles.text, { color: "#fff" }]}>{this.state?.item?.clinicname?.address}</Text>
-                                <View style={{}}>
-                                    <Text style={[styles.text, { color: "#fff" }]}>{this.state?.item?.clinicname?.city}-{this.state?.item?.clinicname?.pincode}</Text>
-                                </View>
-                            </View>
-                        </View>
-                        <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
-                            <Image
-                                style={{ height: '80%', width: '80%', resizeMode: "contain" }}
-                                source={{ uri: "https://i.pinimg.com/originals/8d/a6/79/8da6793d7e16e36123db17c9529a3c40.png" }}
-                            />
-                        </View>
-                    </View>
+                         </View>
+                        
+                     </View>
+                     <View style={{flex:0.3,alignItems:'center',justifyContent:'center'}}>
+                          <Image 
+                            style={{height:'80%',width:'80%',resizeMode:"contain"}}
+                            source={{ uri:"https://i.pinimg.com/originals/8d/a6/79/8da6793d7e16e36123db17c9529a3c40.png"}}
+                          />
+                     </View>
+                </View>
                     <GestureRecognizer
                         onSwipe={(direction, state) => this.onSwipe(direction, state)}
                         config={config}
@@ -199,49 +210,45 @@ class RequestView extends Component {
 
 
                         <View style={{ flex: 1 }}>
-                            <View style={{ flex: 0.15, borderColor: "#eee", borderBottomWidth: 0.5 }}>
-                                <View style={{ marginHorizontal: 20, flexDirection: "row", alignItems: 'center', justifyContent: 'space-around', marginVertical: 15 }}>
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <View>
-                                            <Text style={[styles.text]}>Name : </Text>
-                                        </View>
-                                        <View>
-                                            <Text style={[styles.text, { color: "#000", }]}>{this.state?.item?.username.name}</Text>
-                                        </View>
-                                    </View>
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <View>
-                                            <Text style={[styles.text]}>Age : </Text>
-                                        </View>
-                                        <View>
-                                            <Text style={[styles.text, { color: "#000", }]}>{this.state?.item?.username.age}</Text>
-                                        </View>
-                                    </View>
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <View>
-                                            <Text style={[styles.text]}>Sex : </Text>
-                                        </View>
-                                        <View>
-                                            <Text style={[styles.text, { color: "#000", }]}>{this?.state?.item?.sex}</Text>
-                                        </View>
-                                    </View>
+                               <View style={{ flex: 0.15,borderColor:"#eee",borderBottomWidth:0.5,}}>
+                        <View style={{flex:0.5,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                             <View style={{flexDirection:'row'}}>
+                               <View>
+                                    <Text style={[styles.text,{fontSize:height*0.02}]}>Name : </Text>
+                               </View>
+                                <View>
+                                    <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{this.state?.item?.username.name}</Text>
                                 </View>
-                                <View style={{ marginHorizontal: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                    <View>
-                                        <Text style={[styles.text, { textAlign: "right" }]}>{moment(this.state?.item?.created).format('DD/MM/YYYY')}</Text>
-                                    </View>
-                                    <View style={{}}>
-                                        <Text style={[styles.text]}>Prescription No : {this.state?.item?.id}</Text>
-
-                                    </View>
+                           </View>
+                               <View style={{ flexDirection: 'row' }}>
+                                <View>
+                                    <Text style={[styles.text,{fontSize:height*0.02}]}>Age : </Text>
+                                </View>
+                                <View>
+                                        <Text style={[styles.text, { color: "#000",fontSize:height*0.02 }]}>{this.state?.item?.username.age}</Text>
                                 </View>
                             </View>
-
-                            <View style={{ flex: 0.1,borderBottomWidth:0.5,borderColor:"#eee"}}>
-                                {
-                                    this.renderHeader()
-                                }
+                            <View style={{ flexDirection: 'row' }}>
+                                <View>
+                                    <Text style={[styles.text,{fontSize:height*0.02}]}>Sex : </Text>
+                                </View>
+                                <View>
+                                    <Text style={[styles.text, { color: "#000",fontSize:height*0.02}]}>{this?.state?.item?.sex}</Text>
+                                </View>
                             </View>
+                        </View>
+                        <View style={{flex:0.5,alignItems:"flex-end",paddingRight:20}}>
+                            <Text style={[styles.text,{fontSize:height*0.02}]}>Prescription No:{this.state?.item?.id}</Text>
+                            <Text style={[styles.text,{textAlign:"right",fontSize:height*0.016}]}>{moment(this.state?.item?.created).format('DD/MM/YYYY')}</Text>
+                        </View>
+                       
+                    </View>
+
+                         <View style={{flex:0.1,borderColor:"#eee",borderBottomWidth:0.5}}>
+                            {
+                                this.renderHeader()
+                            }
+                    </View>
                             <View style={{ flex: 0.58, }}>
                                 <FlatList 
                                    ListHeaderComponent={this.header()}

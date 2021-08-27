@@ -17,8 +17,8 @@ import { selectTheme } from '../actions';
 import ClincsStack from '../stacks/ClincsStack';
 import DoctorsAdminStack from '../stacks/DoctorsAdminStack';
 import MedicalStack from '../stacks/MedicalStack';
-import AdminProfileStack from '../stacks/AdminProfileStack';
-import AdminMedicineStack from '../stacks/AdminMedicineStack';
+
+import BackendProfile from '../stacks/BackendProfile';
 
 const Tab = createBottomTabNavigator();
 
@@ -97,14 +97,14 @@ class AdminTab extends Component {
                     }}
 
                 />
-                <Tab.Screen name="AdminMedicineStack" component={AdminMedicineStack}
+                <Tab.Screen name="BackendProfile" component={BackendProfile}
                     options={{
                         tabBarIcon: ({ focused, color, size }) => {
-                            return <AntDesign name="medicinebox" size={24} color={focused ? "#fff" : "gray"}/>
+                            return <Ionicons name="person-circle-sharp" size={24} color={focused?"#fff":"gray"} />
                             
                         },
                         tabBarLabel: ({ focused }) => {
-                            return <Text style={{ color: focused ? "#fff" : "gray", fontFamily }}>Medicines</Text>
+                            return <Text style={{ color: focused ? "#fff" : "gray", fontFamily }}>Profile</Text>
                         }
 
                     }}

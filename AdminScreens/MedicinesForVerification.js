@@ -64,7 +64,7 @@ export default class MedicinesForVerification extends Component {
     }
   }
   verifyItem = async(item,index)=>{
-    const api = `${url}/api/prescription/medicines/${item.id}/`
+    const api = `${url}/api/prescription/medicines/${item.id}/?unverified=true`
     let sendData ={
       is_verified:true
     }

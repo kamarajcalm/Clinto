@@ -14,6 +14,7 @@ import FlashMessage, { showMessage, hideMessage } from "react-native-flash-messa
 import CheckBox from '@react-native-community/checkbox';
 import HttpsClient from '../api/HttpsClient';
 import moment from 'moment';
+import ViewMedicines from '../AdminScreens/ViewMedicines';
  const data =[
    {
      medicineName:"Dolomites",
@@ -52,7 +53,8 @@ import moment from 'moment';
           acceptModal:false,
           today:moment(new Date()).format("YYYY-MM-DD"),
           price:"",
-           keyBoardHeight:0,
+          keyBoardHeight:0,
+          changedMedicines:[]
         };
     }
   separator=()=>{
@@ -63,7 +65,7 @@ import moment from 'moment';
     )
   }
   getRequests = async() =>{
-   let api = `${url}/api/prescription/vieworders/?date=2021-08-21&status=Pending`
+   let api = `${url}/api/prescription/vieworders/?date=${this.state.today}&status=Pending`
    let data = await HttpsClient.get(api)
    console.log(api)
    if(data.type == 'success'){
@@ -119,8 +121,8 @@ import moment from 'moment';
                 <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
                       <Text style={[styles.text,{color:"#000",textDecorationLine:"underline"}]}>Qty</Text>
                 </View>
-                  <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
-   
+                <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                     <Text style={[styles.text,{color:"#000",textDecorationLine:"underline"}]}>Price</Text>
                 </View>
             </View>
       </View>
@@ -152,16 +154,9 @@ import moment from 'moment';
   footer =() =>{
       return(
         <View style={{marginVertical:20}}>
-              <View style={{marginLeft:20}}>
-                    <Text style={[styles.text,{color:"#000"}]}>Enter Total Item Price :</Text>
-              </View>
-              <TextInput 
-                 keyboardType={"numeric"}
-                 value={this.state.price}
-                 style={{height:35,width:width*0.7,backgroundColor:"#fafafa",marginTop:10,marginLeft:30,paddingLeft:5}}
-                 onChangeText ={(price)=>{this.setState({price})}}
-                 selectionColor={themeColor}
-              />
+             <View style={{alignSelf:"flex-end",paddingHorizontal:20}}>
+                 <Text style={[styles.text,{color:"#000"}]}>Total : {this.state?.selectedItem?.total_price}</Text>
+             </View>
         </View>
       )
   }
@@ -175,6 +170,31 @@ import moment from 'moment';
         };
 
         showMessage(message);
+    }
+    checkChange =(medicine,price)=>{
+      let found = this.state.changedMedicines.find((item)=>{
+          return item.id ==medicine.id
+      })
+      if(found){
+        let index = this.state.changedMedicines.indexOf(found)
+        this.state.changedMedicines[index].price = price
+        this.setState({changedMedicines:this.state.changedMedicines})
+      }else{
+        let pushObj ={
+           id:medicine.id,
+           price:medicine.price
+        } 
+        this.state.changedMedicines.push(pushObj)
+        this.setState({changedMedicines:this.state.changedMedicines})
+      }
+     
+    }
+    changePrice =(price,item,index)=>{
+      let duplicate = this.state.selectedItem
+      duplicate.medicineDetails[index].price = price
+      this.setState({selectedItem:duplicate},()=>{
+        this.checkChange(item,price)
+      })
     }
   availablityModal =()=>{
     return(
@@ -191,7 +211,7 @@ import moment from 'moment';
                         <Text style={[styles.text,{color:"#000",fontSize:20}]}>Availabilty Check?</Text>
                     </View>
                     <View style={{flex:0.8}}>
-                                <FlatList 
+                                <FlatList
                                   ListFooterComponent={this.footer()}
                                   ListHeaderComponent ={this.header()}
                                   data={this.state?.selectedItem?.medicineDetails}
@@ -206,15 +226,19 @@ import moment from 'moment';
                                                   <Text style={[styles.text]}>{item.medicinetitle}</Text>
                                             </View>
                                             <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
-                                                 <Text style={[styles.text]}>{item.quantity}</Text>
+                                                 <Text style={[styles.text]}>{item.quantity} </Text>
                                             </View>
-                                              {/* <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
-                                                    <CheckBox
-                                                      
-                                                      value={item.selected}
-                                                      onValueChange={()=>{this.select(item,index)}}
-                                                    />
-                                              </View> */}
+                                              <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                                                   <TextInput
+                                                     onChangeText={(price)=>{
+                                                       this.changePrice(price,item,index)
+                                                     }}
+                                                     value={item.price.toString()}
+                                                     keyboardType={"numeric"}
+                                                     style={{height:35,width:"80%",backgroundColor:"#fafafa",alignItems:"center",justifyContent:"center",paddingLeft:10}}
+                                                     selectionColor={themeColor}
+                                                   />
+                                              </View>
                                         </View>
                                       )
                                   }}
@@ -238,12 +262,14 @@ import moment from 'moment';
     )
   }
   acceptOrder = async(item) =>{
+  
        let api = `${url}/api/prescription/medicalAccept/`
        let sendData ={
          accepted: true,
          order:this.state.selectedItem.id,
          price:this.state.price,
-         clinic:this.props.medical.clinicpk
+         clinic:this.props.medical.clinicpk,
+         changedmedicines:this.state.changedMedicines
        }
        let post = await HttpsClient.post(api,sendData)
        console.log(post)
@@ -272,11 +298,11 @@ import moment from 'moment';
             ItemSeparatorComponent={this.separator}
             renderItem ={({item,index})=>{
                    return(
-                     <TouchableOpacity style={{height:height*0.1,backgroundColor:"#fafafa",flexDirection:"row",marginVertical:10}}
+                     <TouchableOpacity style={{height:height*0.1,flexDirection:"row",marginVertical:10}}
                        onPress={()=>{this.props.navigation.navigate("RequestView",{item})}}
                      >
                           <View style={{flex:0.6,}}>
-                            <View style={{flexDirection:"row",marginHorizontal:15,marginTop:10}}>
+                            <View style={{flexDirection:"row",flex:0.7,alignItems:"center",justifyContent:"center"}}>
                               <View style={{height: 30, alignItems:"center",justifyContent:"center"}}>
                                    <Text style={[styles.text,{color:"#000"}]}>{index+1} .</Text>
                               </View>
@@ -302,7 +328,7 @@ import moment from 'moment';
                                       <Text style={[styles.text,{color:"#000"}]}>{item.medicineName} :{item.requiredQuantity}</Text>
                                 </View> */}
                             </View>
-                              <View style={{marginLeft:30,marginTop:10}}>
+                              <View style={{marginLeft:30,flex:0.3,justifyContent:"center"}}>
                                     <Text style={[styles.text,{color:"#000"}]}>Reason : {item.otherDetails.reason}</Text>
                               </View>
                                

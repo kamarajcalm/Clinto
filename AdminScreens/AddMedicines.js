@@ -12,13 +12,15 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 export default class AddMedicines extends Component {
     constructor(props) {
+        let item = props?.route?.params?.item ||null
         super(props);
         this.state = {
+            item,
             medicines: [],
             offset: 0,
             next: true,
             medicineName:"",
-            selectedType:"Liquid",
+            selectedType:null,
             brand:"",
             marketPrice:"",
             maxretailprice:"",
@@ -66,8 +68,18 @@ export default class AddMedicines extends Component {
         showMessage(message);
     }
     componentDidMount() {
-       
+        if(this.state.item){
+            this.setState({
+                    medicineName:this.props.route.params.item.title,
+                    selectedType:this.props.route.params.item.type,
+                    brand:this.props.route.params.item.brand,
+                    marketPrice:this.props.route.params.item.marketprice.toString(),
+                    maxretailprice:this.props.route.params.item.maxretailprice.toString(),
+           }) 
+        }
+
     }
+
     create = async()=>{
         this.setState({creating:true})
         if(this.state.medicineName ==""){
@@ -75,6 +87,9 @@ export default class AddMedicines extends Component {
           return  this.showSimpleMessage("Please fill medicine name","orange","info")
         }
         let api = `${url}/api/prescription/medicines/`
+        if(this.state.item){
+            api = `${url}/api/prescription/medicines/${this.state.item.id}/`
+        }
         let sendData ={
             title:this.state.medicineName,
             type:this.state.selectedType,
@@ -82,17 +97,36 @@ export default class AddMedicines extends Component {
             marketprice:Number(this.state.marketPrice),
             maxretailprice:Number(this.state.maxretailprice)
         }
+        if(this.state.item){
+            if(this.props.route.params.verify){
+                sendData.is_verified=true,
+                sendData.pricechange =0 ,
+                sendData.price_verified=true
+            }
+             let patch = await HttpsClient.patch(api,sendData)
+             console.log(patch)
+                 if(patch.type =="success"){
+                    this.setState({ creating: false })
+                    this.showSimpleMessage("created SuccessFully","green","success")
+                    return this.props.navigation.goBack()
+                }else{
+                    this.setState({ creating: false })
+                return  this.showSimpleMessage("Try Again", "red", "danger")
+                }
 
-        let post = await HttpsClient.post(api,sendData)
-        console.log(post)
-        if(post.type =="success"){
-            this.setState({ creating: false })
-            this.showSimpleMessage("created SuccessFully","green","success")
-            return this.props.navigation.goBack()
         }else{
-            this.setState({ creating: false })
-          return  this.showSimpleMessage("Try Again", "red", "danger")
+                let post = await HttpsClient.post(api,sendData)
+                console.log(post)
+                if(post.type =="success"){
+                    this.setState({ creating: false })
+                    this.showSimpleMessage("created SuccessFully","green","success")
+                    return this.props.navigation.goBack()
+                }else{
+                    this.setState({ creating: false })
+                return  this.showSimpleMessage("Try Again", "red", "danger")
+                }
         }
+
         
     }
     render() {
@@ -109,7 +143,7 @@ export default class AddMedicines extends Component {
                                 <Ionicons name="chevron-back-circle" size={30} color="#fff" />
                             </TouchableOpacity>
                             <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
-                                <Text style={[styles.text, { color: '#fff', fontWeight: 'bold', fontSize: 18 }]}>Add Medicines</Text>
+                                <Text style={[styles.text, { color: '#fff', fontWeight: 'bold', fontSize: 18 }]}>{this.state.item?"Edit Medicine":"Add Medicines" }</Text>
                             </View>
                             <View style={{ flex: 0.2, flexDirection: "row", alignItems: "center", justifyContent: 'center' }}
                             
@@ -143,7 +177,7 @@ export default class AddMedicines extends Component {
                                        }}
                                         onOpen={()=>{this.setState({open:true})}}
                                         items={this.state.types}
-                                        defaultValue={this.state.types[0]?.value}
+                                        defaultValue={this.state.selectedType}
                                         containerStyle={{ height: 40 }}
                                         style={{ backgroundColor: '#fafafa' }}
                                         itemStyle={{
@@ -190,7 +224,7 @@ export default class AddMedicines extends Component {
                                 <TouchableOpacity style={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:themeColor}}
                                  onPress ={()=>{this.create()}}
                                 >
-                                     {!this.state.creating? <Text style={[styles.text,{color:"#fff"}]}>Create</Text>:
+                                     {!this.state.creating? <Text style={[styles.text,{color:"#fff"}]}>{this.state.item?"Edit":"Create"}</Text>:
                                      <ActivityIndicator size={"large"} color={"#fff"}/>
                                      }
                                 </TouchableOpacity>

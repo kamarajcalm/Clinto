@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Keyboard,Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Keyboard,Alert,Dimensions } from 'react-native';
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, AntDesign} from '@expo/vector-icons';
 import settings from '../AppSettings';
 const themeColor = settings.themeColor
+const {height,width} =Dimensions.get("window")
 export default class MyTabBar extends Component {
     constructor(props) {
  
@@ -46,33 +47,33 @@ UNSAFE_componentWillReceiveProps(){
     icon = (label, isFocused) => {
         if (label == "Prescription") {
             return (
-                <MaterialCommunityIcons name="cards" size={30} color={isFocused?"#fff":"gray"} />
+                <MaterialCommunityIcons name="cards" size={height*0.04} color={isFocused?"#fff":"gray"} />
             )
         }
         if (label == "Appointments") {
             return (
-                <MaterialCommunityIcons name="timetable" size={30} color={isFocused ? "#fff" : "gray"} />
+                <MaterialCommunityIcons name="timetable" size={height*0.04} color={isFocused ? "#fff" : "gray"} />
                
             )
         }
         if (label == "Search") {
             return (
-                <AntDesign name="search1" size={30} color={isFocused ? "#fff" : "gray"} />
+                <AntDesign name="search1" size={height*0.04} color={isFocused ? "#fff" : "gray"} />
             )
         }
         if (label == "Chat") {
             return (
-                <Ionicons name="chatbubble-ellipses" size={30} color={isFocused ? "#fff" : "gray"} />
+                <Ionicons name="chatbubble-ellipses" size={height*0.04} color={isFocused ? "#fff" : "gray"} />
             )
         }
         if (label == "Profile") {
             return (
-                <Ionicons name="md-person-circle" size={30} color={isFocused ? "#fff" : "gray"}/>
+                <Ionicons name="md-person-circle" size={height*0.04} color={isFocused ? "#fff" : "gray"}/>
             )
         }
         if (label == "Inventory") {
             return (
-                <MaterialIcons name="inventory" size={30} color={isFocused ? "#fff" : "gray"} />
+                <MaterialIcons name="inventory" size={height*0.04} color={isFocused ? "#fff" : "gray"} />
             )
         }
     }
@@ -87,7 +88,7 @@ UNSAFE_componentWillReceiveProps(){
         return (
             <View style={{ 
                 backgroundColor:themeColor,
-                height: 60, 
+                height:height*0.072, 
                 flexDirection: "row" ,
                 position:"absolute",
                 bottom:25,

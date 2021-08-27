@@ -94,7 +94,7 @@ class UploadImages extends Component {
         if (picture.cancelled == true) {
             return
         }
-
+        console.log(picture)
         let filename = picture.uri.split('/').pop();
         let match = /\.(\w+)$/.exec(filename);
         let type = match ? `image/${match[1]}` : `image`;
@@ -104,6 +104,7 @@ class UploadImages extends Component {
             type: type,
             name: filename,
         };
+      
         this.setState({ openImageModal: false })
         let duplicate = this.state.images
         duplicate.push(photo)

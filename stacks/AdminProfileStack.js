@@ -33,8 +33,7 @@ export default class AdminProfileStack extends Component {
                 }}
             >
                 <Stack.Screen name="MedicalProfile" component={MedicalProfile} options={{ headerShown: false }} />
-                <Stack.Screen name="ViewMedicalDetails" component={ViewMedicalDetails} options={{ headerShown: false }} />
-                <Stack.Screen name="CreateReceptionistMedical" component={CreateReceptionistMedical} options={{ headerShown: false }} />
+          
                 <Stack.Screen name="ReceptionistProfile" component={ReceptionistProfile} options={{ headerShown: false }} />
                 <Stack.Screen name="UploadImages" component={UploadImages} options={{ headerShown: false }} />
             </Stack.Navigator>

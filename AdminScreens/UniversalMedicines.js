@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, FlatList, ActivityIndicator, Dimensions, TextInput, StyleSheet, TouchableOpacity,Alert} from 'react-native';
-import { EvilIcons, Ionicons, MaterialIcons} from '@expo/vector-icons';
+import { EvilIcons, Ionicons, MaterialIcons,Entypo} from '@expo/vector-icons';
 import HttpsClient from '../api/HttpsClient';
 import settings from '../AppSettings';
 const url =settings.url
@@ -125,11 +125,11 @@ export default class UniversalMedicines extends Component {
              <View style={{ flex: 0.5, alignItems: "center", justifyContent: "center" }}>
                  <Text style={[styles.text, { color: "#000", fontSize: height * 0.022 }]}>Name</Text>
               </View>
-          <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+          <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
                   <Text style={[styles.text, { color: "#000", fontSize: height * 0.022 }]}>Type</Text>
               </View>
           </View>
-        <TouchableOpacity style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}
+        <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}
           
         >
 
@@ -167,22 +167,32 @@ export default class UniversalMedicines extends Component {
         renderItem ={({item,index})=>{
         
             return(
-              <View style={{ flexDirection: "row", marginTop: 10, flex: 1 }}>
+              <TouchableOpacity style={{ flexDirection: "row", marginTop: 10, flex: 1 }}
+                onPress={()=>{this.props.navigation.navigate('ViewMedicines',{item})}}
+              >
                 <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
                   <Text style={[styles.text, { fontSize: height * 0.022 }]}>{index+1}</Text>
                 </View>
                 <View style={{ flex: 0.5, alignItems: "center", justifyContent: "center" }}>
                   <Text style={[styles.text, {fontSize: height * 0.022 }]}>{item.title}</Text>
                 </View>
-                <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
                   <Text style={[styles.text, {  fontSize: height * 0.022 }]}>{item.type}</Text>
                 </View>
-                <TouchableOpacity style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}
-                  onPress={() => { this.createAlert(item, index) }}
-                >
-                  <MaterialIcons name="delete" size={24} color={themeColor} />
+                <View style={{flex:0.2,alignItems:"center",justifyContent:"center",flexDirection:"row"}}>
+                    <TouchableOpacity style={{ alignItems: "center", justifyContent: "center" }}
+                      onPress={() => { this.createAlert(item, index) }}
+                    >
+                      <MaterialIcons name="delete" size={24} color={themeColor} />
+                    </TouchableOpacity>
+                 <TouchableOpacity style={{ alignItems: "center", justifyContent: "center" }}
+                      onPress={() => { this.props.navigation.navigate('AddMedicines',{item,edit:true})}}
+                    >
+                       <Entypo name="edit" size={24} color={themeColor} />
                 </TouchableOpacity>
-              </View>
+                </View>
+          
+              </TouchableOpacity>
             )
         }}
       />
