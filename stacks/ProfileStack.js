@@ -9,6 +9,8 @@ import ViewTemplates from '../Screens/ViewTemplates';
 import ViewFullTemplates from '../Screens/ViewFullTemplates';
 import SearchMedicines from '../Screens/SearchMedicines';
 import SelectAddress from '../Screens/SelectAddress';
+import CustomerOrders from '../Screens/CustomerOrders';
+import ViewCustomerOrders from '../Screens/ViewCustomerOrders';
 const Stack = createStackNavigator();
 export default class ProfileStack extends Component {
   constructor(props) {
@@ -31,10 +33,12 @@ export default class ProfileStack extends Component {
         
         >
          <Stack.Screen name="ProfileHome" component={Profile} options={{ headerShown: false }} />    
-            <Stack.Screen name="ViewTemplates" component={ViewTemplates} options={{ headerShown: false }} />
-            <Stack.Screen name="ViewFullTemplates" component={ViewFullTemplates} options={{ headerShown: false }} />
-                   <Stack.Screen name="SearchMedicines" component={SearchMedicines} options={{ headerShown: false }} />
-                    <Stack.Screen name="SelectAddress" component={SelectAddress} options={{ headerShown: false }} />
+          <Stack.Screen name="ViewTemplates" component={ViewTemplates} options={{ headerShown: false }} />
+          <Stack.Screen name="ViewFullTemplates" component={ViewFullTemplates} options={{ headerShown: false }} />
+          <Stack.Screen name="SearchMedicines" component={SearchMedicines} options={{ headerShown: false }} />
+          <Stack.Screen name="SelectAddress" component={SelectAddress} options={{ headerShown: false }} />
+          <Stack.Screen name="CustomerOrders" component={CustomerOrders} options={{ headerShown: false }} />
+          <Stack.Screen name="ViewCustomerOrders" component={ViewCustomerOrders} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
   }

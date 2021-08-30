@@ -171,7 +171,6 @@ class MedicalProfile extends Component {
                                                  <Text style={[styles.text,{color:"#fff",fontSize:height*0.015}]}>Change Medical</Text>
                                              </TouchableOpacity>
                                         </View>
-
                                         <FlatList
                                             showsVerticalScrollIndicator= {false}
                                             data={this.state.medicals}

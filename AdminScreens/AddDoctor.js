@@ -559,8 +559,8 @@ class AddDoctor extends Component {
 
                                     <Switch
                                         style={{ marginLeft: 10 }}
-                                        trackColor={{ false: '#767577', true: '#81b0ff' }}
-                                        thumbColor={this.state.inventory ? '#f5dd4b' : '#f4f3f4'}
+                                        trackColor={{ false: '#767577', true: '#34eb40' }}
+                                        thumbColor={this.state.inventory ? '#fff' : '#f4f3f4'}
                                         ios_backgroundColor="#3e3e3e"
                                         onValueChange={() => { this.toggleSwitch() }}
                                         value={this.state.inventory}

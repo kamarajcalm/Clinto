@@ -25,7 +25,7 @@ import moment from 'moment';
     }
 getOrders = async()=>{
   
- let api =`${url}/api/prescription/medicalaccepted/?accepted=true&medical_store=${this.props.medical.clinicpk}`
+ let api =`${url}/api/prescription/medicalaccepted/?accepted=true&medical_store=${this.props.medical.clinicpk}&orderStatus=Paid`
  console.log(api)
  const data =await HttpsClient.get(api)
    if(data.type=="success"){

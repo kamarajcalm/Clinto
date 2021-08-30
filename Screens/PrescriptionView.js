@@ -24,6 +24,7 @@ import { selectTheme, selectClinic, selectWorkingClinics, selectOwnedClinics ,se
 import settings from '../AppSettings'
 import moment from 'moment';
 const url = settings.url
+const {dunzourl} = settings
 const themeColor =settings.themeColor
 const fontFamily =settings.fontFamily
 const screenHeight = Dimensions.get("screen").height
@@ -34,6 +35,9 @@ import Modal from 'react-native-modal';
 import {FlatList}  from 'react-native-gesture-handler';
 import LottieView from 'lottie-react-native';
 import * as Progress from 'react-native-progress';
+import axios from 'axios';
+import {token} from '../dunzo/dunzo';
+import RazorpayCheckout from 'react-native-razorpay';
 // import Image from 'react-native-scalable-image';
  class PrescriptionView extends Component {
   constructor(props) {
@@ -66,10 +70,14 @@ import * as Progress from 'react-native-progress';
          selectedItems:[],
          checkoutModal:false,
          address:null,
-         showModal:false,
-         orderPk:null,
+         showModal:true,
+         orderPk:51,
          acceptedClinics:[],
          shownoresult:false,
+         selectedClinicIndex:null,
+         deliveryDetailsLoading:false,
+         priceDetails:null,
+         errorDetails:null
     };
     }
     renderContent = () => (
@@ -122,11 +130,10 @@ setLocations =()=>{
     componentDidMount(){
         this.setLocations()
         this.validateAnimations();
-  
+        this.getAvailableClinics()
         if(this.state.pk ==null){
             this.filterMedicines()
         }
-   
         if(this.state.pk){
             this.getDetails()
         }
@@ -167,8 +174,8 @@ setLocations =()=>{
     }
     getAvailableClinics = async() =>{
        let api =`${url}/api/prescription/medicalaccepted/?for_order=${this.state.orderPk}&status=accepted`
-       console.log(api)
        let data = await HttpsClient.get(api)
+       console.log(api,data)
        if(data.type=="success"){
             this.setState({acceptedClinics:data.data})
        }
@@ -411,10 +418,13 @@ validateButton = (item,index) =>{
                             </View>
                         </View>}
                         <View style={{ marginTop: 10 }}>
-                            <Text style={[styles.text, { fontWeight: "bold" }]}>Comments:</Text>
+                            {item.command&&<View>
+                                       <Text style={[styles.text, { fontWeight: "bold" }]}>Comments:</Text>
                             <View>
                                 <Text style={[styles.text, { marginLeft: 10 }]}>{item.command}</Text>
                             </View>
+                            </View>
+                     }
                         </View>
                         <View style={{ alignSelf: "flex-end" }}>
                             <Text style={[styles.text]}>Qty: {item.total_qty}</Text>
@@ -781,14 +791,71 @@ validateButton = (item,index) =>{
         duplicate[index].quantity +=1
         this.setState({selectedItems:duplicate})
     }
-    confirmPharmacy = async(item)=>{
-        let api = `${url}/api/prescription/medicalAccept/`
+        validatePayment =async(data)=>{
+     let api = `${url}/api/profile/createDunzoTask/`
+     let sendData ={
+         razorpay_order_id: data.razorpay_order_id,
+         razorpay_payment_id: data.razorpay_payment_id,
+         razorpay_signature: data.razorpay_signature
+     }
+     console.log(sendData,"errrrt")
+     let post =await HttpsClient.post(api,sendData)
+     console.log(post,"task Create")
+     if(post.type =="success"){
+        this.showSimpleMessage("Order Placed SuccessFully","green","success")
+     }
+    }
+    confirmPharmacy = async(item,price)=>{
+        // let api = `${url}/api/prescription/medicalAccept/`
+        // let sendData ={
+        //     order:this.state.orderPk,
+        //     medicalorder:item.id
+        // }
+        // let post = await HttpsClient.post(api,sendData)
+        // console.log(post)
+        this.setState({loading:true})
+        let api = `${url}/api/profile/createDunzo/`
         let sendData ={
-            order:this.state.orderPk,
+            order:item.for_order.id,
+            amount:price,
             medicalorder:item.id
         }
         let post = await HttpsClient.post(api,sendData)
         console.log(post)
+        if(post.type=="success"){
+               var options = {
+                description: `Medicines Purchase`,
+                image: 'https://i.imgur.com/3g7nmJC.png',
+                currency: 'INR',
+                key: 'rzp_test_qlBHML4RDDiVon',
+                name: 'Clinto',
+                order_id: `${post.data.order_id}`,
+                prefill: {
+                    email: `${this.props?.user?.email}`,
+                    contact: `${this?.props?.user?.profile?.mobile}`,
+                    name:`${this?.props?.user?.first_name}`
+                },
+                theme: { color: '#1f1f1f' }
+            }
+    RazorpayCheckout.open(options).then((data) => {
+  
+        // handle success
+        this.validatePayment(data)
+        this.setState({loading:false})
+      
+   
+    }).catch((error) => {
+        // handle failure
+        this.failPayment(error)
+        this.setState({ loading: false })
+
+        return this.showSimpleMessage(`${error.error.description}`, "#dd7030")
+      
+    });
+        }else{
+            this.setState({ loading: false })
+            this.showSimpleMessage("Something Went Wrong","orange","info")
+        }
     }
     checkoutModal =() =>{
       return(
@@ -942,12 +1009,166 @@ validateButton = (item,index) =>{
         }
         return null
     }
+    getInternetCharge =(medicineprice,deliveryPrice)=>{
+     let   total = medicineprice+deliveryPrice
+     return Math.ceil(total*(2/100))
+    }
+    validateDetails =(item,index)=>{
+        if(this.state.deliveryDetailsLoading){
+            return(
+                <View>
+                             <ActivityIndicator size={"large"} color={themeColor}/>
+                </View>
+           
+            )
+        }
+        if(this.state.errorDetails){
+            return(
+                <View style={{marginVertical:10,alignItems:"center",justifyContent:"center"}}>
+                    <Text style={[styles.text,{color:"#000"}]}>{this.state.errorDetails.message}</Text>
+                </View>
+            )
+        }
+       return(
+           <View>
+               <View style={{alignItems:"center",justifyContent:"center"}}>
+                 
+                   <View style={{marginTop:5,flexDirection:"row"}}>
+                       <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
+                                 <Text style={[styles.text]}>Distance  </Text>
+                       </View>
+                        <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                                <Text style={[styles.text,{color:"#000"}]}>:</Text>
+                        </View>
+                        <View style={{flex:0.4,}}>
+                            <Text style={[styles.text]}>{this.state.priceDetails.distance} km</Text>
+                        </View>
+                   </View>
+                          <View style={{marginTop:5,flexDirection:"row"}}>
+                       <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
+                                 <Text style={[styles.text]}>Medicine Price  </Text>
+                       </View>
+                        <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                                <Text style={[styles.text,{color:"#000"}]}>:</Text>
+                        </View>
+                        <View style={{flex:0.4,}}>
+                            <Text style={[styles.text]}>₹ {item.otherDetails.price}</Text>
+                        </View>
+                   </View>
+                           <View style={{marginTop:5,flexDirection:"row"}}>
+                       <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
+                                 <Text style={[styles.text]}>Delivery Price </Text>
+                       </View>
+                        <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                                <Text style={[styles.text,{color:"#000"}]}>:</Text>
+                        </View>
+                        <View style={{flex:0.4,}}>
+                            <Text style={[styles.text]}>₹ {this.state.priceDetails.estimated_price}</Text>
+                        </View>
+                   </View>
+                         <View style={{marginTop:5,flexDirection:"row"}}>
+                       <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
+                                 <Text style={[styles.text]}>Internet Charge </Text>
+                       </View>
+                        <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                                <Text style={[styles.text,{color:"#000"}]}>:</Text>
+                        </View>
+                        <View style={{flex:0.4,}}>
+                            <Text style={[styles.text]}>₹ {this.getInternetCharge(item.otherDetails.price,this.state.priceDetails.estimated_price)}</Text>
+                        </View>
+                   </View>
+                               <View style={{marginTop:5,flexDirection:"row"}}>
+                       <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
+                                 <Text style={[styles.text]}>Total </Text>
+                       </View>
+                        <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                                <Text style={[styles.text,{color:"#000"}]}>:</Text>
+                        </View>
+                        <View style={{flex:0.4,}}>
+                            <Text style={[styles.text]}>₹ {this.getInternetCharge(item.otherDetails.price,this.state.priceDetails.estimated_price)+item.otherDetails.price+this.state.priceDetails.estimated_price}</Text>
+                        </View>
+                   </View>
+               
+               </View>
+               <View style={{marginVertical:10,alignItems:"center",justifyContent:"center"}}>
+                       {!this.state.loading?<TouchableOpacity style={{height:height*0.04,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}
+                         onPress={()=>{this.confirmPharmacy(item,this.getInternetCharge(item.otherDetails.price,this.state.priceDetails.estimated_price)+item.otherDetails.price+this.state.priceDetails.estimated_price)}}
+                        >
+                          <Text style={[styles.text,{color:"#fff"}]}>Place Order</Text>
+                      </TouchableOpacity>:
+                      <View style={{height:height*0.04,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}>
+                         <ActivityIndicator size={"large"} color={"#fff"} />
+                      </View>
+                    }
+               </View>
+                    
+           </View>
+       )
+    }
+    getDeliveryDetails = async(item,index) =>{
+
+        const headers = {
+            'client-id': 'a61aec7d-50af-4dc0-b933-d09d9d82e320',
+            'Authorization': token,
+            'Accept-Language': 'en_US',
+            'Content-Type':'application/json'
+        }
+        this.setState({deliveryDetailsLoading:true})
+        let sendData ={
+            "pickup_details":[
+                {
+                    "lat":Number(item.lat) ,
+                    "lng":Number( item.lang),
+                    "reference_id": item.id.toString()
+                    
+                }
+            ],
+            "optimised_route": true,
+            "drop_details":[
+                {
+                     "lat":Number(this.props.user.profile.lat),
+                     "lng":Number(this.props.user.profile.lang),
+                     "reference_id":item.id.toString()
+                }
+            ]
+        }
+            //         let sendData ={
+            // "pickup_details": [
+            // {
+            // "lat": 12.9672,
+            // "lng": 77.6721,
+            // "reference_id": "12"
+            // }
+            // ],
+            // "optimised_route": true,
+            // "drop_details": [
+            // {
+            // "lat": 12.9612,
+            // "lng": 77.6356,
+            // "reference_id": "1234"
+            // }
+            // ]
+            // }
+       
+        try{
+            const {data} = await axios.post(`${dunzourl}/api/v2/quote`,sendData,{
+                 headers:headers
+              })
+              console.log(data)
+               this.setState({deliveryDetailsLoading:false,priceDetails:data})
+        }catch(error){
+            this.setState({errorDetails:error.response.data})
+            console.log(error.response.data,"kkkk")
+            this.setState({deliveryDetailsLoading:false})
+        }
+
+    }  
       bottomModal =()=>{
         return(
            <Modal 
             swipeThreshold={100}
             // onSwipeComplete={() => { this.setState({ showModal:false})}}
-            swipeDirection="down"
+         
             animationOutTiming={50}
             animationOut={"slideOutDown"}
             style={{alignItems:"flex-end",marginHorizontal:0,flexDirection:"row",marginVertical:0}}
@@ -988,7 +1209,10 @@ validateButton = (item,index) =>{
                                 keyExtractor={(item,index)=>index.toString()}
                                 renderItem={({item,index})=>{
                                     return(
-                                        <View style={{flexDirection:"row",marginVertical:20}}>
+                                        <View style={{marginVertical:20}}>
+                                            <View style={{flexDirection:"row"}}>
+                                                
+                                   
                                                  <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
                                                          <Text style={[styles.text,{color:"#000"}]}>{index+1} .</Text>
                                                  </View>
@@ -996,13 +1220,13 @@ validateButton = (item,index) =>{
                                                     <View style={{flexDirection:"row",alignItems:"center",justifyContent:"center",width:"100%"}}>
                                                         <View style={{flexDirection:"row"}}>
                                                             <View>
-                                                                <Text style={[styles.text,{color:"#000",textAlign:"center"}]}>{item.otherDetails.name} ₹{item.accepted_price} </Text>
+                                                                <Text style={[styles.text,{color:"#000",textAlign:"center"}]}>{item.otherDetails.name}</Text>
 
                                                             </View>
-                                                            <View style={{flexDirection:"row"}}>
+                                                            {/* <View style={{flexDirection:"row"}}>
                                                                <Text style={[styles.text]}> - {item.otherDetails.discount}</Text> 
                                                                <MaterialCommunityIcons name="brightness-percent" size={24} color="#63BCD2" style={{marginLeft:3}}/>
-                                                            </View>
+                                                            </View> */}
                                                         </View>
                                           
 
@@ -1039,12 +1263,27 @@ validateButton = (item,index) =>{
                                                      </View>
                                                 </View>
                                                 <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
-                                                    <TouchableOpacity style={{height:height*0.04,width:"80%",alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}
-                                                      onPress={()=>{this.confirmPharmacy(item)}}
-                                                    >
-                                                          <Text style={[styles.text,{color:"#fff"}]}>Place Order</Text>
-                                                    </TouchableOpacity>
+                                                       <TouchableOpacity 
+                                                           style={{height:height*0.04,width:"80%",alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}
+                                                            onPress={()=>{
+                                                                this.setState({selectedClinicIndex:index,deliveryDetailsLoading:true,priceDetails:null,errorDetails:null})
+                                                                this.getDeliveryDetails(item,index);
+                                                            }}
+                                                           >
+                                                                    <Text style={[styles.text,{color:"#fff"}]}>View Price</Text>
+                                                           </TouchableOpacity>
+                                            
                                                 </View>
+                                                         </View>
+                                             <View>
+                                                    <View style={{alignItems:"center",justifyContent:"center",marginTop:5}}>
+                                                        
+                                                         
+                                                    </View>
+                                                    {this.state.selectedClinicIndex===index&&
+                                                        this.validateDetails(item,index)
+                                                    }
+                                            </View>
                                         </View>
                                     )
                                 }}
@@ -1095,7 +1334,10 @@ validateButton = (item,index) =>{
            clearInterval(this.interval);
            this.searchanimation.pause();
            this.setState({counter:0,shownoresult:true,progress:0},()=>{
-                   this.notfoundAnimation.play();
+               if(this.notfoundAnimation){
+                          this.notfoundAnimation.play();
+               }
+                 
            })
        
         }
@@ -1151,7 +1393,7 @@ validateButton = (item,index) =>{
                    
              
                  <View style={{flex:1}}>
-                    <View style={{ flex: 0.15,borderColor:"#eee",borderBottomWidth:0.5,}}>
+                    <View style={{ flex: 0.13,borderColor:"#eee",borderBottomWidth:0.5,}}>
                         <View style={{flex:0.5,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
                              <View style={{flexDirection:'row'}}>
                                <View>
@@ -1178,13 +1420,16 @@ validateButton = (item,index) =>{
                                 </View>
                             </View>
                         </View>
-                        <View style={{flex:0.5,alignItems:"flex-end",paddingRight:20}}>
-                            <Text style={[styles.text,{fontSize:height*0.02}]}>Prescription No:{this.state?.item?.id}</Text>
+                        <View style={{flex:0.5,paddingRight:20,flexDirection:"row",justifyContent:"space-around"}}>
+                            <View>
+                                
+                            </View>
+                            <Text style={[styles.text,{fontSize:height*0.016}]}>Prescription No : {this.state?.item?.id}</Text>
                             <Text style={[styles.text,{textAlign:"right",fontSize:height*0.016}]}>{moment(this.state?.item?.created).format('DD/MM/YYYY')}</Text>
                         </View>
                        
                     </View>
-                    <View style={{flex:0.2}}>
+                    <View style={{flex:0.22}}>
                             {
                                 this.renderHeader()
                             }

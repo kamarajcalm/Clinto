@@ -47,6 +47,7 @@ import SelectAddress from '../Screens/SelectAddress';
 import ViewMedicalDetails from '../MedicalScreens.js/ViewMedicalDetails';
 import CreateReceptionistMedical from '../AdminScreens/CreateReceptionistMedical';
 import MedicalOffers from '../AdminScreens/MedicalOffers';
+import DiagnosisTab from './DiagnosisTab';
 
 const prefix = Linking.makeUrl('/')
 const Tab = createBottomTabNavigator();
@@ -103,6 +104,7 @@ const authScreens = {
                     <Stack.Screen name="DefaultScreen" component={DefaultScreen} options={{ headerShown: false }} />
                     <Stack.Screen name="PrescriptionViewOuter" component={PrescriptionViewOuter} options={{ headerShown: false }} />
                     <Stack.Screen name="MainTab" component={TabNavigator} options={{ headerShown: false }} />
+                    <Stack.Screen name="DiagnosisTab" component={DiagnosisTab} options={{ headerShown: false }} />
                     <Stack.Screen name="Login" component={LoginStack} options={{ headerShown: false }} />
                     <Stack.Screen name="ProfileEdit" component={ProfileEdit} options={{ headerShown: false }} />
                     <Stack.Screen name="AdminTab" component={AdminTab} options={{ headerShown: false }} />

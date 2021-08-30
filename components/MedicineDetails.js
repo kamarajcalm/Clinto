@@ -351,8 +351,8 @@ export default class MedicineDetails extends Component {
 
                                 <Switch
                                     style={{ marginLeft: 10 }}
-                                    trackColor={{ false: '#767577', true: '#81b0ff' }}
-                                    thumbColor={this.state.afterFood ? '#f5dd4b' : '#f4f3f4'}
+                                    trackColor={{ false: '#767577', true: '#34eb40' }}
+                                    thumbColor={this.state.afterFood ? '#fff' : '#f4f3f4'}
                                     ios_backgroundColor="#3e3e3e"
                                     onValueChange={() => { this.toggleSwitch() }}
                                     value={this.state.afterFood}
@@ -409,8 +409,8 @@ export default class MedicineDetails extends Component {
 
                             <Switch
                                 style={{ marginLeft: 10 }}
-                                trackColor={{ false: '#767577', true: '#81b0ff' }}
-                                thumbColor={this.state.containsDrugs ? '#f5dd4b' : '#f4f3f4'}
+                                trackColor={{ false: '#767577', true: '#34eb40' }}
+                                thumbColor={this.state.containsDrugs ? '#fff' : '#f4f3f4'}
                                 ios_backgroundColor="#3e3e3e"
                                 onValueChange={() => { this.toggleDrug() }}
                                 value={this.state.containsDrugs}
@@ -571,8 +571,8 @@ export default class MedicineDetails extends Component {
 
                             <Switch
                                 style={{ marginLeft: 10 }}
-                                trackColor={{ false: '#767577', true: '#81b0ff' }}
-                                thumbColor={this.state.containsDrugs ? '#f5dd4b' : '#f4f3f4'}
+                                trackColor={{ false: '#767577', true: '#34eb40' }}
+                                thumbColor={this.state.containsDrugs ? '#fff' : '#f4f3f4'}
                                 ios_backgroundColor="#3e3e3e"
                                 onValueChange={() => { this.toggleDrug() }}
                                 value={this.state.containsDrugs}
@@ -745,8 +745,8 @@ export default class MedicineDetails extends Component {
 
                             <Switch
                                 style={{ marginLeft: 10 }}
-                                trackColor={{ false: '#767577', true: '#81b0ff' }}
-                                thumbColor={this.state.containsDrugs ? '#f5dd4b' : '#f4f3f4'}
+                                trackColor={{ false: '#767577', true: '#34eb40' }}
+                                thumbColor={this.state.containsDrugs ? '#fff' : '#f4f3f4'}
                                 ios_backgroundColor="#3e3e3e"
                                 onValueChange={() => { this.toggleDrug() }}
                                 value={this.state.containsDrugs}
@@ -848,8 +848,8 @@ export default class MedicineDetails extends Component {
 
                             <Switch
                                 style={{ marginLeft: 10 }}
-                                trackColor={{ false: '#767577', true: '#81b0ff' }}
-                                thumbColor={this.state.containsDrugs ? '#f5dd4b' : '#f4f3f4'}
+                                trackColor={{ false: '#767577', true: '#34eb40' }}
+                                thumbColor={this.state.containsDrugs ? '#fff' : '#f4f3f4'}
                                 ios_backgroundColor="#3e3e3e"
                                 onValueChange={() => { this.toggleDrug() }}
                                 value={this.state.containsDrugs}
@@ -936,8 +936,8 @@ export default class MedicineDetails extends Component {
 
                             <Switch
                                 style={{ marginLeft: 10 }}
-                                trackColor={{ false: '#767577', true: '#81b0ff' }}
-                                thumbColor={this.state.containsDrugs ? '#f5dd4b' : '#f4f3f4'}
+                                trackColor={{ false: '#767577', true: '#34eb40' }}
+                                thumbColor={this.state.containsDrugs ? '#fff' : '#f4f3f4'}
                                 ios_backgroundColor="#3e3e3e"
                                 onValueChange={() => { this.toggleDrug() }}
                                 value={this.state.containsDrugs}

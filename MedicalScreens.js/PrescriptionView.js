@@ -129,6 +129,7 @@ class PrescriptionView extends Component {
         this.setState({ drugs})
     }
     componentDidMount() {
+       
         if(this.state.pk == null){
             this.validateAnimations()
             this.filterMedicines()
@@ -210,12 +211,12 @@ class PrescriptionView extends Component {
 
                             </View>
                         </View>}
-                        <View style={{ marginTop: 10 }}>
+                     { item.command&&  <View style={{ marginTop: 10 }}>
                             <Text style={[styles.text, { fontWeight: "bold" }]}>Comments:</Text>
                             <View>
                                 <Text style={[styles.text, { marginLeft: 10 }]}>{item.command}</Text>
                             </View>
-                        </View>
+                        </View>}
                         <View style={{ alignSelf: "flex-end" }}>
                             <Text>Qty: {item.total_qty}</Text>
                         </View>
@@ -560,7 +561,7 @@ class PrescriptionView extends Component {
                                            key={index}
                                            >
                                                <View style={{ flex: 0.4, alignItems: "center", justifyContent: "center" }}>
-                                                   <Text style={[styles.text, { color: '#000', fontSize: 18 }]}>{item.medicinename.name}</Text>
+                                                   <Text style={[styles.text, { color: '#000', fontSize: 18 ,fontWeight:"bold"}]}>{item.medicinename.name}</Text>
                                                </View>
                                                <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
                                                    <Text style={[styles.text, { color: '#000', fontSize: 18 }]}>{item.medicinename.type}</Text>
@@ -726,7 +727,7 @@ class PrescriptionView extends Component {
                                                 <View style={{ flex: 0.7 }}>
                                                     <View style={{ flexDirection: "row" }}>
                                                         <View>
-                                                            <Text style={[styles.text, { color: "#000", }]}>{item.medicinename.name}</Text>
+                                                            <Text style={[styles.text, { color: "#000", fontWeight:"bold"}]}>{item.medicinename.name}</Text>
                                                         </View>
                                                         <View style={{ marginLeft: 10 }}>
                                                             <Text style={[styles.text, { color: "#000", }]}>({item.medicinename.type})</Text>
@@ -779,7 +780,7 @@ class PrescriptionView extends Component {
                                                 <View style={{ flex: 0.7 }}>
                                                     <View style={{ flexDirection: "row" }}>
                                                         <View>
-                                                            <Text style={[styles.text, { color: "#000", }]}>{item.medicinename.name}</Text>
+                                                            <Text style={[styles.text, { color: "#000",fontWeight:"bold" }]}>{item.medicinename.name}</Text>
                                                         </View>
                                                         <View style={{ marginLeft: 10 }}>
                                                             <Text style={[styles.text, { color: "#000", }]}>({item.medicinename.type})</Text>

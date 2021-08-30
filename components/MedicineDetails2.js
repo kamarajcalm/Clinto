@@ -128,8 +128,8 @@ export default class MedicineDetails2 extends Component {
 
                     <Switch
                         style={{ marginLeft: 10 }}
-                        trackColor={{ false: '#767577', true: '#81b0ff' }}
-                        thumbColor={this.state.containsDrugs ? '#f5dd4b' : '#f4f3f4'}
+                        trackColor={{ false: '#767577', true: '#34eb40' }}
+                        thumbColor={this.state.containsDrugs ? '#fff' : '#f4f3f4'}
                         ios_backgroundColor="#3e3e3e"
                         onValueChange={() => { this.toggleDrug() }}
                         value={this.state.containsDrugs}

@@ -39,8 +39,7 @@ class AddPrescription extends Component {
     ]
     super(props);
       let appoinment = props?.route?.params?.appoinment||null
-  console.log(appoinment,"popop")
-    this.state = {
+      this.state = {
                 mode: 'date',
                 date: new Date(),
                 medicines:[],
@@ -225,8 +224,9 @@ class AddPrescription extends Component {
     }
     createTemplateAlert =(prescribed_medicines,medicines_given) =>{
               Alert.alert(
-                  'Template Available for?',
-                  `Age:${this.state.Age} & Diagnosis:${this.state.selectedDiagonosis}`,
+                  'Template is Available for?',
+                  `Age : ${this.state.Age} & Diagnosis : ${this.state.selectedDiagonosis}`,
+                  `Diagnosis : ${this.state.selectedDiagonosis}`,
                   [
                       { text: "No", style: 'cancel', onPress: () => { } },
                       {
@@ -552,6 +552,7 @@ class AddPrescription extends Component {
                            
                              <View style={{marginLeft:10}}>
                                 <DropDownPicker
+                                    placeholder={"select"}
                                     items={this.state.sex}
                                     defaultValue={this.state.selectedSex}
                                     containerStyle={{ height: 40, width: width * 0.4 }}

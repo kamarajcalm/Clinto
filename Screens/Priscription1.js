@@ -38,7 +38,7 @@ const url =settings.url
 const fontFamily = settings.fontFamily;
 const themeColor =settings.themeColor
 import * as Location from 'expo-location';
-      const { height,width } = Dimensions.get("window");
+const { height,width } = Dimensions.get("window");
 const { diffClamp } = Animated;
 
 import { Swipeable } from "react-native-gesture-handler";

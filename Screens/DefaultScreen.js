@@ -25,13 +25,13 @@ const url = settings.url;
     };
   }
      getUserDetails = async () => {
-      //  return this.props.navigation.navigate('Login')
+  
       //  return this.props.navigation.dispatch(
       //    CommonActions.reset({
       //      index: 0,
       //      routes: [
       //        {
-      //          name: 'MedicalTab',
+      //          name: 'DiagnosisTab',
 
       //        },
 

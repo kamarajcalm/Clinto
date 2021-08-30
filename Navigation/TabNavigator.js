@@ -79,6 +79,9 @@ class TabNavigator extends Component {
       if (routeName == "SelectAddress") {
             return false
         }
+          if (routeName == "CustomerOrders") {
+            return false
+        }
         return true
     }
     getTabBarVisibility4 = (route) => {

@@ -6070,6 +6070,13 @@ react-native-progress@^5.0.0:
   dependencies:
     prop-types "^15.7.2"
 
+react-native-ratings@^8.1.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-ratings/-/react-native-ratings-8.1.0.tgz#3fa9ad29128dc3a88e59518ba151e61c59dd0647"
+  integrity sha512-+QOJ4G3NjVkI1D+tk4EGx1dCvVfbD2nQdkrj9cXrcAoEiwmbep4z4bZbCKmWMpQ5h2dqbxABU8/eBnbDmvAc3g==
+  dependencies:
+    lodash "^4.17.15"
+
 react-native-razorpay@^2.2.4:
   version "2.2.7"
   resolved "https://registry.yarnpkg.com/react-native-razorpay/-/react-native-razorpay-2.2.7.tgz#2bc47fca4e3069ae18966f60d445bab30613169b"
@@ -6125,6 +6132,16 @@ react-native-snap-carousel@*:
   dependencies:
     prop-types "^15.6.1"
     react-addons-shallow-compare "15.6.2"
+
+react-native-star-rating-widget@^1.0.21:
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/react-native-star-rating-widget/-/react-native-star-rating-widget-1.0.21.tgz#3b65399f9f3d970d8d1ad0e5c8e8505e8637d3fd"
+  integrity sha512-BzFBohToN4Jykhxgbp8+4J4JBXQ4v39xV3vhSWsoiFB9NBZ3sw6r1nq3plGcIgNOot+jMA4EMQqbkdjcMLi2ug==
+
+react-native-star-view@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/react-native-star-view/-/react-native-star-view-1.1.3.tgz#299d48edfcd53cfbe6483933fcc53a45d7adbbeb"
+  integrity sha512-zn8PWKQYt0FedobscN26lAGK2UcLXfe1Mc4Fspi1sII5Kij4mbsiheI6rJrN1b8J5pe8RdWXuMalHIqpExY/fw==
 
 react-native-svg@12.1.1:
   version "12.1.1"

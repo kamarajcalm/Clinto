@@ -19,7 +19,6 @@ import { FontAwesome, FontAwesome5, Octicons, Fontisto, EvilIcons, Feather, AntD
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import { color } from 'react-native-reanimated';
 import DropDownPicker from 'react-native-dropdown-picker';
-
 const Date1 = new Date()
 const today = moment(Date1).format("YYYY-MM-DD")
 const url = settings.url

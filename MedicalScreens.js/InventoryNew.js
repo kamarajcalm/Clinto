@@ -344,8 +344,8 @@ class InventoryNew extends Component {
                         </View>
                         <Switch
                             style={{ }}
-                            trackColor={{ false: '#767577', true: '#81b0ff' }}
-                            thumbColor={this.state.rack ? '#f5dd4b' : '#f4f3f4'}
+                            trackColor={{ false: '#767577', true: '#34eb40' }}
+                            thumbColor={this.state.rack ? '#fff' : '#f4f3f4'}
                             ios_backgroundColor="#3e3e3e"
                             onValueChange={()=>{ this.toggleSwitch() }}
                             value={this.state.rack}
@@ -736,8 +736,8 @@ class InventoryNew extends Component {
                     </View>
                     <Switch
                         style={{}}
-                        trackColor={{ false: '#767577', true: '#81b0ff' }}
-                        thumbColor={this.state.soldMedicinesView?'#f5dd4b' : '#f4f3f4'}
+                        trackColor={{ false: '#767577', true: '#34eb40' }}
+                        thumbColor={this.state.soldMedicinesView?'#fff' : '#f4f3f4'}
                         ios_backgroundColor="#3e3e3e"
                         onValueChange={() => { this.toggleSoldMedicines() }}
                         value={this.state.soldMedicinesView}
