@@ -11,6 +11,10 @@ import SearchMedicines from '../Screens/SearchMedicines';
 import SelectAddress from '../Screens/SelectAddress';
 import CustomerOrders from '../Screens/CustomerOrders';
 import ViewCustomerOrders from '../Screens/ViewCustomerOrders';
+import ViewReports from '../Screens/ViewReports';
+import AddReport from '../Screens/AddReport';
+import CreateReport from '../Screens/CreateReport';
+import PendingRequests from '../Screens/PendingRequests';
 const Stack = createStackNavigator();
 export default class ProfileStack extends Component {
   constructor(props) {
@@ -28,17 +32,19 @@ export default class ProfileStack extends Component {
             close: TransitionSpecs.TransitionIOSSpec,
           },
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
-
         }}
-        
         >
          <Stack.Screen name="ProfileHome" component={Profile} options={{ headerShown: false }} />    
           <Stack.Screen name="ViewTemplates" component={ViewTemplates} options={{ headerShown: false }} />
-          <Stack.Screen name="ViewFullTemplates" component={ViewFullTemplates} options={{ headerShown: false }} />
+          <Stack.Screen name="ViewFullTemplates" component={ViewFullTemplates} options={{ headerShown: false }}/>
+          <Stack.Screen name="ViewReports" component={ViewReports} options={{ headerShown: false }} />
           <Stack.Screen name="SearchMedicines" component={SearchMedicines} options={{ headerShown: false }} />
           <Stack.Screen name="SelectAddress" component={SelectAddress} options={{ headerShown: false }} />
           <Stack.Screen name="CustomerOrders" component={CustomerOrders} options={{ headerShown: false }} />
           <Stack.Screen name="ViewCustomerOrders" component={ViewCustomerOrders} options={{ headerShown: false }} />
+          <Stack.Screen name="AddReport" component={AddReport} options={{ headerShown: false }} />
+          <Stack.Screen name="CreateReport" component={CreateReport} options={{ headerShown: false }} />
+          <Stack.Screen name="PendingRequests" component={PendingRequests} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
   }

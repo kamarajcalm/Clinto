@@ -80,60 +80,7 @@ class PatientProfile extends Component {
                     </View> */}
 
                 </View>
-               <View style={{ borderColor: "#F0F0F0", borderTopWidth: 3, }}>
-                    <View style={{ marginHorizontal: 20 }}>
-                        <View style={{ marginTop: 5,flexDirection:"row",alignItems:"center",justifyContent:"space-between" }}>
-                            <View style={{}}>
-                                                   <Text style={[styles.text]}>Delivery Location</Text>
-                            </View>
-                             <View style={{}}>
-                                 <TouchableOpacity style={{height:height*0.03,width:width*0.25,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}
-                                   onPress={()=>{
-                                        this.props.navigation.navigate("SelectAddress", { backFunction: (address) => { this.backFunction(address)}})
-                                   }}
-                                 >
-                                       <Text style={[styles.text,{color:"#fff",fontSize:height*0.02}]}>Change</Text>
-                                 </TouchableOpacity>
-                             </View>
-                             
-                        </View>
-                        <View>
-                              <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.location}</Text>
-                        </View>
-                        <View style={{marginTop:5}}>
-                            {
-                                this.props.user?.profile?.health_issues?.map((item,index)=>{
-                                    return(
-                                   
-                                        <Text style={[styles.text,{color:'#000',marginLeft:5}]} key={index}>{item}</Text>
-                                    )   
-                                })
-                            }
-                        </View>
-                    </View>
-
-
-                </View>
-               <TouchableOpacity style={{ borderColor: "#F0F0F0", borderTopWidth: 3, }}
-                onPress={()=>{this.props.navigation.navigate("CustomerOrders")}}
-               >
-                    <View style={{ marginHorizontal: 20 ,flexDirection:"row",marginVertical:10,alignItems:"center",justifyContent:"space-between"}}>
-                        <View style={{flexDirection:"row"}}>
-                            <View>
-                              <AntDesign name="gift" size={24} color={themeColor} />
-                            </View>
-                                <View style={{ marginLeft:10}}>
-                                    <Text style={[styles.text]}>Your Orders</Text>
-                                </View>
-                        </View>
-                       <View style={{height:height*0.03,width:width*0.25,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}>
-                             <Text style={[styles.text,{color:"#fff",fontSize:height*0.02}]}>View</Text>
-                       </View>
-                      
-                    </View>
-
-
-                </TouchableOpacity>
+              
                 <View style={{ borderColor: "#F0F0F0", borderTopWidth: 3, }}>
                     <View style={{ marginHorizontal: 20 }}>
                         <View style={{ marginTop: 5 }}>

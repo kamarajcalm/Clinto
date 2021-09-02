@@ -166,6 +166,16 @@ class DoctorProfile extends Component {
                                 </TouchableOpacity>
                         </View>
                 </View>
+                       <View style={{ borderColor: "#F0F0F0", borderBottomWidth: 3 }}>
+                        <View style={{alignItems:"center",justifyContent:"center",marginVertical:20}}>
+                                <TouchableOpacity style={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:10}}
+                            onPress={() => { this.props.navigation.navigate("ViewReports")}}
+                                >
+                                    <Text style={[styles.text,{color:"#fff"}]}>View Reports</Text>
+                                </TouchableOpacity>
+                        </View>
+                        
+                </View>
                 <View style={{margin:20}}>
                       <View>
                           <Text style={[styles.text]}>Patients Attended</Text>

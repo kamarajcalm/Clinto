@@ -76,10 +76,16 @@ class TabNavigator extends Component {
         if (routeName == "ViewFullTemplates") {
             return false
         }
+         if (routeName == "ViewReports") {
+            return false
+        }
       if (routeName == "SelectAddress") {
             return false
         }
           if (routeName == "CustomerOrders") {
+            return false
+        }
+             if (routeName == "PendingRequests") {
             return false
         }
         return true

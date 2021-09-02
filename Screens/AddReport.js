@@ -1,64 +1,71 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, TextInput, FlatList, Image, SafeAreaView, StatusBar,ActivityIndicator ,ScrollView} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, TextInput, FlatList, Image, SafeAreaView, StatusBar,ActivityIndicator, ScrollView } from 'react-native';
 import { Ionicons, Entypo, AntDesign } from '@expo/vector-icons';
 import { connect } from 'react-redux';
-import { selectTheme } from '../../actions';
-import settings from '../../AppSettings';
-
+import { selectTheme } from '../actions';
+import settings from '../AppSettings';
+import medicine from '../components/Medicine';
+import Medicine from '../components/Medicine';
+import HttpsClient from '../api/HttpsClient';
 const { height, width } = Dimensions.get("window");
 const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
-const inputColor=settings.TextInput;
+const inputColor = settings.TextInput
+import DropDownPicker from 'react-native-dropdown-picker';
+import * as DocumentPicker from 'expo-document-picker';
+import * as mime from 'react-native-mime-types';
 import axios from 'axios';
 import moment from 'moment';
-import DropDownPicker from 'react-native-dropdown-picker';
 const url = settings.url;
 
-class CreateReport extends Component {
+class AddReport extends Component {
     constructor(props) {
-      let sex= [
-          {
-             label:"Male",value:'Male'
-          },
-          {
-              label: "Female", value: 'Female'
-          },
-          {
-              label: "Others", value: 'Others'
-          },
-    ]
         super(props);
         this.state = {
-            selectedSex:null,
-            sex,
+   
         };
     }
 
    componentDidMount(){
-    
+  
    }
+selectFile = async()=>{
+  const file = await DocumentPicker.getDocumentAsync({
+     type: "*/*"
+  });
+      let filename = file.uri.split('/').pop();
+        let match = /\.(\w+)$/.exec(filename);
+        const type =  mime.lookup(match[1])
 
+     const fileUpload = {
+            uri: file.uri,
+            type: type,
+            name: file.name,
+        };
+        console.log(fileUpload)
+}
 
     render() {
         return (
             <>
                 <SafeAreaView style={styles.topSafeArea} />
                 <SafeAreaView style={styles.bottomSafeArea}>
-                 <StatusBar backgroundColor={themeColor} barStyle={"default"} />
-                           <View style={{ height: height * 0.1, backgroundColor: themeColor, flexDirection: 'row', alignItems: "center" }}>
-                              <TouchableOpacity style={{flex:0.2,alignItems:"center",justifyContent:'center'}}
-                                onPress={()=>{this.props.navigation.goBack()}}
-                              >
-                                  <Ionicons name="chevron-back-circle" size={30} color="#fff" />
-                              </TouchableOpacity>
-                            <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
-                                <Text style={[styles.text, { color: '#fff', fontWeight: 'bold', fontSize: 18 }]}>Create Report</Text>
-                            </View>
-                             <View style={{flex:0.2}}>
-                                  
-                             </View>
+                    <StatusBar backgroundColor={themeColor} barStyle={"default"} />
+
+                    <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
+                        <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}
+                            onPress={() => { this.props.navigation.goBack() }}
+                        >
+                            <Ionicons name="chevron-back-circle" size={30} color="#fff" />
+                        </TouchableOpacity>
+                        <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
+                            <Text style={[styles.text,{color:"#fff",fontSize:18}]}>Add Report</Text>
                         </View>
-                         <ScrollView>
+                        <View style={{flex:0.2}}>
+                             
+                        </View>
+                    </View>
+                    <ScrollView>
                               <View style={{ marginTop: 20 ,paddingHorizontal:20}}>
                                 <Text style={[styles.text], { color:"#000", fontSize: 18 }}>Mobile No</Text>
                                 <TextInput
@@ -151,7 +158,9 @@ class CreateReport extends Component {
                         </View>
                               <View style={{ marginTop: 20 ,paddingHorizontal:20}}>
                                   <Text style={[styles.text], { color: "#000",fontSize: 18 }}>Upload File</Text>
-                                  <TouchableOpacity style={{marginTop:20,alignItems:"center",justifyContent:"center"}}>
+                                  <TouchableOpacity style={{marginTop:20,alignItems:"center",justifyContent:"center"}}
+                                    onPress={()=>{this.selectFile()}}
+                                  >
                                          <Ionicons name="document-attach" size={24} color="black" />
                                   </TouchableOpacity>
                                </View>
@@ -174,15 +183,7 @@ const styles = StyleSheet.create({
         elevation: 6,
         margin: 20,
         height: height * 0.3
-    },
-       topSafeArea: {
-        flex: 0,
-        backgroundColor: themeColor
-    },
-    bottomSafeArea: {
-        flex: 1,
-        backgroundColor: "#fff"
-    },
+    }
 
 })
 const mapStateToProps = (state) => {
@@ -193,4 +194,4 @@ const mapStateToProps = (state) => {
         clinic: state.selectedClinic
     }
 }
-export default connect(mapStateToProps, { selectTheme })(CreateReport);
+export default connect(mapStateToProps, { selectTheme })(AddReport);

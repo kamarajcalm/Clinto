@@ -20,130 +20,32 @@ const imageUrl = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoGBxA
 import moment from 'moment';
 import ShimmerLoader from '../components/ShimmerLoader';
 
-    const starStyle = {
-      width: 100,
-      height: 20,
-      marginBottom: 20,
-    };
-class CustomerOrders extends Component {
+class PendingRequests extends Component {
     constructor(props) {
         super(props);
         this.state = {
-           orders:[],
-           loading:true
+         
         };
     }
-getOrders = async()=>{
-    let api  =`${url}/api/profile/dunzoorders/?user=${this.props.user.id}`
-    console.log(api)
-    const data = await HttpsClient.get(api)
-    if(data.type=="success"){
-         this.setState({orders:data.data,loading:false})
-    }else{
-      this.setState({loading:false})
-    }
-}
-    componentDidMount() {
-       this.getOrders()
-    }
-   ratingCompleted = (rating) =>{
-     console.log("Rating is: " + rating)
-   }
-   setRate =(rating,index) =>{
-        let duplicate = this.state.orders
-        duplicate[index].rating= rating
-        this.setState({orders:duplicate})
-   }
-   getStatusColor=(status)=>{
-     if(status=="delivered"){
-       return  "#71C387"
-     }
 
-      return "#e06e3a"
-   }
     render() {
         return (
           <>
            <SafeAreaView style={styles.topSafeArea} />
             <SafeAreaView style={styles.bottomSafeArea}>
-                  <View style={{}}>
-
-                      <TouchableOpacity style={{padding:15}}
-                          onPress={() => { this.props.navigation.goBack() }}
-                      >
-                          <Ionicons name="chevron-back-circle" size={30} color={themeColor} />
-                      </TouchableOpacity>
-                 </View>
-                 <View style={{marginLeft:15}}>
-                      <Text style={[styles.text,{color:"#000"}]}>Your Orders</Text>
-                 </View>
-                   {this.state.loading&&
-                        <ScrollView>
-                          <ShimmerLoader />
-                          <ShimmerLoader />
-                          <ShimmerLoader />
-                        </ScrollView>
-                   }
-                {!this.state.loading&& <FlatList 
-                   contentContainerStyle={{paddingBottom:100}}
-                   showsVerticalScrollIndicator={false}
-                   data={this.state.orders}
-                   keyExtractor={(item,index)=>index.toString()}
-                   renderItem ={({item,index})=>{
-                      return(
-                        <TouchableOpacity style={[styles.boxWithShadow,{height:height*0.34,backgroundColor:"#fafafa",marginTop:20,marginHorizontal:15,borderRadius:10,padding:10}]}
-                          onPress={()=>{this.props.navigation.navigate("ViewCustomerOrders",{item})}}
+                    <View style={{ height: height * 0.1, backgroundColor: themeColor,flexDirection: 'row', alignItems: "center" }}>
+                        <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}
+                            onPress={() => { this.props.navigation.goBack() }}
                         >
-                             <View style={{flex:0.3,flexDirection:"row",borderBottomWidth:0.5,borderColor:"#000",paddingVertical:10}}>
-                                 <View style={{flex:0.8,flexDirection:"row"}}>
-                                      <Image 
-                                        source={{uri:imageUrl}}
-                                        style={{height:"100%",width:width*0.15,borderRadius:5}}
-                                      />   
-                                      <View style={{marginLeft:10}}>
-                                        <View>
-                                               <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{item.user_order.clinicDetails.name}</Text>
-                                        </View>
-                                        <View>
-                                             <Text style={[styles.text,{color:"gray",fontSize:height*0.02}]}>{item.user_order.clinicDetails.addres}</Text>
-                                        </View>
-                                      </View>
-                                 </View>
-                                 <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
-                                       <Text style={[styles.text,{color:"#000"}]}> ₹ {item.razor_price/100}</Text>
-                                 </View>
-                             </View>
-                             <View style={{flex:0.5,borderBottomWidth:0.5,borderColor:"#000",paddingVertical:10}}>
-                               <View style={{height:height*0.03,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:this.getStatusColor(item.dunzo_status),borderRadius:5}}>
-                                  <Text style={[styles.text,{color:"#fff"}]}>{item.is_refunded?"Refunded":item.dunzo_status}</Text>
-                               </View>
-                                      {/* <View style={{marginTop:5}}>
-                                             <Text style={[styles.text,{color:"gray",fontSize:height*0.02}]}>ITEMS : 5</Text>
-                                        </View> */}
-                                            <View style={{marginTop:5}}>
-                                             <Text style={[styles.text,{color:"gray",fontSize:height*0.02}]}>ORDERED ON</Text>
-                                             <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{moment(item.created).format('ll')} at {moment(item.created).format('hh:mm a')}</Text>
-                                        </View>
-                             </View>
-                             <View style={{flex:0.2,}}>
-                                <View>
-                                     <View>
-                                       <Text style={[styles.text,{color:themeColor,fontSize:height*0.02}]}>Rate Order</Text>
-                                    </View>
-                                </View>
-                                <View style={{justifyContent:"center"}}>
-                                       <StarRating
-                                         starSize={20}
-                                        rating={item.rating}
-                                        onChange={(rating)=>{this.setRate(rating,index)}}
-                                      />
-                                </View>
-                                  
-                             </View>
+                            <Ionicons name="chevron-back-circle" size={30} color="#fff" />
                         </TouchableOpacity>
-                      )
-                   }}
-                 />}
+                        <View style={{ flex: 0.6,alignItems:"center",justifyContent:"center" }}>
+                            <Text style={[styles.text, { color: "#fff", fontSize:height*0.02}]}>Pending Requests</Text>
+                        </View>
+                        <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+
+                        </View>
+                    </View>
              </SafeAreaView>    
              </>
         );
@@ -190,4 +92,4 @@ const mapStateToProps = (state) => {
         clinic: state.selectedClinic
     }
 }
-export default connect(mapStateToProps, { selectTheme, selectClinic })(CustomerOrders)
+export default connect(mapStateToProps, { selectTheme, selectClinic })(PendingRequests)

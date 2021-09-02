@@ -12,6 +12,7 @@ import CreateReceptionistMedical from '../AdminScreens/CreateReceptionistMedical
 import ReceptionistProfile from '../AdminScreens/ReceptionistProfile';
 import UploadImages from '../AdminScreens/UploadImages';
 import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack';
+import DiagnosisCenter from '../AdminScreens/DiagnosisCenter';
 const Stack = createStackNavigator();
 export default class AdminProfileStack extends Component {
     constructor(props) {
@@ -33,6 +34,7 @@ export default class AdminProfileStack extends Component {
                 }}
             >
                 <Stack.Screen name="MedicalProfile" component={MedicalProfile} options={{ headerShown: false }} />
+              
           
                 <Stack.Screen name="ReceptionistProfile" component={ReceptionistProfile} options={{ headerShown: false }} />
                 <Stack.Screen name="UploadImages" component={UploadImages} options={{ headerShown: false }} />

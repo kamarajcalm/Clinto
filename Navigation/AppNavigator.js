@@ -48,6 +48,9 @@ import ViewMedicalDetails from '../MedicalScreens.js/ViewMedicalDetails';
 import CreateReceptionistMedical from '../AdminScreens/CreateReceptionistMedical';
 import MedicalOffers from '../AdminScreens/MedicalOffers';
 import DiagnosisTab from './DiagnosisTab';
+import ViewFeautures from '../diagnosisCenter/Screens/ViewFeautures';
+import CreateReport from '../Screens/CreateReport';
+
 
 const prefix = Linking.makeUrl('/')
 const Tab = createBottomTabNavigator();
@@ -127,7 +130,8 @@ const authScreens = {
                     <Stack.Screen name="ViewMedicalDetails" component={ViewMedicalDetails} options={{ headerShown: false }} />
                     <Stack.Screen name="CreateReceptionistMedical" component={CreateReceptionistMedical} options={{ headerShown: false }} />
                     <Stack.Screen name="MedicalOffers" component={MedicalOffers} options={{ headerShown: false }} />
-                  
+                    <Stack.Screen name="ViewFeautures" component={ViewFeautures} options={{ headerShown: false }} />
+                         <Stack.Screen name="CreateReport" component={CreateReport} options={{ headerShown: false }} />
                  </Stack.Navigator>
                 
             </NavigationContainer>

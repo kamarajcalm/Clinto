@@ -31,18 +31,25 @@ class DiagnosisTab extends Component {
     componentDidMount() {
      
     }
-
+    getTabBarVisibility2 = (route) => {
+        const routeName = route.state ? route.state.routes[route.state.index].name : ''
+        if (routeName == "ViewFeautures") {
+            return false
+        }
+  
+        return true
+    }
     getTabBarVisibility = (route) => {
         const routeName = route.state ? route.state.routes[route.state.index].name : ''
         if (routeName == "CreateReport") {
             return false
         }
+    
   
-   
-     
         return true
     }
    
+
     render() {
         return (
 
@@ -63,7 +70,7 @@ class DiagnosisTab extends Component {
                 <Tab.Screen name="AppoinmentsStack" component={AppoinmentsStack}
                     options={({ route }) => ({
 
-                        tabBarVisible: this.getTabBarVisibility(route),
+                        tabBarVisible:true
 
                     })}
 
@@ -71,7 +78,7 @@ class DiagnosisTab extends Component {
                    <Tab.Screen name="ProfileStack" component={ProfileStack}
                     options={({ route }) => ({
 
-                        tabBarVisible: this.getTabBarVisibility(route),
+                        tabBarVisible: this.getTabBarVisibility2(route),
 
                     })}
 

@@ -11,6 +11,7 @@ public class BasePackageList {
         new expo.modules.av.AVPackage(),
         new expo.modules.barcodescanner.BarCodeScannerPackage(),
         new expo.modules.constants.ConstantsPackage(),
+        new expo.modules.documentpicker.DocumentPickerPackage(),
         new expo.modules.errorrecovery.ErrorRecoveryPackage(),
         new expo.modules.filesystem.FileSystemPackage(),
         new expo.modules.font.FontLoaderPackage(),

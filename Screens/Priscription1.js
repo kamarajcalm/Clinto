@@ -215,7 +215,8 @@ hideDatePicker = () => {
             this.setState({ isReceptionist: true, })
         }
         else{
-            this.getLocation()
+     
+               this.getLocation()
             this.getPateintPrescription()
         }
 

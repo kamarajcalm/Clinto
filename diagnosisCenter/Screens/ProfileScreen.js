@@ -88,7 +88,7 @@ class ProfileScreen extends Component {
                         <View style={{flex:1,backgroundColor:"#fff"}}>
               
                     <TouchableOpacity style={{ flexDirection: "row", height: height * 0.05, paddingHorizontal: 20, width, marginTop: 20 }}
-                        onPress={() => { this.props.navigation.navigate('PriceVerification')}}
+                        onPress={() => { this.props.navigation.navigate('ViewFeautures')}}
                     >
                         <View style={{ flex: 0.8, flexDirection: "row" }}>
                             <View style={{ alignItems: "center", justifyContent: "center" }}>

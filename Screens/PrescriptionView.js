@@ -71,13 +71,14 @@ import RazorpayCheckout from 'react-native-razorpay';
          checkoutModal:false,
          address:null,
          showModal:true,
-         orderPk:51,
+         orderPk:64,
          acceptedClinics:[],
          shownoresult:false,
          selectedClinicIndex:null,
          deliveryDetailsLoading:false,
          priceDetails:null,
-         errorDetails:null
+         errorDetails:null,
+         paymentLoading:false
     };
     }
     renderContent = () => (
@@ -753,7 +754,6 @@ validateButton = (item,index) =>{
              this.setState({checkoutModal:false,confirming:false,orderPk:post.data.pk},()=>{
                         this.setState({showModal:true},()=>{
                                      this.interval = setInterval(() =>{
-                               
                                            this.setState({ counter:this.state.counter+1000},()=>{
                                            this.setState({progress:(this.state.counter*100/60000)/100})
                             
@@ -802,7 +802,11 @@ validateButton = (item,index) =>{
      let post =await HttpsClient.post(api,sendData)
      console.log(post,"task Create")
      if(post.type =="success"){
+        this.setState({paymentLoading:false})
         this.showSimpleMessage("Order Placed SuccessFully","green","success")
+     }else{
+        this.setState({paymentLoading:false})
+        this.showSimpleMessage(`${post?.data?.dunzoerror}`,"orange","info")
      }
     }
     confirmPharmacy = async(item,price)=>{
@@ -813,7 +817,7 @@ validateButton = (item,index) =>{
         // }
         // let post = await HttpsClient.post(api,sendData)
         // console.log(post)
-        this.setState({loading:true})
+        this.setState({loading:true,})
         let api = `${url}/api/profile/createDunzo/`
         let sendData ={
             order:item.for_order.id,
@@ -823,7 +827,10 @@ validateButton = (item,index) =>{
         let post = await HttpsClient.post(api,sendData)
         console.log(post)
         if(post.type=="success"){
-               var options = {
+                clearInterval(this.interval);
+                clearInterval(this.requestInterVal);
+                this.setState({showModal:false,paymentLoading:true})
+                var options = {
                 description: `Medicines Purchase`,
                 image: 'https://i.imgur.com/3g7nmJC.png',
                 currency: 'INR',
@@ -846,14 +853,14 @@ validateButton = (item,index) =>{
    
     }).catch((error) => {
         // handle failure
-        this.failPayment(error)
-        this.setState({ loading: false })
+   
+        this.setState({ paymentLoading: false })
 
         return this.showSimpleMessage(`${error.error.description}`, "#dd7030")
       
     });
         }else{
-            this.setState({ loading: false })
+            this.setState({ paymentLoading: false })
             this.showSimpleMessage("Something Went Wrong","orange","info")
         }
     }
@@ -1117,8 +1124,8 @@ validateButton = (item,index) =>{
         let sendData ={
             "pickup_details":[
                 {
-                    "lat":Number(item.lat) ,
-                    "lng":Number( item.lang),
+                    "lat":Number(item.otherDetails.lat) ,
+                    "lng":Number( item.otherDetails.lang),
                     "reference_id": item.id.toString()
                     
                 }
@@ -1126,8 +1133,8 @@ validateButton = (item,index) =>{
             "optimised_route": true,
             "drop_details":[
                 {
-                     "lat":Number(this.props.user.profile.lat),
-                     "lng":Number(this.props.user.profile.lang),
+                     "lat":Number(item.for_order.lat),
+                     "lng":Number(item.for_order.lang),
                      "reference_id":item.id.toString()
                 }
             ]
@@ -1640,6 +1647,14 @@ validateButton = (item,index) =>{
                 {
                     this.checkoutModal()
                 }
+                    <Modal
+                    deviceHeight={deviceHeight}
+                    isVisible={this.state.paymentLoading}
+                  >
+                   <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
+                    <ActivityIndicator  color={"#fff"} size="large"/>
+                   </View>
+                  </Modal>
             </SafeAreaView>
 
         </>

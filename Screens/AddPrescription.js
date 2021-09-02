@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, SafeAreaView, ToastAndroid, Pressable, Switch, ActivityIndicator, TextInput, Alert, TouchableWithoutFeedback, ScrollView,} from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, SafeAreaView, ToastAndroid, Pressable, Switch, ActivityIndicator, TextInput, Alert, TouchableWithoutFeedback, ScrollView,Keyboard} from 'react-native';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
 import settings from '../AppSettings';
@@ -23,7 +23,20 @@ import FlashMessage, { showMessage, hideMessage } from "react-native-flash-messa
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import moment from 'moment';
-
+const profiles = [
+    {
+        label:"kamaraj",value:'kamaraj' 
+    },
+    {
+        label:"Ramesh",value:'Ramesh' 
+    },
+    {
+        label:"Suresh",value:'Suresh' 
+    },
+      {
+        label:"AddNew",value:'AddNew' 
+    },
+]
 class AddPrescription extends Component {
   constructor(props) {
       let sex= [
@@ -66,11 +79,18 @@ class AddPrescription extends Component {
                 validityTimes:"0",
                 MedicinesGiven:[],
                 check:true,
-                selectedDiagonosis:[]
+                selectedDiagonosis:[],
+                profiles,
+                selectedProfile:null,
+                addModal:false,
+                profileName:"",
+                   keyBoardHeight:0,
     };
   }
 
   componentDidMount(){
+           Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+        Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
     if(this.state.appoinment){
         this.searchUser(this.state?.appoinment?.patientname.mobile, this.state?.appoinment?.requesteddate, this.state?.appoinment?.clinic)
     }
@@ -97,8 +117,17 @@ class AddPrescription extends Component {
           }
       })
   }
+      _keyboardDidShow = (e) => {
+            console.log()
+        this.setState({keyBoardHeight:e.endCoordinates.height})
+    };
+
+    _keyboardDidHide = () => {
+        this.setState({ keyBoardHeight: 0 })
+    };
   componentWillUnmount(){
- 
+        Keyboard.removeListener('keyboardDidShow', this._keyboardDidShow);
+        Keyboard.removeListener('keyboardDidHide', this._keyboardDidHide);
   }
     addManualMedicine =()=>{
         let duplicate = this.state.medicines
@@ -388,6 +417,53 @@ class AddPrescription extends Component {
     //     this.setState({ nextVisit,show1:false})
     //     }
     // }
+    addModal =()=>{
+        return(
+            <Modal
+              onBackButtonPress={()=>{this.setState({addModal:false})}}
+              statusBarTranslucent={true}
+              isVisible={this.state.addModal}
+              deviceHeight={screenHeight}
+              style={{marginBottom:this.state.keyBoardHeight}}
+            >
+              <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
+                 <View style={{height:height*0.4,backgroundColor:"#fff",borderRadius:5,width:width*0.9}}>
+                      <View style={{alignItems:"center",justifyContent:"center",marginVertical:20}}>
+                          <Text style={[styles.text,{color:"#000",fontSize:height*0.024}]}>Add New Profile :</Text>
+                      </View>
+                     <View style={{marginLeft:20}}>
+                         <View>
+                                <Text style={[styles.text,{color:'#000',fontSize:height*0.02}]}>Name :</Text>
+                         </View>
+                            <TextInput
+                        value ={this.state.profileName}
+                        selectionColor={themeColor}
+                        onChangeText={(profileName) => { this.setState({ profileName }) }}
+                                style={{ width: width * 0.7, height: 35, backgroundColor: inputColor, borderRadius: 5, padding: 10, marginTop: 10 }}
+                    />
+                     </View>
+                             <View style={{marginLeft:20,marginTop:10}}>
+                         <View>
+                                <Text style={[styles.text,{color:'#000',fontSize:height*0.02}]}>Age :</Text>
+                         </View>
+                            <TextInput
+                            keyboardType={"numeric"}
+                        value ={this.state.profileAge}
+                        selectionColor={themeColor}
+                        onChangeText={(profileAge) => { this.setState({ profileAge }) }}
+                                style={{ width: width * 0.7, height: 35, backgroundColor: inputColor, borderRadius: 5, padding: 10, marginTop: 10 }}
+                    />
+                     </View>
+                     <View style={{alignItems:"center",justifyContent:"center",marginTop:20}}>
+                          <TouchableOpacity style={{height:height*0.04,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor}}>
+                                <Text style={[styles.text,{color:"#fff"}]}>Add</Text>
+                          </TouchableOpacity>
+                     </View>
+                 </View>
+              </View>
+            </Modal>
+        )
+    }
     searchUser = async(mobileNo,date,clinic)=>{
         let api = `${url}/api/prescription/getAppointmentUser/?doctor=${this.props.user.id}&user=${mobileNo}&clinic=${clinic||this.props.clinic.clinicpk}&requesteddate=${date||moment(new Date()).format('YYYY-MM-DD')}`
        console.log(api,'ppppppp')
@@ -454,6 +530,9 @@ class AddPrescription extends Component {
         let data = await HttpsClient.get(api)
         console.log(data,"jjj")
         if(data.type =="success"){
+            if(data.data.length>0){
+                this.scrollRef.scrollTo( {x:0,y:height*0.6,animated: true})
+            }
             this.setState({ Diseases:data.data })
         }
         
@@ -508,7 +587,8 @@ class AddPrescription extends Component {
             </View>
             {/* FORMS */}
 
-            <ScrollView 
+            <ScrollView
+             ref ={ref=>this.scrollRef=ref}
              contentContainerStyle={{ paddingHorizontal:20}}
              showsVerticalScrollIndicator={false}
              keyboardShouldPersistTaps={"handled"}
@@ -525,6 +605,37 @@ class AddPrescription extends Component {
                                 style={{ width: width * 0.7, height: 35, backgroundColor: inputColor, borderRadius: 15, padding: 10, marginTop: 10}}
                     />
                 </View>
+                        <View style={{ marginTop: 20 ,flexDirection:"row"}}>
+                            <View style={{alignItems:"center",justifyContent:"center"}}>
+                                    <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Select Profile</Text>
+
+                            </View>
+                           
+                             <View style={{marginLeft:10}}>
+                                <DropDownPicker
+                                    placeholder={"select Profile"}
+                                    items={this.state.profiles}
+                                    defaultValue={this.state.selectedProfile}
+                                    containerStyle={{ height: 40, width: width * 0.4 }}
+                                    style={{ backgroundColor: inputColor }}
+                                    itemStyle={{
+                                        justifyContent: 'flex-start'
+                                    }}
+                                    dropDownStyle={{ backgroundColor: inputColor, width: width * 0.4 }}
+                                    onChangeItem={(item) => {
+                                        if(item.value=="AddNew"){
+                                            return this.setState({addModal:true})
+                                        }
+                                        this.setState({
+                                        selectedProfile: item.value
+                                    })
+                                }
+                                }
+
+                                />
+                             </View>
+                          
+                        </View>
                 <View style={{ marginTop: 20 }}>
                                 <Text style={[styles.text], { color: "#000",fontSize: 18 }}>Patient's Name</Text>
                     <TextInput
@@ -775,6 +886,16 @@ class AddPrescription extends Component {
                                 </View>
                            
                         </TouchableOpacity>
+                                <View style={{ marginTop: 20 }}>
+                                <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Suggest Report</Text>
+                            <TextInput
+                                value={this.state.Disease}
+                                onChangeText={(Disease) => { this.searchDiseases(Disease) }}
+                                selectionColor={themeColor}
+                                multiline={true}
+                                style={{ width: width * 0.9, height:35, backgroundColor: inputColor,  padding: 10, marginTop: 10, textAlignVertical: "top" }}
+                            />
+                        </View>
                    
                 <View style={{height:height*0.15,alignItems:"center",justifyContent:'center'}}>
                     <TouchableOpacity style={{height:height*0.06,alignItems:"center",justifyContent:'center',backgroundColor:themeColor,width:width*0.3,borderRadius:15}}
@@ -815,6 +936,9 @@ class AddPrescription extends Component {
                         onConfirm={this.handleConfirm}
                         onCancel={this.hideDatePicker}
                     />
+                    {
+                        this.addModal()
+                    }
         </View>
 
      </SafeAreaView>

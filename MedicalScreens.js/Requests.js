@@ -65,7 +65,7 @@ import ViewMedicines from '../AdminScreens/ViewMedicines';
     )
   }
   getRequests = async() =>{
-   let api = `${url}/api/prescription/vieworders/?date=${this.state.today}&status=Pending`
+   let api = `${url}/api/prescription/vieworders/?date=2021-09-01&status=Pending`
    let data = await HttpsClient.get(api)
    console.log(api)
    if(data.type == 'success'){

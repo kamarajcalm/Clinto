@@ -48,10 +48,10 @@ const Shimmer = ({ width, height }) => {
           });
         }
       }}>
-      {positionX !== null && (
+      {positionX !== null && typeof positionX=='number'&&(
         <Animated.View
           style={{
-            flex: 1,
+            flex:1,
             left: -positionX,
             transform: [{ translateX: linear }],
           }}>
