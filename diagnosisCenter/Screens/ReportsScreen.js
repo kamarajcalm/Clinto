@@ -24,7 +24,7 @@ import {
 import { Ionicons, Entypo, Feather, MaterialCommunityIcons, FontAwesome, FontAwesome5, EvilIcons,Fontisto,AntDesign} from '@expo/vector-icons';
 
 import { connect } from 'react-redux';
-import { selectTheme } from '../../actions';
+import { selectTheme ,selectClinic} from '../../actions';
 import settings from '../../AppSettings';
 const { diffClamp } = Animated;
 const { height, width } = Dimensions.get("window");
@@ -33,6 +33,7 @@ const themeColor = settings.themeColor;
 import axios from 'axios';
 import moment from 'moment';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import HttpsClient from '../../api/HttpsClient';
 const url = settings.url;
 
 class ReportsScreen extends Component {
@@ -80,9 +81,23 @@ hideDatePicker = () => {
      })
         this.hideDatePicker();
     };
+    getPharmacy =  async()=>{
+        let api = `${url}/api/prescription/getDoctorClinics/?labassistant=${this.props.user.id}`
+        console.log(api)
+        const data =await HttpsClient.get(api)
+           if(data.type=="success"){
+            this.setState({ clinics: data.data.workingclinics})
+        //     let activeClinic = data.data.workingclinics.filter((i)=>{
+        //         return i.active
+        //     })
+        //  console.log(activeClinic[0])
+            this.props.selectClinic(data.data.ownedclinics[0])
+      
+        }
+    }
   componentDidMount(){
        
-
+        this.getPharmacy()
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
         
             
@@ -346,4 +361,4 @@ const mapStateToProps = (state) => {
         clinic: state.selectedClinic
     }
 }
-export default connect(mapStateToProps, { selectTheme })(ReportsScreen);
+export default connect(mapStateToProps, { selectTheme ,selectClinic})(ReportsScreen);

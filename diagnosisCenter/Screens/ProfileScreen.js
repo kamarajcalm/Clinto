@@ -18,10 +18,12 @@ import {
     RefreshControl,
     Keyboard,
     Platform,
-    Linking
+    Linking,
+    AsyncStorage
 
 } from "react-native";
 import { Ionicons, Entypo, AntDesign,Fontisto ,FontAwesome} from '@expo/vector-icons';
+import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import { connect } from 'react-redux';
 import { selectTheme } from '../../actions';
 import settings from '../../AppSettings';
@@ -104,7 +106,7 @@ class ProfileScreen extends Component {
                         </View>
                     </TouchableOpacity>
                       <TouchableOpacity style={{ flexDirection: "row", height: height * 0.05, paddingHorizontal: 20, width, marginTop: 20 }}
-                         onPress={() => { }}
+                         onPress={() => { this.logOut()}}
                       >
                         <View style={{ flex: 0.8, flexDirection: "row" }}>
                             <View style={{ alignItems: "center", justifyContent: "center" }}>

@@ -15,6 +15,9 @@ import MedicalOwners from '../AdminScreens/MedicalOwners';
 import SearchLabOwner from '../AdminScreens/SearchLabOwner';
 import UpdateTimings from '../AdminScreens/UpdateTimings';
 import ViewDiagnosticCenter from '../AdminScreens/ViewDiagnosticCenter';
+import DiagnosisCategories from '../AdminScreens/DiagnosisCategories';
+import AddDiagnosisCategories from '../AdminScreens/AddDiagnosisCategories';
+import CreateDiagnosisCenterUser from '../AdminScreens/CreateDiagnosisCenterUser';
 const Stack = createStackNavigator();
 export default class BackendProfile extends Component {
     constructor(props) {
@@ -48,6 +51,9 @@ export default class BackendProfile extends Component {
                 <Stack.Screen name="SearchLabOwner" component={SearchLabOwner} options={{ headerShown: false }} />
                 <Stack.Screen name="UpdateTimings" component={UpdateTimings} options={{ headerShown: false }} />
                 <Stack.Screen name="ViewDiagnosticCenter" component={ViewDiagnosticCenter} options={{ headerShown: false }} />
+                <Stack.Screen name="DiagnosisCategories" component={DiagnosisCategories} options={{ headerShown: false }} />
+                <Stack.Screen name="AddDiagnosisCategories" component={AddDiagnosisCategories} options={{ headerShown: false }} />
+                <Stack.Screen name="CreateDiagnosisCenterUser" component={CreateDiagnosisCenterUser} options={{ headerShown: false }} />
             </Stack.Navigator>
         );
     }

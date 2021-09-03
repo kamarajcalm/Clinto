@@ -8,10 +8,13 @@ import { Ionicons } from '@expo/vector-icons';
 import authAxios from '../api/authAxios';
 const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
+const deviceHeight =Dimensions.get('screen').height
 const url =settings.url;
 const date =new Date()
 import { Linking } from 'react-native';
 import { Feather ,Entypo} from '@expo/vector-icons';
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+import Modal from 'react-native-modal';
 import HttpsClient from '../api/HttpsClient';
    let weekdays =["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
 class ViewDiagnosticCenter extends Component {
@@ -118,6 +121,30 @@ class ViewDiagnosticCenter extends Component {
 
 
 
+    }
+showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
+
+        showMessage(message);
+    }
+        deleteReceptionist =async()=>{
+        let api = `${url}/api/prescription/recopinists/${this.state.deleteReceptionist.id}/`
+        console.log(api,"ppppp")
+        let deletee = await HttpsClient.delete(api);
+        if (deletee.type == "success") {
+            this.state.receptionList.splice(this.state.deleteReceptionIndex, 1);
+            this.setState({ receptionList: this.state.receptionList })
+            this.showSimpleMessage("Deleted SuccessFully","green","success")
+            this.setState({ showModal2: false })
+        } else {
+            this.showSimpleMessage.show("Try again","red","danger")
+        }
     }
     render() {
         return (
@@ -317,9 +344,9 @@ class ViewDiagnosticCenter extends Component {
                             <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around",marginVertical:20}}>
                                 <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center", marginTop: 20 }}>
                                     <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, backgroundColor: themeColor, borderRadius: 5, alignItems: 'center', justifyContent: "center" }}
-                                        onPress={() => { this.props.navigation.navigate("CreateReceptionistMedical", { item: this.state.item }) }}
+                                        onPress={() => { this.props.navigation.navigate("CreateDiagnosisCenterUser", { item: this.state.item }) }}
                                     >
-                                        <Text style={[styles.text, { color: "#fff" }]}>Create Receptionist</Text>
+                                        <Text style={[styles.text, { color: "#fff" }]}>Create User</Text>
                                     </TouchableOpacity>
                                 </View>
                                 <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center", marginTop: 20 }}>
@@ -333,7 +360,33 @@ class ViewDiagnosticCenter extends Component {
                         
                              
                         </ScrollView>
-
+                            <Modal
+                                 deviceHeight={deviceHeight}
+                                animationIn="slideInUp"
+                                animationOut="slideOutDown"
+                                isVisible={this.state.showModal2}
+                                onBackdropPress={() => { this.setState({ showModal2: false }) }}
+                            >
+                                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                                    <View style={{ height: height * 0.3, width: width * 0.9, backgroundColor: "#fff", borderRadius: 20, alignItems: "center", justifyContent: "space-around" }}>
+                                        <View>
+                                            <Text style={[styles.text, { fontWeight: "bold", color: themeColor, fontSize: 20 }]}>Do you want to Delete?</Text>
+                                        </View>
+                                        <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "space-around", width, }}>
+                                            <TouchableOpacity style={{ backgroundColor: themeColor, height: height * 0.05, width: width * 0.2, alignItems: "center", justifyContent: 'center', borderRadius: 10 }}
+                                                onPress={() => { this.deleteReceptionist() }}
+                                            >
+                                                <Text style={[styles.text, { color: "#fff" }]}>Yes</Text>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity style={{ backgroundColor: themeColor, height: height * 0.05, width: width * 0.2, alignItems: "center", justifyContent: "center", borderRadius: 10 }}
+                                                onPress={() => { this.setState({ showModal2: false }) }}
+                                            >
+                                                <Text style={[styles.text, { color: "#fff" }]}>No</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                </View>
+                            </Modal>
                     </View>
                 </SafeAreaView>
             </>

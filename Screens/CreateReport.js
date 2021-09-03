@@ -23,11 +23,12 @@ class CreateReport extends Component {
         this.state = {
            name:"",
            price:"",
+           reports:[]
         };
     }
 
    componentDidMount(){
-  
+     console.log(this.props.clinic,"cliiii")
    }
        showSimpleMessage(content,color, type = "info", props = {}) {
         const message = {
@@ -41,9 +42,29 @@ class CreateReport extends Component {
         showMessage(message);
     }
 addReport = async()=>{
-
+    let api =`${url}/api/prescription/addReports/`
+    let sendData ={
+        title:this.state.name,
+        price:this.state.price,
+        clinic:this.props.clinic.clinicpk
+    }
+    let post  = await HttpsClient.post(api,sendData)
+    if(post.type=="success"){
+        this.showSimpleMessage("Report Added SuccessFully","green","success")
+        this.props.navigation.goBack()
+    }else{
+              this.showSimpleMessage("Try Again","red","danger")
+    }
 }
-
+searchReports = async(name)=>{
+   this.setState({name})
+   let api =`${url}/api/prescription/reportcategory/?is_verified=true`
+   console.log(api)
+   let data = await HttpsClient.get(api)
+   if(data.type=="success"){
+       this.setState({reports:data.data})
+   }
+}
     render() {
         return (
             <>
@@ -71,10 +92,32 @@ addReport = async()=>{
                                     maxLength ={10}
                                     value ={this.state.name}
                                     selectionColor={themeColor}
-                                    onChangeText={(name) => { this.setState({name})}}
+                                    onChangeText={(name) => { this.searchReports(name)}}
                                     style={{ width: width * 0.7, height: 35, backgroundColor: inputColor, borderRadius: 10, padding: 10, marginTop: 10}}
                                 />
+                                                           {this.state.reports.length>0&&<ScrollView 
+                        showsVerticalScrollIndicator ={false}
+                                style={{
+                                    width: width * 0.7, backgroundColor: '#fafafa', borderColor: "#333", borderTopWidth: 0.5
+                                 
+                                   }}>
+                           {
+                               this.state.reports.map((i,index)=>{
+                                   return(
+                                       <TouchableOpacity 
+                                           key ={index}
+                                           style={{padding:15,justifyContent:"center",width:width*0.7,borderColor:"#333",borderBottomWidth:0.3,height:35}}
+                                           onPress={() => { this.setState({ name:i.title,reports:[]},()=>{
+                                           })}}
+                                       >
+                                           <Text style={[styles.text,{color:themeColor,}]}>{i.title}</Text>
+                                       </TouchableOpacity>
+                                   )
+                               })
+                           }
+                        </ScrollView>}
                                </View>
+            
                                     <View style={{ marginTop: 20 ,paddingHorizontal:20}}>
                                 <Text style={[styles.text], { color:"#000", fontSize: 18 }}>Report Price</Text>
                                 <TextInput

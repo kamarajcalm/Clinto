@@ -89,6 +89,22 @@ class ProfileScreen extends Component {
                             <Entypo name="triangle-right" size={24} color="#fff" />
                         </View>
                     </TouchableOpacity>
+                                             <TouchableOpacity style={{ flexDirection: "row", height: height * 0.05, paddingHorizontal: 20, width, marginTop: 20 }}
+                        onPress={() => { this.props.navigation.navigate('DiagnosisCategories')}}
+                    >
+                        <View style={{ flex: 0.8, flexDirection: "row" }}>
+                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                               <FontAwesome name="money" size={24} color="#fff" />
+                            </View>
+                            <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
+                                <Text style={[styles.text, { color: "#fff" }]}>Diagnosis Categories</Text>
+                            </View>
+                        </View>
+
+                        <View style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}>
+                            <Entypo name="triangle-right" size={24} color="#fff" />
+                        </View>
+                    </TouchableOpacity>
                                             <TouchableOpacity style={{ flexDirection: "row", height: height * 0.05, paddingHorizontal: 20, width, marginTop: 20 }}
                         onPress={() => { this.props.navigation.navigate('MedicalOwners')}}
                     >

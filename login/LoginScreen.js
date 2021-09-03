@@ -63,10 +63,10 @@ class LoginScreen extends Component {
           this.setState({ loading: false })
           return this.showSimpleMessage(`incorrect username or password`, "#dd7030")
         }
-        console.log(responseJson, "ress")
+        console.log(responseJson.csrf_token, "ress")
         AsyncStorage.setItem('csrf', responseJson.csrf_token)
         AsyncStorage.setItem('login', "true")
-  
+      
         return this.props.navigation.dispatch(
           CommonActions.reset({
             index: 0,

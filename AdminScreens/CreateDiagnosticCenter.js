@@ -120,30 +120,7 @@ class CreateDiagnosticCenter extends Component {
         
         let api =  `${url}/api/prescription/createClinic/`
 
-        // let sendData2 =new FormData()
-        // sendData2.append('owner', this.state.doctor.user)
-        // sendData2.append('displayPicture', this.state.image)
-        // sendData2.append('mobile', this.state.mobile)
-        // sendData2.append('gstin', this.state.GST)
-        // sendData2.append('companyName', this.state.clinicName)
-        // sendData2.append('address', this.state.address)
-        // sendData2.append('pincode', this.state.pincode)
-        // sendData2.append('state', this.state.state)
-        // sendData2.append('city', this.state.city)
-        // sendData2.append('firstEmergencyContactNo', this.state.firstEmergencyContactNo)
-        // sendData2.append('secondEmergencyContactNo', this.state.secondEmergencyContactNo)
-        // sendData2.append('lat', this.state.latitude)
-        // sendData2.append('long', this.state.longitude)
-        // sendData2.append('times', times)
-
-        // let post2 = await axios.post(api,sendData2,{
-        //     headers:{
-        //         'X-CSRFToken': token
-        //     }
-        // })
-        // // console.log(api,"a")
-        // console.log(post2,"pppp")
-        // return
+   
         let sendData ={
             owner: this.state.doctor.user.id,
             mobile:this.state.mobile,

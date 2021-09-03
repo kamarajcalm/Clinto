@@ -15,6 +15,7 @@ import ViewReports from '../Screens/ViewReports';
 import AddReport from '../Screens/AddReport';
 import CreateReport from '../Screens/CreateReport';
 import PendingRequests from '../Screens/PendingRequests';
+import ViewPendingRequest from '../Screens/ViewPendingRequest';
 const Stack = createStackNavigator();
 export default class ProfileStack extends Component {
   constructor(props) {
@@ -45,6 +46,7 @@ export default class ProfileStack extends Component {
           <Stack.Screen name="AddReport" component={AddReport} options={{ headerShown: false }} />
           <Stack.Screen name="CreateReport" component={CreateReport} options={{ headerShown: false }} />
           <Stack.Screen name="PendingRequests" component={PendingRequests} options={{ headerShown: false }} />
+          <Stack.Screen name="ViewPendingRequest" component={ViewPendingRequest} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
   }

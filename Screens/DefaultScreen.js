@@ -25,26 +25,11 @@ const url = settings.url;
     };
   }
      getUserDetails = async () => {
-  
-      //  return this.props.navigation.dispatch(
-      //    CommonActions.reset({
-      //      index: 0,
-      //      routes: [
-      //        {
-      //          name: 'DiagnosisTab',
-
-      //        },
-
-      //      ],
-      //    })
-      //  )
          const login = await AsyncStorage.getItem("login")
-     
-     
          if (login) {
           
               const data = await HttpsClient.get(`${url}/api/HR/users/?mode=mySelf&format=json`);
-    
+      
               if(data.type =="success"){
                  
                 this.props.selectUser(data.data[0]);
@@ -55,6 +40,20 @@ const url = settings.url;
                       routes: [
                         {
                           name: 'AdminTab',
+
+                        },
+
+                      ],
+                    })
+                  )
+                }
+                 if (data.data[0].profile.occupation == "LabAssistant"){
+                  return this.props.navigation.dispatch(
+                    CommonActions.reset({
+                      index: 0,
+                      routes: [
+                        {
+                          name: 'DiagnosisTab',
 
                         },
 

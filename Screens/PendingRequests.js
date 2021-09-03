@@ -24,10 +24,23 @@ class PendingRequests extends Component {
     constructor(props) {
         super(props);
         this.state = {
-         
+           requests:[],
+           loading:true
         };
     }
+    getPendingRequests = async()=>{
+        let api = `${url}/api/prescription/vieworders/?user=${this.props.user.id}&status=true`
+        const data = await HttpsClient.get(api)
+        if(data.type=="success"){
+          this.setState({requests:data.data,loading:false})
+        }else{
+          this.setState({loading:false})
+        }
 
+    }
+   componentDidMount(){
+     this.getPendingRequests()
+   }
     render() {
         return (
           <>
@@ -46,6 +59,45 @@ class PendingRequests extends Component {
 
                         </View>
                     </View>
+                         {this.state.loading&&
+                        <ScrollView>
+                          <ShimmerLoader />
+                          <ShimmerLoader />
+                          <ShimmerLoader />
+                        </ScrollView>
+                   }
+                   {!this.state.loading&& <FlatList 
+                     showsVerticalScrollIndicator={false}
+                      contentContainerStyle={{paddingBottom:90}}
+                      data={this.state.requests}
+                      keyExtractor={(item,index)=>index.toString()}
+                      renderItem={({item,index})=>{
+                        return(
+                                       <TouchableOpacity style={[styles.boxWithShadow,{height:height*0.15,backgroundColor:"#fafafa",marginTop:20,marginHorizontal:15,borderRadius:10,padding:10}]}
+                          onPress={()=>{this.props.navigation.navigate("ViewPendingRequest",{item})}}
+                        >
+                             
+                             <View style={{flex:1,paddingVertical:10,flexDirection:"row"}}>
+                                    <View style={{flex:0.7}}>
+                                                     <View style={{marginTop:5}}>
+                                             <Text style={[styles.text,{color:"gray",fontSize:height*0.02}]}>ITEMS : {item.medicineDetails.length}</Text>
+                                        </View>
+                                            <View style={{marginTop:5}}>
+                                             <Text style={[styles.text,{color:"gray",fontSize:height*0.02}]}>CREATED ON</Text>
+                                             <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{moment(item.created).format('ll')} at {moment(item.created).format('hh:mm a')}</Text>
+                                        </View>
+                                    </View>
+                                    <View style={{flex:0.3,alignItems:"center",justifyContent:"center",}}>
+                                          <View style={{height:height*0.04,width:"80%",alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}>
+                                               <Text style={[styles.text,{color:"#fff"}]}>View</Text>
+                                          </View>
+                                    </View>
+                             </View>
+                      
+                        </TouchableOpacity>
+                        )
+                      }}
+                    />}
              </SafeAreaView>    
              </>
         );

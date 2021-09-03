@@ -70,8 +70,8 @@ import RazorpayCheckout from 'react-native-razorpay';
          selectedItems:[],
          checkoutModal:false,
          address:null,
-         showModal:true,
-         orderPk:64,
+         showModal:false,
+         orderPk:null,
          acceptedClinics:[],
          shownoresult:false,
          selectedClinicIndex:null,
@@ -131,7 +131,7 @@ setLocations =()=>{
     componentDidMount(){
         this.setLocations()
         this.validateAnimations();
-        this.getAvailableClinics()
+        // this.getAvailableClinics()
         if(this.state.pk ==null){
             this.filterMedicines()
         }
@@ -1139,23 +1139,7 @@ validateButton = (item,index) =>{
                 }
             ]
         }
-            //         let sendData ={
-            // "pickup_details": [
-            // {
-            // "lat": 12.9672,
-            // "lng": 77.6721,
-            // "reference_id": "12"
-            // }
-            // ],
-            // "optimised_route": true,
-            // "drop_details": [
-            // {
-            // "lat": 12.9612,
-            // "lng": 77.6356,
-            // "reference_id": "1234"
-            // }
-            // ]
-            // }
+
        
         try{
             const {data} = await axios.post(`${dunzourl}/api/v2/quote`,sendData,{
