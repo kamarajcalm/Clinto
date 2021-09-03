@@ -143,7 +143,7 @@ class MedicalOwners extends Component {
               renderItem={({ item, index }) => {
                 return (
                   <TouchableOpacity style={{ height: height * 0.1, backgroundColor: "#fafafa", marginTop: 1, flexDirection: 'row' }}
-                    onPress={() => { this.props.navigation.navigate('ViewDoctorProfile',{item})}}
+                    onPress={() => { this.props.navigation.navigate('ViewLabOwner',{item})}}
                   >
                     <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                       <LinearGradient

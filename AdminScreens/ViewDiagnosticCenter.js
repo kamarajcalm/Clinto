@@ -16,6 +16,7 @@ import { Feather ,Entypo} from '@expo/vector-icons';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import Modal from 'react-native-modal';
 import HttpsClient from '../api/HttpsClient';
+import { SliderBox } from "react-native-image-slider-box";
    let weekdays =["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
 class ViewDiagnosticCenter extends Component {
     constructor(props) {
@@ -23,8 +24,26 @@ class ViewDiagnosticCenter extends Component {
         super(props);
         this.state = {
             item,
-            receptionList:[]
+            receptionList:[],
+            images:[]
         };
+    }
+    getImages = async()=>{
+        let api = `${url}/api/prescription/clinicImages/?clinic=${this.state.item.id}`
+        console.log(api,"jhjhj")
+        let data =await HttpsClient.get(api)
+
+        if(data.type=="success"){
+            let images =[]
+            data.data.forEach((item,index)=>{
+                images.push(`${url}${item.imageUrl}`)
+            })
+            this.setState({images},()=>{
+                console.log(images)
+            })
+
+        }
+      
     }
     getReceptionList = async () => {
         let api = `${url}/api/prescription/recopinists/?clinic=${this.state.item.id}`
@@ -44,10 +63,11 @@ class ViewDiagnosticCenter extends Component {
         }
     }
     componentDidMount() {
+        this.getImages()
         this.getReceptionList()
    
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
-
+            this.getImages()
             this.getReceptionList()
             this.getClinicDetails()
         });
@@ -154,7 +174,7 @@ showSimpleMessage(content, color, type = "info", props = {}) {
                     <View style={{ flex: 1, backgroundColor: "#fff" }}>
                         <StatusBar backgroundColor={themeColor} />
                         {/* HEADERS */}
-                        <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
+                        <View style={{ height: height * 0.1, backgroundColor: themeColor,  flexDirection: 'row', alignItems: "center" }}>
                             <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}
                                 onPress={() => { this.props.navigation.goBack() }}
                             >
@@ -174,9 +194,13 @@ showSimpleMessage(content, color, type = "info", props = {}) {
                         <ScrollView style={{ flex: 1, }}>
                             {/* image */}
                             <View style={{ height: height * 0.2, width }}>
-                                <Image
-                                    style={{ height: "100%", width: "100%", resizeMode: "cover", borderRadius: 5 }}
-                                    source={{ uri: "https://t2conline.com/wp-content/uploads/2019/04/thumbnail_Minor_Injury_Walk_In_Clinic1.jpg" }}
+                                     <SliderBox
+                                    images={this.state.images}
+                                    dotColor={themeColor}
+                                    imageLoadingColor={themeColor}
+                                    ImageComponentStyle={{ height: "100%", width: "100%", resizeMode: "cover" }}
+                                    autoplay={true}
+                                    circleLoop={true}
                                 />
                             </View>
 
@@ -341,7 +365,7 @@ showSimpleMessage(content, color, type = "info", props = {}) {
                                     }}
                                 />
                             </View>
-                            <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around",marginVertical:20}}>
+                            <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around",marginVertical:20,flexWrap:"wrap"}}>
                                 <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center", marginTop: 20 }}>
                                     <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, backgroundColor: themeColor, borderRadius: 5, alignItems: 'center', justifyContent: "center" }}
                                         onPress={() => { this.props.navigation.navigate("CreateDiagnosisCenterUser", { item: this.state.item }) }}
@@ -356,6 +380,13 @@ showSimpleMessage(content, color, type = "info", props = {}) {
                                         <Text style={[styles.text, { color: "#fff" }]}>Manage Offers</Text>
                                     </TouchableOpacity>
                                 </View>
+                                                                   <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center", marginTop: 10 }}>
+                                <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, backgroundColor: themeColor, borderRadius: 5, alignItems: 'center', justifyContent: "center" }}
+                                    onPress={() => { this.props.navigation.navigate('UploadImages',{ clinic: this.state.item.id })}}
+                                >
+                                    <Text style={[styles.text, { color: "#fff" }]}>Add Images</Text>
+                                </TouchableOpacity>
+                            </View>
                             </View>
                         
                              

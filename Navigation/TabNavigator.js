@@ -88,6 +88,9 @@ class TabNavigator extends Component {
              if (routeName == "PendingRequests") {
             return false
         }
+        if (routeName == "AddAccount") {
+            return false
+        }
         return true
     }
     getTabBarVisibility4 = (route) => {

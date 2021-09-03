@@ -19,6 +19,25 @@ import HttpsClient from '../api/HttpsClient';
 import ReceptionistsProfile from './ReceptionistsProfile';
 import PatientProfile from './PatientProfile';
 const DATA =["clinic 1","clinic 2","clinic3","clinic4"]
+ const accounts = [
+  {
+    name:"kamaraj",
+    uid:"1234"
+  },
+    {
+    name:"Ayush",
+    uid:"1234"
+  },
+      {
+    name:"Abhi",
+    uid:"1234"
+  },
+        {
+    name:"Akhil",
+    uid:"1234"
+  },
+]
+
  class Profile extends Component {
   constructor(props) {
     super(props);
@@ -29,7 +48,8 @@ const DATA =["clinic 1","clinic 2","clinic3","clinic4"]
       isDoctor:false,
       isReceptionist:false,
       isPatient:false,
-      showLottie:false
+      showLottie:false,
+      accounts
     };
   }
 
@@ -360,9 +380,7 @@ validateExpiry =()=>{
                                     <Text style={[styles.text]}>Your Orders</Text>
                                 </View>
                         </View>
-                       <View style={{height:height*0.03,width:width*0.25,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}>
-                             <Text style={[styles.text,{color:"#fff",fontSize:height*0.02}]}>View</Text>
-                       </View>
+                    
                       
                     </View>
 
@@ -380,9 +398,25 @@ validateExpiry =()=>{
                                     <Text style={[styles.text]}>Pending Requests</Text>
                                 </View>
                         </View>
-                       <View style={{height:height*0.03,width:width*0.25,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}>
-                             <Text style={[styles.text,{color:"#fff",fontSize:height*0.02}]}>View</Text>
-                       </View>
+                 
+                      
+                    </View>
+
+
+                </TouchableOpacity>
+                                   <TouchableOpacity style={{ borderColor: "#F0F0F0", borderTopWidth: 3,paddingVertical:20 }}
+                onPress={()=>{this.props.navigation.navigate("AddAccount")}}
+               >
+                    <View style={{ marginHorizontal: 20 ,flexDirection:"row",marginVertical:10,alignItems:"center",justifyContent:"space-between"}}>
+                        <View style={{flexDirection:"row"}}>
+                            <View>
+                                 <Ionicons name="person-add" size={24} color={themeColor} />
+                            </View>
+                                <View style={{ marginLeft:10}}>
+                                    <Text style={[styles.text]}>Add Accounts</Text>
+                                </View>
+                        </View>
+                  
                       
                     </View>
 
@@ -401,20 +435,39 @@ validateExpiry =()=>{
                          onBackdropPress={() => { this.setState({ showModal: false }) }}
                       >
                         <View style={{ flex:1,alignItems:'center',justifyContent:'center'}}>
-                             <View style={{height:height*0.3,width:width*0.9,backgroundColor:"#fff",borderRadius:20,alignItems:"center",justifyContent:"space-around"}}>
-                                  <View>
-                                    <Text style={[styles.text,{fontWeight:"bold",color:themeColor,fontSize:20}]}>Do you want to logout?</Text>
+                             <View style={{height:height*0.4,width:width*0.9,backgroundColor:"#fff",borderRadius:20,alignItems:"center",justifyContent:"space-around"}}>
+                                  <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                                    <Text style={[styles.text,{color:themeColor,fontSize:height*0.02}]}>Select Account</Text>
                                   </View>
-                                  <View style={{flexDirection:"row",alignItems:'center',justifyContent:"space-around",width,}}>
-                                      <TouchableOpacity style={{backgroundColor:themeColor,height:height*0.05,width:width*0.2,alignItems:"center",justifyContent:'center',borderRadius:10}}
-                                         onPress={()=>{this.logOut()}}
-                                        >
-                                          <Text style={[styles.text,{color:"#fff"}]}>Yes</Text>
-                                      </TouchableOpacity>
-                                      <TouchableOpacity style={{ backgroundColor: themeColor, height: height * 0.05, width: width * 0.2, alignItems: "center", justifyContent: "center" ,borderRadius:10}}
-                                        onPress={()=>{this.setState({showModal:false})}}
+                                  <View style={{flex:0.6,width:width*0.9}}>
+                              
+                                            <FlatList 
+                                            
+                                    data={accounts}
+                                    keyExtractor={(item,index)=>index.toString()}
+                                    renderItem={({item,index})=>{
+                                      
+                                         return(
+                                           <View style={{flexDirection:"row",flex:1,marginTop:10}}>
+                                               <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                                                  <Ionicons name="person-circle-sharp" size={30} color={themeColor}/>
+                                               </View>
+                                               <View style={{flex:0.8}}>
+                                                     <View style={{justifyContent:"center",paddingTop:5}}>
+                                                         <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{item.name}</Text>
+                                                       </View>  
+                                               </View>
+                                           </View>
+                                         )
+                                    }}
+                                  />
+                                  </View>
+                            
+                                  <View style={{alignItems:"center",justifyContent:"center",flex:0.2,flexDirection:"row"}}>
+                                      <TouchableOpacity style={{height:height*0.04,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}
+                                       onPress={()=>{this.logOut()}}
                                       >
-                                        <Text style={[styles.text, { color: "#fff" }]}>No</Text>
+                                           <Text style={[styles.text,{color:"#fff"}]}>Log Out</Text>
                                       </TouchableOpacity>
                                   </View>
                              </View>

@@ -19,7 +19,8 @@ import {
     Keyboard,
     Platform,
     Linking,
-    AsyncStorage
+    AsyncStorage,
+    Alert
 
 } from "react-native";
 import { Ionicons, Entypo, AntDesign,Fontisto ,FontAwesome} from '@expo/vector-icons';
@@ -67,6 +68,21 @@ class ProfileScreen extends Component {
             })
         )
     }
+          createAlert = () => {
+    Alert.alert(
+      `Do you want Logout?`,
+       ``,
+      [
+        {
+          text: "No",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "Yes", onPress: () => { this.logOut() } }
+      ]
+    );
+
+  }
     render() {
         return (
             <>
@@ -106,7 +122,7 @@ class ProfileScreen extends Component {
                         </View>
                     </TouchableOpacity>
                       <TouchableOpacity style={{ flexDirection: "row", height: height * 0.05, paddingHorizontal: 20, width, marginTop: 20 }}
-                         onPress={() => { this.logOut()}}
+                         onPress={() => { this.createAlert()}}
                       >
                         <View style={{ flex: 0.8, flexDirection: "row" }}>
                             <View style={{ alignItems: "center", justifyContent: "center" }}>
