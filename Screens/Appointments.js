@@ -62,7 +62,12 @@ class Appointments extends Component {
             offset3:0,
             next3:true,
             isFectchingPending:false,
-            show3:false
+            show3:false,
+            profiles:[],
+            appoinmentFixDate:today,
+            appoinmentFixTime:moment(new Date()).format('hh:mm a'),
+            showAppoinmentDatePicker:false,
+            showAppoinmentTimePicker:false
         };
     }
     searchUser = async (mobileNo) => {
@@ -73,10 +78,27 @@ class Appointments extends Component {
         if (mobileNo.length > 9) {
            let data =await HttpsClient.get(api)
            if(data.type =="success"){
-               if (data.data[0].mobile == mobileNo){
-                   this.setState({userfound:true})
-                   this.setState({ patientname: data.data[0].name, user: data.data[0].user})
-               }
+                   if(data.data.length>0){
+                           this.setState({userfound:true,profiles})
+                   }
+                    let profiles =[]
+                    let pushObj = {
+                        label:data.data[0].name,
+                        value:data.data[0].user.id,
+                        mobile:data.data[0].user.username
+                    }
+                    profiles.push(pushObj)
+                    data.data[0].childUsers.forEach((item)=>{
+                        let pushObj ={
+                            label:item.name,
+                            value:item.childpk,
+                            mobile:item.mobile
+                        }
+                        profiles.push(pushObj)
+                    })
+                   this.setState({profiles})
+                   this.setState({ patientname: profiles[0].label, user: profiles[0]})
+               
            }
         }
     }
@@ -97,9 +119,9 @@ class Appointments extends Component {
             sendData = {
                 clinic: this.props?.clinic?.clinicpk || this.props.user.profile.recopinistclinics[0].clinicpk,
                 doctor: this.state.selectedDoctor.pk,
-                requesteduser: this.state?.user?.id,
-                requesteddate: this.state.today,
-                requestedtime: this.state.time,
+                requesteduser: this.state?.user?.value,
+                requesteddate: this.state.appoinmentFixDate,
+                requestedtime: this.state.appoinmentFixTime,
                 reason: this.state.reason,
                 
             }
@@ -109,27 +131,27 @@ class Appointments extends Component {
                 clinic: this.props?.clinic?.clinicpk || this.props.user.profile.recopinistclinics[0].clinicpk,
                 doctor: this.state.selectedDoctor.pk,
                 requesteduser: this.state.patientNo,
-                requesteddate: this.state.today,
-                requestedtime: this.state.time,
+                requesteddate: this.state.appoinmentFixDate,
+                requestedtime: this.state.appoinmentFixTime,
                 reason: this.state.reason,
                 clinicCreation:true,
                 first_name:this.state.patientname
             }
         }
       
-       
+    
         let post = await HttpsClient.post(api, sendData)
         console.log(post, "klkk")
         if (post.type == "success") {
             this.setState({ patientNo: "", reason: "", patientname:""})
             this.setState({ creating: false, showAppoinmentModal: false, Appointments:[],offset:0,next:true},()=>{
-                this.getAppointments()
+                this.getAppointmentsPending()
             })
            
             this.showSimpleMessage("requested SuccessFully", "#00A300", "success")
         } else {
             this.setState({ creating: false, showAppoinmentModal: false})
-            this.showSimpleMessage("Try again", "#B22222", "danger")
+            this.showSimpleMessage(`${post?.data?.error||"SomeThing Went Wrong"}`, "#B22222", "danger")
         }
     }
     getDoctors = async () => {
@@ -237,12 +259,12 @@ class Appointments extends Component {
 
         let api = ""
         if (this.props.user.profile.occupation == "Doctor") {
-            api = `${url}/api/prescription/appointments/?doctor=${this.props.user.id}&status=Pending&limit=5&offset=${this.state.offset}`
+            api = `${url}/api/prescription/appointments/?doctor=${this.props.user.id}&status=Pending&limit=5&offset=${this.state.offset3}`
         } else if (this.props.user.profile.occupation == "ClinicRecoptionist") {
-            api = `${url}/api/prescription/appointments/?clinic=${this.props.user.profile.recopinistclinics[0].clinicpk}&status=Pending&limit=5&offset=${this.state.offset}`
+            api = `${url}/api/prescription/appointments/?clinic=${this.props.user.profile.recopinistclinics[0].clinicpk}&status=Pending&limit=5&offset=${this.state.offset3}`
         }
         else {
-            api = `${url}/api/prescription/appointments/?requesteduser=${this.props.user.id}&status=Pending&limit=5&offset=${this.state.offset}`
+            api = `${url}/api/prescription/appointments/?requesteduser=${this.props.user.id}&status=Pending&limit=5&offset=${this.state.offset3}`
         }
         console.log(api, "first")
         const data = await HttpsClient.get(api, "lll")
@@ -293,6 +315,24 @@ class Appointments extends Component {
         this.setState({ today2: moment(date).format('YYYY-MM-DD'), show3: false, })
         this.hideDatePicker3();
     };
+        handleConfirm4 = (date) => {
+        this.setState({ appoinmentFixDate: moment(date).format('YYYY-MM-DD'),})
+        this.hideDatePicker4();
+    
+    };
+       handleConfirm5 = (date) => {
+        this.setState({ appoinmentFixTime:  moment(date).format('hh:mm a'),})
+        this.hideDatePicker5();
+    };
+    hideDatePicker4 =()=>{
+        this.setState({showAppoinmentDatePicker:false,showAppoinmentModal:true})
+    }
+     hideDatePicker5 =()=>{
+        this.setState({showAppoinmentTimePicker:false,showAppoinmentModal:true})
+    }
+
+
+ 
  
     showSimpleMessage(content, color, type = "info", props = {}) {
         const message = {
@@ -347,6 +387,7 @@ class Appointments extends Component {
         return null
     }
     acceptAppointment =async()=>{
+        this.setState({loading:true})
         let api = `${url}/api/prescription/appointments/${this.state.selectedAppointment.id}/`
         let sendData ={
             accepteddate:this.state.today2,
@@ -356,6 +397,7 @@ class Appointments extends Component {
         console.log(sendData)
       let post = await HttpsClient.patch(api,sendData)
       if(post.type =="success"){
+           this.setState({loading:false})
            this.getAppointments();
            this.getAppointments2();
           let duplicate = this.state.AppointmentsPending
@@ -363,6 +405,7 @@ class Appointments extends Component {
           this.showSimpleMessage("Accepted SuccessFully", "#00A300","success")
           this.setState({ modal: false, AppointmentsPending:duplicate})
       }else{
+           this.setState({loading:false})
           this.showSimpleMessage("Try again", "#B22222", "danger")
           this.setState({ modal: false })
       }
@@ -1281,11 +1324,15 @@ class Appointments extends Component {
                             
                         </View>
                         <View>
-                            <TouchableOpacity style={{backgroundColor:themeColor,height:height*0.05,width:width*0.4,alignItems:'center',justifyContent:"center",borderRadius:10,marginTop:30}}
+                           {!this.state.loading? <TouchableOpacity style={{backgroundColor:themeColor,height:height*0.05,width:width*0.4,alignItems:'center',justifyContent:"center",borderRadius:10,marginTop:30}}
                               onPress ={()=>{this.acceptAppointment()}}
                             >
                                 <Text style={[styles.text,{color:"#fff"}]}>Accept</Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity>:
+                            <View style={{backgroundColor:themeColor,height:height*0.05,width:width*0.4,alignItems:'center',justifyContent:"center",borderRadius:10,marginTop:30}}>
+                                    <ActivityIndicator  size={"small"} color={"#fff"}/>
+                            </View>
+                            }
                         </View>
                      </View>
                      
@@ -1324,6 +1371,26 @@ class Appointments extends Component {
                                 </View>
                               
                         </View>
+                   { this.state?.profiles?.length>0&& <View style={{ marginHorizontal: 20,marginVertical:10 }}>
+                            <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Select Profile</Text>
+                            <View style={{ marginTop: 10 }}>
+                                <DropDownPicker
+                                     defaultValue={this.state?.user?.value}
+                                    items={this.state.profiles}
+                                    placeholder={"select Profile"}
+                                    containerStyle={{ height: 40 }}
+                                    style={{ backgroundColor: '#fafafa' }}
+                                    itemStyle={{
+                                        justifyContent: 'flex-start'
+                                    }}
+                                    dropDownStyle={{ backgroundColor: '#fafafa' }}
+                                    onChangeItem={(item) =>{
+                                       this.setState({user:item,patientname:item.label})
+                                    } }
+                                />
+                            </View>
+
+                        </View>}
                             <View style={{ marginHorizontal: 20, marginVertical: 10 }}>
                                 <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Patient Name</Text>
                                 <View style={{ marginTop: 5 }}>
@@ -1365,12 +1432,16 @@ class Appointments extends Component {
 
                             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
                                 <TouchableOpacity style={{ marginTop: 10 }}
-                                    onPress={() => { this.setState({ show: true }) }}
+                                    onPress={() => { this.setState({showAppoinmentModal:false},()=>{
+                                        setTimeout(()=>{
+                                                this.setState({ showAppoinmentDatePicker: true }) 
+                                        },500)
+                                    })}}
                                 >
                                     <FontAwesome name="calendar" size={24} color="black" />
                                 </TouchableOpacity>
                                 <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 20, marginTop: 5 }}>
-                                    <Text>{this.state.today}</Text>
+                                    <Text>{this.state.appoinmentFixDate}</Text>
                                 </View>
 
                             </View>
@@ -1384,12 +1455,16 @@ class Appointments extends Component {
                             </View>
                             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
                                 <TouchableOpacity style={{ marginTop: 10 }}
-                                    onPress={() => { this.setState({ show2: true }) }}
+                                    onPress={() => { this.setState({showAppoinmentModal:false},()=>{
+                                        setTimeout(()=>{
+                                                this.setState({ showAppoinmentTimePicker: true })
+                                        },500)
+                                    }) }}
                                 >
                                     <FontAwesome name="calendar" size={24} color="black" />
                                 </TouchableOpacity>
                                 <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 20, marginTop: 5 }}>
-                                    <Text>{this.state.time}</Text>
+                                    <Text>{this.state.appoinmentFixTime}</Text>
                                 </View>
 
                             </View>
@@ -1534,16 +1609,7 @@ class Appointments extends Component {
                          {/* Appointments */}
                         {this.Modal()}
                         {this.appoinmentModal()}
-                        {/* {this.state.show && (
-                            <DateTimePicker
-                                testID="dateTimePicker1"
-                                value={this.state.date}
-                                mode={"date"}
-                                is24Hour={true}
-                                display="default"
-                                onChange={(time) => { this.onChange(time) }}
-                            />
-                        )}
+                        {/*
                         {this.state.show2 && (
                             <DateTimePicker
                                 testID="dateTimePicker2"
@@ -1566,6 +1632,19 @@ class Appointments extends Component {
                             mode="time"
                             onConfirm={this.handleConfirm2}
                             onCancel={this.hideDatePicker2}
+                        />
+                            <DateTimePickerModal
+                            isVisible={this.state.showAppoinmentDatePicker}
+                            mode="date"
+                            onConfirm={this.handleConfirm4}
+                            onCancel={this.hideDatePicker4}
+                        />
+                        <DateTimePickerModal
+                        
+                            isVisible={this.state.showAppoinmentTimePicker}
+                            mode="time"
+                            onConfirm={this.handleConfirm5}
+                            onCancel={this.hideDatePicker5}
                         />
                     </View>
                     {this.props.user.profile.occupation!="Customer"&&<View style={{

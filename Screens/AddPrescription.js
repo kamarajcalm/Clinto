@@ -23,20 +23,7 @@ import FlashMessage, { showMessage, hideMessage } from "react-native-flash-messa
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import moment from 'moment';
-const profiles = [
-    {
-        label:"kamaraj",value:'kamaraj' 
-    },
-    {
-        label:"Ramesh",value:'Ramesh' 
-    },
-    {
-        label:"Suresh",value:'Suresh' 
-    },
-      {
-        label:"AddNew",value:'AddNew' 
-    },
-]
+
 class AddPrescription extends Component {
   constructor(props) {
       let sex= [
@@ -80,11 +67,14 @@ class AddPrescription extends Component {
                 MedicinesGiven:[],
                 check:true,
                 selectedDiagonosis:[],
-                profiles,
+                profiles:[],
                 selectedProfile:null,
                 addModal:false,
                 profileName:"",
-                   keyBoardHeight:0,
+                keyBoardHeight:0,
+                report:"",
+                reports:[],
+                selectedReports:[]
     };
   }
 
@@ -252,20 +242,22 @@ class AddPrescription extends Component {
         this.setState({ MedicinesGiven: this.state.MedicinesGiven.concat(medicines) })
     }
     createTemplateAlert =(prescribed_medicines,medicines_given) =>{
+          
+        
               Alert.alert(
                   'Template is Available for?',
-                  `Age : ${this.state.Age} & Diagnosis : ${this.state.selectedDiagonosis}`,
-                  `Diagnosis : ${this.state.selectedDiagonosis}`,
+                  `Age : ${this.state?.Age} & Diagnosis : ${this?.state?.selectedDiagonosis}`,
                   [
                       { text: "No", style: 'cancel', onPress: () => { } },
                       {
                           text: 'use',
                           style: 'destructive',
                       
-                          onPress: () =>  this.setState({ medicines: this.state.medicines.concat(prescribed_medicines), MedicinesGiven:this.state.MedicinesGiven.concat(medicines_given)}),
+                          onPress: () => {this.setState({ medicines: this.state.medicines.concat(prescribed_medicines), MedicinesGiven:this.state.MedicinesGiven.concat(medicines_given)})} ,
                       },
                   ]
               );
+           
     }
     searchTemplates = async (age=null,disease="") => {
         this.setState({ loading: true })
@@ -277,6 +269,7 @@ class AddPrescription extends Component {
             
             this.setState({ loading: false })
             if(data.data.prescribed_medicines.length>0||data.data.medicines_given.length>0){
+              
                          this.createTemplateAlert(data.data.prescribed_medicines,data.data.medicines_given)
             }
        
@@ -294,11 +287,7 @@ class AddPrescription extends Component {
             this.setState({ creating: false })
         return  this.showSimpleMessage("Please recharge to create Prescription", "#B22222", "danger")
         }
-        if (this.state.Reason==""||this.state.Reason==undefined) {
-            this.setState({ creating: false })
-            return this.showSimpleMessage("Please fill Reason", "#dd7030",)
-       
-        }
+ 
         if(this.state.selectedSex==null){
              this.setState({ creating: false })
             return this.showSimpleMessage("Please Select Sex", "#dd7030",) 
@@ -353,6 +342,7 @@ class AddPrescription extends Component {
             next_visit:this.state.nextVisit,
             address:this.state.Address,
             diagonsis:this.state.selectedDiagonosis,
+            reports:this.state.selectedReports,
             type:"mobile"
         }
     
@@ -467,27 +457,52 @@ class AddPrescription extends Component {
     searchUser = async(mobileNo,date,clinic)=>{
         let api = `${url}/api/prescription/getAppointmentUser/?doctor=${this.props.user.id}&user=${mobileNo}&clinic=${clinic||this.props.clinic.clinicpk}&requesteddate=${date||moment(new Date()).format('YYYY-MM-DD')}`
        console.log(api,'ppppppp')
-        this.setState({mobileNo})
+       this.setState({mobileNo})
         if(mobileNo.length>9){
              this.setState({loading:true})
             const data = await HttpsClient.get(api)
             console.log(api)
             console.log(data)
            if(data.type =="success"){
-               if (data.data.user.mobile == mobileNo){
-                  
+           
+
+                   let profiles = []
+                   let pushObj ={
+                       label:data.data.user.name,
+                       value:data.data.user.user.id,
+                       mobile:data.data.user.user.username,
+                       sex:data.data.user.sex,
+                       healthIssues:data.data.user.health_issues||[],
+                       age:data.data.user.age.toString()
+                   }
+                   profiles.push(pushObj)
+                   data.data.user.childUsers.forEach((item)=>{
+                      let pushObj ={
+                          label:item.name,
+                          value:item.childpk,
+                          age:item.age.toString(),
+                          mobile:item.mobile,
+                          sex:item.sex,
+                          healthIssues:item.health_issues||[]
+                      }
+                     profiles.push(pushObj)
+                   })
+            
                    this.setState({ 
-                       Age:data.data.user.age.toString(),
-                       patientsName: data.data.user.name, 
-                       healthIssues: data.data.user.health_issues||[],
-                       Reason: data.data.user.appointment_reason,
+                       profiles,
+                       Age:profiles[0].age,
+                       patientsName:profiles[0].label, 
+                       healthIssues: profiles[0].healthIssues,
+                       Reason: data.data.user.appointment_reason||"",
                        appointment_taken: data.data.user.appointment_taken,
                        appointmentId: data.data.user.appointment,
-                       selectedSex:data.data.user.sex
+                       selectedSex:profiles[0].sex,
+                       selectedProfile:profiles[0],
+                       mobileNo:profiles[0].mobile
                     },()=>{
                        this.searchTemplates(this.state.Age,this.state.Disease)
                     })
-               }
+               
                
              this.setState({loading:false})
            }else{
@@ -562,6 +577,43 @@ class AddPrescription extends Component {
              })
          })
     }
+    searchReports = async(report)=>{
+       this.setState({report})   
+     let api =`${url}/api/prescription/reportcategory/?is_verified=true?title=${report}`
+         const data = await HttpsClient.get(api)
+         if(data.type=="success"){
+               this.scrollRef.scrollToEnd({animated:true})
+               this.setState({reports:data.data})
+         }
+    }
+    removeSelectedReport =(item,index)=>{
+        let duplicate = this.state.selectedReports
+         duplicate.splice(index,1)
+         this.setState({selectedReports:duplicate})
+    }
+    searchAppoinment = async(mobileNo,date,clinic)=>{
+       let api = `${url}/api/prescription/getAppointmentUser/?doctor=${this.props.user.id}&user=${mobileNo}&clinic=${clinic||this.props.clinic.clinicpk}&requesteddate=${date||moment(new Date()).format('YYYY-MM-DD')}`
+    if(mobileNo.length>9){
+             this.setState({loading:true})
+            const data = await HttpsClient.get(api)
+            console.log(api)
+            console.log(data)
+           if(data.type =="success"){
+                   this.setState({ 
+                       Reason: data.data.user.appointment_reason||"",
+                       appointment_taken: data.data.user.appointment_taken,
+                       appointmentId: data.data.user.appointment,
+                      
+                    })
+               
+               
+             this.setState({loading:false})
+           }else{
+               this.setState({ loading: false })
+           }
+        }
+    
+    }
   render() {
       const { loading } = this.state;
    
@@ -595,19 +647,18 @@ class AddPrescription extends Component {
             >
                 
                 <View style={{ marginTop: 20 }}>
-                    <Text style={[styles.text], { color:"#000", fontSize: 18 }}>Mobile No</Text>
+                    <Text style={[styles.text], { color:"#000", fontSize: 18 }}>Mobile No or UID</Text>
                     <TextInput
                          maxLength ={10}
                          value ={this.state.mobileNo}
                          selectionColor={themeColor}
-                         keyboardType="numeric"
                          onChangeText={(mobileNo) => { this.searchUser(mobileNo)}}
                                 style={{ width: width * 0.7, height: 35, backgroundColor: inputColor, borderRadius: 15, padding: 10, marginTop: 10}}
                     />
                 </View>
-                        <View style={{ marginTop: 20 ,flexDirection:"row"}}>
+               {this.state.profiles.length>0&&<View style={{ marginTop: 20 ,flexDirection:"row"}}>
                             <View style={{alignItems:"center",justifyContent:"center"}}>
-                                    <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Select Profile</Text>
+                                    <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Change Profile</Text>
 
                             </View>
                            
@@ -615,7 +666,7 @@ class AddPrescription extends Component {
                                 <DropDownPicker
                                     placeholder={"select Profile"}
                                     items={this.state.profiles}
-                                    defaultValue={this.state.selectedProfile}
+                                    defaultValue={this.state.selectedProfile.value}
                                     containerStyle={{ height: 40, width: width * 0.4 }}
                                     style={{ backgroundColor: inputColor }}
                                     itemStyle={{
@@ -626,16 +677,26 @@ class AddPrescription extends Component {
                                         if(item.value=="AddNew"){
                                             return this.setState({addModal:true})
                                         }
-                                        this.setState({
-                                        selectedProfile: item.value
-                                    })
+                                              this.setState({ 
+                                                
+                                                Age:item.age,
+                                                patientsName:item.label, 
+                                                healthIssues: item.healthIssues,
+                                                selectedSex:item.sex,
+                                                selectedProfile:item,
+                                                mobileNo:item.mobile
+                                                },()=>{
+                                                this.searchAppoinment(item.mobile)
+                                                this.searchTemplates(this.state.Age,this.state.Disease)
+                                                })
+                                            
                                 }
                                 }
 
                                 />
                              </View>
                           
-                        </View>
+                        </View>}
                 <View style={{ marginTop: 20 }}>
                                 <Text style={[styles.text], { color: "#000",fontSize: 18 }}>Patient's Name</Text>
                     <TextInput
@@ -886,17 +947,55 @@ class AddPrescription extends Component {
                                 </View>
                            
                         </TouchableOpacity>
+                        {
+                            this.state.selectedReports.map((item,index)=>{
+                                    return(
+                                  <View style={{flexDirection:"row",alignItems:"center",justifyContent:"center",marginTop:10}} key={index}>
+                                                       <View>
+                                                              <Text style={[styles.text,{color:"#000"}]}>{item}</Text>
+                                                       </View>
+                                                       <TouchableOpacity 
+                                                         onPress={()=>{this.removeSelectedReport(item,index)}}
+                                                       >
+                                                            <Entypo name="circle-with-cross" size={24} color="red" />
+                                                       </TouchableOpacity>
+                                    </View>
+                                    )
+                            })
+                        }
                                 <View style={{ marginTop: 20 }}>
                                 <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Suggest Report</Text>
                             <TextInput
-                                value={this.state.Disease}
-                                onChangeText={(Disease) => { this.searchDiseases(Disease) }}
+                                value={this.state.report}
+                                onChangeText={(report) => { this.searchReports(report) }}
                                 selectionColor={themeColor}
                                 multiline={true}
                                 style={{ width: width * 0.9, height:35, backgroundColor: inputColor,  padding: 10, marginTop: 10, textAlignVertical: "top" }}
                             />
                         </View>
-                   
+                        {this.state.reports.length>0&&<ScrollView 
+                        showsVerticalScrollIndicator ={false}
+                                style={{
+                                    width: width * 0.9, backgroundColor: '#fafafa', borderColor: "#333", borderTopWidth: 0.5
+                                 
+                                   }}>
+                           {
+                               this.state.reports.map((i,index)=>{
+                                   return(
+                                       <TouchableOpacity 
+                                           key ={index}
+                                           style={{padding:15,justifyContent:"center",width:width*0.9,borderColor:"#333",borderBottomWidth:0.3,height:35}}
+                                           onPress={() => { 
+                                               this.state.selectedReports.push(i.title)
+                                               this.setState({ report:"",reports:[]})
+                                            }}
+                                       >
+                                           <Text style={[styles.text,{color:themeColor,}]}>{i.title}</Text>
+                                       </TouchableOpacity>
+                                   )
+                               })
+                           }
+                        </ScrollView>}
                 <View style={{height:height*0.15,alignItems:"center",justifyContent:'center'}}>
                     <TouchableOpacity style={{height:height*0.06,alignItems:"center",justifyContent:'center',backgroundColor:themeColor,width:width*0.3,borderRadius:15}}
                       onPress={()=>{this.addPriscription()}}

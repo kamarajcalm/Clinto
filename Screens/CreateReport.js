@@ -58,7 +58,7 @@ addReport = async()=>{
 }
 searchReports = async(name)=>{
    this.setState({name})
-   let api =`${url}/api/prescription/reportcategory/?is_verified=true`
+   let api =`${url}/api/prescription/reportcategory/?is_verified=true?title=${name}`
    console.log(api)
    let data = await HttpsClient.get(api)
    if(data.type=="success"){

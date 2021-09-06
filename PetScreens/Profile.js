@@ -14,10 +14,10 @@ import { connect } from 'react-redux';
 import LottieView from 'lottie-react-native';
 import { selectTheme, selectClinic,selectUser,setShowLottie} from '../actions';
 import { NavigationContainer, CommonActions } from '@react-navigation/native';
-import DoctorProfile from './DoctorProfile';
+
 import HttpsClient from '../api/HttpsClient';
-import ReceptionistsProfile from './ReceptionistsProfile';
-import PatientProfile from './PatientProfile';
+
+
 
  class Profile extends Component {
   constructor(props) {
@@ -331,11 +331,17 @@ validateExpiry =()=>{
                       
                 <View style={{marginHorizontal:20,elevation:5,backgroundColor:"#fafafa",borderRadius:15}}>
                     <View style={{borderWidth:2,alignSelf:'center',borderColor:"gray",width:width*0.3,marginVertical:10,borderRadius:10}}>
-
+                  
                     </View>
-                    {
-                        this.diffrentiateUsers()
-                    }
+                    <View style={{marginVertical:20,alignItems:"center",justifyContent:"center"}}>
+                        <Text style={[styles.text,{color:"#000"}]}>Vaccination Details : </Text>
+                    </View>
+                    <View style={{marginTop:10,marginLeft:10}}>
+                        <Text style={[styles.text,{color:"#000"}]}>Vaccinated : Yes</Text>
+                    </View>
+                     <View style={{marginVertical:10,marginLeft:10}}>
+                        <Text style={[styles.text,{color:"#000"}]}>Next Vaccination on : 12/12/2021</Text>
+                    </View>
                 </View>
           { this.state.isPatient&& <View style={{marginHorizontal:20,elevation:5,backgroundColor:"#fafafa",borderRadius:15,marginTop:20}}>
                  

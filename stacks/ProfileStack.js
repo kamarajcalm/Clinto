@@ -17,6 +17,8 @@ import CreateReport from '../Screens/CreateReport';
 import PendingRequests from '../Screens/PendingRequests';
 import ViewPendingRequest from '../Screens/ViewPendingRequest';
 import AddAccount from '../Screens/AddAccount';
+import LinkedAccounts from '../Screens/LinkedAccounts';
+import AddPet from '../Screens/AddPet';
 const Stack = createStackNavigator();
 export default class ProfileStack extends Component {
   constructor(props) {
@@ -49,6 +51,8 @@ export default class ProfileStack extends Component {
           <Stack.Screen name="PendingRequests" component={PendingRequests} options={{ headerShown: false }} />
           <Stack.Screen name="ViewPendingRequest" component={ViewPendingRequest} options={{ headerShown: false }} />
           <Stack.Screen name="AddAccount" component={AddAccount} options={{ headerShown: false }} />
+          <Stack.Screen name="LinkedAccounts" component={LinkedAccounts} options={{ headerShown: false }} />
+          <Stack.Screen name="AddPet" component={AddPet} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
   }

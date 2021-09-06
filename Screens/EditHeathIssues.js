@@ -20,7 +20,7 @@ import FlashMessage, { showMessage, hideMessage } from "react-native-flash-messa
 const url = settings.url;
 class EditHeathIssues extends Component {
     constructor(props) {
-         let item = props.route.params.item
+         let item = props?.route?.params?.item||[]
         super(props);
         this.state = {
             updating:false,
@@ -96,6 +96,7 @@ class EditHeathIssues extends Component {
              return this.showSimpleMessage("health Issue should not be Empty","orange","info")
          }
         let duplicate = this.state.item
+ 
         duplicate.push(this.state.healthIssue)
         this.setState({ item: duplicate, healthIssue:""})
     }

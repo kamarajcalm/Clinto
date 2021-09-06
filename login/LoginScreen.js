@@ -20,7 +20,8 @@ class LoginScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: "",
+
+      username:this?.props?.route?.params?.item?.mobile|| "",
       password: '',
       token: null,
     };
@@ -37,7 +38,8 @@ class LoginScreen extends Component {
     var data = new FormData()
     data.append("username", this.state.username)
     data.append("password", this.state.password)
-    data.append("notificationId", this.state.token)
+    data.append("notificationId", this.state?.token||null)
+    console.log(data)
     fetch(`${url}/api/HR/login/?mode=api`, {
       method: 'POST',
       body: data,
@@ -66,7 +68,7 @@ class LoginScreen extends Component {
         console.log(responseJson.csrf_token, "ress")
         AsyncStorage.setItem('csrf', responseJson.csrf_token)
         AsyncStorage.setItem('login', "true")
-      
+    
         return this.props.navigation.dispatch(
           CommonActions.reset({
             index: 0,
@@ -116,7 +118,7 @@ class LoginScreen extends Component {
         return;
       }
       token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log(token);
+      console.log(token,"ttttt");
     } else {
       alert('Must use physical device for Push Notifications');
     }

@@ -50,6 +50,8 @@ import MedicalOffers from '../AdminScreens/MedicalOffers';
 import DiagnosisTab from './DiagnosisTab';
 import ViewFeautures from '../diagnosisCenter/Screens/ViewFeautures';
 import CreateReport from '../Screens/CreateReport';
+import LoginScreen from '../login/LoginScreen';
+import PetTab from './PetTab';
 
 
 const prefix = Linking.makeUrl('/')
@@ -132,6 +134,8 @@ const authScreens = {
                     <Stack.Screen name="MedicalOffers" component={MedicalOffers} options={{ headerShown: false }} />
                     <Stack.Screen name="ViewFeautures" component={ViewFeautures} options={{ headerShown: false }} />
                          <Stack.Screen name="CreateReport" component={CreateReport} options={{ headerShown: false }} />
+                          <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
+                          <Stack.Screen name="PetTab" component={PetTab} options={{ headerShown: false }} />
                  </Stack.Navigator>
                 
             </NavigationContainer>

@@ -445,7 +445,7 @@ class ProfileEdit extends Component {
                                     </View>
                                     <View>
                                         {
-                                            this.state.healthIssues.map((item,index)=>{
+                                            this.state?.healthIssues?.map((item,index)=>{
                                                     return(
                                                         <View style={{flexDirection:"row",marginLeft:width*0.2,marginTop:5}}>
                                                             <View>

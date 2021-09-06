@@ -91,6 +91,9 @@ class TabNavigator extends Component {
         if (routeName == "AddAccount") {
             return false
         }
+        if (routeName == "LinkedAccounts") {
+            return false
+        }
         return true
     }
     getTabBarVisibility4 = (route) => {

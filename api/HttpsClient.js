@@ -4,7 +4,7 @@ import { AsyncStorage } from 'react-native';
 async function getCredentials(){
     const sessionid = await AsyncStorage.getItem('sessionid');
     const csrf = await AsyncStorage.getItem('csrf');
-   console.log(csrf)
+
     return {csrf:csrf,sessionid:sessionid}
 }
 

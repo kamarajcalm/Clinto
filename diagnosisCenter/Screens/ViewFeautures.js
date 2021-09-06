@@ -82,7 +82,7 @@ getReports = async()=>{
     };
    componentWillUnmount(){
        this._unsubscribe();
-             Keyboard.removeListener('keyboardDidShow', this._keyboardDidShow);
+        Keyboard.removeListener('keyboardDidShow', this._keyboardDidShow);
         Keyboard.removeListener('keyboardDidHide', this._keyboardDidHide);
    }
 

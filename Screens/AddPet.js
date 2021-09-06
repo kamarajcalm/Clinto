@@ -17,7 +17,7 @@ const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
 const inputColor=settings.TextInput;
 const url =settings.url
-class AddAccount extends Component {
+class AddPet extends Component {
     constructor(props) {
         let sex= [
           {
@@ -108,8 +108,9 @@ class AddAccount extends Component {
            sex:this.state.selectedSex,
            bodyType:'formData',
            parent:this.props.user.id,
-           type:"Customer",
+           type:"Pet",
            displayPicture:this.state.image
+           
        }
        let post  =await HttpsClient.post(api,sendData)
 
@@ -265,7 +266,7 @@ class AddAccount extends Component {
                                         <Ionicons name="chevron-back-circle" size={30} color="#fff" />
                                     </TouchableOpacity>
                                     <View style={{ flex: 0.5, alignItems: "center", justifyContent: "center" }}>
-                                        <Text style={[styles.text, { color: '#fff', marginLeft: 20, fontWeight: "bold", fontSize: 20 }]}>Add Account</Text>
+                                        <Text style={[styles.text, { color: '#fff', marginLeft: 20,fontSize: 20 }]}>Add Pet</Text>
                                     </View>
                                     <View style={{ flex: 0.2 }}>
                                     </View>
@@ -351,46 +352,7 @@ class AddAccount extends Component {
                                     </View>
                                  
                                 </View>
-                                <View >
-                                    <Text style={styles.text}>Mobile No</Text>
-                                    <TextInput
-                                        maxLength={10}
-                                        keyboardType ="numeric"
-                                        value={this.state.mobileNO}
-                                        onChangeText={(mobileNO) => { this.setState({ mobileNO }) }}
-                                        selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
-                                    />
-                                </View>
-                                <View >
-                                    <Text style={styles.text}>Email</Text>
-                                    <TextInput
-                                        value={this.state.email}
-                                        onChangeText={(email) => { this.setState({ email }) }}
-                                        selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
-                                    />
-                                </View>
-                                {/* <View >
-                                    <Text style={styles.text}>Age</Text>
-                                    <TextInput
-                              
-                                    keyboardType="numeric"
-                                        value={this.state.age}
-                                        onChangeText={(age) => { this.setState({ age }) }}
-                                        selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
-                                    />
-                                </View> */}
-                                {/* <View >
-                                    <Text style={styles.text}>Height</Text>
-                                    <TextInput
-                                        value={this.state.height}
-                                        onChangeText={(age) => { this.setState({ age }) }}
-                                        selectionColor={themeColor}
-                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
-                                    />
-                                </View> */}
+                    
                                 <View >
                                     <Text style={styles.text}>Blood Group</Text>
                                     <TextInput
@@ -420,46 +382,7 @@ class AddAccount extends Component {
                                         style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
-                                {/* <View style={{ marginTop: 20 }}>
-                                    <Text style={[styles.text], { fontWeight: "bold", fontSize: 18 }}>Health issues</Text>
-                                    {
-                                        this.state?.healthIssues?.map((i, index) => {
-                                            return (
-                                                <View style={{ margin: 10, flexDirection: "row" }}
-                                                    key={index}
-                                                >
-                                                    <View style={{ flex: 0.7 }}>
-                                                        <Text>{index + 1}. {i}</Text>
-                                                    </View>
-                                                    <TouchableOpacity style={{ flex: 0.3 }}
-                                                        onPress={() => { this.deleteIssues(i, index) }}
-
-                                                    >
-                                                        <Entypo name="circle-with-cross" size={24} color="red" />
-                                                    </TouchableOpacity>
-
-                                                </View>
-                                            )
-                                        })
-                                    }
-                                    <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-around" }}>
-                                        <TextInput
-                                            value={this.state.healthIssue}
-                                            selectionColor={themeColor}
-                                            multiline={true}
-                                            onChangeText={(healthIssue) => { this.setState({ healthIssue }) }}
-                                            style={{ width: width * 0.6, height: height * 0.07, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10, }}
-                                        />
-                                        <TouchableOpacity
-                                            style={{ height: height * 0.05, alignItems: "center", justifyContent: 'center', width: width * 0.2, borderRadius: 10, backgroundColor: themeColor, marginTop: 10 }}
-                                            onPress={() => { this.pushIssues() }}
-
-                                        >
-                                            <Text style={[styles.text, { color: "#fff" }]}>Add</Text>
-                                        </TouchableOpacity>
-                                    </View>
-
-                                </View> */}
+                   
                                 <View style={{ alignItems: 'center', justifyContent: 'center' ,marginVertical:40}}>
                                     {!this.state.creating?<TouchableOpacity style={{ width: width * 0.4, height: height * 0.05, borderRadius: 10, alignItems: 'center', justifyContent: "center", backgroundColor: themeColor }}
                                       onPress ={()=>{this.CreateAccount()}}
@@ -515,4 +438,4 @@ const mapStateToProps = (state) => {
         user: state.selectedUser,
     }
 }
-export default connect(mapStateToProps, {selectTheme,selectUser})(AddAccount);
+export default connect(mapStateToProps, {selectTheme,selectUser})(AddPet);
