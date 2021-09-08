@@ -45,7 +45,9 @@ class DiagnosisTab extends Component {
             return false
         }
     
-  
+      if (routeName == "ViewReports") {
+            return false
+        }
         return true
     }
    

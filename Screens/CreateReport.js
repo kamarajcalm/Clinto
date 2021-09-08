@@ -23,7 +23,9 @@ class CreateReport extends Component {
         this.state = {
            name:"",
            price:"",
-           reports:[]
+           reports:[],
+           selectedReport:false,
+           adding:false
         };
     }
 
@@ -42,6 +44,19 @@ class CreateReport extends Component {
         showMessage(message);
     }
 addReport = async()=>{
+    this.setState({adding:true})
+    if(!this.state.selectedReport){
+         this.setState({adding:false})
+        return this.showSimpleMessage("Please Add report by Searching only","orange","info")
+    }
+    if(this.state.name==""){
+           this.setState({adding:false})
+         return this.showSimpleMessage("Please Add report by Searching only","orange","info")
+    }
+    if(this.state.price==""){
+                  this.setState({adding:false})
+         return this.showSimpleMessage("Please Enter Price","orange","info") 
+    }
     let api =`${url}/api/prescription/addReports/`
     let sendData ={
         title:this.state.name,
@@ -50,14 +65,16 @@ addReport = async()=>{
     }
     let post  = await HttpsClient.post(api,sendData)
     if(post.type=="success"){
+        this.setState({adding:false})
         this.showSimpleMessage("Report Added SuccessFully","green","success")
         this.props.navigation.goBack()
     }else{
+              this.setState({adding:false})
               this.showSimpleMessage("Try Again","red","danger")
     }
 }
 searchReports = async(name)=>{
-   this.setState({name})
+   this.setState({name,selectedReport:false})
    let api =`${url}/api/prescription/reportcategory/?is_verified=true?title=${name}`
    console.log(api)
    let data = await HttpsClient.get(api)
@@ -107,7 +124,7 @@ searchReports = async(name)=>{
                                        <TouchableOpacity 
                                            key ={index}
                                            style={{padding:15,justifyContent:"center",width:width*0.7,borderColor:"#333",borderBottomWidth:0.3,height:35}}
-                                           onPress={() => { this.setState({ name:i.title,reports:[]},()=>{
+                                           onPress={() => { this.setState({ name:i.title,reports:[],selectedReport:true},()=>{
                                            })}}
                                        >
                                            <Text style={[styles.text,{color:themeColor,}]}>{i.title}</Text>
@@ -130,12 +147,16 @@ searchReports = async(name)=>{
                                 />
                                </View>
                                <View style={{ marginTop: 20 ,paddingHorizontal:20,alignItems:"center",justifyContent:"center"}}>
-                                      <TouchableOpacity style={{height:height*0.05,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:10}}
+                                  { !this.state.adding?   <TouchableOpacity style={{height:height*0.05,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:10}}
                                         onPress={()=>{this.addReport()}}
                                       >
 
                                               <Text style={[styles.text,{color:"#fff"}]}>Add</Text>
-                                        </TouchableOpacity>   
+                                        </TouchableOpacity>:
+                                         <View style={{height:height*0.05,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:10}}>
+                                             <ActivityIndicator  size={"large"} color={"#fff"}/>
+                                         </View>
+                                        }  
                                </View>
                     </ScrollView>
                 </SafeAreaView>

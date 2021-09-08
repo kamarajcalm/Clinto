@@ -170,6 +170,7 @@ class UploadImages extends Component {
             clinic: this.props.route.params.clinic,
             bodyType: "formData"
         }
+        console.log(sendData)
         let api = `${url}/api/prescription/clinicImages/`
        
         return new Promise( async(resolve,reject)=>{

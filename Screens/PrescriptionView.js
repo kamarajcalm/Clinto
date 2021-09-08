@@ -1625,12 +1625,7 @@ validateButton = (item,index) =>{
                 {
                     this.lottieModal()
                 }
-                {
-                    this.bottomModal()
-                }
-                {
-                    this.checkoutModal()
-                }
+            
                     <Modal
                     deviceHeight={deviceHeight}
                     isVisible={this.state.paymentLoading}

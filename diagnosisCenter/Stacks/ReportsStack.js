@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack';
 import ReportsScreen from '../Screens/ReportsScreen';
 import CreateReport from '../Screens/CreateReport';
+import ViewReports from '../Screens/ViewReports';
 const Stack = createStackNavigator();
 export default class ReportsStack extends Component {
     constructor(props) {
@@ -26,6 +27,7 @@ export default class ReportsStack extends Component {
             >
                 <Stack.Screen name="ReportScreen" component={ReportsScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="CreateReport" component={CreateReport} options={{ headerShown: false }} />
+                <Stack.Screen name="ViewReports" component={ViewReports} options={{ headerShown: false }} />
             </Stack.Navigator>
         );
     }

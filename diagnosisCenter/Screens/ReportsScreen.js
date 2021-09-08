@@ -22,7 +22,7 @@ import {
 
 } from "react-native";
 import { Ionicons, Entypo, Feather, MaterialCommunityIcons, FontAwesome, FontAwesome5, EvilIcons,Fontisto,AntDesign} from '@expo/vector-icons';
-
+import { Swipeable } from "react-native-gesture-handler";
 import { connect } from 'react-redux';
 import { selectTheme ,selectClinic} from '../../actions';
 import settings from '../../AppSettings';
@@ -35,6 +35,7 @@ import moment from 'moment';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import HttpsClient from '../../api/HttpsClient';
 const url = settings.url;
+import { LinearGradient } from 'expo-linear-gradient';
 
 class ReportsScreen extends Component {
     constructor(props) {
@@ -46,14 +47,17 @@ class ReportsScreen extends Component {
         const showDate = `${day}-${month}-${year}`
         super(props);
         this.state = {
-            today,
+            today:moment(new Date()).format("YYYY-MM-DD"),
             showDate,
             mode: 'date',
             date: new Date(),
             show: false,
+            reports:[],
+            offset:0
         };
         this.scrollY=new Animated.Value(0)
         this.translateYNumber= React.createRef()
+        this.swipeRef=[]
     }
 showDatePicker = () => {
        this.setState({show:true})
@@ -87,25 +91,101 @@ hideDatePicker = () => {
         const data =await HttpsClient.get(api)
            if(data.type=="success"){
             this.setState({ clinics: data.data.workingclinics})
-        //     let activeClinic = data.data.workingclinics.filter((i)=>{
-        //         return i.active
-        //     })
-        //  console.log(activeClinic[0])
             this.props.selectClinic(data.data.ownedclinics[0])
-      
+            this.getReports();
         }
+    }
+    getReports = async()=>{
+      
+       let api =`${url}/api/prescription/getreports/?diagonistic_clinic=${this.props.clinic.clinicpk}&date=${this.state.today}&limit=6&offset=${this.state.offset}`
+       console.log(api)
+       const data = await HttpsClient.get(api)
+       if(data.type=="success"){
+            this.setState({ reports: this.state.reports.concat(data.data.results)})
+            this.setState({ loading: false ,isFetching:false})
+            if (data.data.next != null) {
+                this.setState({ next: true })
+            } else {
+                this.setState({ next: false })
+            }
+       }
+    }
+        rightSwipe =(progress,dragX,item,index)=>{
+        const { height,width } = Dimensions.get("window");
+      
+        const scale = dragX.interpolate({
+            inputRange:[0,100],
+            outputRange:[0,1],
+            extrapolate:"clamp"
+        })
+        return(
+            <View style={{  backgroundColor: "gray", height: height * 0.15, }}>
+              
+                   <TouchableOpacity 
+                    onPress={() => { this.makeInvalid(item, index)}}
+                    style={{height:height*0.05,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:item.active?"green":"red",marginHorizontal:20,marginTop:20}}
+                   >
+                    <Text style={[styles.text, { color: "#fff",  }]}>{item.active ?"Invalid":"Invalid"}</Text>
+                   </TouchableOpacity>
+             
+            </View>
+        )
+    }
+        getFirstLetter =(item)=>{
+        let name = item.user.first_name.split("")
+
+        return name[0].toUpperCase()
+    }
+    closeRow =(index)=>{
+       this.swipeRef.forEach((i)=>{
+           if (i != this.swipeRef[index]){
+              i.close();
+           }
+       
+       })
+
+    }
+        renderFooter =()=>{
+       if(this.state.next){
+           return(
+               <ActivityIndicator size="large" color ={themeColor} />
+           )
+       }
+       return null
+    }
+        handleEndReached =()=>{
+        if(this.state.next){
+            this.setState({offset:this.state.offset+6},()=>{
+                this.getReports()
+             
+            })
+        }
+    }
+    onRefresh =()=>{
+        this.setState({offset:0,reports:[]},()=>{
+            this.getReports()
+        })
     }
   componentDidMount(){
        
         this.getPharmacy()
+
+       
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
-        
+            if(this.props?.clinic){
+                  this.onRefresh()
+               
+        }
             
         });
         Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
     }
 
+    getIndex = (index) => {
+        let value = this.state.reports.length - index
+        return value
+    }
     componentWillUnmount() {
          this._unsubscribe();
         Keyboard.removeListener('keyboardDidShow', this._keyboardDidShow);
@@ -127,7 +207,7 @@ hideDatePicker = () => {
                 <View style={{ alignItems: "center", justifyContent: "center", width: width * 0.32, }}>
                     <View style={{ flexDirection: "row" }}>
                         <View style={{ alignItems: "center", justifyContent: "center" }}>
-                            <Text style={[styles.text, { color: "#fff" }]}>{this.state.showDate}</Text>
+                            <Text style={[styles.text, { color: "#fff" }]}>{this.state.today}</Text>
                         </View>
 
                         <TouchableOpacity
@@ -255,7 +335,98 @@ const screenHeight =Dimensions.get('screen').height;
                     </Animated.View>
    <Animated.View style={{flex:1,backgroundColor:"#f3f3f3f3"}}>
            
-              
+               <Animated.FlatList
+                            keyExtractor={(item, index) => index.toString()}
+                            refreshControl={
+                                <RefreshControl
+                                    onRefresh={() => this.onRefresh()}
+                                    refreshing={this.state.isFetching}
+                                    progressViewOffset={headerHeight}
+                                />
+                            }
+                            data={this.state.reports}
+                            scrollEventThrottle={16}
+                            contentContainerStyle={{ paddingTop: headerHeight+height*0.01, paddingBottom: 150 }}
+                            onScroll={handleScroll}
+                            ref={ref=>this.ref=ref}
+                             
+                            onEndReached ={()=>{this.handleEndReached()}}
+                            ListFooterComponent={this.renderFooter()}
+                            onEndReachedThreshold={0.1}
+                            renderItem={({item,index})=>{
+                               return(
+                                  
+                            <Swipeable
+                onSwipeableRightOpen={() => { this.closeRow(index)}}
+            
+                ref={ref=>this.swipeRef[index]=ref}
+                renderRightActions={(progress, dragX) => this.rightSwipe(progress, dragX, item, index)}
+            >
+                <TouchableOpacity style={[styles.card, { flexDirection: "row",    height: height * 0.1,}]}
+                    
+                    onPress={() => { this.props.navigation.navigate('ViewReports',{item})}}
+                >
+                    <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
+                        <LinearGradient 
+                              style={{ height: 50, width: 50, borderRadius: 25,alignItems: "center", justifyContent: "center" }}
+                              colors={["#333", themeColor, themeColor]}
+                        >
+                              <View >
+                                  <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 22 }]}>{this.getFirstLetter(item)}</Text>
+                              </View>
+                        </LinearGradient>
+                       
+                    </View>
+                    <View style={{ flex: 0.7, marginHorizontal: 10, justifyContent: 'center' }}>
+                        <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" ,}}>
+                            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                 <View style={{flexDirection:"row"}}>
+                                      <Text style={[styles.text, { color: "#000", fontWeight: 'bold' }]}>{item?.user?.first_name} {item?.user?.last_name}</Text>
+                                      <Text style={[styles.text, {}]}> ({item?.user?.profile?.age} - {item?.user?.profile?.sex})</Text>
+                                 </View>
+                                  
+                            </View>
+                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                <Text>#{this.getIndex(index)}</Text>
+                            </View>
+                        </View>
+        
+                                <View style={{ flexDirection: "row", marginVertical:10 }}>
+                        <View style={{flex:0.5,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}>
+                                            <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                            onPress={() => { this.chatClinic(item) }}
+                        >
+                            <Ionicons name="chatbox" size={24} color="#63BCD2" />
+
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                            onPress={() => {
+                       
+                                    if (Platform.OS == "android") {
+                                        Linking.openURL(`tel:${item?.user?.profile.mobile}`)
+                                    } else {
+
+                                        Linking.canOpenURL(`telprompt:${item?.user?.profile.mobile}`)
+                                    }}}
+    
+                        >
+                           <Ionicons name="call" size={24} color="#63BCD2" />
+                        </TouchableOpacity>
+                        </View>
+                
+                 
+                         
+                    </View>
+                    </View>
+
+                </TouchableOpacity>
+            </Swipeable>
+                                
+                                 
+                                  
+                               )
+                          }}
+                        />
              
                           
             
