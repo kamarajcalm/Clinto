@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Dimensions, TouchableOpacity, StyleSheet, TextInput, FlatList, Image, SafeAreaView, StatusBar,ActivityIndicator ,ScrollView} from 'react-native';
-import { Ionicons, Entypo, AntDesign ,FontAwesome} from '@expo/vector-icons';
+import { Ionicons, Entypo, AntDesign ,FontAwesome5,FontAwesome} from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { selectTheme } from '../../actions';
 import settings from '../../AppSettings';
@@ -64,30 +64,28 @@ class PendingAppoinments extends Component {
             this.setState({ modal: false })
         }
     }
-    completeAppointment =async()=>{
-        this.props.navigation.navigate('addPriscription', { appoinment: this.state.selectedAppointment })
-        return
-        if(this.props.user.profile.occupation=="Doctor"){
-            this.props.navigation.navigate('addPriscription', { appoinment: this.state.selectedAppointment })
-        }else{
-            let api = `${url}/api/prescription/appointments/${this.state.selectedAppointment.id}/`
-            let sendData = {
-                status: "Completed"
-            }
-            let post = await HttpsClient.patch(api, sendData)
-            if (post.type == "success") {
-                let duplicate = this.state.Appointments
-                duplicate.splice(this.state.selectedIndex, 1)
-                this.showSimpleMessage("Completed SuccessFully", "#00A300",)
-
-                this.setState({ modal: false, Appointments: duplicate })
-            } else {
-                this.showSimpleMessage("Try again", "#B22222", "danger")
-                this.setState({ modal: false })
-            }
+        acceptAppointment =async()=>{
+        this.setState({loading:true})
+        let api = `${url}/api/prescription/appointments/${this.state.selectedAppointment.id}/`
+        let sendData ={
+            accepteddate:this.state.today2,
+            acceptedtime:this.state.time,
+            status:"Accepted"
         }
-       
-        
+        console.log(sendData)
+      let post = await HttpsClient.patch(api,sendData)
+      if(post.type =="success"){
+           this.setState({loading:false})
+           this.getPendingAppoinments()
+          let duplicate = this.state.appoinments
+          duplicate.splice(this.state.selectedIndex, 1)
+          this.showSimpleMessage("Accepted SuccessFully", "#00A300","success")
+          this.setState({ modal: false, appoinments:duplicate})
+      }else{
+           this.setState({loading:false})
+          this.showSimpleMessage("Try again", "#B22222", "danger")
+          this.setState({ modal: false })
+      }
     }
 getPendingAppoinments = async()=>{
         let api = `${url}/api/prescription/appointments/?clinic=${this.props.clinic.clinicpk}&status=Pending&limit=5&offset=${this.state.offset}`
@@ -191,6 +189,12 @@ getPendingAppoinments = async()=>{
     }
    componentDidMount(){
       this.getPendingAppoinments()
+                 this._unsubscribe = this.props.navigation.addListener('focus', () => {
+              this.setState({offset:0,appoinments:[]},()=>{
+                    this.getPendingAppoinments()
+              })
+              
+        });
    }
            handleConfirm1 = (date) => {
         this.setState({ appoinmentFixDate: moment(date).format('YYYY-MM-DD'),})
@@ -360,11 +364,90 @@ getPendingAppoinments = async()=>{
         }
         return
     }
+            hideDatePicker3 =()=>{
+        this.setState({ show3: false, modal: true })
+    }
+        hideDatePicker2 = () => {
+        this.setState({ show2: false,modal: true})
+    };
+    handleConfirm3 = (date) => {
+        this.setState({ today2: moment(date).format('YYYY-MM-DD'), show3: false, })
+        this.hideDatePicker3();
+    };
+        handleConfirm2 = (date) => {
+        this.setState({ time: moment(date).format('hh:mm a'), show2: false, date: new Date(date) }, () => {
+
+
+        })
+        this.hideDatePicker2();
+    };
 refresh =()=>{
     this.setState({refreshing:true,appoinments:[],offset:0},()=>{
         this.getPendingAppoinments()
     })
 }
+        Modal =()=>{
+      
+        return(
+            <Modal 
+                deviceHeight={screenHeight}
+                isVisible={this.state.modal}
+                onBackdropPress={()=>{this.setState({modal:false})}}
+            >
+                 <View style={{flex:1,justifyContent:"center"}}>
+                     <View style={{height:height*0.3,backgroundColor:"#eee",borderRadius:10,alignItems:'center',justifyContent:'center'}}>
+                          <Text style={[styles.text,{fontWeight:"bold",fontSize:18}]}>Select Date:</Text>
+                          <View style={{flexDirection:"row"}}>
+                            <TouchableOpacity
+                                style={{ marginTop: 10 }}
+                                onPress={() => { this.setState({modal:false},()=>{
+                                    setTimeout(()=>{
+                                        this.setState({ show3: true })
+                                    },500)
+                                })}}
+                            >
+                                <FontAwesome name="calendar" size={24} color="black" />
+                            </TouchableOpacity>
+                            <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 10, marginTop: 7}}>
+                                <Text>{this.state?.today2}</Text>
+                            </View>
+                   
+                          </View>
+                         
+                        <Text style={[styles.text, { fontWeight: "bold", fontSize: 18}]}>Select Time</Text>
+                        <View style={{flexDirection:"row"}}>
+                            <TouchableOpacity
+                                style={{ marginTop: 10 }}
+                                onPress={() => { this.setState({ modal:false},()=>{
+                                    setTimeout(() => {
+                                        this.setState({ show2: true })
+                                    }, 500)
+                                })}}
+                            >
+                                <FontAwesome5 name="clock" size={24} color="black" />
+                            </TouchableOpacity>
+                            <View style={{alignItems:"center",justifyContent:"center",marginLeft:10,marginTop:7}}>
+                                <Text>{this.state?.time}</Text>
+                            </View>
+                            
+                        </View>
+                        <View>
+                           {!this.state.loading? <TouchableOpacity style={{backgroundColor:themeColor,height:height*0.05,width:width*0.4,alignItems:'center',justifyContent:"center",borderRadius:10,marginTop:30}}
+                              onPress ={()=>{this.acceptAppointment()}}
+                            >
+                                <Text style={[styles.text,{color:"#fff"}]}>Accept</Text>
+                            </TouchableOpacity>:
+                            <View style={{backgroundColor:themeColor,height:height*0.05,width:width*0.4,alignItems:'center',justifyContent:"center",borderRadius:10,marginTop:30}}>
+                                    <ActivityIndicator  size={"small"} color={"#fff"}/>
+                            </View>
+                            }
+                        </View>
+                     </View>
+                     
+                 </View>
+            </Modal>
+        )
+    }
     render() {
         return (
             <>
@@ -483,6 +566,20 @@ refresh =()=>{
                             onConfirm={this.handleConfirm2}
                             onCancel={this.hideDatePicker2}
                          />
+                               {this.Modal()}
+                                              <DateTimePickerModal
+                            isVisible={this.state.show3}
+                            mode="date"
+                            onConfirm={this.handleConfirm3}
+                            onCancel={this.hideDatePicker3}
+                        />
+                        <DateTimePickerModal
+                        
+                            isVisible={this.state.show2}
+                            mode="time"
+                            onConfirm={this.handleConfirm2}
+                            onCancel={this.hideDatePicker2}
+                        />
                 </SafeAreaView>
             </>
         );
@@ -492,13 +589,7 @@ const styles = StyleSheet.create({
     text: {
         fontFamily
     },
-    card: {
-        backgroundColor: "#fff",
-        elevation: 6,
-        margin: 20,
-        height: height * 0.3
-    },
-       topSafeArea: {
+    topSafeArea: {
         flex: 0,
         backgroundColor: themeColor
     },
@@ -506,6 +597,13 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff"
     },
+    boxWithShadow: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        elevation: 5
+    }
 
 })
 const mapStateToProps = (state) => {

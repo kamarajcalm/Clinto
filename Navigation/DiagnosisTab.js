@@ -51,7 +51,15 @@ class DiagnosisTab extends Component {
         }
         return true
     }
+       getTabBarVisibility4 = (route) => {
+        const routeName = route.state ? route.state.routes[route.state.index].name : ''
+        if (routeName == "CreateReport") {
+            return false
+        }
+    
    
+        return true
+    }
     getTabBarVisibility3 = (route) => {
         const routeName = route.state ? route.state.routes[route.state.index].name : ''
         if (routeName == "ChatScreen") {
@@ -80,7 +88,7 @@ class DiagnosisTab extends Component {
                 <Tab.Screen name="AppoinmentsStack" component={AppoinmentsStack}
                     options={({ route }) => ({
 
-                        tabBarVisible:true
+                        tabBarVisible:this.getTabBarVisibility4(route)
 
                     })}
 

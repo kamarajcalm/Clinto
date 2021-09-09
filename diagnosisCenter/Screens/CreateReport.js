@@ -35,6 +35,7 @@ class CreateReport extends Component {
               label: "Others", value: 'Others'
           },
     ]
+      let appoinment  =props?.route?.params?.appoinment||null
         super(props);
         this.state = {
             selectedSex:null,
@@ -61,7 +62,8 @@ class CreateReport extends Component {
             reportObj:null,
             resultDate:null,
             dob:"",
-            bloodGroup:""
+            bloodGroup:"",
+            appoinment
         };
     }
     
@@ -78,6 +80,10 @@ addReport =()=>{
   this.setState({files:this.state.files,addModal:false})
 }
      componentDidMount(){
+         if(this.state.appoinment){
+           
+            this.searchUser(this.state.appoinment.patientname.mobile)
+         }
          Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
    
@@ -168,7 +174,7 @@ addReport =()=>{
                         profiles.push(pushObj)
                     })
                    this.setState({profiles,selectedProfile:profiles[0]})
-                   this.setState({ patientsName:profiles[0].label, user: profiles[0],loading:false,selectedSex:profiles[0].sex,Age:profiles[0].age.toString()})
+                   this.setState({ patientsName:profiles[0].label, user: profiles[0],loading:false,selectedSex:profiles[0].sex,Age:profiles[0].age.toString(),userFound:true})
                    }
          
                
@@ -281,7 +287,7 @@ addReport =()=>{
         }
    
 
-          if(this.state.userFound){
+          if(this.state.userFound&&this.state.PrescriptionId){
              sendData.prescription = this.state.PrescriptionId
         }else{
             sendData.name= this.state.patientsName,
@@ -304,8 +310,27 @@ addReport =()=>{
         let post = await HttpsClient.post(api,sendData)
         console.log(post)
         if(post.type=="success"){
+            if(this.state.appoinment){
+                          let api = `${url}/api/prescription/appointments/${this.state.appoinment.id}/`
+                    let sendData = {
+                        status: "Completed"
+                    }
+                    let post = await HttpsClient.patch(api, sendData)
+                    if (post.type == "success") {
+                          this.setState({creating:false})
+                        this.props.navigation.goBack()
+                        return this.showSimpleMessage("Report Created Successfully","green","success")
+
+                    
+                    } else {
+                        this.setState({creating:false})
+                       return this.showSimpleMessage("Try again", "#B22222", "danger")
+                        
+                    }
+            }
              this.setState({creating:false})
              this.props.navigation.goBack();
+
              return this.showSimpleMessage("Report Created Successfully","green","success")
         }else{
              this.setState({creating:false})

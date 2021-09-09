@@ -24,8 +24,8 @@ class AllAppointments extends Component {
         };
     }
     getAppointments = async()=>{
-         let  api = `${url}/api/prescription/appointments/?clinic=${this.props.clinic.clinicpk}&date=${this.props.today}&limit=5&offset=${this.state.offset}`
-   
+         let  api = `${url}/api/prescription/appointments/?clinic=${this.props.clinic.clinicpk}&date=${moment(this.props.date).format("YYYY-MM-DD")}&limit=5&offset=${this.state.offset}`
+        console.log(api)
                 const data = await HttpsClient.get(api)
       
         if (data.type == "success") {
@@ -43,6 +43,15 @@ class AllAppointments extends Component {
         }
    componentDidMount(){
       this.getAppointments()
+      this._unsubscribe = this.props.navigation.addListener('focus', () => {
+              this.setState({offset:0,appoinments:[]},()=>{
+                    this.getAppointments()
+              })
+              
+        });
+   }
+   componentWillUnmount(){
+       this._unsubscribe();
    }
    componentDidUpdate(prevProps,prevState){
      if(prevProps.date!=this.props.date){
@@ -89,6 +98,23 @@ class AllAppointments extends Component {
             })
         }
         return
+    }
+        validateColor =(status)=>{
+        if(status =="Completed"){
+            return "green"
+        }
+        if (status == "Accepted") {
+            return "#63BCD2"
+        }
+        if (status == "Pending") {
+            return "orange"
+        }
+        if (status == "Rejected") {
+            return "red"
+        }
+        if (status == "Declined") {
+            return "red"
+        }
     }
     render() {
         return (
@@ -183,13 +209,7 @@ const styles = StyleSheet.create({
     text: {
         fontFamily
     },
-    card: {
-        backgroundColor: "#fff",
-        elevation: 6,
-        margin: 20,
-        height: height * 0.3
-    },
-       topSafeArea: {
+    topSafeArea: {
         flex: 0,
         backgroundColor: themeColor
     },
@@ -197,6 +217,13 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff"
     },
+    boxWithShadow: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        elevation: 5
+    }
 
 })
 const mapStateToProps = (state) => {
