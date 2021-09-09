@@ -18,7 +18,8 @@ import {
     RefreshControl,
     Keyboard,
     Platform,
-    Linking
+    Linking,
+    Alert
 
 } from "react-native";
 import { Ionicons, Entypo, Feather, MaterialCommunityIcons, FontAwesome, FontAwesome5, EvilIcons,Fontisto,AntDesign} from '@expo/vector-icons';
@@ -36,6 +37,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import HttpsClient from '../../api/HttpsClient';
 const url = settings.url;
 import { LinearGradient } from 'expo-linear-gradient';
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 
 class ReportsScreen extends Component {
     constructor(props) {
@@ -78,9 +80,9 @@ hideDatePicker = () => {
         showMessage(message);
     }
  handleConfirm = (date) => {
-     this.setState({})
-     this.setState({ today: moment(date).format('YYYY-MM-DD'), show: false, prescriptions: [], offset: 0, next: true, showDate: moment(date).format('DD-MM-YYYY')  }, () => {
-        
+
+     this.setState({ today: moment(date).format('YYYY-MM-DD'), show: false,}, () => {
+        this.onRefresh();
 
      })
         this.hideDatePicker();
@@ -95,6 +97,37 @@ hideDatePicker = () => {
             this.getReports();
         }
     }
+    deleteItem = async(item,index)=>{
+        this.swipeRef[index].close()
+         let api =`${url}/api/prescription/getreports/${item.id}/`
+         let del = await  HttpsClient.delete(api)
+         if(del.type=="success"){
+              let duplicate  = this.state.reports
+              duplicate.splice(index,1)
+              this.setState({reports:duplicate})
+            
+             return this.showSimpleMessage("Deleted SuccessFully","green","success")
+         }else{
+                return this.showSimpleMessage("Try Again","red","danger") 
+         }
+    }
+    createAlert = (item,index) => {
+                Alert.alert(
+                "Do you want to delete?",
+                ``,
+                [
+                    {
+                    text: "No",
+                    onPress: () => this.swipeRef[index].close(),
+                    style: "cancel"
+                    },
+                    { text: "Yes", onPress: () => { this.deleteItem(item,index) } }
+                ]
+                );
+
+  }
+
+    
     getReports = async()=>{
       
        let api =`${url}/api/prescription/getreports/?diagonistic_clinic=${this.props.clinic.clinicpk}&date=${this.state.today}&limit=6&offset=${this.state.offset}`
@@ -122,10 +155,10 @@ hideDatePicker = () => {
             <View style={{  backgroundColor: "gray", height: height * 0.15, }}>
               
                    <TouchableOpacity 
-                    onPress={() => { this.makeInvalid(item, index)}}
+                    onPress={() => { this.createAlert(item,index)}}
                     style={{height:height*0.05,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:item.active?"green":"red",marginHorizontal:20,marginTop:20}}
                    >
-                    <Text style={[styles.text, { color: "#fff",  }]}>{item.active ?"Invalid":"Invalid"}</Text>
+                    <Text style={[styles.text, { color: "#fff",  }]}>Delete</Text>
                    </TouchableOpacity>
              
             </View>
@@ -139,7 +172,7 @@ hideDatePicker = () => {
     closeRow =(index)=>{
        this.swipeRef.forEach((i)=>{
            if (i != this.swipeRef[index]){
-              i.close();
+              i?.close();
            }
        
        })

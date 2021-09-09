@@ -35,7 +35,6 @@ export default class DiagnosisTabBar extends Component {
             state.routes.map((route, index) => {
                 const { options } = descriptors[route.key];
                 if (options.tabBarVisible == false) {
-
                     return this.setState({ show: false })
                 } else {
                     return this.setState({ show: true })
@@ -60,7 +59,11 @@ export default class DiagnosisTabBar extends Component {
                 <Ionicons name="ios-person-circle-sharp" size={height*0.04} color={isFocused ? "#fff" : "gray"} />
             )
         }
-      
+            if (label == "Chat") {
+            return (
+                <Ionicons name="chatbubble-ellipses" size={height*0.04} color={isFocused ? "#fff" : "gray"} />
+            )
+        }
     }
     render() {
         const { state, descriptors, navigation } = this.props

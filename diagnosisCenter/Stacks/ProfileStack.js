@@ -5,6 +5,7 @@ import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack
 import ProfileScreen from '../Screens/ProfileScreen';
 import CreateReport from '../../Screens/CreateReport';
 import ViewFeautures from '../Screens/ViewFeautures';
+import ViewProfile from '../Screens/ViewProfile';
 
 const Stack = createStackNavigator();
 export default class ProfileStack extends Component {
@@ -27,6 +28,7 @@ export default class ProfileStack extends Component {
                 }}
             >
                 <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="ViewProfile" component={ViewProfile} options={{ headerShown: false }} />
           
             </Stack.Navigator>
         );

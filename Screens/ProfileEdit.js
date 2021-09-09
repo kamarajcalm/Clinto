@@ -493,7 +493,7 @@ class ProfileEdit extends Component {
                                         style={{ width: width * 0.7, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
-                               {this.props.user.profile.occupation == "Doctor"&& <>
+                               {this.props.user.profile.occupation != "Customer"&& <>
                                <View>
                                     <Text style={styles.text}>Address</Text>
                                     <TextInput

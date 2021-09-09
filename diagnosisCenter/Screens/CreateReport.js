@@ -54,7 +54,6 @@ class CreateReport extends Component {
        
             suggestedReports:[],
             userFound:false,
-            reports:[],
             addModal:false,
             keyBoardHeight:0,
             files:[],
@@ -70,15 +69,10 @@ addReport =()=>{
     if(!this.state.searched){
          return this.showSimpleMessage("Please Select Report by Searching Only","orange","info")   
     }
-  if(this.state.report==""){
-      return this.showSimpleMessage("Please Select Report by Searching Only","orange","info")
-  }
-  if(this.state.selectedFile==null){
-         return this.showSimpleMessage("Please Select Report by Searching Only","orange","info") 
-  }
+
   let pushObj ={
       report :this.state.reportObj,
-      file:this.state.selectedFile
+      file:this.state.selectedFile||null
   }
   this.state.files.push(pushObj)
   this.setState({files:this.state.files,addModal:false})
@@ -124,15 +118,9 @@ addReport =()=>{
    selectFile = async()=>{
        try {
   const res = await DocumentPicker.pick({
-    type: [DocumentPicker.types.pdf,DocumentPicker.types.images],
+  
   })
-  console.log(res)
-  console.log(
-    res[0].uri,
-    res[0].type, // mime type
-    res[0].name,
-    res[0].size,
-  )
+
         const photo = {
             uri:   res[0].uri,
             type:res[0].type,
@@ -146,37 +134,7 @@ addReport =()=>{
     throw err
   }
 }
-//  let result = await ImagePicker.launchImageLibraryAsync({
-//             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-//             allowsMultipleSelection: true
-//         });
-//         if (result.cancelled == true) {
-//             return
-//         }
-//         let filename = result.uri.split('/').pop();
-//         let match = /\.(\w+)$/.exec(filename);
-//         var type = match ? `image/${match[1]}` : `image`;
-//         const photo = {
-//             uri: result.uri,
-//             type: type,
-//             name: filename,
-//         };
-//   const result = await DocumentPicker.getDocumentAsync({
-//      type: "*/*",
-//      copyToCacheDirectory:true
-//   });
-//     //   let filename = file.uri.split('/').pop();
-//     //     let match = /\.(\w+)$/.exec(filename);
-//     //     const type =  mime.lookup(match[1])
 
-//         let filename = result.uri.split('/').pop();
-//         let match = /\.(\w+)$/.exec(filename);
-//         var type = match ? `image/${match[1]}` : `image`;
-//         const photo = {
-//             uri: result.uri,
-//             type: type,
-//             name: filename,
-//         };
 
 }
     searchUser = async (mobileNo) => {
@@ -238,7 +196,7 @@ addReport =()=>{
         console.log(api)
          const data = await HttpsClient.get(api)
          if(data.type=="success"){
-               this.scrollRef.scrollToEnd({animated:true})
+               
                this.setState({reports:data.data,})
          }
     }
@@ -281,6 +239,10 @@ addReport =()=>{
 
 
     create = async()=>{
+                //    cases:
+        // 1.if user enter the prescription id
+        // 2.if user enter the mobileNo
+        // 3.NO details about the user
        this.setState({creating:true})
       if(!this.state.userFound){
           if(this.state.dob==""){
@@ -330,7 +292,10 @@ addReport =()=>{
         }
               let  reports = []
         this.state.files.forEach((item,index)=>{
-                sendData[`file${index}`]=item.file
+            if(item.file){
+                     sendData[`file${index}`]=item.file
+            }
+               
                 reports.push(item.report.id)
                 const dataa = JSON.stringify(reports)
                 sendData["reports"] = dataa
@@ -631,7 +596,7 @@ addReport =()=>{
                                                             <Text style={[styles.text,{color:"#000"}]}>Report Name :{item.report.report}</Text>
                                                         </View>
                                                         <View style={{marginTop:10}}>
-                                                            <Text style={[styles.text,{color:"#000"}]}>File :{item.file.name}</Text>
+                                                            <Text style={[styles.text,{color:"#000"}]}>File :{item?.file?.name}</Text>
                                                         </View>
                                                 </View>
                                                 <TouchableOpacity style={{flex:0.2,alignItems:"center",justifyContent:"center"}}

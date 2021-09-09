@@ -1,32 +1,54 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView, ScrollView } from 'react-native';
-import settings from '../AppSettings';
+import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, SafeAreaView, ScrollView ,ActivityIndicator} from 'react-native';
+import settings from '../../AppSettings';
 import { connect } from 'react-redux';
-import { selectTheme } from '../actions';
+import { selectTheme } from '../../actions';
 const { height, width } = Dimensions.get("window");
 import { Ionicons } from '@expo/vector-icons';
-import authAxios from '../api/authAxios';
+
 const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
+const deviceHeight =Dimensions.get('screen').height
 const url =settings.url;
 const date =new Date()
 import { Linking } from 'react-native';
 import { Feather ,Entypo} from '@expo/vector-icons';
-import HttpsClient from '../api/HttpsClient';
-import { SliderBox } from "react-native-image-slider-box";
-let weekdays =["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
-class ViewMedicalDetails extends Component {
-    constructor(props) {
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+import Modal from 'react-native-modal';
 
+import { SliderBox } from "react-native-image-slider-box";
+import HttpsClient from '../../api/HttpsClient';
+
+   let weekdays =["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+class ViewDiagnosticCenter extends Component {
+    constructor(props) {
+      
         super(props);
         this.state = {
             item:null,
             receptionList:[],
-              images:[]
+            images:[]
         };
     }
+    getImages = async()=>{
+        let api = `${url}/api/prescription/clinicImages/?clinic=${this.props.clinic.clinicpk}`
+        console.log(api,"jhjhj")
+        let data =await HttpsClient.get(api)
+
+        if(data.type=="success"){
+            let images =[]
+            data.data.forEach((item,index)=>{
+                images.push(`${url}${item.imageUrl}`)
+            })
+            this.setState({images},()=>{
+                console.log(images)
+            })
+
+        }
+      
+    }
     getReceptionList = async () => {
-        let api = `${url}/api/prescription/recopinists/?clinic=${this.props?.medical?.clinicpk||this.props.clinic.clinicpk}`
+        let api = `${url}/api/prescription/recopinists/?clinic=${this.props.clinic.clinicpk}`
         console.log(api)
         const data = await HttpsClient.get(api)
         // console.log(data,"kkk")
@@ -35,37 +57,21 @@ class ViewMedicalDetails extends Component {
         }
     }
     getClinicDetails = async()=>{
-        let api = `${url}/api/prescription/clinics/${this.props?.medical?.clinicpk||this.props.clinic.clinicpk}/`
+        let api = `${url}/api/prescription/clinics/${this.props.clinic.clinicpk}/`
         console.log(api)
         const data =await HttpsClient.get(api)
         if(data.type =="success"){
             this.setState({item:data.data})
         }
     }
-        getClinicImages = async()=>{
-        let api = `${url}/api/prescription/clinicImages/?clinic=${this.props?.medical?.clinicpk||this.props.clinic.clinicpk}`
-        console.log(api)
-        let data = await HttpsClient.get(api)
-
-        if (data.type == "success") {
-            let images = []
-            data.data.forEach((item, index) => {
-                images.push(`${url}${item.imageUrl}`)
-            })
-            this.setState({ images }, () => {
-                console.log(images)
-            })
-
-        }
-    }
     componentDidMount() {
+        this.getImages()
         this.getReceptionList()
-        this.getClinicDetails()
-        this.getClinicImages();
+         this.getClinicDetails()
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
+            this.getImages()
             this.getReceptionList()
             this.getClinicDetails()
-             this.getClinicImages();
         });
     }
     getTodayTimings2 = (item)=>{
@@ -102,9 +108,9 @@ class ViewMedicalDetails extends Component {
       ) 
     }
      getTodayTimings3 = (today) => {
-    if(this.state?.item?.clinicShifts){
-              return(
-       this.state?.item?.clinicShifts[today][0].timings.map((i, index) => {
+    
+   return(
+       this.state?.item?.clinicShifts[today][0]?.timings?.map((i, index) => {
            console.log(i,"ppp")
            return (
                <View 
@@ -132,11 +138,40 @@ class ViewMedicalDetails extends Component {
            )
        })
    )
-    }
- 
+       
+       
+
+
 
     }
+showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
+
+        showMessage(message);
+    }
+        deleteReceptionist =async()=>{
+        let api = `${url}/api/prescription/recopinists/${this.state.deleteReceptionist.id}/`
+        console.log(api,"ppppp")
+        let deletee = await HttpsClient.delete(api);
+        if (deletee.type == "success") {
+            this.state.receptionList.splice(this.state.deleteReceptionIndex, 1);
+            this.setState({ receptionList: this.state.receptionList })
+            this.showSimpleMessage("Deleted SuccessFully","green","success")
+            this.setState({ showModal2: false })
+        } else {
+            this.showSimpleMessage.show("Try again","red","danger")
+        }
+    }
     render() {
+
+
+    
         return (
             <>
                 <SafeAreaView style={styles.topSafeArea} />
@@ -144,28 +179,28 @@ class ViewMedicalDetails extends Component {
                     <View style={{ flex: 1, backgroundColor: "#fff" }}>
                         <StatusBar backgroundColor={themeColor} />
                         {/* HEADERS */}
-                        <View style={{ height: height * 0.1, backgroundColor: themeColor,flexDirection: 'row', alignItems: "center" }}>
+                        <View style={{ height: height * 0.1, backgroundColor: themeColor,  flexDirection: 'row', alignItems: "center" }}>
                             <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}
                                 onPress={() => { this.props.navigation.goBack() }}
                             >
                                 <Ionicons name="chevron-back-circle" size={30} color="#fff" />
                             </TouchableOpacity>
                             <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
-                                <Text style={[styles.text, { color: '#fff', fontWeight: 'bold', fontSize: 18 }]}>{this.state.item?.companyName}</Text>
+                                <Text style={[styles.text, { color: '#fff', fontWeight: 'bold', fontSize: 18 }]}>{this.state?.item?.companyName}</Text>
                             </View>
                             <TouchableOpacity style={{ flex: 0.2, flexDirection: "row", alignItems: "center", justifyContent: 'center' }}
-                                onPress={() => { this.props.navigation.navigate('EditClinicDetails', { clinic: this.state.item }) }}
+                                onPress={() => { this.props.navigation.navigate('EditClinicDetails', { clinic: this?.state?.item }) }}
                             >
                                 <Entypo name="back-in-time" size={24} color="#fff" />
                                 <Text style={[styles.text, { marginLeft: 10, color: "#fff" }]}>Edit </Text>
                             </TouchableOpacity>
                         </View>
 
-                        <ScrollView style={{ flex: 1, }}>
+              {  this.state.item?        <ScrollView style={{ flex: 1, }}>
                             {/* image */}
-                             <View style={{ height: height * 0.25, }}>
-                                <SliderBox
-                                    images={this.state.images}
+                            <View style={{ height: height * 0.2, width }}>
+                                     <SliderBox
+                                    images={this.state?.images}
                                     dotColor={themeColor}
                                     imageLoadingColor={themeColor}
                                     ImageComponentStyle={{ height: "100%", width: "100%", resizeMode: "cover" }}
@@ -218,8 +253,8 @@ class ViewMedicalDetails extends Component {
                                
                             </View>
                                    <View>
-                                          {this.state.item&&
-                                         this.getTodayTimings2(this.state.item)
+                                          {
+                                         this.getTodayTimings2(this?.state?.item)
                                       }
                                     </View>
                                 <View style={{alignItems:"center",justifyContent:"center"}}>
@@ -338,9 +373,9 @@ class ViewMedicalDetails extends Component {
                             <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around",marginVertical:20,flexWrap:"wrap"}}>
                                 <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center", marginTop: 20 }}>
                                     <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, backgroundColor: themeColor, borderRadius: 5, alignItems: 'center', justifyContent: "center" }}
-                                        onPress={() => { this.props.navigation.navigate("CreateReceptionistMedical", { item: this.state.item }) }}
+                                        onPress={() => { this.props.navigation.navigate("CreateDiagnosisCenterUser", { item: this.state.item }) }}
                                     >
-                                        <Text style={[styles.text, { color: "#fff" }]}>Create Receptionist</Text>
+                                        <Text style={[styles.text, { color: "#fff" }]}>Create User</Text>
                                     </TouchableOpacity>
                                 </View>
                                 <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center", marginTop: 20 }}>
@@ -350,9 +385,9 @@ class ViewMedicalDetails extends Component {
                                         <Text style={[styles.text, { color: "#fff" }]}>Manage Offers</Text>
                                     </TouchableOpacity>
                                 </View>
-                                          <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center", marginVertical:10 }}>
+                                                                   <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center", marginTop: 10 }}>
                                 <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, backgroundColor: themeColor, borderRadius: 5, alignItems: 'center', justifyContent: "center" }}
-                                    onPress={() => { this.props.navigation.navigate('UploadImages',{ clinic: this.props.medical.clinicpk})}}
+                                    onPress={() => { this.props.navigation.navigate('UploadImages',{ clinic: this.state.item.id })}}
                                 >
                                     <Text style={[styles.text, { color: "#fff" }]}>Add Images</Text>
                                 </TouchableOpacity>
@@ -360,12 +395,43 @@ class ViewMedicalDetails extends Component {
                             </View>
                         
                              
-                        </ScrollView>
-
+                        </ScrollView> :
+                         <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
+                            <ActivityIndicator  size={"large"}  color={themeColor}/>
+                         </View>
+                        }
+                            <Modal
+                                 deviceHeight={deviceHeight}
+                                animationIn="slideInUp"
+                                animationOut="slideOutDown"
+                                isVisible={this.state.showModal2}
+                                onBackdropPress={() => { this.setState({ showModal2: false }) }}
+                            >
+                                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                                    <View style={{ height: height * 0.3, width: width * 0.9, backgroundColor: "#fff", borderRadius: 20, alignItems: "center", justifyContent: "space-around" }}>
+                                        <View>
+                                            <Text style={[styles.text, { fontWeight: "bold", color: themeColor, fontSize: 20 }]}>Do you want to Delete?</Text>
+                                        </View>
+                                        <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "space-around", width, }}>
+                                            <TouchableOpacity style={{ backgroundColor: themeColor, height: height * 0.05, width: width * 0.2, alignItems: "center", justifyContent: 'center', borderRadius: 10 }}
+                                                onPress={() => { this.deleteReceptionist() }}
+                                            >
+                                                <Text style={[styles.text, { color: "#fff" }]}>Yes</Text>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity style={{ backgroundColor: themeColor, height: height * 0.05, width: width * 0.2, alignItems: "center", justifyContent: "center", borderRadius: 10 }}
+                                                onPress={() => { this.setState({ showModal2: false }) }}
+                                            >
+                                                <Text style={[styles.text, { color: "#fff" }]}>No</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                </View>
+                            </Modal>
                     </View>
                 </SafeAreaView>
             </>
         );
+          
     }
 }
 const styles = StyleSheet.create({
@@ -386,8 +452,7 @@ const mapStateToProps = (state) => {
     return {
         theme: state.selectedTheme,
         user: state.selectedUser,
-        medical:state.selectedMedical,
         clinic:state.selectedClinic
     }
 }
-export default connect(mapStateToProps, { selectTheme })(ViewMedicalDetails);
+export default connect(mapStateToProps, { selectTheme })(ViewDiagnosticCenter);

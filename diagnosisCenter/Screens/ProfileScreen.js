@@ -104,7 +104,22 @@ class ProfileScreen extends Component {
                         </View>
                         {/* CHATS */}
                         <View style={{flex:1,backgroundColor:"#fff"}}>
-              
+                                     <TouchableOpacity style={{ flexDirection: "row", height: height * 0.05, paddingHorizontal: 20, width, marginTop: 20 }}
+                        onPress={() => { this.props.navigation.navigate('ViewProfile')}}
+                    >
+                        <View style={{ flex: 0.8, flexDirection: "row" }}>
+                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                               <Ionicons name="person" size={24} color={themeColor} />
+                            </View>
+                            <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
+                                <Text style={[styles.text, { color: themeColor}]}>Your Profile</Text>
+                            </View>
+                        </View>
+
+                        <View style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}>
+                            <Entypo name="triangle-right" size={24} color={themeColor} />
+                        </View>
+                    </TouchableOpacity>
                     <TouchableOpacity style={{ flexDirection: "row", height: height * 0.05, paddingHorizontal: 20, width, marginTop: 20 }}
                         onPress={() => { this.props.navigation.navigate('ViewFeautures')}}
                     >
@@ -114,6 +129,22 @@ class ProfileScreen extends Component {
                             </View>
                             <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
                                 <Text style={[styles.text, { color: themeColor}]}> Diagnosis Features</Text>
+                            </View>
+                        </View>
+
+                        <View style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}>
+                            <Entypo name="triangle-right" size={24} color={themeColor} />
+                        </View>
+                    </TouchableOpacity>
+                              <TouchableOpacity style={{ flexDirection: "row", height: height * 0.05, paddingHorizontal: 20, width, marginTop: 20 }}
+                        onPress={() => { this.props.navigation.navigate('ViewLab')}}
+                    >
+                        <View style={{ flex: 0.8, flexDirection: "row" }}>
+                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                               <FontAwesome name="money" size={24} color={themeColor}/>
+                            </View>
+                            <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
+                                <Text style={[styles.text, { color: themeColor}]}>Lab Details</Text>
                             </View>
                         </View>
 

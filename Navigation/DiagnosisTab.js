@@ -18,6 +18,7 @@ import ReportsStack from '../diagnosisCenter/Stacks/ReportsStack';
 import DiagnosisTabBar from '../components/DiagnosisTabBar';
 import AppoinmentsStack from '../diagnosisCenter/Stacks/AppoinmentsStack';
 import ProfileStack from '../diagnosisCenter/Stacks/ProfileStack';
+import ChatStack from '../stacks/ChatStack';
 const Tab = createBottomTabNavigator();
 
 
@@ -51,7 +52,14 @@ class DiagnosisTab extends Component {
         return true
     }
    
+    getTabBarVisibility3 = (route) => {
+        const routeName = route.state ? route.state.routes[route.state.index].name : ''
+        if (routeName == "ChatScreen") {
+            return false
+        }
 
+        return true
+    }
     render() {
         return (
 
@@ -77,6 +85,14 @@ class DiagnosisTab extends Component {
                     })}
 
                 />
+                    <Tab.Screen name="Chat" component={ChatStack}
+                        options={({ route }) => ({
+
+                            tabBarVisible: this.getTabBarVisibility3(route),
+
+                        })}
+
+                    />
                    <Tab.Screen name="ProfileStack" component={ProfileStack}
                     options={({ route }) => ({
 

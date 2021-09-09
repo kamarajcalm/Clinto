@@ -42,7 +42,7 @@ import HttpsClient from '../../api/HttpsClient';
 import LottieView from 'lottie-react-native';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
-
+import DocumentPicker from 'react-native-document-picker'
 const url = settings.url;
 
 class ViewReports extends Component {
@@ -51,7 +51,16 @@ class ViewReports extends Component {
         let item = props.route.params.item
         super(props);
         this.state = {
-           item
+           item,
+           reports:[],
+           report:"",
+           selectedFile:null,
+           files:[],
+           searched:false,
+           addModal:false,
+           category:null,
+           price:"",
+           refreshing:false
         };
     }
      validateAnimations = async () => {
@@ -186,20 +195,24 @@ getTotal =()=>{
      }
      header =()=>{
        return (
-         <View style={{flexDirection:"row",marginTop:15}}>
-             <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
-                 <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>#</Text>
-             </View>
-             <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
-                  <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>Report</Text>
-             </View>
-              <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
-                  <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>Price</Text>
-             </View>
-             <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
-                   <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>Actions</Text>
-             </View>
-         </View>
+           <View>
+                 
+                         <View style={{flexDirection:"row",marginTop:15}}>
+                            <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
+                                <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>#</Text>
+                            </View>
+                            <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
+                                <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>Report</Text>
+                            </View>
+                            <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                                <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>Price</Text>
+                            </View>
+                            <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                                <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>Actions</Text>
+                            </View>
+                        </View>
+           </View>
+
        )
      }
      footer =()=>{
@@ -208,11 +221,9 @@ getTotal =()=>{
              <View style={{alignSelf:"flex-end",justifyContent:"center",marginRight:20}}>
                  <Text style={[styles.text,{color:"#000"}]}>Total :{this.getTotal()}</Text>
              </View>
-             <View style={{marginTop:20}}>
-                 <TouchableOpacity style={{height:height*0.04,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:themeColor}}>
-                      <Text style={[styles.text,{color:"#fff"}]}>Add Report</Text>
-                 </TouchableOpacity>
-             </View>
+                  <View style={{marginTop:10,alignItems:"center",justifyContent:"center"}}>
+                            <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>Result Expected On : {this.state.item.result_expected}</Text>
+                      </View>
          </View>
        )
      }
@@ -243,6 +254,169 @@ getTotal =()=>{
     );
 
   }
+     selectFile = async()=>{
+                    try {
+                            const res = await DocumentPicker.pick({
+                           
+                            })
+                    
+                        const photo = {
+                            uri: res[0].uri,
+                            type:res[0].type,
+                            name: res[0].name,
+                        };
+                        this.setState({selectedFile:photo,searched:true})
+                    } catch (err) {
+                    if (DocumentPicker.isCancel(err)) {
+                        
+                    } else {
+                        throw err
+                    }
+}
+     }
+     searchReports = async(report)=>{
+       this.setState({report,searched:false})   
+        let api =`${url}/api/prescription/labreports/?clinic=${this.props.clinic.clinicpk}`
+        console.log(api)
+         const data = await HttpsClient.get(api)
+         if(data.type=="success"){
+            
+               this.setState({reports:data.data,})
+         }
+    }
+    getReport = async()=>{
+       let api = `${url}/api/prescription/getreports/${this.state.item.id}/`
+       let data = await HttpsClient.get(api)
+       if(data.type=="success"){
+           this.setState({item:data.data})
+       }
+    }
+    editReport = async()=>{
+    
+        this.setState({editing:true})
+                if(!this.state.searched){
+                    
+                         this.setState({editing:false})
+                    return this.showSimpleMessage("Please Select Report by Searching Only","orange","info")   
+                }
+            if(this.state.report==""){
+                   this.setState({editing:false})
+                return this.showSimpleMessage("Please Select Report ","orange","info")
+            }
+    
+
+            let api = `${url}/api/prescription/subreports/${this.state.selectedItem.id}/`
+            let sendData ={
+            
+               bodyType:'formData'
+            }
+            if(this.state.selectedFile){
+               sendData.report_file= this.state.selectedFile
+            }
+            if(this.state.category){
+                sendData.category= this.state.category
+                sendData.price= this.state.price
+            }
+            let patch = await HttpsClient.patch(api,sendData)
+            console.log(patch,api,sendData)
+            if(patch.type=="success"){
+                   this.setState({editing:false})
+                  this.setState({addModal:false})
+                  this.showSimpleMessage("Edited SuccessFully","green","success")
+                  return this.getReport()
+            }else{
+                this.setState({editing:false})
+                this.showSimpleMessage("Something Went Wrong","red","danger")
+            }
+}
+      addReportModal = ()=>{
+        return(
+            <Modal 
+              deviceHeight={screenHeight}
+              statusBarTranslucent={true}
+              isVisible={this.state.addModal}
+               onBackdropPress={()=>{this.setState({addModal:false})}}
+               style={{marginBottom:this.state.keyBoardHeight}}
+            >
+              <View style={{height:height*0.6,width:width*0.9,backgroundColor:"#fff",borderRadius:10}}>
+                    <ScrollView>
+                          <View style={{alignItems:"center",justifyContent:"center",marginVertical:20}}>
+                                <Text style={[styles.text,{color:"#000"}]}> Add Report Details :</Text>
+                          </View>
+                            <View style={{paddingHorizontal:20}}>
+                                    <Text style={[styles.text], { color: "#000", }}>Select Type of Reports</Text>
+                                               <TextInput
+                                value={this.state.report}
+                                onChangeText={(report) => { this.searchReports(report) }}
+                                selectionColor={themeColor}
+                                multiline={true}
+                                style={{ width: width * 0.7, height:35, backgroundColor: inputColor,  padding: 10, marginTop: 10, textAlignVertical: "top" }}
+                            />
+                            </View>
+                                {this.state.reports.length>0&&<ScrollView 
+                        showsVerticalScrollIndicator ={false}
+                                style={{
+                                    width: width * 0.7, backgroundColor: '#fafafa', borderColor: "#333", borderTopWidth: 0.5,marginLeft:20
+                                 
+                                   }}>
+                           {
+                               this.state.reports.map((i,index)=>{
+                                   return(
+                                       <TouchableOpacity 
+                                           key ={index}
+                                           style={{padding:15,justifyContent:"center",width:width*0.7,borderColor:"#333",borderBottomWidth:0.3,height:35}}
+                                           onPress={()=>{
+                                               
+                                               this.setState({report:i.other_title,reports:[],searched:true,reportObj:{id:i.id,report:i.other_title},category:i.category,price:i.price})
+                                           }}
+                                       >
+                                           <Text style={[styles.text,{color:themeColor,}]}>{i.other_title}</Text>
+                                       </TouchableOpacity>
+                                   )
+                               })
+                           }
+                        </ScrollView>}
+                          <View style={{ marginTop: 20 ,paddingHorizontal:20}}>
+                                  <Text style={[styles.text], { color: "#000",fontSize: 18 }}>Upload File</Text>
+                                  <TouchableOpacity style={{marginTop:20,alignItems:"center",justifyContent:"center"}}
+                                    onPress={()=>{
+                                       this.selectFile()
+                                    }}
+                                  >
+                                         <Ionicons name="document-attach" size={24} color="black" />
+                                  </TouchableOpacity>
+                            
+                                  
+                                     <View style={{alignItems:"center",justifyContent:"center",flexDirection:"row"}}>
+                                         <View>
+                                                 <Text style={[styles.text,{color:'#000'}]}>{this?.state?.selectedFile?.name}</Text> 
+                                         </View>
+                                            
+                                     </View>
+                       
+                       
+                               </View>
+                               <View style={{alignItems:"center",justifyContent:"center",marginVertical:30}}>
+                                 {!this.state.editing?  <TouchableOpacity style={{height:height*0.04,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}
+                                    onPress={()=>{this.editReport()}}
+                                   >
+                                         <Text style={[styles.text,{color:"#fff"}]}>Edit Report</Text>
+                                   </TouchableOpacity>:
+                                   <View style={{height:height*0.04,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}>
+                                        <ActivityIndicator  size={"small"} color={"#fff"}/>
+                                   </View>
+                                   
+                                }
+                               </View>
+                    </ScrollView>
+              </View>
+            </Modal>
+        )
+    }
+    setEdit = (item)=>{
+        this.setState({addModal:true,report:item.category,selectedItem:item,})
+        
+    }
     render() {
             const config = {
           velocityThreshold: 0.3,
@@ -330,6 +504,8 @@ getTotal =()=>{
                         <View style={{flex:0.8,}}>
 
                            <FlatList
+                             refreshing={this.state.refreshing}
+                             onRefresh={()=>{this.getReport()}}
                              ListFooterComponent={this.footer()} 
                              data={this.state?.item?.subReports}
                              keyExtractor={(item,index)=>index.toString()}
@@ -342,22 +518,28 @@ getTotal =()=>{
                                           </View>
                                           <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
                                                 <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{item.category}</Text>
+                                                {item.report_file==null&&<Text style={[styles.text,{color:"red",fontSize:height*0.02}]}>(File Not Uploaded)</Text>}
                                           </View>
                                             <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
                                                 <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{item.price}</Text>
                                           </View>
                                           <View style={{flex:0.3,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
-                                              <TouchableOpacity>
+                                              <TouchableOpacity 
+                                                onPress={()=>{
+
+                                                    this.setEdit(item)
+                                                }}
+                                              >
                                                   <Entypo name="edit" size={24} color={themeColor} />
                                               </TouchableOpacity>   
-                                                 <TouchableOpacity 
+                                           {item.report_file&&<TouchableOpacity 
                                                    onPress={()=>{
                                                       Linking.openURL(`${url}${item.report_file}`)
                                                    }}
                                                  
                                                  >
                                                      <Feather name="download" size={24} color={themeColor}/>
-                                              </TouchableOpacity>  
+                                              </TouchableOpacity>  }
                                                 <TouchableOpacity 
                                                   onPress={()=>{
                                                     this.createAlert(item)
@@ -409,7 +591,9 @@ getTotal =()=>{
                     this.lottieModal()
                 }
            
-       
+               {
+                   this.addReportModal()
+               }
             </SafeAreaView>
 
         </>

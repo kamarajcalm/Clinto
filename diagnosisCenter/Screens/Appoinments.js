@@ -88,7 +88,7 @@ class Appoinments extends Component {
              case 'InProgress':
                  return <InProgressAppoinment navigation={this.props.navigation} />
              case 'AllAppointments':
-                 return <AllAppointments navigation={this.props.navigation} />
+                 return <AllAppointments navigation={this.props.navigation}  date={this.state.date}/>
              default:
                  return null;
          }
