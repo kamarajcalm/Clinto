@@ -32,7 +32,7 @@ import { selectTheme,selectClinic } from '../actions';
 import authAxios from '../api/authAxios';
 import HttpsClient from "../api/HttpsClient";
 import Modal from 'react-native-modal';
-import { Ionicons, Entypo, Feather, MaterialCommunityIcons, FontAwesome, FontAwesome5, EvilIcons} from '@expo/vector-icons';
+import { Ionicons, Entypo, Feather, MaterialCommunityIcons, FontAwesome, FontAwesome5, EvilIcons,MaterialIcons} from '@expo/vector-icons';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 const url =settings.url
 const fontFamily = settings.fontFamily;
@@ -78,6 +78,7 @@ class Priscription extends React.Component {
             offset:0,
             next:true,
             keyBoard:false,
+            ReportsState:false
          
         };
         this.scrollY=new Animated.Value(0)
@@ -216,7 +217,7 @@ hideDatePicker = () => {
         }
         else{
      
-               this.getLocation()
+
             this.getPateintPrescription()
         }
 
@@ -635,9 +636,19 @@ hideDatePicker = () => {
         return (
             <View>
                 <View style={{ height: headerHeight / 2,flexDirection:"row",}}>
-                     <View style={{flex:0.6,justifyContent:"center"}}>
-                        <Text style={{ color: '#fff', fontFamily: "openSans", marginLeft: 20, fontSize: height*0.04, fontWeight: "bold" }}>Prescription</Text>
-                     </View>
+                     <TouchableOpacity style={{flex:0.6,justifyContent:"center",flexDirection:"row"}}
+                       onPress={()=>{
+                           this.setState({ReportsState:!this.state.ReportsState})
+                       }}
+                     >
+                         <View style={{justifyContent:"center"}}>
+                              <Text style={{ color: '#fff', fontFamily: "openSans", marginLeft: 20, fontSize: height*0.04, fontWeight: "bold" }}>{!this.state.ReportsState?"Prescription":"Reports"}</Text>
+
+                         </View>
+                         <View style={{justifyContent:"center",marginTop:5}}>
+                             <MaterialIcons name="arrow-drop-down" size={30} color="#fff" />
+                         </View>
+                     </TouchableOpacity>
                     <View style={{flex:0.4,alignItems: "center", justifyContent: 'center'}}>
                         {
                             this.renderFilter()
@@ -651,7 +662,6 @@ hideDatePicker = () => {
                             <EvilIcons name="search" size={24} color="black" />
                         </View>
                         <TextInput
-                            placeholderStyle={[styles.text]}
                             selectionColor={themeColor}
                             style={{ height: "99%", flex: 0.8, backgroundColor: "#eee", paddingLeft: 10,justifyContent:"center" }}
                             placeholder={`search ${this.props?.clinic?.name ||"prescription"}`}
