@@ -158,7 +158,7 @@ export default class MedicineDetails extends Component {
                     style={styles.card}
                 >
                     <View style={{ flex: 0.2, flexDirection: "row", margin: 10 }}>
-                        <Text style={[styles.text, { fontWeight: "bold", fontSize: 20 }]}>{item.title || item.medicine}</Text>
+                        <Text style={[styles.text, { fontWeight: "bold", fontSize: 20 }]}> {this.props.medicinesGiven.length+this.props.index+1}. {item.title || item.medicine}</Text>
 
 
                     </View>

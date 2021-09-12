@@ -762,7 +762,7 @@ validateButton = (item,index) =>{
                                      this.requestInterVal = setInterval(()=>{
                                          this.getAvailableClinics()
                                      },20000)
-                                     this.searchanimation.play()
+                                     this.searchanimation?.play()
                         });
              })
          }else{
@@ -1625,7 +1625,12 @@ validateButton = (item,index) =>{
                 {
                     this.lottieModal()
                 }
-            
+                {
+                    this.checkoutModal()
+                }
+                {
+                    this.bottomModal()
+                }
                     <Modal
                     deviceHeight={deviceHeight}
                     isVisible={this.state.paymentLoading}

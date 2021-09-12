@@ -23,6 +23,7 @@ import FlashMessage, { showMessage, hideMessage } from "react-native-flash-messa
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import moment from 'moment';
+import { FlatList } from 'react-native-gesture-handler';
 
 class AddPrescription extends Component {
   constructor(props) {
@@ -203,7 +204,10 @@ class AddPrescription extends Component {
             duplicate.splice(index, 1)
             return this.setState({ MedicinesGiven: duplicate })
         }
-
+     if (type == "diagnosis") {
+            duplicate[index].diagonsis = value
+            return this.setState({ MedicinesGiven: duplicate })
+        }
     }
     backFunction =(medicines)=>{
         try{
@@ -241,12 +245,12 @@ class AddPrescription extends Component {
 
         this.setState({ MedicinesGiven: this.state.MedicinesGiven.concat(medicines) })
     }
-    createTemplateAlert =(prescribed_medicines,medicines_given) =>{
+    createTemplateAlert =(prescribed_medicines,medicines_given,disease) =>{
           
         
               Alert.alert(
                   'Template is Available for?',
-                  `Age : ${this.state?.Age} & Diagnosis : ${this?.state?.selectedDiagonosis}`,
+                  `Age : ${this.state?.Age} & Diagnosis : ${disease}`,
                   [
                       { text: "No", style: 'cancel', onPress: () => { } },
                       {
@@ -270,7 +274,7 @@ class AddPrescription extends Component {
             this.setState({ loading: false })
             if(data.data.prescribed_medicines.length>0||data.data.medicines_given.length>0){
               
-                         this.createTemplateAlert(data.data.prescribed_medicines,data.data.medicines_given)
+                         this.createTemplateAlert(data.data.prescribed_medicines,data.data.medicines_given,disease)
             }
        
            
@@ -279,6 +283,9 @@ class AddPrescription extends Component {
         }
     }
  addPriscription = async()=>{
+     let error ={
+
+     };
  
      this.setState({creating:true})
         let api =`${url}/api/prescription/addPrescription/`
@@ -302,8 +309,44 @@ class AddPrescription extends Component {
             return this.showSimpleMessage("Please fill doctorFees", "#dd7030",)
             
         }
-     
+        for(let i=0;i<this.state.MedicinesGiven.length;i++){
+           if(this.state.MedicinesGiven[i].days==0||this.state.MedicinesGiven[i].days==""){
+                error.error=`please select No of Days in medicine number ${i+1}`
+                break;   
+           }
+              if(this.state.MedicinesGiven[i].diagonsis==null||this.state.MedicinesGiven[i].diagonsis==undefined||this.state.MedicinesGiven[i].diagonsis==""){
+                  error.error=`please select diagnosis in medicine number ${i+1}`
+                error.index= i
+                break;
+            }
+        }
+        for(let i=0;i<this.state.medicines.length;i++){
+               
+            if(this.state.medicines[i].morning_count==0&&this.state.medicines[i].afternoon_count==0&&this.state.medicines[i].night_count==0){
+               
+                error.error=`please select atlease one Frequency in medicine number ${this.state.MedicinesGiven.length+i+1}`
+                error.index= i
+                break;
+              
+            }
+            if(this.state.medicines[i].days=="0"||this.state.medicines[i].days==""){
+                  error.error=`please select No of Days in medicine number ${this.state.MedicinesGiven.length+i+1}`
+                error.index= i
+                break;
+            }
+            if(this.state.medicines[i].diagonsis==null||this.state.medicines[i].diagonsis==undefined||this.state.medicines[i].diagonsis==""){
+                  error.error=`please select diagnosis in medicine number ${this.state.MedicinesGiven.length+i+1}`
+                error.index= i
+                break;
+            }
+        
+        }
+        if(error?.error){
+            this.setState({creating:false})
+            return this.showSimpleMessage(`${error.error} `,"orange","info")
+        }
         this.state.medicines.forEach((i)=>{
+       
             try{
                 if (i.type == "Liquid"){
                     return 
@@ -350,6 +393,7 @@ class AddPrescription extends Component {
           sendData.appointment =this.state.appointmentId
         }
        const post = await HttpsClient.post(api,sendData)
+       console.log(sendData,"seeee")
        console.log(post,"post")
        if(post.type=="success"){
            if(this.state.appoinment){
@@ -571,7 +615,7 @@ class AddPrescription extends Component {
     removeSelectedDiagonis =(item,index) =>{
          let duplicate = this.state.selectedDiagonosis
          duplicate.splice(index,1)
-         this.setState({selectedDiagonosis:duplicate,medicines:[],MedicinesGiven:[]},()=>{
+         this.setState({selectedDiagonosis:duplicate},()=>{
              this.state.selectedDiagonosis.forEach((item)=>{
                  this.searchTemplates(this.state.Age, item)
              })
@@ -614,6 +658,15 @@ class AddPrescription extends Component {
         }
     
     }
+    addDiagnosis =()=>{
+        if(this.state.Disease==""){
+            return this.showSimpleMessage("Please Add Diagnosis","orange","info")
+        }
+               this.state.selectedDiagonosis.push(this.state.Disease)
+               this.searchTemplates(this.state.Age, this.state.Disease)
+            
+         this.setState({ Disease: "",Diseases:[]})
+    }
   render() {
       const { loading } = this.state;
    
@@ -653,7 +706,7 @@ class AddPrescription extends Component {
                          value ={this.state.mobileNo}
                          selectionColor={themeColor}
                          onChangeText={(mobileNo) => { this.searchUser(mobileNo)}}
-                                style={{ width: width * 0.7, height: 35, backgroundColor: inputColor, borderRadius: 15, padding: 10, marginTop: 10}}
+                                style={{ width: width * 0.7, height: 35, backgroundColor: inputColor, borderRadius: 5, padding: 10, marginTop: 10}}
                     />
                 </View>
                {this.state.profiles.length>0&&<View style={{ marginTop: 20 ,flexDirection:"row"}}>
@@ -703,7 +756,7 @@ class AddPrescription extends Component {
                         value ={this.state.patientsName}
                         selectionColor={themeColor}
                         onChangeText={(patientsName) => { this.setState({ patientsName }) }}
-                                style={{ width: width * 0.7, height: 35, backgroundColor: inputColor, borderRadius: 15, padding: 10, marginTop: 10 }}
+                                style={{ width: width * 0.7, height: 35, backgroundColor: inputColor, borderRadius: 5, padding: 10, marginTop: 10 }}
                     />
                 </View>
                         <View style={{ marginTop: 20 }}>
@@ -713,7 +766,7 @@ class AddPrescription extends Component {
                                 value={this.state.Age}
                                 selectionColor={themeColor}
                                 onChangeText={(Age) => { this.setState({ Age })}}
-                                style={{ width: width * 0.7, height: 35, backgroundColor:inputColor, borderRadius: 15, padding: 10, marginTop: 10 }}
+                                style={{ width: width * 0.7, height: 35, backgroundColor:inputColor, borderRadius: 5, padding: 10, marginTop: 10 }}
                             />
                         </View>
                         <View style={{ marginTop: 20 ,flexDirection:"row"}}>
@@ -779,10 +832,10 @@ class AddPrescription extends Component {
                                     selectionColor={themeColor}
                                     multiline={true}
                                     onChangeText={(healthIssue) => { this.setState({ healthIssue}) }}
-                                    style={{ width: width * 0.6, height: 35, backgroundColor:inputColor, borderRadius: 15, padding: 10, marginTop: 10, }}
+                                    style={{ width: width * 0.6, height: 35, backgroundColor:inputColor, borderRadius: 5, padding: 10, marginTop: 10, }}
                                 />
                                 <TouchableOpacity 
-                                  style={{height:height*0.05,alignItems:"center",justifyContent:'center',width:width*0.2,borderRadius:10,backgroundColor:themeColor,marginTop:10}}
+                                  style={{height:35,alignItems:"center",justifyContent:'center',width:width*0.2,borderRadius:10,backgroundColor:themeColor,marginTop:10}}
                                   onPress={()=>{this.pushIssues()}}
                                
                                >
@@ -809,10 +862,10 @@ class AddPrescription extends Component {
                                 onChangeText={(Reason) => { this.setState({ Reason}) }}
                                 selectionColor={themeColor}
                                 multiline={true}
-                                style={{ width: width * 0.7, height: height * 0.15, backgroundColor: inputColor, borderRadius: 15, padding: 10, marginTop: 10, textAlignVertical:"top"}}
+                                style={{ width: width * 0.7, height: height * 0.1, backgroundColor: inputColor, borderRadius: 5, padding: 10, marginTop: 10, textAlignVertical:"top"}}
                             />
                         </View>
-                        <View style={{ marginTop: 20 }}>
+                        <View style={{ marginTop: 20 ,}}>
                                 <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Diagnosis</Text>
                                 {
                                     this.state.selectedDiagonosis.map((item,index)=>{
@@ -830,18 +883,25 @@ class AddPrescription extends Component {
                                             )
                                     })
                                 }
-                            <TextInput
+                             <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                                          <TextInput
                                 value={this.state.Disease}
                                 onChangeText={(Disease) => { this.searchDiseases(Disease) }}
                                 selectionColor={themeColor}
-                                multiline={true}
-                                style={{ width: width * 0.9, height:35, backgroundColor: inputColor,  padding: 10, marginTop: 10, textAlignVertical: "top" }}
+                                style={{ width: width * 0.6, height:35, backgroundColor: inputColor,  padding: 10, marginTop: 10, textAlignVertical: "top" }}
                             />
+                            <TouchableOpacity style={{height:35,width:width*0.2,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,marginTop: 10,borderRadius:5}}
+                             onPress={()=>{this.addDiagnosis()}}
+                            >
+                                  <Text style={[styles.text,{color:"#fff"}]}>Add</Text>
+                            </TouchableOpacity>
+                             </View>   
+                       
                         </View>
                         {this.state.Diseases.length>0&&<ScrollView 
                         showsVerticalScrollIndicator ={false}
                                 style={{
-                                    width: width * 0.9, backgroundColor: '#fafafa', borderColor: "#333", borderTopWidth: 0.5
+                                    width: width * 0.6, backgroundColor: '#fafafa', borderColor: "#333", borderTopWidth: 0.5,marginLeft:10
                                  
                                    }}>
                            {
@@ -849,7 +909,7 @@ class AddPrescription extends Component {
                                    return(
                                        <TouchableOpacity 
                                            key ={index}
-                                           style={{padding:15,justifyContent:"center",width:width*0.9,borderColor:"#333",borderBottomWidth:0.3,height:35}}
+                                           style={{padding:15,justifyContent:"center",width:width*0.6,borderColor:"#333",borderBottomWidth:0.3,height:35}}
                                            onPress={() => { this.setState({ Disease: "",Diseases:[]},()=>{
                                                this.state.selectedDiagonosis.push(i.title)
                                                this.searchTemplates(this.state.Age, i.title)
@@ -899,20 +959,24 @@ class AddPrescription extends Component {
                        </View>    
                 
                 </View>
-
-                {
-                   this.state.medicines.map((item,index)=>{
+              {
+                  this.state.medicines.map((item,index)=>{
                         return(
-                            <MedicineDetails 
-                              item={item} 
-                              index={index} 
-                              changeFunction={(type, value, index) => { this.changeFunction(type, value, index)}} 
-                              diagonsis={[...this.state.selectedDiagonosis]}
+                                                        <MedicineDetails 
+                                    item={item} 
+                                    index={index}
+                                    medicinesGiven = {this.state.MedicinesGiven} 
+                                    changeFunction={(type, value, index) => { this.changeFunction(type, value, index)}} 
+                                    diagonsis={[...this.state.selectedDiagonosis]}
 
-                              />
+                                    />
                         )
-                    })
-                }
+                  })
+              }
+                         
+               
+       
+          
                 
                         <View style={{ marginTop: 20 }}>
                                 <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Doctor Fees</Text>

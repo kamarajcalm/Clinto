@@ -14,7 +14,7 @@ export default class MedicineDetails2 extends Component {
         qty: this.props.item.total_qty.toString()||"",
         comment: this.props.item.command||"",
         diagnosis: [],
-         selectedDiagnosis: null
+        selectedDiagnosis: null
     };
   }
     changeQty = (text) => {
@@ -25,6 +25,11 @@ export default class MedicineDetails2 extends Component {
     changeComment = (comment) => {
         this.setState({ comment: comment }, () => {
             this.props.changeFunction("comment", this.state.comment, this.props.index)
+        })
+    }
+    changeDiagnosis =(value)=>{
+       this.setState({ selectedDiagnosis: value }, () => {
+            this.props.changeFunction("diagnosis", this.state.selectedDiagnosis, this.props.index)
         })
     }
         getDiagnosis = () => {
@@ -66,7 +71,7 @@ export default class MedicineDetails2 extends Component {
             style={[styles.card, { flex: 1 }]}
         >
             <View style={{ alignItems: 'center', justifyContent: "center", flex: 0.2 }}>
-                <Text style={[styles.text, { fontWeight: "bold", fontSize: 20 }]}>{item.title}</Text>
+                <Text style={[styles.text, { fontWeight: "bold", fontSize: 20 }]}>{index+1}. {item.title}</Text>
             </View>
             <View style={{ flexDirection: "row", marginHorizontal: 10, alignItems: "center", flex: 0.2 }}>
                 <View style={{ flexDirection: "row" }}>

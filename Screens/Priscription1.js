@@ -45,6 +45,7 @@ import { Swipeable } from "react-native-gesture-handler";
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants'; 
+import Reports from "../components/Reports";
 const {statusBarHeight} =Constants
 class Priscription extends React.Component {
     constructor(props) {
@@ -78,8 +79,9 @@ class Priscription extends React.Component {
             offset:0,
             next:true,
             keyBoard:false,
-            ReportsState:false
-         
+            ReportsState:false,
+            reports:[],
+            offset2:0
         };
         this.scrollY=new Animated.Value(0)
         this.translateYNumber= React.createRef()
@@ -96,6 +98,13 @@ class Priscription extends React.Component {
                    this.getPateintPrescription()
                }
              
+            })
+        }
+    }
+        handleEndReached2 =()=>{
+        if(this.state.next){
+            this.setState({offset2:this.state.offset2+5},()=>{
+              this.getPatientReports();
             })
         }
     }
@@ -205,6 +214,20 @@ hideDatePicker = () => {
         }
     
     }
+    getPatientReports = async()=>{
+          let api =`${url}/api/prescription/getreports/?patient=${this.props.user.profile.id}&limit=10&offset=${this.state.offset2}`
+          let data =  await HttpsClient.get(api)
+          console.log(api)
+          if(data.type=="success"){
+              this.setState({reports:this.state.reports.concat(data.data.results,)})
+                this.setState({ loading: false ,isFetching:false})
+              if(data.data.next){
+                  this.setState({next2:true})
+              }else{
+                   this.setState({next2:false})
+              }
+          }
+    }
     findUser =()=>{
         if (this.props.user.profile.occupation =="Doctor"){
            
@@ -219,6 +242,7 @@ hideDatePicker = () => {
      
 
             this.getPateintPrescription()
+            this.getPatientReports()
         }
 
         this.setState({ loading: false })
@@ -316,16 +340,16 @@ hideDatePicker = () => {
             extrapolate:"clamp"
         })
         return(
-            <View style={{  backgroundColor: "gray", height: height * 0.15, }}>
+            <TouchableOpacity style={{  backgroundColor:item.active?"red":"green", height: height * 0.15, }}>
               
-                   <TouchableOpacity 
+                   <View 
                     onPress={() => { this.makeInvalid(item, index)}}
-                    style={{height:height*0.05,width:width*0.3,alignItems:"center",justifyContent:"center",backgroundColor:item.active?"green":"red",marginHorizontal:20,marginTop:20}}
+                    style={{height:height*0.05,width:width*0.3,alignItems:"center",justifyContent:"center",marginHorizontal:20,marginTop:20}}
                    >
                     <Text style={[styles.text, { color: "#fff",  }]}>{item.active ?"Invalid":"Invalid"}</Text>
-                   </TouchableOpacity>
+                   </View>
              
-            </View>
+            </TouchableOpacity>
         )
     }
     closeRow =(index)=>{
@@ -415,20 +439,17 @@ hideDatePicker = () => {
                             <View style={{flexDirection:"row"}}>
                                 <Text style={[styles.text]}>Reason : </Text>
                             </View>
-                            <View style={{flexDirection:"row"}}>
-                                           <FlatList 
-                               horizontal={true}
-                               ItemSeparatorComponent={this.separator}
-                               data={item.diseaseTitle}
-                               keyExtractor={(item,index)=>index.toString()}
-                               renderItem={({item,index})=>{
-                                    return(
-                                        <View>
+                            <View style={{flexDirection:"row",width:"100%",flexWrap:"wrap"}}>
+                                {
+                                    item?.diseaseTitle?.map(({item,index})=>{
+                                                 return(
+                                        <View key={index}>
                                             <Text style={[styles.text]}>{item}</Text>    
                                         </View>
                                     )
-                               }}
-                            />
+                                    })
+                                }
+                
                             </View>
                      
                         </View>
@@ -520,20 +541,29 @@ hideDatePicker = () => {
                             <View style={{flexDirection:"row"}}>
                                 <Text style={[styles.text]}>Diagnosis : </Text>
                             </View>
-                            <FlatList
+                            <View style={{flexDirection:"row",flexWrap:"wrap",alignItems:"center",justifyContent:"space-around",flex:1}}>
+                                        {
+                                item?.diseaseTitle?.map((itemm,index)=>{
+                                            return(
+                                        <View>
+                                            <Text style={[styles.text]}>{itemm}  {index< item?.diseaseTitle.length-1&&","}</Text> 
+                                           
+                                        </View>
+                                    ) 
+                                })
+                            }
+                            </View>
+                    
+                            {/* <FlatList
                                ListFooterComponent={this.footer} 
                                horizontal={true}
                                ItemSeparatorComponent={this.separator}
                                data={item.diseaseTitle}
                                keyExtractor={(item,index)=>index.toString()}
                                renderItem={({item,index})=>{
-                                    return(
-                                        <View>
-                                            <Text style={[styles.text]}>{item}</Text>    
-                                        </View>
-                                    )
+                                
                                }}
-                            />
+                            /> */}
                         </View>
                   
                     <View style={{ flexDirection: "row", marginVertical:10 }}>
@@ -594,6 +624,15 @@ hideDatePicker = () => {
          
         }
     }
+        onRefresh2 =()=>{
+        this.setState({isFetching:true})
+
+            this.setState({reports:[],offset2:0,next2:true},()=>{
+                this.getPatientReports()
+            })
+         
+        
+    }
     renderFilter = () => {
         const { height,width } = Dimensions.get("window");
         const headerHeight = height*0.2   
@@ -636,18 +675,25 @@ hideDatePicker = () => {
         return (
             <View>
                 <View style={{ height: headerHeight / 2,flexDirection:"row",}}>
-                     <TouchableOpacity style={{flex:0.6,justifyContent:"center",flexDirection:"row"}}
+                     <TouchableOpacity style={{flex:0.6,justifyContent:"center",flexDirection:"row",}}
                        onPress={()=>{
                            this.setState({ReportsState:!this.state.ReportsState})
                        }}
                      >
-                         <View style={{justifyContent:"center"}}>
-                              <Text style={{ color: '#fff', fontFamily: "openSans", marginLeft: 20, fontSize: height*0.04, fontWeight: "bold" }}>{!this.state.ReportsState?"Prescription":"Reports"}</Text>
+                         <View style={{height:'100%',flexDirection:"row",width:width*0.5,}}>
+                                           <View style={{justifyContent:"center",}}>
+                             <View style={{}}>
+
+                              <Text style={{ color: '#fff', fontFamily: "openSans" ,fontSize: height*0.04, fontWeight: "bold" }}>{!this.state.ReportsState?"Prescription":"Reports"}</Text>
+
+                             </View>
 
                          </View>
                          <View style={{justifyContent:"center",marginTop:5}}>
                              <MaterialIcons name="arrow-drop-down" size={30} color="#fff" />
                          </View>
+                         </View>
+                  
                      </TouchableOpacity>
                     <View style={{flex:0.4,alignItems: "center", justifyContent: 'center'}}>
                         {
@@ -664,7 +710,7 @@ hideDatePicker = () => {
                         <TextInput
                             selectionColor={themeColor}
                             style={{ height: "99%", flex: 0.8, backgroundColor: "#eee", paddingLeft: 10,justifyContent:"center" }}
-                            placeholder={`search ${this.props?.clinic?.name ||"prescription"}`}
+                            placeholder={`search  ${this.state.ReportsState?"report":this.props?.clinic?.name ||"prescription"}`}
                             onChangeText={(text) => { this.searchPriscriptions(text) }}
                         />
                     </View>
@@ -674,7 +720,7 @@ hideDatePicker = () => {
         )
     }
     renderFooter =()=>{
-       if(this.state.next){
+       if(this.state.next&&!this.state.isFetching){
            return(
                <ActivityIndicator size="large" color ={themeColor} />
            )
@@ -751,8 +797,38 @@ const screenHeight =Dimensions.get('screen').height;
                     </Animated.View>
    <Animated.View style={{flex:1,backgroundColor:"#f3f3f3f3"}}>
            
-              
+              {this.state.ReportsState?
                         <Animated.FlatList
+                            keyExtractor={(item, index) => index.toString()}
+                            refreshControl={
+                                <RefreshControl
+                                    onRefresh={() => this.onRefresh2()}
+                                    refreshing={this.state.isFetching}
+                                    progressViewOffset={headerHeight}
+                                />
+                            }
+                            data={this.state.reports}
+                            scrollEventThrottle={16}
+                            contentContainerStyle={{ paddingTop: headerHeight+height*0.01, paddingBottom: 90 }}
+                            onScroll={handleScroll}
+                            ref={ref=>this.ref=ref}
+                             
+                            onEndReached ={()=>{this.handleEndReached2()}}
+                            ListFooterComponent={this.renderFooter()}
+                            onEndReachedThreshold={0.1}
+                            renderItem={({item,index})=>{
+                               return(
+                                  
+                                   <Reports item={item} index={index} reports={this.state.reports} navigation={this.props.navigation}/>
+                                
+                                 
+                                  
+                               )
+                          }}
+                        />
+              :
+                        <Animated.FlatList
+                            showsVerticalScrollIndicator={false}
                             keyExtractor={(item, index) => index.toString()}
                             refreshControl={
                                 <RefreshControl
@@ -784,7 +860,7 @@ const screenHeight =Dimensions.get('screen').height;
                                   
                                )
                           }}
-                        />
+                        />}
                           
             
 

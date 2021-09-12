@@ -396,6 +396,7 @@ class Appointments extends Component {
         }
         console.log(sendData)
       let post = await HttpsClient.patch(api,sendData)
+      console.log(post)
       if(post.type =="success"){
            this.setState({loading:false})
            this.getAppointments();

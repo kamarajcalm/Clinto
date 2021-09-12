@@ -58,6 +58,9 @@ class TabNavigator extends Component {
         if (routeName == "SelectAddress") {
             return false
         }
+        if (routeName == "ViewReports") {
+            return false
+        }
         return true
     }
     getTabBarVisibility2 = (route) => {

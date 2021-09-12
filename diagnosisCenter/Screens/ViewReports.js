@@ -524,14 +524,14 @@ getTotal =()=>{
                                                 <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{item.price}</Text>
                                           </View>
                                           <View style={{flex:0.3,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
-                                              <TouchableOpacity 
+                                           {this.props.user.profile.occupation!="Customer"&&<TouchableOpacity 
                                                 onPress={()=>{
 
                                                     this.setEdit(item)
                                                 }}
                                               >
                                                   <Entypo name="edit" size={24} color={themeColor} />
-                                              </TouchableOpacity>   
+                                              </TouchableOpacity>}   
                                            {item.report_file&&<TouchableOpacity 
                                                    onPress={()=>{
                                                       Linking.openURL(`${url}${item.report_file}`)
@@ -540,13 +540,13 @@ getTotal =()=>{
                                                  >
                                                      <Feather name="download" size={24} color={themeColor}/>
                                               </TouchableOpacity>  }
-                                                <TouchableOpacity 
+                                             {this.props.user.profile.occupation!="Customer"&&   <TouchableOpacity 
                                                   onPress={()=>{
                                                     this.createAlert(item)
                                                   }}
                                                 >
                                                     <AntDesign name="delete" size={24} color={themeColor} />
-                                              </TouchableOpacity>  
+                                              </TouchableOpacity> } 
                                           </View>
                                       </View>
                                 )
