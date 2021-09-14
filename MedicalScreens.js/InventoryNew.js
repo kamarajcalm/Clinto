@@ -45,7 +45,7 @@ class InventoryNew extends Component {
         const routes = [
             { key: 'Items', title: 'Items' },
             { key: 'Orders', title: 'Orders' },
-            { key: 'Sold', title: 'Sold' },
+            { key: 'Used', title: 'Used' },
 
         ];
         this.state = {
@@ -775,7 +775,7 @@ class InventoryNew extends Component {
     renderScene = SceneMap({
         Items: this.FirstRoute,
         Orders: this.SecondRoute,
-        Sold: this.ThirdRoute,
+        Used: this.ThirdRoute,
     });
     render() {
  

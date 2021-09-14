@@ -525,7 +525,7 @@ sepeartor =()=>{
                                             <Text style={[styles.text]}>Age : </Text>
                                         </View>
                                         <View>
-                                            <Text style={[styles.text, { color: "#000", }]}>{this.state?.item?.username.age}</Text>
+                                            <Text style={[styles.text, { color: "#000", }]}>{this.state?.item?.age}</Text>
                                         </View>
                                     </View>
                                     <View style={{ flexDirection: 'row' }}>

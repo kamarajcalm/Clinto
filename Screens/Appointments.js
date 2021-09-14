@@ -115,21 +115,19 @@ class Appointments extends Component {
         }
         let api = `${url}/api/prescription/addAppointment/`
         let sendData;
+      
         if(this.state.userfound){
             sendData = {
                 clinic: this.props?.clinic?.clinicpk || this.props.user.profile.recopinistclinics[0].clinicpk,
-                doctor: this.state.selectedDoctor.pk,
                 requesteduser: this.state?.user?.value,
                 requesteddate: this.state.appoinmentFixDate,
                 requestedtime: this.state.appoinmentFixTime,
-                reason: this.state.reason,
-                
+                reason: this.state.reason,  
             }
 
         }else{
             sendData = {
                 clinic: this.props?.clinic?.clinicpk || this.props.user.profile.recopinistclinics[0].clinicpk,
-                doctor: this.state.selectedDoctor.pk,
                 requesteduser: this.state.patientNo,
                 requesteddate: this.state.appoinmentFixDate,
                 requestedtime: this.state.appoinmentFixTime,
@@ -138,13 +136,17 @@ class Appointments extends Component {
                 first_name:this.state.patientname
             }
         }
-      
+        if(this.props.user.profile.occupation=="Doctor"){
+            sendData.doctor=this.props.user.id
+        }else{
+              sendData.doctor=this.state.selectedDoctor.pk
+        }
     
         let post = await HttpsClient.post(api, sendData)
         console.log(post, "klkk")
         if (post.type == "success") {
             this.setState({ patientNo: "", reason: "", patientname:""})
-            this.setState({ creating: false, showAppoinmentModal: false, Appointments:[],offset:0,next:true},()=>{
+            this.setState({ creating: false, showAppoinmentModal: false, AppointmentsPending:[],offset3:0,next:true},()=>{
                 this.getAppointmentsPending()
             })
            
@@ -370,8 +372,16 @@ class Appointments extends Component {
     componentWillUnmount(){
         this._unsubscribe();
     }
+    renderFooterPending =()=>{
+        if(this.state.next3&&!this.state.isFectchingPending){
+               return (
+                <ActivityIndicator size="large" color={themeColor} />
+            )
+        }
+        return null
+    }
     renderFooter = () => {
-        if (this.state.next) {
+        if (this.state.next&&!this.state.isFectching) {
             return (
                 <ActivityIndicator size="large" color={themeColor} />
             )
@@ -379,7 +389,7 @@ class Appointments extends Component {
         return null
     }
     renderFooter2 = () => {
-        if (this.state.next2) {
+        if (this.state.next2&&!this.state.isFectching2) {
             return (
                 <ActivityIndicator size="large" color={themeColor} />
             )
@@ -554,7 +564,7 @@ class Appointments extends Component {
     }
     handleEndReachedPending =()=>{
         if (this.state.next3) {
-            this.setState({ offset: this.state.offset3 + 5 }, () => {
+            this.setState({ offset3: this.state.offset3 + 5 }, () => {
                 this.getAppointmentsPending()
             })
         }
@@ -583,15 +593,16 @@ class Appointments extends Component {
             this.getAppointmentsPending()
         })
     }
-    FirstRoute =()=>{
+    ProgressRoute =()=>{
         return(
             <FlatList 
+             showsVerticalScrollIndicator={false}
               refreshing={this.state.isFectching}
               onRefresh ={()=>{this.handleRefresh()}}
               ListFooterComponent ={this.renderFooter}
               contentContainerStyle={{paddingBottom:90}}
               data={this.state.Appointments}
-              onEndReached={()=>{this.handleEndReachedPending()}}
+              onEndReached={()=>{this.handleEndReached()}}
               onEndReachedThreshold={0.1}
               keyExtractor ={(item,index)=>index.toString()}
               renderItem ={({item,index})=>{
@@ -701,17 +712,22 @@ class Appointments extends Component {
 
                                     </View>
                                 </View>
-                                    <View style={{ flex:0.5,flexDirection:"row",paddingTop:10}}>
-                                        <View>
-                                            <Text style={[styles.text, {}]}>{item.requesteddate}</Text>
+                                     <View style={{ paddingLeft: 10, paddingTop: 10, flex:0.5 ,alignItems:"center",justifyContent:"space-around"}}>
+                                            <View style={{flexDirection:"row"}}>
+                                                                  <View>
+                                                                    <Text style={[styles.text, {}]}>{item.requesteddate}</Text>
+                                                                </View>
+                                                                <View>
+                                                                    <Text style={[styles.text]}> | </Text>
+                                                                </View>
+                                                                <View>
+                                                                    <Text style={[styles.text]}> {item.requestedtime} </Text>
+                                                                </View>
+                                            </View>
+                                          {this.props.user.profile.occupation!="Doctor"&&  <View>
+                                                <Text style={[styles.text, {textAlign:"center"}]}>Doctor :{item.doctordetails.name}</Text>
+                                            </View>}
                                         </View>
-                                        <View>
-                                            <Text style={[styles.text]}> | </Text>
-                                        </View>
-                                        <View>
-                                            <Text style={[styles.text]}> {item.requestedtime} </Text>
-                                        </View>
-                                    </View>
                                   
                                </View>
                                <View style={{flex:0.4,flexDirection:"row"}}>
@@ -764,12 +780,14 @@ class Appointments extends Component {
     PendingRoute = () => {
         return (
             <FlatList
+                
+                showsVerticalScrollIndicator={false}
                 refreshing={this.state.isFectchingPending}
                 onRefresh={() => { this.handleRefreshPending() }}
-                ListFooterComponent={this.renderFooter}
-                contentContainerStyle={{ paddingBottom: 90 }}
+                ListFooterComponent={this.renderFooterPending}
+                contentContainerStyle={{ paddingBottom: 150 }}
                 data={this.state.AppointmentsPending}
-                onEndReached={() => { this.handleEndReached() }}
+                onEndReached={() => { this.handleEndReachedPending() }}
                 onEndReachedThreshold={0.1}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item, index }) => {
@@ -880,16 +898,21 @@ class Appointments extends Component {
                                         </View>
                                     </View>
                                         
-                                        <View style={{ paddingLeft: 10, paddingTop: 10, flexDirection: "row",flex:0.5 }}>
-                                            <View>
-                                                <Text style={[styles.text, {}]}>{item.requesteddate}</Text>
+                                        <View style={{ paddingLeft: 10, paddingTop: 10, flex:0.5 ,alignItems:"center",justifyContent:"space-around"}}>
+                                            <View style={{flexDirection:"row"}}>
+                                                                  <View>
+                                                                    <Text style={[styles.text, {}]}>{item.requesteddate}</Text>
+                                                                </View>
+                                                                <View>
+                                                                    <Text style={[styles.text]}> | </Text>
+                                                                </View>
+                                                                <View>
+                                                                    <Text style={[styles.text]}> {item.requestedtime} </Text>
+                                                                </View>
                                             </View>
-                                            <View>
-                                                <Text style={[styles.text]}> | </Text>
-                                            </View>
-                                            <View>
-                                                <Text style={[styles.text]}> {item.requestedtime} </Text>
-                                            </View>
+                                          {this.props.user.profile.occupation!="Doctor"&&  <View>
+                                                <Text style={[styles.text, {textAlign:"center"}]}>Doctor :{item.doctordetails.name}</Text>
+                                            </View>}
                                         </View>
                                        
                                     </View>
@@ -924,9 +947,10 @@ class Appointments extends Component {
             />
         )
     }
-    SecondRoute =()=>{
+    AllRoute =()=>{
         return(
             <FlatList
+              showsVerticalScrollIndicator={false}
              refreshing={this.state.isFectching2}
              onRefresh ={()=>{this.handleRefresh2()}}
                onEndReached ={()=>{this.handleEndReached2()}}
@@ -1028,11 +1052,11 @@ class Appointments extends Component {
 
                                     style={{
                                         flex:1,
-                                        flexDirection: "row"
+                                       
                                     }}
 
                                 >
-                                    <View style={{ flex: 0.6 }}>
+                                    <View style={{ flex: 0.6 ,flexDirection:"row"}}>
                                         <View style={{flex:0.6}}>
 
                                         
@@ -1049,7 +1073,18 @@ class Appointments extends Component {
 
                                         </View>
                                         </View>
-                                        <View style={{ flexDirection: 'row',  alignItems: "center", flex:0.4,}}>
+                                        <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
+                                                                   {
+                                             this.validateInformation(item)
+                                         }
+                                         <View style={{marginTop:5}}>
+                                             <Text style={[styles.text,{color:this.validateColor(item?.status)}]}>{item?.status}</Text>
+                                         </View>
+                                        </View>
+                              
+                                    </View>
+                                     <View style={{flex:0.4,flexDirection:"row"}}>
+                                      <View style={{ flexDirection: 'row',  alignItems: "center", flex:0.3,}}>
                                             <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center',marginLeft:10 }]}
                                                 onPress={() => {this.chatwithCustomer(item) }}
                                             >
@@ -1061,15 +1096,11 @@ class Appointments extends Component {
                                                 <Ionicons name="call" size={20} color="#63BCD2" />
                                             </TouchableOpacity>
                                         </View>
-                                    </View>
-                                     <View style={{flex:0.4,alignItems:'center',justifyContent:"center"}}>
-                                         {
-                                             this.validateInformation(item)
-                                         }
-                                         <View style={{marginTop:5}}>
-                                             <Text style={[styles.text,{color:this.validateColor(item?.status)}]}>{item?.status}</Text>
-                                         </View>
+                                       {this.props.user.profile.occupation!="Doctor"&&  <View style={{flex:0.7,alignItems:"center",justifyContent:"center"}}>
+                                                <Text style={[styles.text, {textAlign:"center"}]}>Doctor :{item.doctordetails.name}</Text>
+                                            </View>}
                                      </View>
+                                     
                                     {/* <View style={{ flex: 0.6, justifyContent: "center" }}>
                                                      <View style={{ flexDirection: "row", margin: 5, flex: 0.5 }}>
 
@@ -1130,8 +1161,8 @@ class Appointments extends Component {
     }
     renderScene = SceneMap({
         Pending: this.PendingRoute,
-        InProgress: this.FirstRoute,
-        AllAppointments: this.SecondRoute,
+        InProgress: this.ProgressRoute,
+        AllAppointments: this.AllRoute,
     });
     // renderScene = (routes) => {
 
@@ -1406,7 +1437,7 @@ class Appointments extends Component {
                                 </View>
 
                             </View>
-                        <View style={{ marginHorizontal: 20,marginVertical:10 }}>
+              {this.props.user.profile.occupation!="Doctor"&&<View style={{ marginHorizontal: 20,marginVertical:10 }}>
                             <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Select Doctor</Text>
                             <View style={{ marginTop: 10 }}>
                                 <DropDownPicker
@@ -1425,7 +1456,7 @@ class Appointments extends Component {
                                 />
                             </View>
 
-                        </View>
+                        </View>}
                         <View style={{ marginLeft: 20, marginTop: 20 }}>
                             <View style={{ alignItems: "center", justifyContent: "center" }}>
                                 <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Select Date</Text>

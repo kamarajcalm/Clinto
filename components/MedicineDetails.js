@@ -219,7 +219,7 @@ export default class MedicineDetails extends Component {
                                     {this.state.morning && <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-around", width: width * 0.15, marginTop: 10 }}>
                                         <TouchableOpacity
                                             onPress={() => {
-                                                this.setState({ morningCount: this.state.morningCount - 1 }, () => {
+                                                this.setState({ morningCount: this.state.morningCount - 0.5 }, () => {
                                                     this.props.changeFunction("morning_count", this.state.morningCount, index)
                                                     if (this.state.morningCount == 0) {
 
@@ -236,7 +236,7 @@ export default class MedicineDetails extends Component {
                                         </View>
                                         <TouchableOpacity
                                             onPress={() => {
-                                                this.setState({ morningCount: this.state.morningCount + 1 }, () => {
+                                                this.setState({ morningCount: this.state.morningCount + 0.5 }, () => {
                                                     this.props.changeFunction("morning_count", this.state.morningCount, index)
                                                 })
                                             }}
@@ -266,7 +266,7 @@ export default class MedicineDetails extends Component {
                                     {this.state.afterNoon && <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-around", width: width * 0.15, marginTop: 10 }}>
                                         <TouchableOpacity
                                             onPress={() => {
-                                                this.setState({ afterNoonCount: this.state.afterNoonCount - 1 }, () => {
+                                                this.setState({ afterNoonCount: this.state.afterNoonCount - 0.5 }, () => {
                                                     this.props.changeFunction("afternoon_count", this.state.afterNoonCount, index)
                                                     if (this.state.afterNoonCount == 0) {
                                                         this.setState({ afterNoon: !this.state.afterNoon })
@@ -283,7 +283,7 @@ export default class MedicineDetails extends Component {
                                         </View>
                                         <TouchableOpacity
                                             onPress={() => {
-                                                this.setState({ afterNoonCount: this.state.afterNoonCount + 1 }, () => {
+                                                this.setState({ afterNoonCount: this.state.afterNoonCount + 0.5 }, () => {
                                                     this.props.changeFunction("afternoon_count", this.state.afterNoonCount, index)
                                                 })
                                             }}
@@ -313,7 +313,7 @@ export default class MedicineDetails extends Component {
                                     {this.state.night && <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-around", width: width * 0.15, marginTop: 10 }}>
                                         <TouchableOpacity
                                             onPress={() => {
-                                                this.setState({ nightCount: this.state.nightCount - 1 }, () => {
+                                                this.setState({ nightCount: this.state.nightCount - 0.5 }, () => {
                                                     this.props.changeFunction("night_count", this.state.nightCount, index)
                                                     if (this.state.nightCount == 0) {
                                                         this.setState({ night: !this.state.night })
@@ -330,7 +330,7 @@ export default class MedicineDetails extends Component {
                                         </View>
                                         <TouchableOpacity
                                             onPress={() => {
-                                                this.setState({ nightCount: this.state.nightCount + 1 }, () => {
+                                                this.setState({ nightCount: this.state.nightCount + 0.5 }, () => {
                                                     this.props.changeFunction("night_count", this.state.nightCount, index)
                                                 })
                                             }}

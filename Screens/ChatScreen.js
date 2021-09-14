@@ -515,10 +515,11 @@ sendMessage =async()=>{
           chatTitle =this.state.item.clinictitle||this.state.item.doctortitle
       }
       if (this.props.user.profile.occupation == "Doctor") {
-        //   console.log(this.state.item,"opop")
-          chatTitle = this.state.item?.doctortitle
+       
+          chatTitle = this.state?.item?.customertitle||this.state.item?.doctortitle
       }
       if (this.props.user.profile.occupation == "ClinicRecoptionist") {
+           console.log(this.state.item,"opop")
           chatTitle = this.state?.item?.customertitle||this.state.item.clinictitle
       }
       if (this.props.user.profile.occupation == "MediacalRep") {

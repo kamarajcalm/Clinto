@@ -23,7 +23,23 @@ const url = settings.url;
     this.state = {
         token:null
     };
+  
   }
+    getClinics = async()=>{
+        const api = `${url}/api/prescription/getDoctorClinics/?doctor=${this.props.user.id}`
+        const data = await HttpsClient.get(api)
+        console.log(api,"ggghdf")
+       console.log(data)
+        if(data.type=="success"){
+            this.setState({ clinics: data.data.workingclinics})
+            let activeClinic = data.data.workingclinics.filter((i)=>{
+                return i.active
+            })
+         console.log(activeClinic[0])
+            this.props.selectClinic(activeClinic[0]||data.data.workingclinics[0])
+      
+        }
+    }
      getUserDetails = async () => {
          const login = await AsyncStorage.getItem("login")
          if (login) {
@@ -91,6 +107,7 @@ const url = settings.url;
                   )
                 }
                 if (data.data[0].profile.occupation == "Doctor" || data.data[0].profile.occupation == "ClinicRecoptionist" || data.data[0].profile.occupation == "Customer") {
+              
                   if (this.props.notification) {
                  
                     if (this.props.notification.notification.request.content.categoryIdentifier == "prescription"){

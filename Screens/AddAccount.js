@@ -30,11 +30,12 @@ class AddAccount extends Component {
               label: "Others", value: 'Others'
           },
     ]
+       let parent  =props?.route?.params?.parent||null
         super(props);
         this.state = {
             name:"",
-            mobileNO:this.props.user.profile.mobile.toString(),
-            email:this.props.user.profile.user.email,
+            mobileNO:parent?.mobile||this.props.user.profile.mobile.toString(),
+            email:"",
             age:"",
             height:"",
             bloodGroup:"",
@@ -47,7 +48,8 @@ class AddAccount extends Component {
             lastname:"",
             sex,
             selectedSex:null,
-            image:null
+            image:null,
+            parent
         };
     }
     getProfile = async()=>{
@@ -107,7 +109,7 @@ class AddAccount extends Component {
            password:this.state.Password,
            sex:this.state.selectedSex,
            bodyType:'formData',
-           parent:this.props.user.id,
+           parent:this.state.parent.value||this.props.user.id,
            type:"Customer",
            displayPicture:this.state.image
        }

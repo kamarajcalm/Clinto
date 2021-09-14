@@ -30,7 +30,7 @@ const {url} =settings
 
     }
       getIndex = (index) => {
-        let value = this.props.reports.length - index
+        let value = this.props.count - index
         return value
     }
         chatClinic = async (item) => {

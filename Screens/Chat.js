@@ -447,19 +447,26 @@ if(type=="clinic"){
                     <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                       <Image
                         source={{
-                          uri: item.dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                          uri: item.displaypicture || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
                         }}
                         style={{ height: 60, width: 60, borderRadius: 30, }}
                       />
                     </View>
-                    <View style={{ flex: 0.6,}}>
-                      <View style={{ flex: 0.4, justifyContent: "center" }}>
-                        <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>{item.title}</Text>
-                      </View>
-                      <View style={{ flex: 0.6, }}>
-                        <Text style={[styles.text]}>{item.lastmsg}</Text>
-                      </View>
-                    </View>
+                           <View style={{ flex: 0.4, justifyContent: "space-around" }}>
+                   <View style={{ justifyContent: "center" }}>
+                     <Text style={[styles.text, {  fontSize: 16, }]} numberOfLines={1}>{item.title}</Text>
+
+                   </View>
+                   <View style={{ justifyContent: "center" }}>
+                     <Text style={[styles.text, { fontSize: 16 }]}>{item.lastchatmessage}</Text>
+
+                   </View>
+
+                 </View>
+                 <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
+                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
+                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
+                 </View>
                   </TouchableOpacity>
                 )
               }
@@ -471,25 +478,26 @@ if(type=="clinic"){
                   <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                     <Image
                       source={{
-                        uri: item.dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                        uri: item.displaypicture|| "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
                       }}
                       style={{ height: 60, width: 60, borderRadius: 30, }}
                     />
                   </View>
-                  <View style={{ flex: 0.4, justifyContent: "space-around" }}>
-                    <View style={{ justifyContent: "center" }}>
-                      <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16, }]} numberOfLines={1}>{item.title}</Text>
+                    <View style={{ flex: 0.4, justifyContent: "space-around" }}>
+                   <View style={{ justifyContent: "center" }}>
+                     <Text style={[styles.text, {  fontSize: 16, }]} numberOfLines={1}>{item.title}</Text>
 
-                    </View>
-                    <View style={{ justifyContent: "center" }}>
-                      <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>Lst Msg</Text>
+                   </View>
+                   <View style={{ justifyContent: "center" }}>
+                     <Text style={[styles.text, { fontSize: 16 }]}>{item.lastchatmessage}</Text>
 
-                    </View>
+                   </View>
 
-                  </View>
-                  <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
-                    <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>Date</Text>
-                  </View>
+                 </View>
+                 <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
+                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
+                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
+                 </View>
                 </TouchableOpacity>
               )
             }}
@@ -532,14 +540,21 @@ if(type=="clinic"){
                        style={{ height: 60, width: 60, borderRadius: 30, }}
                      />
                    </View>
-                   <View style={{ flex: 0.6, }}>
-                     <View style={{ flex: 0.4, justifyContent: "center" }}>
-                       <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>{item.title}</Text>
-                     </View>
-                     <View style={{ flex: 0.6, }}>
-                       <Text style={[styles.text]}>{item.lastmsg}</Text>
-                     </View>
+                       <View style={{ flex: 0.4, justifyContent: "space-around" }}>
+                   <View style={{ justifyContent: "center" }}>
+                     <Text style={[styles.text, {  fontSize: 16, }]} numberOfLines={1}>{item.title}</Text>
+
                    </View>
+                   <View style={{ justifyContent: "center" }}>
+                     <Text style={[styles.text, { fontSize: 16 }]}>{item.lastchatmessage}</Text>
+
+                   </View>
+
+                 </View>
+                 <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
+                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
+                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
+                 </View>
                  </TouchableOpacity>
                )
              }
@@ -556,19 +571,20 @@ if(type=="clinic"){
                      style={{ height: 60, width: 60, borderRadius: 30, }}
                    />
                  </View>
-                 <View style={{ flex: 0.4,justifyContent:"space-around"}}>
+                  <View style={{ flex: 0.4, justifyContent: "space-around" }}>
                    <View style={{ justifyContent: "center" }}>
-                     <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 ,}]} numberOfLines={1}>{item.title}</Text>
-                 
-                   </View>
-                   <View style={{ justifyContent: "center" }}>
-                     <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>Lst Msg</Text>
+                     <Text style={[styles.text, {  fontSize: 16, }]} numberOfLines={1}>{item.title}</Text>
 
                    </View>
-                
+                   <View style={{ justifyContent: "center" }}>
+                     <Text style={[styles.text, { fontSize: 16 }]}>{item.lastchatmessage}</Text>
+
+                   </View>
+
                  </View>
-                 <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
-                   <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>Date</Text>
+                 <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
+                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
+                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
                  </View>
                </TouchableOpacity>
              )
@@ -612,14 +628,21 @@ if(type=="clinic"){
                        style={{ height: 60, width: 60, borderRadius: 30, }}
                      />
                    </View>
-                   <View style={{ flex: 0.6, }}>
-                     <View style={{ flex: 0.4, justifyContent: "center" }}>
-                       <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>{item.title}</Text>
-                     </View>
-                     <View style={{ flex: 0.6, }}>
-                       <Text style={[styles.text]}>{item.lastmsg}</Text>
-                     </View>
+                 <View style={{ flex: 0.4, justifyContent: "space-around" }}>
+                   <View style={{ justifyContent: "center" }}>
+                     <Text style={[styles.text, {  fontSize: 16, }]} numberOfLines={1}>{item.title}</Text>
+
                    </View>
+                   <View style={{ justifyContent: "center" }}>
+                     <Text style={[styles.text, { fontSize: 16 }]}>{item.lastchatmessage}</Text>
+
+                   </View>
+
+                 </View>
+                 <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
+                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
+                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
+                 </View>
                  </TouchableOpacity>
                )
              }
@@ -636,13 +659,20 @@ if(type=="clinic"){
                      style={{ height: 60, width: 60, borderRadius: 30, }}
                    />
                  </View>
-                 <View style={{ flex: 0.7, }}>
-                   <View style={{ flex: 0.4, justifyContent: "center" }}>
-                     <Text style={[styles.text, { fontWeight: 'bold', fontSize: 16 }]}>{item.title}</Text>
+                   <View style={{ flex: 0.4, justifyContent: "space-around" }}>
+                   <View style={{ justifyContent: "center" }}>
+                     <Text style={[styles.text, {  fontSize: 16, }]} numberOfLines={1}>{item.title}</Text>
+
                    </View>
-                   <View style={{ flex: 0.6, }}>
-                     <Text style={[styles.text]}>{item.lastmsg}</Text>
+                   <View style={{ justifyContent: "center" }}>
+                     <Text style={[styles.text, { fontSize: 16 }]}>{item.lastchatmessage}</Text>
+
                    </View>
+
+                 </View>
+                 <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
+                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
+                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
                  </View>
                </TouchableOpacity>
              )

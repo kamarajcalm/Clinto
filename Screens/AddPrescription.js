@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
 import settings from '../AppSettings';
 import { Entypo } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons ,FontAwesome5} from '@expo/vector-icons';
 const { height ,width} = Dimensions.get("window");
 const fontFamily =settings.fontFamily;
 const themeColor=settings.themeColor;
@@ -75,16 +75,34 @@ class AddPrescription extends Component {
                 keyBoardHeight:0,
                 report:"",
                 reports:[],
-                selectedReports:[]
+                selectedReports:[],
+                sexModal:false,
+                profileModal:false,
+                doctors:[],
+                doctorModal:false,
+                selectedDoctor:null
     };
   }
-
+getClinicDoctors = async()=>{
+        let api = `${url}/api/prescription/clinicDoctors/?clinic=${this.props.user.profile.recopinistclinics[0].clinicpk}`
+     
+        const data = await HttpsClient.get(api)
+        if (data.type == "success") {
+            this.setState({ doctors: data.data })
+        }
+}
   componentDidMount(){
+     if(this.props.user.profile.occupation=="ClinicRecoptionist"){
+         this.getClinicDoctors()
+     }
            Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
     if(this.state.appoinment){
         this.searchUser(this.state?.appoinment?.patientname.mobile, this.state?.appoinment?.requesteddate, this.state?.appoinment?.clinic)
     }
+    this._unsubscribe = this.props.navigation.addListener('focus',()=>{
+         this.searchUser(this.state.mobileNo)
+    })
       this._subscribe = this.props.navigation.addListener('beforeRemove', (e) => {
           if (this.state.check&&(this.state.medicines.length>0||this.state.MedicinesGiven.length>0)) {
             
@@ -119,6 +137,8 @@ class AddPrescription extends Component {
   componentWillUnmount(){
         Keyboard.removeListener('keyboardDidShow', this._keyboardDidShow);
         Keyboard.removeListener('keyboardDidHide', this._keyboardDidHide);
+        this._unsubscribe();
+        this._subscribe()
   }
     addManualMedicine =()=>{
         let duplicate = this.state.medicines
@@ -265,7 +285,7 @@ class AddPrescription extends Component {
     }
     searchTemplates = async (age=null,disease="") => {
         this.setState({ loading: true })
-        let api = `${url}/api/prescription/getTemplate/?clinic=${this.state?.appoinment?.clinic || this.props.clinic.clinicpk}&age=${age}&diagonsis=${disease}&type=mobile`
+        let api = `${url}/api/prescription/getTemplate/?clinic=${this.state?.appoinment?.clinic || this?.props?.clinic?.clinicpk||this.props.user.profile.recopinistclinics[0].clinicpk}&age=${age}&diagonsis=${disease}&type=mobile`
          console.log(api)
         let data = await HttpsClient.get(api)
        
@@ -286,10 +306,15 @@ class AddPrescription extends Component {
      let error ={
 
      };
- 
+     
      this.setState({creating:true})
         let api =`${url}/api/prescription/addPrescription/`
-
+        if(this.props.user.profile.occupation=="ClinicRecoptionist"){
+            if(this.state.selectedDoctor==null){
+                        this.setState({ creating: false })
+        return  this.showSimpleMessage("Please Select doctor", "#B22222", "danger")
+            }
+        }
         if (this.props.clinic?.validtill?.available == false){
             this.setState({ creating: false })
         return  this.showSimpleMessage("Please recharge to create Prescription", "#B22222", "danger")
@@ -372,21 +397,21 @@ class AddPrescription extends Component {
         })
         let medicines = this.state.medicines.concat(this.state.MedicinesGiven)
         let sendData ={
-            doctor: this.props.user.id,
+            doctor_selected:this?.state?.selectedDoctor?.doctor?.id||this.props.user.id,
             medicines,
             health_issues:this.state.healthIssues,
             username:this.state.patientsName,
             usermobile:this.state.mobileNo,
             ongoing_treatment: this.state.Reason,
             doctor_fees:this.state.doctorFees,
-            clinic: this.state?.appoinment?.clinic||this.props.clinic.clinicpk,
+            clinic: this.state?.appoinment?.clinic||this.props?.clinic?.clinicpk||this.props.user.profile.recopinistclinics[0].clinicpk,
             age:Number(this.state.Age),
             sex:this.state.selectedSex,
             next_visit:this.state.nextVisit,
             address:this.state.Address,
             diagonsis:this.state.selectedDiagonosis,
             reports:this.state.selectedReports,
-            type:"mobile"
+            type:"mobile",
         }
     
         if(this.state.appointmentId){
@@ -499,7 +524,16 @@ class AddPrescription extends Component {
         )
     }
     searchUser = async(mobileNo,date,clinic)=>{
-        let api = `${url}/api/prescription/getAppointmentUser/?doctor=${this.props.user.id}&user=${mobileNo}&clinic=${clinic||this.props.clinic.clinicpk}&requesteddate=${date||moment(new Date()).format('YYYY-MM-DD')}`
+        let api 
+
+        if(this.props.user.profile.occupation=="ClinicRecoptionist"){
+            if(this.state.selectedDoctor==null){
+                return this.showSimpleMessage("Please Select Doctor","orange","info")
+            }
+          api = `${url}/api/prescription/getAppointmentUser/?doctor=${this.state.selectedDoctor.doctor.id}&user=${mobileNo}&clinic=${this.props.user.profile.recopinistclinics[0].clinicpk}&requesteddate=${date||moment(new Date()).format('YYYY-MM-DD')}`   
+        }else{
+          api  = `${url}/api/prescription/getAppointmentUser/?doctor=${this.props.user.id}&user=${mobileNo}&clinic=${clinic||this.props.clinic.clinicpk}&requesteddate=${date||moment(new Date()).format('YYYY-MM-DD')}`
+        }
        console.log(api,'ppppppp')
        this.setState({mobileNo})
         if(mobileNo.length>9){
@@ -508,7 +542,7 @@ class AddPrescription extends Component {
             console.log(api)
             console.log(data)
            if(data.type =="success"){
-           
+                 this.setState({loading:false})
 
                    let profiles = []
                    let pushObj ={
@@ -517,7 +551,7 @@ class AddPrescription extends Component {
                        mobile:data.data.user.user.username,
                        sex:data.data.user.sex,
                        healthIssues:data.data.user.health_issues||[],
-                       age:data.data.user.age.toString()
+                       age:data?.data?.user?.age?.toString()
                    }
                    profiles.push(pushObj)
                    data.data.user.childUsers.forEach((item)=>{
@@ -590,7 +624,7 @@ class AddPrescription extends Component {
         console.log(data,"jjj")
         if(data.type =="success"){
             if(data.data.length>0){
-                this.scrollRef.scrollTo( {x:0,y:height*0.6,animated: true})
+                this.scrollRef.scrollTo( {x:0,y:height*0.8,animated: true})
             }
             this.setState({ Diseases:data.data })
         }
@@ -636,7 +670,7 @@ class AddPrescription extends Component {
          this.setState({selectedReports:duplicate})
     }
     searchAppoinment = async(mobileNo,date,clinic)=>{
-       let api = `${url}/api/prescription/getAppointmentUser/?doctor=${this.props.user.id}&user=${mobileNo}&clinic=${clinic||this.props.clinic.clinicpk}&requesteddate=${date||moment(new Date()).format('YYYY-MM-DD')}`
+       let api = `${url}/api/prescription/getAppointmentUser/?doctor=${this.state.selectedDoctor?.doctor?.id||this.props.user.id}&user=${mobileNo}&clinic=${clinic||this.props?.clinic?.clinicpk||this.props.user.profile.recopinistclinics[0].clinicpk}&requesteddate=${date||moment(new Date()).format('YYYY-MM-DD')}`
     if(mobileNo.length>9){
              this.setState({loading:true})
             const data = await HttpsClient.get(api)
@@ -666,6 +700,154 @@ class AddPrescription extends Component {
                this.searchTemplates(this.state.Age, this.state.Disease)
             
          this.setState({ Disease: "",Diseases:[]})
+    }
+    sexModal =()=>{
+        return(
+            <Modal
+              deviceHeight={screenHeight}
+              isVisible={this.state.sexModal}
+              onBackdropPress={()=>{this.setState({sexModal:false})}}
+              statusBarTranslucent={true}
+            >
+              <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
+                        <View style={{height:height*0.3,width:width*0.7,backgroundColor:"#fff",borderRadius:10}}>
+                                <View style={{marginVertical:20,alignItems:"center",justifyContent:"center"}}>
+                                    <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>Select Sex :</Text>
+                                </View>
+                                          
+                            {
+                                this.state.sex.map((item,index)=>{
+                                        return(
+                                            <TouchableOpacity key={index} style={{flexDirection:"row",marginTop:10}}
+                                             onPress={()=>{this.setState({selectedSex:item.value,sexModal:false})}}
+                                            
+                                            >
+                                                <View style={{flex:0.7,alignItems:"center",justifyContent:"center"}}>
+                                                    <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{item.label}</Text>
+                                                </View>
+                                                <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                                                    <FontAwesome5 name="dot-circle" size={24} color={this.state.selectedSex===item.value?"#63BCD2":"gray"}/>
+                                                </View>
+                                            </TouchableOpacity>
+                                        )
+                                })
+                            }
+                        </View>
+              
+                     
+              </View>
+            </Modal>
+        )
+    }
+    changeProfileModal =()=>{
+       return(
+            <Modal
+              deviceHeight={screenHeight}
+              isVisible={this.state.profileModal}
+              onBackdropPress={()=>{this.setState({profileModal:false})}}
+              statusBarTranslucent={true}
+            >
+              <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
+                        <View style={{height:height*0.6,width:width*0.7,backgroundColor:"#fff",borderRadius:10}}>
+                                <View style={{marginVertical:20,alignItems:"center",justifyContent:"center"}}>
+                                    <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>Select Profile :</Text>
+                                </View>
+                                <FlatList 
+                                   showsVerticalScrollIndicator={false}
+                                   data={this.state.profiles}
+                                   keyExtractor={(item,index)=>index.toString()}
+                                   renderItem={({item,index})=>{
+                                       return(
+                                           <TouchableOpacity key={index} style={{flexDirection:"row",marginTop:10}}
+                                             onPress={()=>{
+                                                   this.setState({ 
+                                                
+                                                Age:item.age,
+                                                patientsName:item.label, 
+                                                healthIssues: item.healthIssues,
+                                                selectedSex:item.sex,
+                                                selectedProfile:item,
+                                                mobileNo:item.mobile,
+                                                profileModal:false
+                                                },()=>{
+                                                this.searchAppoinment(item.mobile)
+                                                this.searchTemplates(this.state.Age,this.state.selectedDiagonosis)
+                                                })
+                                               
+                                            
+                                            }}
+                                            
+                                            >
+                                                <View style={{flex:0.7,alignItems:"center",justifyContent:"center"}}>
+                                                    <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{item.label}</Text>
+                                                </View>
+                                                <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                                                    <FontAwesome5 name="dot-circle" size={24} color={this.state.selectedProfile.value===item.value?"#63BCD2":"gray"}/>
+                                                </View>
+                                            </TouchableOpacity>
+                                       )
+                                    }}
+                                />            
+                                <View style={{marginVertical:20,alignItems:"center",justifyContent:"center"}}>
+                                        <TouchableOpacity style={{backgroundColor:themeColor,borderRadius:5,height:height*0.04,alignItems:"center",justifyContent:"center",width:width*0.3}}
+                                          onPress={()=>{
+                                              this.setState({profileModal:false})
+                                              this.props.navigation.navigate("AddAccount",{parent:this.state.profiles[0]})
+                                            }}
+                                        
+                                        >
+                                               <Text style={[styles.text,{color:"#fff"}]}>Add New</Text>
+                                        </TouchableOpacity>
+                                </View>
+                        </View>
+              
+                     
+              </View>
+            </Modal> 
+       )
+    }
+    doctorModal =()=>{
+       return(
+            <Modal
+              deviceHeight={screenHeight}
+              isVisible={this.state.doctorModal}
+              onBackdropPress={()=>{this.setState({doctorModal:false})}}
+              statusBarTranslucent={true}
+            >
+              <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
+                        <View style={{height:height*0.4,width:width*0.7,backgroundColor:"#fff",borderRadius:10}}>
+                                <View style={{marginVertical:20,alignItems:"center",justifyContent:"center"}}>
+                                    <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>Select Doctor :</Text>
+                                </View>
+                                <FlatList 
+                                   showsVerticalScrollIndicator={false}
+                                   data={this.state.doctors}
+                                   keyExtractor={(item,index)=>index.toString()}
+                                   renderItem={({item,index})=>{
+                                       return(
+                                           <TouchableOpacity key={index} style={{flexDirection:"row",marginTop:10}}
+                                            onPress={()=>{
+                                                this.setState({selectedDoctor:item,doctorModal:false})
+                                            }}
+                                            
+                                            >
+                                                <View style={{flex:0.7,alignItems:"center",justifyContent:"center"}}>
+                                                    <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{item.doctor.profile.name}</Text>
+                                                </View>
+                                                <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                                                    <FontAwesome5 name="dot-circle" size={24} color={this.state?.selectedDoctor?.doctor?.id===item.doctor.id?"#63BCD2":"gray"}/>
+                                                </View>
+                                            </TouchableOpacity>
+                                       )
+                                    }}
+                                />            
+                   
+                        </View>
+              
+                     
+              </View>
+            </Modal> 
+       )
     }
   render() {
       const { loading } = this.state;
@@ -698,24 +880,51 @@ class AddPrescription extends Component {
              showsVerticalScrollIndicator={false}
              keyboardShouldPersistTaps={"handled"}
             >
-                
+             { this.props.user.profile.occupation=="ClinicRecoptionist" && <View style={{ marginTop: 20 }}>
+                    <Text style={[styles.text], { color:"#000", fontSize:height*0.02 }}>Select Doctor</Text>
+                          <TouchableOpacity style={{marginTop:10,backgroundColor:inputColor,height:35,width:width*0.7,flexDirection:"row"}}
+                             
+                             onPress={()=>{
+                                 this.setState({doctorModal:true})
+                             }}
+                             >
+                                 <View style={{flex:0.8,alignItems:"center",justifyContent:"center"}}>
+                                    <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]} numberOfLines={1}>{this.state.selectedDoctor?this.state.selectedDoctor.doctor.profile.name:"Select"}</Text>
+                                 </View>
+                                 <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                                     <Entypo name="chevron-small-down" size={20} color="black" />
+                                 </View>
+                             </TouchableOpacity>
+                </View>}
                 <View style={{ marginTop: 20 }}>
-                    <Text style={[styles.text], { color:"#000", fontSize: 18 }}>Mobile No or UID</Text>
+                    <Text style={[styles.text], { color:"#000", fontSize:height*0.02 }}>Mobile No or UID</Text>
                     <TextInput
                          maxLength ={10}
                          value ={this.state.mobileNo}
                          selectionColor={themeColor}
                          onChangeText={(mobileNo) => { this.searchUser(mobileNo)}}
-                                style={{ width: width * 0.7, height: 35, backgroundColor: inputColor, borderRadius: 5, padding: 10, marginTop: 10}}
+                         style={{ width: width * 0.7, height: 35, backgroundColor: inputColor, borderRadius: 5, padding: 10, marginTop: 10}}
                     />
                 </View>
-               {this.state.profiles.length>0&&<View style={{ marginTop: 20 ,flexDirection:"row"}}>
-                            <View style={{alignItems:"center",justifyContent:"center"}}>
-                                    <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Change Profile</Text>
+               {this.state.profiles.length>0&&<View style={{ marginTop: 20 ,}}>
+                            <View style={{}}>
+                                    <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Change Profile</Text>
 
                             </View>
-                           
-                             <View style={{marginLeft:10}}>
+                              <TouchableOpacity style={{marginTop:10,backgroundColor:inputColor,height:35,width:width*0.4,flexDirection:"row"}}
+                             
+                             onPress={()=>{
+                                 this.setState({profileModal:true})
+                             }}
+                             >
+                                 <View style={{flex:0.8,alignItems:"center",justifyContent:"center"}}>
+                                    <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{this.state.selectedProfile?this.state.selectedProfile.label:"Select"}</Text>
+                                 </View>
+                                 <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                                     <Entypo name="chevron-small-down" size={20} color="black" />
+                                 </View>
+                             </TouchableOpacity>
+                             {/* <View style={{marginLeft:10}}>
                                 <DropDownPicker
                                     placeholder={"select Profile"}
                                     items={this.state.profiles}
@@ -747,11 +956,11 @@ class AddPrescription extends Component {
                                 }
 
                                 />
-                             </View>
+                             </View> */}
                           
                         </View>}
                 <View style={{ marginTop: 20 }}>
-                                <Text style={[styles.text], { color: "#000",fontSize: 18 }}>Patient's Name</Text>
+                                <Text style={[styles.text], { color: "#000",fontSize:height*0.02 }}>Patient's Name</Text>
                     <TextInput
                         value ={this.state.patientsName}
                         selectionColor={themeColor}
@@ -760,7 +969,7 @@ class AddPrescription extends Component {
                     />
                 </View>
                         <View style={{ marginTop: 20 }}>
-                                <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Age</Text>
+                                <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Age</Text>
                             <TextInput
                                keyboardType ={"numeric"}
                                 value={this.state.Age}
@@ -769,13 +978,13 @@ class AddPrescription extends Component {
                                 style={{ width: width * 0.7, height: 35, backgroundColor:inputColor, borderRadius: 5, padding: 10, marginTop: 10 }}
                             />
                         </View>
-                        <View style={{ marginTop: 20 ,flexDirection:"row"}}>
-                            <View style={{alignItems:"center",justifyContent:"center"}}>
-                                    <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Sex</Text>
+                        <View style={{ marginTop: 20 ,}}>
+                            <View style={{}}>
+                                    <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Sex</Text>
 
                             </View>
                            
-                             <View style={{marginLeft:10}}>
+                             {/* <View style={{marginLeft:10}}>
                                 <DropDownPicker
                                     placeholder={"select"}
                                     items={this.state.sex}
@@ -791,11 +1000,24 @@ class AddPrescription extends Component {
                                     })}
 
                                 />
-                             </View>
+                             </View> */}
+                             <TouchableOpacity style={{marginTop:10,backgroundColor:inputColor,height:35,width:width*0.4,flexDirection:"row"}}
+                             
+                             onPress={()=>{
+                                 this.setState({sexModal:true})
+                             }}
+                             >
+                                 <View style={{flex:0.8,alignItems:"center",justifyContent:"center"}}>
+                                    <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{this.state.selectedSex?this.state.selectedSex:"Select"}</Text>
+                                 </View>
+                                 <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                                     <Entypo name="chevron-small-down" size={20} color="black" />
+                                 </View>
+                             </TouchableOpacity>
                           
                         </View>
                         {/* <View style={{ marginTop: 20 }}>
-                            <Text style={[styles.text], { fontWeight: "bold", fontSize: 18 }}>Address</Text>
+                            <Text style={[styles.text], { fontWeight: "bold", fontSize:height*0.02 }}>Address</Text>
                             <TextInput
                                 value={this.state.Address}
                                 selectionColor={themeColor}
@@ -805,7 +1027,7 @@ class AddPrescription extends Component {
                             />
                         </View> */}
                         <View style={{ marginTop: 20 }}>
-                                <Text style={[styles.text], { color: "#000",fontSize: 18 }}>Health issues</Text>
+                                <Text style={[styles.text], { color: "#000",fontSize:height*0.02 }}>Health issues</Text>
                             {
                                 this.state?.healthIssues?.map((i,index)=>{
                                       return(
@@ -832,10 +1054,10 @@ class AddPrescription extends Component {
                                     selectionColor={themeColor}
                                     multiline={true}
                                     onChangeText={(healthIssue) => { this.setState({ healthIssue}) }}
-                                    style={{ width: width * 0.6, height: 35, backgroundColor:inputColor, borderRadius: 5, padding: 10, marginTop: 10, }}
+                                    style={{ width: width * 0.7, height: 35, backgroundColor:inputColor, borderRadius: 5, padding: 10, marginTop: 10, }}
                                 />
                                 <TouchableOpacity 
-                                  style={{height:35,alignItems:"center",justifyContent:'center',width:width*0.2,borderRadius:10,backgroundColor:themeColor,marginTop:10}}
+                                  style={{height:35,alignItems:"center",justifyContent:'center',width:width*0.15,borderRadius:10,backgroundColor:themeColor,marginTop:10}}
                                   onPress={()=>{this.pushIssues()}}
                                
                                >
@@ -845,7 +1067,7 @@ class AddPrescription extends Component {
                           
                         </View>
                        {this.state.mobileNo.length>9&& <View style={{ marginTop: 20 }}>
-                                <Text style={[styles.text], { color: "#000",fontSize: 18 }}>Appointment Details:</Text>
+                                <Text style={[styles.text], { color: "#000",fontSize:height*0.02 }}>Appointment Details:</Text>
                             <View style={{flexDirection:"row",marginTop:5,marginLeft:10}}>
                                     <Text style={[styles.text, { color: "#000",color:"gray"}]}>Appointment Taken:</Text>
                                 <Text style={[styles.text,{marginLeft:10}]}>{this.state.appointment_taken?"yes":"No"}</Text>
@@ -856,7 +1078,7 @@ class AddPrescription extends Component {
                             </View>}
                         </View>}
                         <View style={{ marginTop: 20 }}>
-                                <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Reason for this Visit</Text>
+                                <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Reason for this Visit</Text>
                             <TextInput
                                 value ={this.state.Reason}
                                 onChangeText={(Reason) => { this.setState({ Reason}) }}
@@ -866,7 +1088,7 @@ class AddPrescription extends Component {
                             />
                         </View>
                         <View style={{ marginTop: 20 ,}}>
-                                <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Diagnosis</Text>
+                                <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Diagnosis</Text>
                                 {
                                     this.state.selectedDiagonosis.map((item,index)=>{
                                             return(
@@ -888,9 +1110,9 @@ class AddPrescription extends Component {
                                 value={this.state.Disease}
                                 onChangeText={(Disease) => { this.searchDiseases(Disease) }}
                                 selectionColor={themeColor}
-                                style={{ width: width * 0.6, height:35, backgroundColor: inputColor,  padding: 10, marginTop: 10, textAlignVertical: "top" }}
+                                style={{ width: width * 0.7, height:35, backgroundColor: inputColor,  padding: 10, marginTop: 10, textAlignVertical: "top" }}
                             />
-                            <TouchableOpacity style={{height:35,width:width*0.2,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,marginTop: 10,borderRadius:5}}
+                            <TouchableOpacity style={{height:35,width:width*0.15,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,marginTop: 10,borderRadius:5}}
                              onPress={()=>{this.addDiagnosis()}}
                             >
                                   <Text style={[styles.text,{color:"#fff"}]}>Add</Text>
@@ -901,7 +1123,7 @@ class AddPrescription extends Component {
                         {this.state.Diseases.length>0&&<ScrollView 
                         showsVerticalScrollIndicator ={false}
                                 style={{
-                                    width: width * 0.6, backgroundColor: '#fafafa', borderColor: "#333", borderTopWidth: 0.5,marginLeft:10
+                                    width: width * 0.7, backgroundColor: '#fafafa', borderColor: "#333", borderTopWidth: 0.5,marginLeft:5
                                  
                                    }}>
                            {
@@ -909,7 +1131,7 @@ class AddPrescription extends Component {
                                    return(
                                        <TouchableOpacity 
                                            key ={index}
-                                           style={{padding:15,justifyContent:"center",width:width*0.6,borderColor:"#333",borderBottomWidth:0.3,height:35}}
+                                           style={{padding:5,justifyContent:"center",width:width*0.6,borderColor:"#333",borderBottomWidth:0.3,height:35,}}
                                            onPress={() => { this.setState({ Disease: "",Diseases:[]},()=>{
                                                this.state.selectedDiagonosis.push(i.title)
                                                this.searchTemplates(this.state.Age, i.title)
@@ -922,7 +1144,7 @@ class AddPrescription extends Component {
                            }
                         </ScrollView>}
                             <View style={{ marginTop: 20 }}>
-                                <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Medicines Given</Text>
+                                <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Medicines Given</Text>
                                 <View style={{ flexDirection: "row", marginTop: 20, alignItems: 'center', justifyContent: "space-around" }}>
                                     <TouchableOpacity style={{ alignItems: "center", justifyContent: 'center', flexDirection: "row" }}
                                         onPress={() => { this.props.navigation.navigate("SearchMedicines", { backFunction2: (medicines) => { this.backFunction2(medicines) },toGive:true }) }}
@@ -948,7 +1170,7 @@ class AddPrescription extends Component {
                                 })
                             }
                 <View style={{ marginTop: 20 }}>
-                                <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Add Medicines</Text>
+                                <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Add Medicines</Text>
                                 <View style={{ flexDirection: "row", marginTop: 20,alignItems:'center',justifyContent:"space-around"}}>
                     <TouchableOpacity style={{ alignItems: "center", justifyContent: 'center', flexDirection: "row" }}
                         onPress={() => { this.props.navigation.navigate("SearchMedicines", { backFunction: (medicines) => { this.backFunction(medicines) } }) }}
@@ -979,22 +1201,22 @@ class AddPrescription extends Component {
           
                 
                         <View style={{ marginTop: 20 }}>
-                                <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Doctor Fees</Text>
+                                <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Doctor Fees</Text>
                             <TextInput
                                 value={this.state.doctorFees}
                                 selectionColor={themeColor}
                                 keyboardType="numeric"
                                 onChangeText={(doctorFees) => { this.setState({ doctorFees }) }}
-                                style={{ width: width * 0.7, height: 35, backgroundColor: inputColor, borderRadius: 15, padding: 10, marginTop: 10 }}
+                                style={{ width: width * 0.7, height: 35, backgroundColor: inputColor, borderRadius: 5, padding: 10, marginTop: 10 }}
                             />
                         </View>
-                            <View >
+                            <View style={{marginTop:10}}>
 
-                                <Text style={[styles.text], { color: "#000", fontSize: 18, }}>Next Visit</Text>
+                                <Text style={[styles.text], { color: "#000", fontSize:height*0.02, }}>Next Visit</Text>
                             </View>
                             <TouchableOpacity 
                               onPress={() => { this.setState({ show1: true }) }}
-                              style={{ width: width * 0.9, height: height * 0.05, backgroundColor: inputColor, borderRadius: 15, padding: 10, marginTop: 10 ,flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
+                              style={{ width: width * 0.7, height: height * 0.05, backgroundColor: inputColor, borderRadius: 5, padding: 10, marginTop: 10 ,flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
                               
                               
                               <View style={{alignItems:"center",justifyContent:"center"}}>
@@ -1028,19 +1250,19 @@ class AddPrescription extends Component {
                             })
                         }
                                 <View style={{ marginTop: 20 }}>
-                                <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Suggest Report</Text>
+                                <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Suggest Report</Text>
                             <TextInput
                                 value={this.state.report}
                                 onChangeText={(report) => { this.searchReports(report) }}
                                 selectionColor={themeColor}
                                 multiline={true}
-                                style={{ width: width * 0.9, height:35, backgroundColor: inputColor,  padding: 10, marginTop: 10, textAlignVertical: "top" }}
+                                style={{ width: width * 0.7, height:35, backgroundColor: inputColor,  padding: 10, marginTop: 10, textAlignVertical: "top" }}
                             />
                         </View>
                         {this.state.reports.length>0&&<ScrollView 
                         showsVerticalScrollIndicator ={false}
                                 style={{
-                                    width: width * 0.9, backgroundColor: '#fafafa', borderColor: "#333", borderTopWidth: 0.5
+                                    width: width * 0.7, backgroundColor: '#fafafa', borderColor: "#333", borderTopWidth: 0.5
                                  
                                    }}>
                            {
@@ -1101,6 +1323,15 @@ class AddPrescription extends Component {
                     />
                     {
                         this.addModal()
+                    }
+                    {
+                        this.sexModal()
+                    }
+                    {
+                        this.changeProfileModal()
+                    }
+                    {
+                        this.doctorModal()
                     }
         </View>
 

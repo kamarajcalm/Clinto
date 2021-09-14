@@ -10,6 +10,7 @@ import ViewClinic from '../Screens/ViewClinic';
 import makeAppointmentClinic from '../Screens/makeAppointmentClinic';
 import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack';
 import ViewMedicals from '../Screens/ViewMedicals';
+import SearchNearByClinics from '../Screens/SearchNearByClinics';
 const Stack = createStackNavigator();
 export default class DoctorsStack extends Component {
   constructor(props) {
@@ -29,7 +30,9 @@ export default class DoctorsStack extends Component {
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
 
         }}
-        >
+        >  
+        
+         <Stack.Screen name="SearchNearByClinics" component={SearchNearByClinics} options={{ headerShown: false }} />
             <Stack.Screen name="Doctors" component={Doctors} options={{ headerShown: false }} />
             <Stack.Screen name="SearchDoctors" component={SearchDoctors} options={{ headerShown: false }} />
             <Stack.Screen name="ProfileView" component={ProfileView} options={{ headerShown: false }} />
@@ -37,7 +40,7 @@ export default class DoctorsStack extends Component {
             <Stack.Screen name="ViewClinic" component={ViewClinic} options={{ headerShown: false }} />
             <Stack.Screen name="Chat" component={ChatScreen} options={{ headerShown: false }} />
             <Stack.Screen name="makeAppointmentClinic" component={makeAppointmentClinic} options={{ headerShown: false }} />
-        <Stack.Screen name="ViewMedicals" component={ViewMedicals} options={{ headerShown: false }} />
+           <Stack.Screen name="ViewMedicals" component={ViewMedicals} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
   }

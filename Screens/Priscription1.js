@@ -81,7 +81,9 @@ class Priscription extends React.Component {
             keyBoard:false,
             ReportsState:false,
             reports:[],
-            offset2:0
+            offset2:0,
+            totalcount:0,
+            count2:0
         };
         this.scrollY=new Animated.Value(0)
         this.translateYNumber= React.createRef()
@@ -89,7 +91,7 @@ class Priscription extends React.Component {
     } 
     handleEndReached =()=>{
         if(this.state.next){
-            this.setState({offset:this.state.offset+5},()=>{
+            this.setState({offset:this.state.offset+6},()=>{
                if(this.state.isDoctor){
                    this.getPrescription()
                }else if(this.state.isReceptionist){
@@ -102,8 +104,8 @@ class Priscription extends React.Component {
         }
     }
         handleEndReached2 =()=>{
-        if(this.state.next){
-            this.setState({offset2:this.state.offset2+5},()=>{
+        if(this.state.next2){
+            this.setState({offset2:this.state.offset2+10},()=>{
               this.getPatientReports();
             })
         }
@@ -146,7 +148,7 @@ hideDatePicker = () => {
         let data =await HttpsClient.get(api)
         console.log(api)
         if(data.type =="success"){
-            this.setState({ prescriptions: this.state.prescriptions.concat(data.data.results),isFetching:false,})
+            this.setState({ prescriptions: this.state.prescriptions.concat(data.data.results),isFetching:false,totalcount:data.data.count})
             if(data.data.next!=null){
                 this.setState({next:true})
             }else{
@@ -161,7 +163,7 @@ hideDatePicker = () => {
         let data  =await HttpsClient.get(api)
     
       if(data.type == 'success'){
-          this.setState({ prescriptions:this.state.prescriptions.concat(data.data.results)})
+          this.setState({ prescriptions:this.state.prescriptions.concat(data.data.results),totalcount:data.data.count})
           this.setState({ loading: false ,isFetching:false})
           if (data.data.next != null) {
               this.setState({ next: true })
@@ -175,7 +177,7 @@ hideDatePicker = () => {
         let data = await HttpsClient.get(api)
   console.log(api)
         if (data.type == 'success') {
-            this.setState({ prescriptions: this.state.prescriptions.concat(data.data.results)})
+            this.setState({ prescriptions: this.state.prescriptions.concat(data.data.results),totalcount:data.data.count})
             this.setState({ loading: false ,isFetching:false})
             if (data.data.next != null) {
                 this.setState({ next: true })
@@ -215,11 +217,11 @@ hideDatePicker = () => {
     
     }
     getPatientReports = async()=>{
-          let api =`${url}/api/prescription/getreports/?patient=${this.props.user.profile.id}&limit=10&offset=${this.state.offset2}`
+          let api =`${url}/api/prescription/getreports/?user=${this.props.user.id}&limit=10&offset=${this.state.offset2}`
           let data =  await HttpsClient.get(api)
           console.log(api)
           if(data.type=="success"){
-              this.setState({reports:this.state.reports.concat(data.data.results,)})
+              this.setState({reports:this.state.reports.concat(data.data.results),count2:data.data.count})
                 this.setState({ loading: false ,isFetching:false})
               if(data.data.next){
                   this.setState({next2:true})
@@ -306,7 +308,7 @@ hideDatePicker = () => {
     }
 
     getIndex = (index) => {
-        let value = this.state.prescriptions.length - index
+        let value = this.state.totalcount- index
         return value
     }
     makeInvalid = async(item,index)=>{
@@ -340,13 +342,15 @@ hideDatePicker = () => {
             extrapolate:"clamp"
         })
         return(
-            <TouchableOpacity style={{  backgroundColor:item.active?"red":"green", height: height * 0.15, }}>
+            <TouchableOpacity style={{  backgroundColor:item.active?"red":"green", height: height * 0.15, alignItems:"center",justifyContent:"center"}}
+              onPress={() => { this.makeInvalid(item, index)}}
+            >
               
                    <View 
-                    onPress={() => { this.makeInvalid(item, index)}}
-                    style={{height:height*0.05,width:width*0.3,alignItems:"center",justifyContent:"center",marginHorizontal:20,marginTop:20}}
+                   
+                    style={{width:width*0.3,alignItems:"center",justifyContent:"center",}}
                    >
-                    <Text style={[styles.text, { color: "#fff",  }]}>{item.active ?"Invalid":"Invalid"}</Text>
+                    <Text style={[styles.text, { color: "#fff",  }]}>{item.active ?"Make Invalid":"Make valid"}</Text>
                    </View>
              
             </TouchableOpacity>
@@ -383,6 +387,27 @@ hideDatePicker = () => {
             this.showSimpleMessage("try again ","orange","info")
         }
     }
+    chatClinicAndCustomer = async(item)=>{
+               let api = `${url}/api/prescription/createClinicChat/?clinic=${item.clinic}&customer=${item.forUser}`
+
+        let data = await HttpsClient.get(api)
+        console.log(data)
+
+        if (data.type == "success") {
+            this.props.navigation.navigate('Chat', { item: data.data })
+        }else{
+            this.showSimpleMessage("try again ","orange","info")
+        }  
+    }
+    chatWithDoctor = async(user)=>{
+          let    api = `${url}/api/prescription/createDoctorChat/?doctor=${this.props.user.id}&customer=${user}`
+          let data = await HttpsClient.get(api)
+                if (data.type == "success") {
+            this.props.navigation.navigate('Chat', { item: data.data })
+        }else{
+            this.showSimpleMessage("try again ","orange","info")
+        }
+    }
     separator = () =>{
       return(
           <View>
@@ -398,6 +423,7 @@ hideDatePicker = () => {
         )
     }
     showDifferentPriscription = (item, index) => {
+       
         const { height,width } = Dimensions.get("window");
         if (this.state.isDoctor){
           return(
@@ -407,7 +433,7 @@ hideDatePicker = () => {
                 ref={ref=>this.swipeRef[index]=ref}
                 renderRightActions={(progress, dragX) => this.rightSwipe(progress, dragX, item, index)}
             >
-                <TouchableOpacity style={[styles.card, { flexDirection: "row",    height: height * 0.1,}]}
+                <TouchableOpacity style={[styles.card, { flexDirection: "row",    height: height * 0.15,}]}
                     // onPress={() => { props.navigation.navigate('showCard', { item }) }}
                     onPress={() => { this.props.navigation.navigate('PrescriptionViewDoctor',{item})}}
                 >
@@ -437,14 +463,15 @@ hideDatePicker = () => {
                         </View>
                      <View style={{ marginTop: 10,flexDirection:"row" }}>
                             <View style={{flexDirection:"row"}}>
-                                <Text style={[styles.text]}>Reason : </Text>
+                                <Text style={[styles.text]}>Diagnosis : </Text>
                             </View>
                             <View style={{flexDirection:"row",width:"100%",flexWrap:"wrap"}}>
                                 {
-                                    item?.diseaseTitle?.map(({item,index})=>{
+                                    item?.diseaseTitle?.map((it,index)=>{
+                                      
                                                  return(
                                         <View key={index}>
-                                            <Text style={[styles.text]}>{item}</Text>    
+                                            <Text style={[styles.text]}>{it}</Text>    
                                         </View>
                                     )
                                     })
@@ -453,7 +480,31 @@ hideDatePicker = () => {
                             </View>
                      
                         </View>
-                  
+                         <View style={{marginTop:10,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                                   <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                                        onPress={() => { this.chatWithDoctor(item.forUser) }}
+                                    >
+                                        <Ionicons name="chatbox" size={24} color="#63BCD2" />
+
+                                    </TouchableOpacity>
+                                               <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                            onPress={() => {
+                       
+                                      if (Platform.OS == "android") {
+                                        Linking.openURL(`tel:${item?.username.mobile}`)
+                                    } else {
+
+                                        Linking.canOpenURL(`telprompt:${item?.username.mobile}`)
+                                    }}}
+    
+    
+                        >
+                           <Ionicons name="call" size={24} color="#63BCD2" />
+                        </TouchableOpacity>
+                           <View>
+                                <Text style={[styles.text]}>{moment(item.created).format("h:mm a")}</Text>
+                            </View>
+                         </View>
                     </View>
 
                 </TouchableOpacity>
@@ -461,14 +512,13 @@ hideDatePicker = () => {
             )
         }
         if (this.state.isReceptionist) {
-
             let dp = null
             if (item?.doctordetails?.dp) {
                 dp = `${url}${item?.doctordetails?.dp}`
             }
 
             return (
-                <TouchableOpacity style={[styles.card, { flexDirection: "row", borderRadius: 5,    height: height * 0.1, }]}
+                <TouchableOpacity style={[styles.card, { flexDirection: "row", borderRadius: 5,    height: height * 0.2, }]}
                     onPress={() => { this.props.navigation.navigate('PrescriptionViewDoctor', { item }) }}
                 >
                     <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
@@ -486,7 +536,7 @@ hideDatePicker = () => {
                                 <Text>#{this.getIndex(index)}</Text>
                             </View>
                         </View>
-                        <View style={{ marginTop: 10 }}>
+                        <View style={{ marginTop: 10,flexDirection:"row" }}>
                             <View style={{flexDirection:"row"}}>
                                 <Text style={[styles.text]}>Reason : </Text>
                             </View>
@@ -506,12 +556,35 @@ hideDatePicker = () => {
                         </View>
                         <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
                             <View>
-                                <Text style={[styles.text]}>Doctor :{item.doctordetails.name}</Text>
+                                <Text style={[styles.text]}>{item.doctordetails.name}</Text>
                             </View>
-                            <View>
+                           
+                        </View>
+                                <View style={{marginTop:10,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                                   <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                                        onPress={() => { this.chatClinicAndCustomer(item) }}
+                                    >
+                                        <Ionicons name="chatbox" size={24} color="#63BCD2" />
+
+                                    </TouchableOpacity>
+                                               <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                            onPress={() => {
+                       
+                                      if (Platform.OS == "android") {
+                                        Linking.openURL(`tel:${item?.username.mobile}`)
+                                    } else {
+
+                                        Linking.canOpenURL(`telprompt:${item?.username.mobile}`)
+                                    }}}
+    
+    
+                        >
+                           <Ionicons name="call" size={24} color="#63BCD2" />
+                        </TouchableOpacity>
+                           <View>
                                 <Text style={[styles.text]}>{moment(item.created).format("h:mm a")}</Text>
                             </View>
-                        </View>
+                         </View>
                     </View>
                 </TouchableOpacity>
             )
@@ -675,7 +748,7 @@ hideDatePicker = () => {
         return (
             <View>
                 <View style={{ height: headerHeight / 2,flexDirection:"row",}}>
-                     <TouchableOpacity style={{flex:0.6,justifyContent:"center",flexDirection:"row",}}
+                 { this.props.user.profile.occupation=="Customer"  ? <TouchableOpacity style={{flex:0.6,justifyContent:"center",flexDirection:"row",}}
                        onPress={()=>{
                            this.setState({ReportsState:!this.state.ReportsState})
                        }}
@@ -694,7 +767,18 @@ hideDatePicker = () => {
                          </View>
                          </View>
                   
-                     </TouchableOpacity>
+                     </TouchableOpacity>:
+                     <View style={{flex:0.6,justifyContent:"center",flexDirection:"row",}}>
+                                         <View style={{justifyContent:"center",}}>
+                             <View style={{}}>
+
+                              <Text style={{ color: '#fff', fontFamily: "openSans" ,fontSize: height*0.04, fontWeight: "bold" }}>{!this.state.ReportsState?"Prescription":"Reports"}</Text>
+
+                             </View>
+
+                         </View>
+                     </View>
+                     }
                     <View style={{flex:0.4,alignItems: "center", justifyContent: 'center'}}>
                         {
                             this.renderFilter()
@@ -728,7 +812,14 @@ hideDatePicker = () => {
        return null
     }
   
-
+    renderFooter2 =()=>{
+       if(this.state.next2&&!this.state.isFetching){
+           return(
+               <ActivityIndicator size="large" color ={themeColor} />
+           )
+       }
+       return null
+    }
     
     getCloser = (value, checkOne, checkTwo) =>
         Math.abs(value - checkOne) < Math.abs(value - checkTwo) ? checkOne : checkTwo;
@@ -814,12 +905,12 @@ const screenHeight =Dimensions.get('screen').height;
                             ref={ref=>this.ref=ref}
                              
                             onEndReached ={()=>{this.handleEndReached2()}}
-                            ListFooterComponent={this.renderFooter()}
+                            ListFooterComponent={this.renderFooter2()}
                             onEndReachedThreshold={0.1}
                             renderItem={({item,index})=>{
                                return(
                                   
-                                   <Reports item={item} index={index} reports={this.state.reports} navigation={this.props.navigation}/>
+                                   <Reports item={item} index={index} count={this.state.count2} navigation={this.props.navigation}/>
                                 
                                  
                                   
@@ -864,7 +955,7 @@ const screenHeight =Dimensions.get('screen').height;
                           
             
 
-                  { this.state.isDoctor&&!this.state.keyBoard&&<View style={{
+                  { this.props.user.profile!="customer"&&!this.state.keyBoard&&<View style={{
                             position: "absolute",
                             bottom: 100,
                             left: 20,
@@ -876,7 +967,7 @@ const screenHeight =Dimensions.get('screen').height;
                             borderRadius: 20
                         }}>
                             <TouchableOpacity
-                                onPress={() => { this.props.navigation.navigate('addPriscription') }}
+                                onPress={() => { this.props.navigation.navigate('addPriscription',) }}
                             >
                                 <AntDesign name="pluscircle" size={40} color={themeColor} />
                             </TouchableOpacity>
