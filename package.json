@@ -17,6 +17,7 @@
     "axios": "^0.21.1",
     "expo": "^42.0.0",
     "expo-app-loading": "^1.0.1",
+    "expo-av": "~9.2.3",
     "expo-constants": "~11.0.1",
     "expo-document-picker": "~9.2.4",
     "expo-font": "~9.2.1",
