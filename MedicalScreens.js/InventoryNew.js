@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, TextInput, FlatList, Image, SafeAreaView, Alert, ScrollView,Switch} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, TextInput, FlatList, Image, SafeAreaView, Alert, ScrollView,Switch,ActivityIndicator} from 'react-native';
 import { Ionicons, Entypo, AntDesign, MaterialIcons} from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
@@ -11,7 +11,7 @@ const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
 const url = settings.url;
 const screenHeight = Dimensions.get("screen").height
-import { ActivityIndicator, } from 'react-native-paper';
+
 import HttpsClient from '../api/HttpsClient';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -66,7 +66,9 @@ class InventoryNew extends Component {
             modal2:false,
             soldItems:[],
             rack:true,
-            soldMedicinesView:false
+            soldMedicinesView:false,
+            offset:0,
+            next:true
         };
     }
     deleteSold = async(item,index)=>{
@@ -236,11 +238,23 @@ class InventoryNew extends Component {
          }
     }
     getSold =async()=>{
-        let api = `${url}/api/prescription/soldinventory/?inventory=${this?.props?.medical?.inventory || this?.props?.clinic?.inventory}`
-        const data = await HttpsClient.get(api)
+        // let api = `${url}/api/prescription/soldinventory/?inventory=${this?.props?.medical?.inventory || this?.props?.clinic?.inventory}`
+        // const data = await HttpsClient.get(api)
+        // console.log(api)
+        // if(data.type=="success"){
+        //       this.setState({soldItems:data.data})
+        // }
+
+        let api= `${url}/api/prescription/presmedicines/?limit=6&offset=${this.state.offset}&clinic=${this.props.clinic.clinicpk}`
+                const data = await HttpsClient.get(api)
         console.log(api)
         if(data.type=="success"){
-              this.setState({soldItems:data.data})
+              this.setState({soldItems:this.state.soldItems.concat(data.data.results)})
+              if(data.data.next){
+                  this.setState({next:true})
+              }else{
+                         this.setState({next:false}) 
+              }
         }
     }
     changeOrientation =async()=>{
@@ -620,58 +634,138 @@ class InventoryNew extends Component {
             </View>
         )
     }
-    renderHeader3 =()=>{
-        const { height, width } = Dimensions.get("window");
-        return(
-            <View style={{flexDirection:"row",marginVertical:10,flex:1}}>
-               <View style={{flex:0.05,alignItems:"center",justifyContent:"center"}}>
-                      <Text style={[styles.text,{color:"#000"}]}>#</Text>
-               </View>
-                <View
-                    style={{ flex:0.2, alignItems: "center", justifyContent: "center" }}
-                >
-                    <Text style={[styles.text, { color: "#000" }]}>Name</Text>
-                </View>
-                <View
-                    style={{flex:0.15, alignItems: "center", justifyContent: "center" }}
-                >
-                    <Text style={[styles.text, { color: "#000" }]}>Mobile</Text>
-                </View>
-                <View
-                    style={{flex:0.15, alignItems: "center", justifyContent: "center" }}
-                >
-                    <Text style={[styles.text, { color: "#000" }]}>Date</Text>
-                </View>
-                <View
-                    style={{ flex:0.15, alignItems: "center", justifyContent: "center" }}
-                >
-                    <Text style={[styles.text, { color: "#000" }]}>Amount</Text>
-                </View>
-                <View
-                    style={{flex:0.15, alignItems: "center", justifyContent: "center" }}
-                >
-                    <Text style={[styles.text, { color: "#000" }]}>Discount</Text>
-                </View>
-                <View
-                    style={{flex:0.15, alignItems: "center", justifyContent: "center" }}
-                >
-                    <Text style={[styles.text, { color: "#000" }]}>Item Count</Text>
-                </View>
-                <View
-                    style={{flex:0.1, alignItems: "center", justifyContent: "center" }}
-                >
-                    <Text style={[styles.text, { color: "#000" }]}>Action</Text>
-                </View>
-            </View>
-        )
-    }
+    // renderHeader3 =()=>{
+    //     const { height, width } = Dimensions.get("window");
+    //     return(
+    //         <View style={{flexDirection:"row",marginVertical:10,flex:1}}>
+    //            <View style={{flex:0.05,alignItems:"center",justifyContent:"center"}}>
+    //                   <Text style={[styles.text,{color:"#000"}]}>#</Text>
+    //            </View>
+    //             <View
+    //                 style={{ flex:0.2, alignItems: "center", justifyContent: "center" }}
+    //             >
+    //                 <Text style={[styles.text, { color: "#000" }]}>Name</Text>
+    //             </View>
+    //             <View
+    //                 style={{flex:0.15, alignItems: "center", justifyContent: "center" }}
+    //             >
+    //                 <Text style={[styles.text, { color: "#000" }]}>Mobile</Text>
+    //             </View>
+    //             <View
+    //                 style={{flex:0.15, alignItems: "center", justifyContent: "center" }}
+    //             >
+    //                 <Text style={[styles.text, { color: "#000" }]}>Date</Text>
+    //             </View>
+    //             <View
+    //                 style={{ flex:0.15, alignItems: "center", justifyContent: "center" }}
+    //             >
+    //                 <Text style={[styles.text, { color: "#000" }]}>Amount</Text>
+    //             </View>
+    //             <View
+    //                 style={{flex:0.15, alignItems: "center", justifyContent: "center" }}
+    //             >
+    //                 <Text style={[styles.text, { color: "#000" }]}>Discount</Text>
+    //             </View>
+    //             <View
+    //                 style={{flex:0.15, alignItems: "center", justifyContent: "center" }}
+    //             >
+    //                 <Text style={[styles.text, { color: "#000" }]}>Item Count</Text>
+    //             </View>
+    //             <View
+    //                 style={{flex:0.1, alignItems: "center", justifyContent: "center" }}
+    //             >
+    //                 <Text style={[styles.text, { color: "#000" }]}>Action</Text>
+    //             </View>
+    //         </View>
+    //     )
+    // }
 
+     renderHeader3 =()=>{
+         return (
+             <View style={{flexDirection:"row",marginTop:10}}>
+                    <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
+                       <Text style={[styles.text,{color:"#000"}]}>#</Text>
+                    </View>
+                      <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                        <Text style={[styles.text,{color:"#000"}]}>Medicine</Text>
+                    </View>
+                    <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                        <Text style={[styles.text,{color:"#000"}]}>Type</Text>
+                    </View>
+                    <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                        <Text style={[styles.text,{color:"#000"}]}>Date</Text>
+                    </View>
+                    <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                        <Text style={[styles.text,{color:"#000"}]}>Diagnosis</Text>
+                    </View>
+                    <View  style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
+                         <Text style={[styles.text,{color:"#000"}]}>Qty</Text>
+                    </View>
+             </View>
+         )
+     }
+     footer =()=>{
+         if(this.state.next){
+             return(
+                 <ActivityIndicator  size={"large"} color={themeColor}/> 
+             )
+         }
+         return null
+     }
+     handleEndReached =()=>{
+         if(this.state.next){
+             this.setState({offset:this.state.offset+5},()=>{
+                 this.getSold()
+             })
+         }
+     }
+     onRefresh =()=>{
+         this.setState({soldItems:[],offset:0,next:true},()=>{
+                   this.getSold()
+         })
+     }
     ThirdRoute =()=>{
         const { height, width } = Dimensions.get("window");
         return (
             <View style={{flex:1}}>
-         
-                   <FlatList 
+                    <FlatList 
+                       onEndReached={()=>{
+                           this.handleEndReached()
+                       }}
+                        refreshing={false}
+                        onRefresh={()=>{
+                            this.onRefresh()
+                        }}
+                       ListFooterComponent={this.footer()}
+                       ListHeaderComponent ={this.renderHeader3()}
+                       data={this.state.soldItems}
+                       keyExtractor={(item,index)=>index.toString()}
+                       renderItem={({item,index})=>{
+                          return(
+                                     <View style={{flexDirection:"row",marginTop:10}}>
+                                            <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
+                                            <Text style={[styles.text,{color:"#000"}]}>{index+1}</Text>
+                                            </View>
+                                            <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                                                <Text style={[styles.text,{color:"#000"}]}>{item.medicinename.name}</Text>
+                                            </View>
+                                            <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                                                <Text style={[styles.text,{color:"#000"}]}>{item.medicinename.type}</Text>
+                                            </View>
+                                            <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                                                <Text style={[styles.text,{color:"#000"}]}>{moment(item.created).format("DD-MM-YYYY")}</Text>
+                                            </View>
+                                            <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                                                <Text style={[styles.text,{color:"#000"}]}>{item.diagonisname}</Text>
+                                            </View>
+                                            <View  style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
+                                                <Text style={[styles.text,{color:"#000"}]}>{item.total_qty}</Text>
+                                            </View>
+                                    </View>
+                          )
+                       }}
+                    />
+                   {/* <FlatList 
                      data ={this.state.soldItems}
                      keyExtractor={(item,index)=>index.toString()}
                      ListHeaderComponent ={this.renderHeader3()}
@@ -729,8 +823,8 @@ class InventoryNew extends Component {
                              </TouchableOpacity>
                          )
                      }}
-                   />
-                <View style={{position:"absolute",bottom:30,right:40,zIndex:999}}>
+                   /> */}
+                {/* <View style={{position:"absolute",bottom:30,right:40,zIndex:999}}>
                     <View>
                         <Text style={[styles.text, { color: "#000" }]}>Medicines View</Text>
                     </View>
@@ -763,7 +857,7 @@ class InventoryNew extends Component {
                 >
                     <Text style={[styles.text, { color: "#fff" }]}>Create Bill</Text>
                 </TouchableOpacity>
-                </View>
+                </View> */}
             </View>
         )
     }
