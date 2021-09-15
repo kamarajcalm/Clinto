@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Keyboard,Alert,Dimensions } from 'react-native';
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, AntDesign} from '@expo/vector-icons';
 import settings from '../AppSettings';
+import { LinearGradient } from 'expo-linear-gradient';
 const themeColor = settings.themeColor
 const {height,width} =Dimensions.get("window")
 export default class MyTabBar extends Component {
@@ -86,7 +87,9 @@ UNSAFE_componentWillReceiveProps(){
 
     
         return (
-            <View style={{ 
+            <LinearGradient 
+            colors={[themeColor,themeColor]}
+            style={{ 
                 backgroundColor:themeColor,
                 height:height*0.072, 
                 flexDirection: "row" ,
@@ -183,7 +186,7 @@ UNSAFE_componentWillReceiveProps(){
                   
                    
                 })}
-            </View>
+            </LinearGradient>
         );
         }
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, SafeAreaView, ToastAndroid, Pressable, Switch, ActivityIndicator, TextInput, Alert, TouchableWithoutFeedback, ScrollView,Keyboard} from 'react-native';
-import { connect } from 'react-redux';
+import { connect, connectAdvanced } from 'react-redux';
 import { selectTheme } from '../actions';
 import settings from '../AppSettings';
 import { Entypo } from '@expo/vector-icons';
@@ -89,6 +89,17 @@ getClinicDoctors = async()=>{
         const data = await HttpsClient.get(api)
         if (data.type == "success") {
             this.setState({ doctors: data.data })
+                if(this.state.appoinment){
+         let findDoctor = data.data.find((item)=>{
+             return item.doctor.profile.name==this.state?.appoinment?.doctordetails.name
+         })
+       if(findDoctor){
+           this.setState({selectedDoctor:findDoctor},()=>{
+                 this.searchUser(this.state?.appoinment?.patientname.mobile, this.state?.appoinment?.requesteddate, this.state?.appoinment?.clinic)
+           })
+       }
+
+    }
         }
 }
   componentDidMount(){
@@ -97,9 +108,7 @@ getClinicDoctors = async()=>{
      }
            Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
-    if(this.state.appoinment){
-        this.searchUser(this.state?.appoinment?.patientname.mobile, this.state?.appoinment?.requesteddate, this.state?.appoinment?.clinic)
-    }
+
     this._unsubscribe = this.props.navigation.addListener('focus',()=>{
          this.searchUser(this.state.mobileNo)
     })
@@ -1170,7 +1179,7 @@ getClinicDoctors = async()=>{
                                 })
                             }
                 <View style={{ marginTop: 20 }}>
-                                <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Add Medicines</Text>
+                                <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Prescribe Medicines</Text>
                                 <View style={{ flexDirection: "row", marginTop: 20,alignItems:'center',justifyContent:"space-around"}}>
                     <TouchableOpacity style={{ alignItems: "center", justifyContent: 'center', flexDirection: "row" }}
                         onPress={() => { this.props.navigation.navigate("SearchMedicines", { backFunction: (medicines) => { this.backFunction(medicines) } }) }}

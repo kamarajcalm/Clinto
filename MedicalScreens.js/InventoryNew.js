@@ -245,7 +245,7 @@ class InventoryNew extends Component {
         //       this.setState({soldItems:data.data})
         // }
 
-        let api= `${url}/api/prescription/presmedicines/?limit=6&offset=${this.state.offset}&clinic=${this.props.clinic.clinicpk}`
+        let api= `${url}/api/prescription/presmedicines/?limit=6&offset=${this.state.offset}&clinic=${this?.props?.clinic?.clinicpk||this.props.user.profile.recopinistclinics[0].clinicpk}`
                 const data = await HttpsClient.get(api)
         console.log(api)
         if(data.type=="success"){

@@ -1,5 +1,5 @@
 const fontFamily = "openSans"
-const themeColor ="#3F4450"
+const themeColor ="#333"
 const url = 'http://192.168.29.98:8000'
 const dunzourl = 'https://apis-staging.dunzo.in'
 // const url = 'https://uportal.in'

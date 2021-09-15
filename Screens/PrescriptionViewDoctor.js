@@ -344,14 +344,14 @@ sepeartor =()=>{
     renderHeader =()=>{
         return(
             <View>
-                <View style={{marginHorizontal:20,flexDirection:"row",marginTop:10}}>
+             {this.state.item.ongoing_treatment?   <View style={{marginHorizontal:20,flexDirection:"row",marginTop:10}}>
                     <View style={{alignItems:"center",justifyContent:"center"}}> 
                         <Text style={[styles.text, { }]}>Reason : </Text>
                     </View>
                     <View style={{alignItems:"center",justifyContent:"center"}}>
                         <Text style={[styles.text, {color:"#000" }]}>{this.state.item.ongoing_treatment}</Text>
                     </View>
-                </View>
+                </View>:null}
                 <View style={{ marginHorizontal: 20, flexDirection: "row" ,marginTop:10}}>
                     <View style={{ alignItems: "center", justifyContent: "center" }}>
                         <Text style={[styles.text, { }]}>Diagnosis : </Text>
@@ -542,7 +542,7 @@ sepeartor =()=>{
                                         <Text style={[styles.text, { textAlign: "right" }]}>{moment(this.state?.item?.created).format('DD/MM/YYYY')}</Text>
                                     </View>
                                     <View style={{ }}>
-                                        <Text style={[styles.text]}>Prescription No : {this.state?.item?.id}</Text>
+                                        <Text style={[styles.text]}>Prescription Id : {this.state?.item?.id}</Text>
 
                                     </View>
                                 </View>
@@ -588,7 +588,7 @@ sepeartor =()=>{
                                                                 <Text style={[styles.text, { color: "#000", fontWeight: "bold" }]}>({item.medicinename.type})</Text>
                                                             </View>
                                                             <View>
-                                                                <Text style={[styles.text]}>*</Text>
+                                                                <Text style={[styles.text,]}>*</Text>
                                                             </View>
                                                             <View>
                                                                 <Text style={[styles.text]}> {item.days} days</Text>
@@ -601,8 +601,11 @@ sepeartor =()=>{
                                                             <View>
                                                                 <Text style={[styles.text]}>( {item.after_food ? "AF" : "BF"} )</Text>
                                                             </View>
+                                                       
                                                         </View>}
-
+                                                             <View style={{marginTop:5}}>
+                                                                <Text style={[styles.text,{color:"#DEB887"}]}>Diagnosis : {item.diagonisname}</Text>
+                                                            </View>
                                                     </View>
                                                     <View style={{ flex: 0.2, alignItems: "center", justifyContent: "space-around" }}>
 
@@ -645,12 +648,15 @@ sepeartor =()=>{
                                                      <View style={{ flex: 0.7 }}>
                                                          <View style={{ flexDirection: "row" }}>
                                                              <View>
-                                                                 <Text style={[styles.text, { color: "#000", }]}>{item.medicinename.name}</Text>
+                                                                 <Text style={[styles.text, { color: "#000", fontWeight: "bold"}]}>{item.medicinename.name}</Text>
                                                              </View>
                                                              <View style={{ marginLeft: 10 }}>
-                                                                 <Text style={[styles.text, { color: "#000", }]}>({item.medicinename.type})</Text>
+                                                                 <Text style={[styles.text, { color: "#000", fontWeight: "bold"}]}>({item.medicinename.type})</Text>
                                                              </View>
                                                          </View>
+                                                                 <View style={{marginTop:5}}>
+                                                                <Text style={[styles.text,{color:"#DEB887"}]}>Diagnosis : {item.diagonisname}</Text>
+                                                            </View>
                                                          {/* {(item.medicinename.type === "Tablet" || item.medicinename.type === "Capsules") && <View style={{ flexDirection: "row" }}>
                                                              <View>
                                                                  <Text style={[styles.text]}> {item.morning_count} - {item.afternoon_count} -{item.night_count} </Text>
@@ -682,9 +688,11 @@ sepeartor =()=>{
                                 }
 
                             </View>
-                            <View style={{ flex: 0.1, }}>
-                                <View style={{ flex: 0.5 }}>
-
+                            <View style={{ flex: 0.1,flexDirection:"row" }}>
+                                <View style={{ flex: 0.5 ,alignItems:"center",justifyContent:"center"}}>
+                                {this.state?.item?.doctordetails?.name!= this.state.item.createdBy&&  <View>
+                                       <Text style={[styles.text,{color:"#000"}]}>Created By : {this.state.item.createdBy}</Text>
+                                   </View>}
                                 </View>
                                 <View style={{ alignSelf: 'flex-end', flex: 0.5, alignItems: "flex-end", justifyContent: "center", marginRight: 10 }}>
                                     <View>

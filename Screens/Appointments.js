@@ -87,15 +87,22 @@ class Appointments extends Component {
                         value:data.data[0].user.id,
                         mobile:data.data[0].user.username
                     }
+                    let pushObj2  ={
+                        label:"Add New User",
+                        value:"Add New User",
+                        mobile:data.data[0].user.username   
+                    }
                     profiles.push(pushObj)
+
                     data.data[0].childUsers.forEach((item)=>{
-                        let pushObj ={
+                        let pushObj = {
                             label:item.name,
                             value:item.childpk,
                             mobile:item.mobile
                         }
                         profiles.push(pushObj)
                     })
+                    profiles.push(pushObj2)
                    this.setState({profiles})
                    this.setState({ patientname: profiles[0].label, user: profiles[0]})
                
@@ -364,7 +371,10 @@ class Appointments extends Component {
                 })
 
             }
-           
+            if(this.state.addNewUser){
+                this.searchUser(this.state.patientNo)
+                this.setState({showAppoinmentModal:true,addNewUser:false})
+            }
             
 
         });
@@ -1095,7 +1105,7 @@ class Appointments extends Component {
                                             >
                                                 <Ionicons name="call" size={20} color="#63BCD2" />
                                             </TouchableOpacity>
-                                        </View>
+                                     </View>
                                        {this.props.user.profile.occupation!="Doctor"&&  <View style={{flex:0.7,alignItems:"center",justifyContent:"center"}}>
                                                 <Text style={[styles.text, {textAlign:"center"}]}>Doctor :{item.doctordetails.name}</Text>
                                             </View>}
@@ -1417,6 +1427,10 @@ class Appointments extends Component {
                                     }}
                                     dropDownStyle={{ backgroundColor: '#fafafa' }}
                                     onChangeItem={(item) =>{
+                                        if(item.value=="Add New User"){
+                                            this.setState({showAppoinmentModal:false,addNewUser:true})
+                                            return this.props.navigation.navigate("AddAccount",{parent:this.state.profiles[0]})
+                                        }
                                        this.setState({user:item,patientname:item.label})
                                     } }
                                 />
@@ -1633,7 +1647,7 @@ class Appointments extends Component {
                                     )}
                                     style={{ backgroundColor: "#fff", height: 50, fontWeight: "bold", color: "red" }}
                                     labelStyle={{ fontWeight: "bold", color: "red" }}
-                                    indicatorStyle={{ backgroundColor: themeColor, height: 5 }}
+                                    indicatorStyle={{ backgroundColor: themeColor, height: 2 }}
                                 />
                             }
 

@@ -262,11 +262,16 @@ hideDatePicker = () => {
        console.log(this.props.user)
        this.findUser()
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
-            if(this.state.isDoctor){
-                this.setState({prescriptions:[],offset:0,next:true},()=>{
+            if(this.props.user.profile.occupation=="Doctor"){
+              return  this.setState({prescriptions:[],offset:0,next:true},()=>{
                     this.getPrescription()
                 })
              
+            }
+            if(this.props.user.profile.occupation=="ClinicRecoptionist"){
+                return  this.setState({prescriptions:[],offset:0,next:true},()=>{
+                    this.getClinicPrescription()
+                })   
             }
             
         });
@@ -538,7 +543,7 @@ hideDatePicker = () => {
                         </View>
                         <View style={{ marginTop: 10,flexDirection:"row" }}>
                             <View style={{flexDirection:"row"}}>
-                                <Text style={[styles.text]}>Reason : </Text>
+                                <Text style={[styles.text]}>Diagnosis : </Text>
                             </View>
                             <FlatList 
                                horizontal={true}
@@ -746,7 +751,9 @@ hideDatePicker = () => {
     const { height,width } = Dimensions.get("window");
     const headerHeight = height*0.2
         return (
-            <View>
+            <LinearGradient 
+               colors={["#333", themeColor, themeColor]}
+            >
                 <View style={{ height: headerHeight / 2,flexDirection:"row",}}>
                  { this.props.user.profile.occupation=="Customer"  ? <TouchableOpacity style={{flex:0.6,justifyContent:"center",flexDirection:"row",}}
                        onPress={()=>{
@@ -800,7 +807,7 @@ hideDatePicker = () => {
                     </View>
 
                 </View>
-            </View>
+            </LinearGradient>
         )
     }
     renderFooter =()=>{
@@ -878,7 +885,7 @@ const screenHeight =Dimensions.get('screen').height;
             <>
                 <SafeAreaView style={styles.topSafeArea} />
                 <SafeAreaView style={styles.bottomSafeArea}>
-                <StatusBar backgroundColor={themeColor} barStyle={"default"}/>
+                <StatusBar backgroundColor={"#333"} barStyle={"default"}/>
                     {/* HEADERS */}
                     <Animated.View style={[styles.header, { transform: [{ translateY }] }]}>
                         {
@@ -930,7 +937,7 @@ const screenHeight =Dimensions.get('screen').height;
                             }
                             data={this.state.prescriptions}
                             scrollEventThrottle={16}
-                            contentContainerStyle={{ paddingTop: headerHeight+height*0.01, paddingBottom: 90 }}
+                            contentContainerStyle={{ paddingTop: headerHeight+height*0.01, paddingBottom: 150}}
                             onScroll={handleScroll}
                             ref={ref=>this.ref=ref}
                              
@@ -955,7 +962,7 @@ const screenHeight =Dimensions.get('screen').height;
                           
             
 
-                  { this.props.user.profile!="customer"&&!this.state.keyBoard&&<View style={{
+                  { this.props.user.profile.occupation!="Customer"&&!this.state.keyBoard&&<View style={{
                             position: "absolute",
                             bottom: 100,
                             left: 20,

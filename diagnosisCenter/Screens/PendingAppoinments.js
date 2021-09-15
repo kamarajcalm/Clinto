@@ -190,9 +190,9 @@ getPendingAppoinments = async()=>{
    componentDidMount(){
       this.getPendingAppoinments()
                  this._unsubscribe = this.props.navigation.addListener('focus', () => {
-              this.setState({offset:0,appoinments:[]},()=>{
-                    this.getPendingAppoinments()
-              })
+            //   this.setState({offset:0,appoinments:[]},()=>{
+            //         this.getPendingAppoinments()
+            //   })
               
         });
    }

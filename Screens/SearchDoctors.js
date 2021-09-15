@@ -79,6 +79,7 @@ class SearchDoctors extends Component {
         }
         return this.props.navigation.navigate('ViewClinic', { item })
     }
+
     render() {
         return (
               <>
@@ -96,14 +97,15 @@ class SearchDoctors extends Component {
                         <TextInput
                             autoFocus={true}
                             selectionColor={themeColor}
-                            style={{ height: "45%", backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10, width: "100%" }}
-                            placeholder="search Doctors"
+                            style={{ height:35, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10, width: "100%" }}
+                            placeholder="search"
                             onChangeText={(text)=>{this.SearchDoctors(text)}}
                         />
                     </View>
 
                 </View>
                 <FlatList 
+                
                    data ={this.state.doctors}
                    keyExtractor ={(item,index)=>index.toString()}
                    renderItem ={({item,index})=>{

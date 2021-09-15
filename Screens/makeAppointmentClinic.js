@@ -59,6 +59,7 @@ class makeAppointmentClinic extends Component {
     }
 
     componentDidMount() {
+      
        this.getDoctors()
     }
     showDatePicker = () => {
@@ -127,11 +128,15 @@ class makeAppointmentClinic extends Component {
         let api = `${url}/api/prescription/addAppointment/`
         let sendData = {
             clinic: this.state.item.pk,
-            doctor: this.state.selectedDoctor.pk,
+    
             requesteduser: this.props.user.id,
             requesteddate: this.state.today,
             requestedtime: this.state.time,
             reason:this.state.reason,
+        }
+
+        if(this.state.selectedDoctor){
+            sendData.doctor = this.state.selectedDoctor.pk
         }
       
         let post = await HttpsClient.post(api, sendData)
@@ -211,7 +216,7 @@ class makeAppointmentClinic extends Component {
                           contentContainerStyle={{paddingBottom:30}}
                           keyboardShouldPersistTaps={"handled"}
                         >
-                            <View style={{ margin: 20 }}>
+                   { this.state.doctors.length>0&&        <View style={{ margin: 20 }}>
                                 <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Select Doctor</Text>
                                 <View style={{ marginTop: 10 }}>
                                     <DropDownPicker
@@ -230,9 +235,10 @@ class makeAppointmentClinic extends Component {
                                     />
                                 </View>
 
-                            </View>
+                            </View>}
                             
                                             {/* Timings */}
+             {this.state.item.type!=="Lab"       &&        <>               
                             <View style={{ alignItems: "center", justifyContent: "center", marginTop: 20 }}>
                                 <Text style={[styles.text, { fontWeight: "bold", }]}>Timings:</Text>
                             </View>
@@ -363,6 +369,7 @@ class makeAppointmentClinic extends Component {
                                     }
                                 </View>
                             </View>
+                              </>}
                             <View style={{ marginLeft: 20, marginTop: 20 }}>
                                 <View style={{alignItems:"center",justifyContent:"center"}}>
                                     <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Select Date</Text>
@@ -401,6 +408,7 @@ class makeAppointmentClinic extends Component {
 
 
                             </View>
+                          
                             <View style={{margin:20}}>
                                 <View style={{}}>
                                     <Text style={[styles.text,{fontWeight:"bold"}]}>Reason :</Text>

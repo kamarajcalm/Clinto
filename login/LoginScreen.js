@@ -13,6 +13,7 @@ import FlashMessage, { showMessage, hideMessage } from "react-native-flash-messa
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 const { height, width } = Dimensions.get("window");
+const  screenHeight= Dimensions.get("screen").height;
 const themeColor = settings.themeColor;
 const fontFamily = settings.fontFamily;
 const url = settings.url
@@ -24,16 +25,18 @@ class LoginScreen extends Component {
       username:this?.props?.route?.params?.item?.mobile|| "",
       password: '',
       token: null,
+      secure:true
     };
   }
   login = async () => {
-
+  
     if (this.state.username == "") {
       return this.showSimpleMessage(`please enter username`, "#dd7030")
     }
     if (this.state.password == "") {
       return this.showSimpleMessage(`please enter password`, "#dd7030")
     }
+   
     this.setState({ loading: true })
     var data = new FormData()
     data.append("username", this.state.username)
@@ -136,122 +139,79 @@ class LoginScreen extends Component {
   }
   render() {
     return (
-      <KeyboardAvoidingView
-        behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
-        style={styles.container}>
-        <StatusBar backgroundColor={themeColor} />
-        <View style={styles.header}>
-          <Text style={styles.text_header}>Welcome !</Text>
-        </View>
-        <View style={styles.footer}>
-          <Text style={styles.text_footer}>Mobile or username</Text>
-          <View style={styles.action}>
-            <View style={{ alignItems: "center", justifyContent: "center" }}>
-              <AntDesign name="mobile1" size={20} color="#05375a" />
-            </View>
-
-            <TextInput
-              textContentType={"username"}
-              value={this.state.username}
-              selectionColor={themeColor}
-              placeholder="your username or mobile"
-              style={styles.textInput}
-              onChangeText={(text) => { this.setState({ username: text }) }}
-            />
-          </View>
-          <Text style={[styles.text_footer, { marginTop: 35 }]}>Password</Text>
-          <View style={styles.action}>
-            <View style={{ alignItems: "center", justifyContent: "center" }}>
-              <Entypo name="lock-open" size={24} color="#05375a" />
-            </View>
-
-
-            <TextInput
-              textContentType={"password"}
-              selectionColor={themeColor}
-              value={this.state.password}
-              placeholder="Your Password"
-              style={styles.textInput}
-              onChangeText={(password) => { this.setState({ password }) }}
-              secureTextEntry ={true}
-            />
-          </View>
-          <View style={{ marginTop: 20, flexDirection: "row", justifyContent: "space-between" }}>
-            <TouchableOpacity
-              style={{}}
-              onPress={() => { this.props.navigation.navigate('ForgotPassword') }}
-            >
-              <Text style={[styles.text, { fontWeight: "bold" }]}>Forgot Password?</Text>
-
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{}}
-              onPress={() => { this.props.navigation.navigate('CreateAccount') }}
-            >
-              <Text style={[styles.text, { fontWeight: "bold" }]}>Don`t have an account?</Text>
-
-            </TouchableOpacity>
-
-          </View>
-          <View style={{ alignItems: "center", justifyContent: 'center', marginTop: 30 }}>
-
-            {!this.state.loading ? <TouchableOpacity style={{ backgroundColor: themeColor, width: width * 0.4, height: height * 0.06, alignItems: 'center', justifyContent: "center", borderRadius: 10 }}
-              onPress={() => { this.login() }}
-            >
-              <Text style={{ color: "#fff" }}>Login </Text>
-            </TouchableOpacity> :
-              <ActivityIndicator size="large" color={themeColor} />
-            }
-          </View>
-        </View>
-        {/* <View style={{flex:1,backgroundColor:themeColor}}> 
-          <View style={{flex:0.3,alignItems:'center',justifyContent:"center"}}>
-                <Animatable.Image
-                    animation="fadeIn"
-                    source={{ uri:"https://cdn.pixabay.com/photo/2017/08/21/02/24/png-2663876_960_720.png"}}
-                    style={{height:"50%",width:"50%",resizeMode:"contain"}}
-               />
-          </View>
-            <Animatable.View style={[{flex:0.7,backgroundColor:"#fff",borderTopLeftRadius:50,paddingLeft:30,paddingTop:30}]}
-                animation="slideInUp"
-            >
-             <View>
-                 <Text style={[styles.text,{}]}>Enter Mobile</Text>
-                 <View style={{width:width*0.7,height:height*0.07}}>
-                      <TextInput 
-                        maxLength={10}
-                        value={this.state.mobileNO}
-                        selectionColor={themeColor}
-                        autoFocus={true}
-                  onChangeText={(text) => { this.setState({ mobileNO:text})}}
-                        keyboardType="numeric"
-                        style={{ width: '100%', height: "100%", borderBottomWidth: 1, borderColor: "#000",alignItems:'center',justifyContent:'flex-start',paddingLeft:20}}
-                      />
+      <View style={{height:screenHeight,backgroundColor:"#191720"}}>
+           <StatusBar backgroundColor={"#191720"}/>
+           <View style={{height:"50%"}}>
+                 <View style={{flex:0.5,justifyContent:"center",paddingLeft:20}}>
+                             <View>
+                                <Text style={[styles.text,{color:"#fff",fontSize:height*0.04,fontWeight:"bold"}]}>Let`s Sign You in.</Text>
+                            </View>
+                              <View>
+                                <Text style={[styles.text,{color:"#fff",fontSize:height*0.03,}]}>Welcome back.</Text>
+                            </View>
+                              <View>
+                                <Text style={[styles.text,{color:"#fff",fontSize:height*0.03,}]}>You have been Missed ! </Text>
+                            </View>
                  </View>
-              <Text style={[styles.text, {marginVertical:5}]}>Enter PassWord</Text>
-              <View style={{ width: width * 0.7, height: height * 0.07 }}>
-                <TextInput
-                  secureTextEntry={true}
-                  value={this.state.password}
-                  selectionColor={themeColor}
-                  onChangeText={(text) => { this.setState({ password: text }) }}
-                  style={{ width: '100%', height: "100%", borderBottomWidth: 1, borderColor: "#000", alignItems: 'center', justifyContent: 'flex-start', paddingLeft: 20 }}
-                />
-              </View>
-                 <View style={{alignItems:"center",justifyContent:'center',marginTop:40}}>
-                   
-                    { !this.state.loading? <TouchableOpacity style={{backgroundColor:themeColor,width:width*0.4,height:height*0.06,alignItems:'center',justifyContent:"center",borderRadius:10}}
-                            onPress={() => {this.sendOTP()}}
-                      >
-                          <Text style={{color:"#fff"}}>Login </Text>
-                      </TouchableOpacity>:
-                        <ActivityIndicator  size="large" color={themeColor}/>
-                      }
-                 </View>
-             </View>
-          </Animatable.View>
-      </View> */}
-      </KeyboardAvoidingView>
+                  <View style={{flex:0.5,alignItems:"center",justifyContent:"space-around",}}>
+                            <View   style={{height:"30%",borderColor:"gray",borderRadius:10,borderWidth:2,width:width*0.85,alignItems:"center",justifyContent:"center"}}>
+                                   <TextInput 
+                                     value={this.state.username}
+                              selectionColor={"#fff"}
+                              style={{height:"100%",width:"90%",color:'#fff'}} 
+                              placeholder={"phone or username"}
+                              placeholderTextColor={"gray"}
+                              onChangeText={(username)=>{this.setState({username})}}
+                            />
+                            </View>
+                       
+                    
+                        <View 
+                          style={{height:"30%",borderColor:"gray",borderRadius:10,borderWidth:2,width:width*0.85,flexDirection:"row",alignItems:"center",justifyContent:"center"}}
+                        
+                        
+                        >
+                            <TextInput 
+                                secureTextEntry={this.state.secure}
+                                value={this.state.password}
+                                selectionColor={"#fff"}
+                                placeholder={"password"}
+                                placeholderTextColor={"gray"}
+                                style={{height:"100%",width:"80%",color:"#fff"}} 
+                                onChangeText={(password)=>{this.setState({password})}}
+                            />
+                            <TouchableOpacity 
+                             onPress={()=>{this.setState({secure:!this.state.secure})}}
+                            >
+                                    <Entypo name={`${this.state.secure?"eye":"eye-with-line"}`} size={24} color="#fff" />
+                            </TouchableOpacity>
+                            </View>
+                    
+                  </View>
+           </View>
+           <View style={{height:"50%",justifyContent:"flex-end",}}>
+                <View style={{flexDirection:"row",alignItems:"center",justifyContent:"center"}}>
+                     <View style={{}}>
+                              <Text style={[styles.text,{color:'gray'}]}>Don`t have an account?</Text>
+                     </View>
+                     <TouchableOpacity style={{marginLeft:10}}>
+                          <Text style={[styles.text,{color:"#fff"}]}>Register</Text>
+                     </TouchableOpacity>
+                </View>
+                <View style={{marginBottom:Constants.statusBarHeight+30,marginTop:20,alignItems:"center",justifyContent:"center"}}>
+                   { !this.state.loading? <TouchableOpacity style={{width:width*0.9,height:height*0.07,alignItems:"center",justifyContent:"center",borderRadius:10,backgroundColor:"#fff"}}
+                       onPress={()=>{this.login()}}
+                     >
+                          <Text style={[styles.text,{color:"#000"}]}>Sign In</Text>
+                     </TouchableOpacity> :
+                     <View style={{width:width*0.9,height:height*0.07,alignItems:"center",justifyContent:"center",borderRadius:10,backgroundColor:"#fff"}}>
+                          <ActivityIndicator  size={"large"} color={"#000"}/>
+                     </View>
+                     
+                     }
+                </View>
+           </View>
+      </View>
     );
   }
 }

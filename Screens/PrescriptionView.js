@@ -242,14 +242,14 @@ setLocations =()=>{
          return (
              <View style={{flex:1}}>
                      <View style={{flex:0.5,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
-                            <View style={{flexDirection:"row"}}>
+                        {this.state?.item?.ongoing_treatment?<View style={{flexDirection:"row"}}>
                                   <View>
                                              <Text style={[styles.text, { color: "#000",fontSize:height*0.02 }]}>Reason : </Text>
                                   </View>
                                   <View>
                                              <Text style={[styles.text, {fontSize:height*0.02}]}>{this.state?.item?.ongoing_treatment}</Text>
                                   </View>
-                            </View>
+                            </View>:null}
                             <View style={{flexDirection:"row"}}>
                                            <Text style={[styles.text, { color: "#000",fontSize:height*0.02 }]}>Diagnosis : </Text>
                                            <View>
@@ -427,9 +427,16 @@ validateButton = (item,index) =>{
                             </View>
                      }
                         </View>
-                        <View style={{ alignSelf: "flex-end" }}>
-                            <Text style={[styles.text]}>Qty: {item.total_qty}</Text>
+                        <View style={{ alignItems:"center",justifyContent:"space-between",flexDirection:"row"}}>
+                                          <View style={{}}>
+                                                                <Text style={[styles.text,{fontSize:height*0.015,color:"#DEB887"}]}>Diagnosis : {item.diagonisname}</Text>
+                                                            </View>
+                            <View style={{ }}>
+
+                            <Text style={[styles.text,{fontSize:height*0.015}]}>Qty : {item.total_qty}</Text>
+                            </View>
                         </View>
+              
                     </View>
                      <View style={{flex:0.2,}}>
                          {
@@ -481,8 +488,14 @@ validateButton = (item,index) =>{
                                 <Text style={[styles.text, { marginLeft: 10 }]}>{item.command}</Text>
                             </View>
                         </View>
-                        <View style={{ alignSelf: "flex-end" }}>
-                            <Text style={[styles.text]}>Qty: {item.total_qty}</Text>
+                          <View style={{ alignItems:"center",justifyContent:"space-between",flexDirection:"row"}}>
+                                          <View style={{}}>
+                                                                <Text style={[styles.text,{fontSize:height*0.015,color:"#DEB887"}]}>Diagnosis : {item.diagonisname}</Text>
+                                                            </View>
+                            <View style={{ }}>
+
+                            <Text style={[styles.text,{fontSize:height*0.015}]}>Qty : {item.total_qty}</Text>
+                            </View>
                         </View>
                     </View>
                     <View style={{flex:0.2,}}>
@@ -535,8 +548,14 @@ validateButton = (item,index) =>{
                                 <Text style={[styles.text, { marginLeft: 10 }]}>{item.command}</Text>
                             </View>
                         </View>
-                        <View style={{ alignSelf: "flex-end" }}>
-                            <Text style={[styles.text]}>Qty: {1}</Text>
+                          <View style={{ alignItems:"center",justifyContent:"space-between",flexDirection:"row"}}>
+                                          <View style={{}}>
+                                                                <Text style={[styles.text,{fontSize:height*0.015,color:"#DEB887"}]}>Diagnosis : {item.diagonisname}</Text>
+                                                            </View>
+                            <View style={{ }}>
+
+                            <Text style={[styles.text,{fontSize:height*0.015}]}>Qty : {item.total_qty}</Text>
+                            </View>
                         </View>
                     </View>
                         <View style={{flex:0.2,}}>
@@ -587,8 +606,14 @@ validateButton = (item,index) =>{
                                 <Text style={[styles.text, { marginLeft: 10 }]}>{item.command}</Text>
                             </View>
                         </View>
-                        <View style={{ alignSelf: "flex-end" }}>
-                            <Text style={[styles.text]}>Qty: {item.total_qty}</Text>
+                            <View style={{ alignItems:"center",justifyContent:"space-between",flexDirection:"row"}}>
+                                          <View style={{}}>
+                                                                <Text style={[styles.text,{fontSize:height*0.015,color:"#DEB887"}]}>Diagnosis : {item.diagonisname}</Text>
+                                                            </View>
+                            <View style={{ }}>
+
+                            <Text style={[styles.text,{fontSize:height*0.015}]}>Qty : {item.total_qty}</Text>
+                            </View>
                         </View>
                     </View>
                         <View style={{flex:0.2,}}>
@@ -612,8 +637,14 @@ validateButton = (item,index) =>{
                                 <Text style={[styles.text, { marginLeft: 10 }]}>{item.command}</Text>
                             </View>
                         </View>
-                          <View style={{ alignSelf: "flex-end" }}>
-                            <Text style={[styles.text]}>Qty: {item.total_qty}</Text>
+                              <View style={{ alignItems:"center",justifyContent:"space-between",flexDirection:"row"}}>
+                                          <View style={{}}>
+                                                                <Text style={[styles.text,{fontSize:height*0.015,color:"#DEB887"}]}>Diagnosis : {item.diagonisname}</Text>
+                                                            </View>
+                            <View style={{ }}>
+
+                            <Text style={[styles.text,{fontSize:height*0.015}]}>Qty : {item.total_qty}</Text>
+                            </View>
                         </View>
                     </View>
                 <View style={{flex:0.2,}}>
@@ -1415,7 +1446,7 @@ validateButton = (item,index) =>{
                             <View>
                                 
                             </View>
-                            <Text style={[styles.text,{fontSize:height*0.016}]}>Prescription No : {this.state?.item?.id}</Text>
+                            <Text style={[styles.text,{fontSize:height*0.016}]}>Prescription ID : {this.state?.item?.id}</Text>
                             <Text style={[styles.text,{textAlign:"right",fontSize:height*0.016}]}>{moment(this.state?.item?.created).format('DD/MM/YYYY')}</Text>
                         </View>
                        
@@ -1500,6 +1531,9 @@ validateButton = (item,index) =>{
                                                    <Text style={[styles.text, { color: "#000", }]}>({item.medicinename.type})</Text>
                                                </View>
                                            </View>
+                                                     <View style={{marginTop:5}}>
+                                                                <Text style={[styles.text]}>Diagnosis : {item.diagonisname}</Text>
+                                                            </View>
                                            {/* {(item.medicinename.type === "Tablet" || item.medicinename.type === "Capsules") && <View style={{ flexDirection: "row" }}>
                                                              <View>
                                                                  <Text style={[styles.text]}> {item.morning_count} - {item.afternoon_count} -{item.night_count} </Text>

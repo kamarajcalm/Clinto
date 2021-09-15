@@ -117,15 +117,10 @@ class EditHeathIssues extends Component {
                     <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
                          <Text style={[styles.text,{color:"#000"}]}>#</Text>
                     </View>
-                    <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                    <View style={{flex:0.7,alignItems:"center",justifyContent:"center"}}>
                         <Text style={[styles.text,{color:"#000"}]}>Issue</Text>
                     </View>
-                    <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
-                        <Text style={[styles.text,{color:"#000"}]}>From</Text>
-                    </View>
-                    <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
-                        <Text style={[styles.text,{color:"#000"}]}>Till</Text>
-                    </View>
+   
                       <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
                         <Text style={[styles.text,{color:"#000"}]}>Action</Text>
                     </View>
@@ -177,20 +172,23 @@ class EditHeathIssues extends Component {
                                keyExtractor= {(item,index)=>index.toString()}
                                renderItem ={({item,index})=>{
                                     return(
-                                        <View style={{ flexDirection: "row",  marginTop: 5 }}>
-                                            <View>
-                                                <Text style={[styles.text]}> {index + 1} . </Text>
-                                            </View>
-                                            <View>
-                                                <Text style={[styles.text]}>{item}</Text>
-                                            </View>
-                                             <TouchableOpacity 
-                                              onPress ={()=>{this.removeItem(item,index)}}
-                                             >
-                                                <MaterialIcons name="delete" size={24} color="red" />
-                                             </TouchableOpacity>
-                                        </View>
-                                    )
+                           <View style={{flexDirection:"row",marginTop:5}}>
+                                    <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
+                                        <Text style={[styles.text,{color:"#000"}]}>{index+1}</Text>
+                                    </View>
+                                    <View style={{flex:0.7,alignItems:"center",justifyContent:"center"}}>
+                                        <Text style={[styles.text,{color:"#000"}]}>{item}</Text>
+                                    </View>
+                
+                                    <TouchableOpacity style={{flex:0.2,alignItems:"center",justifyContent:"center"}}
+                                     onPress ={()=>{
+                                         this.removeItem(item,index)
+                                     }}
+                                    >
+                                         <AntDesign name="delete" size={24} color="red" />
+                                    </TouchableOpacity>
+                            </View>
+                                                    )
                               }}
                             />
                  

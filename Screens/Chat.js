@@ -407,7 +407,7 @@ if(type=="clinic"){
                )}
                style={{ backgroundColor: "#fff", height: 50, fontWeight: "bold", color: "red" }}
                labelStyle={{ fontWeight: "bold", color: "red" }}
-               indicatorStyle={{ backgroundColor: themeColor, height: 5 }}
+               indicatorStyle={{ backgroundColor: themeColor, height: 2 }}
              />
            }
 
