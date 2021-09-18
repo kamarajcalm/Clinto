@@ -52,13 +52,13 @@ const {url} =settings
      return (
       <View>
       
-                <TouchableOpacity style={[styles.card, { flexDirection: "row", minHeight: height * 0.15,}]}
+                <TouchableOpacity style={[styles.card2, { flexDirection: "row", minHeight: height * 0.15,}]}
                     
                     onPress={() => { this.props.navigation.navigate('ViewReports',{item})}}
                 >
                     <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
                         <LinearGradient
-                              style={{ height: 50, width: 50, borderRadius: 25,alignItems: "center", justifyContent: "center" }}
+                              style={{height: 70, width: 70, borderRadius: 35,alignItems: "center", justifyContent: "center" }}
                               colors={["#333", themeColor, themeColor]}
                         >
                               <View >
@@ -69,9 +69,9 @@ const {url} =settings
                     </View>
                     <View style={{ flex: 0.7, marginHorizontal: 10, justifyContent: 'center',}}>
                         <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" ,}}>
-                            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                                 <View style={{flexDirection:"row",alignItems:"center",justifyContent:"center",flex:1,width:"100%"}}>
-                                      <Text style={[styles.text, { color: "#000", fontWeight: 'bold' }]} numberOfLines={1}>{item?.diagonistic_clinic?.companyName}</Text>
+                            <View style={{  }}>
+                                 <View style={{flexDirection:"row",flex:1,width:"100%"}}>
+                                      <Text style={[styles.text, { color: "#000", fontSize:height*0.02 }]} numberOfLines={1}>{item?.diagonistic_clinic?.companyName}</Text>
                                       
                                  </View>
                                   
@@ -203,7 +203,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
      
         marginHorizontal: 10,
-        marginVertical: 3
+        marginVertical: 3,
+        paddingVertical:10
     },
     topSafeArea: {
         flex: 0,

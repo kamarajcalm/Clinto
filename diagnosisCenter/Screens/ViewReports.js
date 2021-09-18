@@ -73,6 +73,7 @@ class ViewReports extends Component {
          }
      }
    componentDidMount(){
+       
          this.validateAnimations();
          Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
          Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);

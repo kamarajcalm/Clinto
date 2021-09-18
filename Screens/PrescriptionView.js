@@ -37,6 +37,7 @@ import LottieView from 'lottie-react-native';
 import * as Progress from 'react-native-progress';
 import axios from 'axios';
 import {token} from '../dunzo/dunzo';
+import StarRating from 'react-native-star-rating-widget';
 import RazorpayCheckout from 'react-native-razorpay';
 // import Image from 'react-native-scalable-image';
  class PrescriptionView extends Component {
@@ -78,7 +79,10 @@ import RazorpayCheckout from 'react-native-razorpay';
          deliveryDetailsLoading:false,
          priceDetails:null,
          errorDetails:null,
-         paymentLoading:false
+         paymentLoading:false,
+         ratingModal:false,
+         clinicRating:0,
+         doctorRating:0
     };
     }
     renderContent = () => (
@@ -109,6 +113,11 @@ import RazorpayCheckout from 'react-native-razorpay';
              this.setState({ lottieModal: true }, () => {
                  this.animation.play()
              })
+         }else{
+             if(!this.state.item.rating_taken){
+                this.setState({ratingModal:true})
+             }
+           
          }
      }
      filterMedicines = () => {
@@ -138,7 +147,7 @@ setLocations =()=>{
         if(this.state.pk){
             this.getDetails()
         }
-  
+    
     }
     componentWillUnmount(){
 
@@ -1185,6 +1194,23 @@ validateButton = (item,index) =>{
         }
 
     }  
+    footercomponent =()=>{
+       if(this.state.acceptedClinics.length>0) {
+                  return (
+            <View style={{marginVertical:20,alignItems:"center",justifyContent:"center",width:width*0.4,height:height*0.04,borderRadius:5,backgroundColor:themeColor}}>
+                    <TouchableOpacity 
+                      onPress={()=>{
+                          this.setState({showModal:false})
+                      }}
+                    
+                    >
+                          <Text style={[styles.text,{color:"#fff"}]}>Cancel</Text>
+                    </TouchableOpacity>
+            </View>
+        )
+       }
+       return null
+    }
       bottomModal =()=>{
         return(
            <Modal 
@@ -1227,6 +1253,7 @@ validateButton = (item,index) =>{
                                 // ItemSeparatorComponent={this.seperator}
                                 ListEmptyComponent={this.noResult()}
                                 ListHeaderComponent={this.headers()}
+                                ListFooterComponent={this.footercomponent}
                                 data={this.state.acceptedClinics}
                                 keyExtractor={(item,index)=>index.toString()}
                                 renderItem={({item,index})=>{
@@ -1368,6 +1395,87 @@ validateButton = (item,index) =>{
        let duplicate = this.state.prescribed
        duplicate[index].isAdded = false
        this.setState({prescribed:duplicate})
+    }
+    rate = async()=>{
+        if(this.state.doctorRating==0){
+            return this.showSimpleMessage("Doctor rating should not be empty","orange","info")
+        }
+            if(this.state.clinicRating==0){
+            return this.showSimpleMessage("Clinic rating should not be empty","orange","info")
+        }
+        this.setState({rating:true})
+       let api= `${url}/api/prescription/addRating/`
+       let sendData ={
+           prescription:this.state.item.id,
+           clinic:this.state.item.clinic,
+           doctor:this.state.item.doctor,
+           clinic_rating:this.state.doctorRating,
+           doctor_rating:this.state.doctorRating
+       }
+       let post  =await HttpsClient.post(api,sendData)
+       console.log(post)
+       if(post.type=="success"){
+           this.showSimpleMessage("Rated SuccessFully","green","success")
+           this.setState({rating:false,ratingModal:false})
+       }else{
+            this.showSimpleMessage("Something Went Wrong","red","danger")
+          this.setState({rating:false})  
+       }
+    }
+    ratingModal =()=>{
+        return (
+            <Modal 
+              isVisible={this.state.ratingModal}
+              deviceHeight={screenHeight}
+              onBackdropPress={()=>{
+                  this.setState({ratingModal:false})
+              }}
+              statusBarTranslucent={true}
+            >
+              <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
+                    <View style={[styles.boxWithShadow,{height:height*0.4,backgroundColor:"#fff",width:width*0.8,borderRadius:10}]}>
+                         <View style={{marginVertical:20,alignItems:"center",justifyContent:"center"}}>
+                              <Text style={[styles.text]}>Tell us your experience with</Text>
+                         </View>
+                         <View style={{alignItems:"center",justifyContent:"center"}}>
+                             <Text style={[styles.text]}>{this.state.item.clinicname.name}</Text>
+                         </View>
+                      
+                            <StarRating
+                                style={{marginLeft:width*0.2,marginTop:15}}
+                                starSize={20}
+                                rating={this.state.clinicRating}
+                                enableHalfStar={false}
+                            onChange={(rating)=>{this.setState({clinicRating:rating})}}
+                                />
+                     <View style={{alignItems:"center",justifyContent:"center",marginTop:20}}>
+                             <Text style={[styles.text]}>{this.state.item.doctordetails.name}</Text>
+                         </View>
+                      
+                            <StarRating
+                                style={{marginLeft:width*0.2,marginTop:15}}
+                                starSize={20}
+                                rating={this.state.doctorRating}
+                                          enableHalfStar={false}
+                                onChange={(rating)=>{this.setState({doctorRating:rating})}}
+                                />
+
+                        <View style={{alignItems:"center",justifyContent:"center",marginTop:25}}>
+                              {!this.state.rating?  <TouchableOpacity style={{height:height*0.04,width:width*0.4,alignItems:"center",justifyContent:"center",borderRadius:5,backgroundColor:themeColor}}
+                                  onPress={()=>{this.rate()}}
+                                >
+                                      <Text style={[styles.text,{color:"#fff"}]}>Rate</Text>
+                                </TouchableOpacity>:
+                                <View style={{height:height*0.04,width:width*0.4,alignItems:"center",justifyContent:"center",borderRadius:5,backgroundColor:themeColor}}>
+                                        <ActivityIndicator  color={"#fff"} size={"large"}/>
+                                </View> 
+                                }
+                        </View>
+                    </View>
+              </View>
+
+            </Modal>
+        )
     }
   render() {
       const config = {
@@ -1664,6 +1772,9 @@ validateButton = (item,index) =>{
                 }
                 {
                     this.bottomModal()
+                }
+                {
+                    this.ratingModal()
                 }
                     <Modal
                     deviceHeight={deviceHeight}

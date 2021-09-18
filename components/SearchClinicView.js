@@ -35,6 +35,7 @@ const {url} =settings
      let { location} = this.props
 
      let api =`${url}/api/prescription/nearestClinic/?limit=10&offset=${this.state.offset}&lat=${location.lat}&long=${location.lng}&nearestClinic=jjj`
+    
      let data =await HttpsClient.get(api)
      if(data.type=="success"){
          this.setState({data:data.data.clinics,load:false})
@@ -87,13 +88,13 @@ const {url} =settings
                              <View style={{flex:0.5,flexDirection:"row"}}>
                                 <View style={{flex:0.7}}>
                                      <View style={{marginTop:5}}>
-                                       <Text style={[styles.text,{color:themeColor,fontSize:height*0.02}]}>Ratings</Text>
+                                       <Text style={[styles.text,{color:"gray",fontSize:height*0.02}]}>Ratings : {item.rating}/5</Text>
                                     </View>
                                     <View style={{marginTop:5}}>
                                           <StarRating
                                          starSize={20}
-                                        rating={item.rating}
-                                        onChange={(rating)=>{this.setRate(rating,index)}}
+                                         rating={item.rating}
+                                         onChange={()=>{}}
                                       />
                                     </View>
                                 

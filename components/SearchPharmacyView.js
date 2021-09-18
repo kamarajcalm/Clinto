@@ -79,13 +79,13 @@ const {url} =settings
                              <View style={{flex:0.5,flexDirection:"row"}}>
                                 <View style={{flex:0.7}}>
                                      <View style={{marginTop:5}}>
-                                       <Text style={[styles.text,{color:themeColor,fontSize:height*0.02}]}>Ratings</Text>
+                                         <Text style={[styles.text,{color:"gray",fontSize:height*0.02}]}>Ratings : {item.rating}/5</Text>
                                     </View>
                                     <View style={{marginTop:5}}>
                                           <StarRating
                                          starSize={20}
                                         rating={item.rating}
-                                        onChange={(rating)=>{this.setRate(rating,index)}}
+                                        onChange={()=>{}}
                                       />
                                     </View>
                                 

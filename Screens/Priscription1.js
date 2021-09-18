@@ -46,6 +46,8 @@ import FlashMessage, { showMessage, hideMessage } from "react-native-flash-messa
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants'; 
 import Reports from "../components/Reports";
+import Shimmer from "../components/Shimmer";
+import ShimmerLoader from "../components/ShimmerLoader";
 const {statusBarHeight} =Constants
 class Priscription extends React.Component {
     constructor(props) {
@@ -83,7 +85,8 @@ class Priscription extends React.Component {
             reports:[],
             offset2:0,
             totalcount:0,
-            count2:0
+            count2:0,
+            showShimmer:true
         };
         this.scrollY=new Animated.Value(0)
         this.translateYNumber= React.createRef()
@@ -148,7 +151,7 @@ hideDatePicker = () => {
         let data =await HttpsClient.get(api)
         console.log(api)
         if(data.type =="success"){
-            this.setState({ prescriptions: this.state.prescriptions.concat(data.data.results),isFetching:false,totalcount:data.data.count})
+            this.setState({ prescriptions: this.state.prescriptions.concat(data.data.results),isFetching:false,totalcount:data.data.count,showShimmer:false})
             if(data.data.next!=null){
                 this.setState({next:true})
             }else{
@@ -163,7 +166,7 @@ hideDatePicker = () => {
         let data  =await HttpsClient.get(api)
     
       if(data.type == 'success'){
-          this.setState({ prescriptions:this.state.prescriptions.concat(data.data.results),totalcount:data.data.count})
+          this.setState({ prescriptions:this.state.prescriptions.concat(data.data.results),totalcount:data.data.count,showShimmer:false})
           this.setState({ loading: false ,isFetching:false})
           if (data.data.next != null) {
               this.setState({ next: true })
@@ -177,7 +180,7 @@ hideDatePicker = () => {
         let data = await HttpsClient.get(api)
   console.log(api)
         if (data.type == 'success') {
-            this.setState({ prescriptions: this.state.prescriptions.concat(data.data.results),totalcount:data.data.count})
+            this.setState({ prescriptions: this.state.prescriptions.concat(data.data.results),totalcount:data.data.count,showShimmer:false})
             this.setState({ loading: false ,isFetching:false})
             if (data.data.next != null) {
                 this.setState({ next: true })
@@ -263,16 +266,19 @@ hideDatePicker = () => {
        this.findUser()
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
             if(this.props.user.profile.occupation=="Doctor"){
-              return  this.setState({prescriptions:[],offset:0,next:true},()=>{
+              return  this.setState({prescriptions:[],offset:0,next:true,showShimmer:true},()=>{
                     this.getPrescription()
                 })
              
             }
             if(this.props.user.profile.occupation=="ClinicRecoptionist"){
-                return  this.setState({prescriptions:[],offset:0,next:true},()=>{
+                return  this.setState({prescriptions:[],offset:0,next:true,showShimmer:true},()=>{
                     this.getClinicPrescription()
                 })   
             }
+               return  this.setState({prescriptions:[],offset:0,next:true,showShimmer:true},()=>{
+                    this.getPateintPrescription()
+                }) 
             
         });
         Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
@@ -830,6 +836,89 @@ hideDatePicker = () => {
     
     getCloser = (value, checkOne, checkTwo) =>
         Math.abs(value - checkOne) < Math.abs(value - checkTwo) ? checkOne : checkTwo;
+
+     validateView =(height,width,headerHeight,handleScroll)=>{
+         if(this.state.showShimmer){
+             return (
+                <ScrollView contentContainerStyle={{paddingTop:headerHeight}}>
+                          <ShimmerLoader />
+                          <ShimmerLoader />
+                          <ShimmerLoader />
+                </ScrollView>
+             )   
+         }
+       
+         if(this.state.ReportsState){
+             return (
+                        <Animated.FlatList
+                            keyExtractor={(item, index) => index.toString()}
+                            refreshControl={
+                                <RefreshControl
+                                    onRefresh={() => this.onRefresh2()}
+                                    refreshing={this.state.isFetching}
+                                    progressViewOffset={headerHeight}
+                                />
+                            }
+                            data={this.state.reports}
+                            scrollEventThrottle={16}
+                            contentContainerStyle={{ paddingTop: headerHeight+height*0.01, paddingBottom: 90 }}
+                            onScroll={handleScroll}
+                            ref={ref=>this.ref=ref}
+                             
+                            onEndReached ={()=>{this.handleEndReached2()}}
+                            ListFooterComponent={this.renderFooter2()}
+                            onEndReachedThreshold={0.1}
+                            renderItem={({item,index})=>{
+                               return(
+                                  
+                                   <Reports item={item} index={index} count={this.state.count2} navigation={this.props.navigation}/>
+                                
+                                 
+                                  
+                               )
+                          }}
+                        />
+             )
+         }
+         return(
+ <Animated.FlatList
+                            showsVerticalScrollIndicator={false}
+                            keyExtractor={(item, index) => index.toString()}
+                            refreshControl={
+                                <RefreshControl
+                                    onRefresh={() => this.onRefresh()}
+                                    refreshing={this.state.isFetching}
+                                    progressViewOffset={headerHeight}
+                                />
+                            }
+                            data={this.state.prescriptions}
+                            scrollEventThrottle={16}
+                            contentContainerStyle={{ paddingTop: headerHeight+height*0.01, paddingBottom: 150}}
+                            onScroll={handleScroll}
+                            ref={ref=>this.ref=ref}
+                             
+                            onEndReached ={()=>{this.handleEndReached()}}
+                            ListFooterComponent={this.renderFooter()}
+                            onEndReachedThreshold={0.1}
+                            renderItem={({item,index})=>{
+                               return(
+                                  
+                                       <View>
+                                           {
+                                               this.showDifferentPriscription(item, index)
+                                           }
+
+                                       </View>
+                                
+                                 
+                                  
+                               )
+                          }}
+                        />
+                          
+            
+         )
+     }   
     render() { 
         const { height,width } = Dimensions.get("window");
         const headerHeight = height * 0.2;
@@ -894,73 +983,11 @@ const screenHeight =Dimensions.get('screen').height;
 
                     </Animated.View>
    <Animated.View style={{flex:1,backgroundColor:"#f3f3f3f3"}}>
-           
-              {this.state.ReportsState?
-                        <Animated.FlatList
-                            keyExtractor={(item, index) => index.toString()}
-                            refreshControl={
-                                <RefreshControl
-                                    onRefresh={() => this.onRefresh2()}
-                                    refreshing={this.state.isFetching}
-                                    progressViewOffset={headerHeight}
-                                />
-                            }
-                            data={this.state.reports}
-                            scrollEventThrottle={16}
-                            contentContainerStyle={{ paddingTop: headerHeight+height*0.01, paddingBottom: 90 }}
-                            onScroll={handleScroll}
-                            ref={ref=>this.ref=ref}
-                             
-                            onEndReached ={()=>{this.handleEndReached2()}}
-                            ListFooterComponent={this.renderFooter2()}
-                            onEndReachedThreshold={0.1}
-                            renderItem={({item,index})=>{
-                               return(
-                                  
-                                   <Reports item={item} index={index} count={this.state.count2} navigation={this.props.navigation}/>
-                                
-                                 
-                                  
-                               )
-                          }}
-                        />
-              :
-                        <Animated.FlatList
-                            showsVerticalScrollIndicator={false}
-                            keyExtractor={(item, index) => index.toString()}
-                            refreshControl={
-                                <RefreshControl
-                                    onRefresh={() => this.onRefresh()}
-                                    refreshing={this.state.isFetching}
-                                    progressViewOffset={headerHeight}
-                                />
-                            }
-                            data={this.state.prescriptions}
-                            scrollEventThrottle={16}
-                            contentContainerStyle={{ paddingTop: headerHeight+height*0.01, paddingBottom: 150}}
-                            onScroll={handleScroll}
-                            ref={ref=>this.ref=ref}
-                             
-                            onEndReached ={()=>{this.handleEndReached()}}
-                            ListFooterComponent={this.renderFooter()}
-                            onEndReachedThreshold={0.1}
-                            renderItem={({item,index})=>{
-                               return(
-                                  
-                                       <View>
-                                           {
-                                               this.showDifferentPriscription(item, index)
-                                           }
-
-                                       </View>
-                                
-                                 
-                                  
-                               )
-                          }}
-                        />}
-                          
-            
+           {
+               this.validateView(height,width,headerHeight,handleScroll)
+           }
+              
+                       
 
                   { this.props.user.profile.occupation!="Customer"&&!this.state.keyBoard&&<View style={{
                             position: "absolute",

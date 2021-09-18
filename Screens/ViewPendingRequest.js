@@ -54,7 +54,7 @@ class ViewPendingRequest extends Component {
     getAvailableClinics = async() =>{
        let api =`${url}/api/prescription/medicalaccepted/?for_order=${this.state.item.id}&status=accepted`
        let data = await HttpsClient.get(api)
-       console.log(api,data)
+       console.log(api)
        if(data.type=="success"){
             this.setState({acceptedClinics:data.data})
        }

@@ -14,6 +14,7 @@ const url = settings.url;
 import { SliderBox } from "react-native-image-slider-box";
  let weekdays =["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
 import moment from 'moment-timezone';
+import StarRating from 'react-native-star-rating-widget';
 const date = new Date();
 const day = date.getDay();
 
@@ -322,6 +323,15 @@ class ViewClinic extends Component {
                                     </View>
                                     <View style={{height:10,width:10,borderRadius:5,marginLeft:10,backgroundColor:this.validateOpen(),marginTop:8}}>
                                         
+                                    </View>
+                        
+                                    <View style={{marginLeft:10,flexDirection:"row"}}>
+                                        <View style={{alignItems:"center",justifyContent:"center"}}>
+                                                 <Text style={[styles.text,{color:"black"}]}>{this.state?.clinicDetails?.ratings}</Text>
+                                        </View>
+                                       <View style={{alignItems:"center",justifyContent:"center",marginLeft:5}}>
+                                           <AntDesign name="star" size={24} color="#63BCD2" />
+                                       </View>
                                     </View>
                                 </View>
 

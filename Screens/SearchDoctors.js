@@ -74,9 +74,7 @@ class SearchDoctors extends Component {
  
     }
     navigate = (item) => {
-        if (item.type == "MedicalStore") {
-            return this.props.navigation.navigate('ViewMedicals', { item })
-        }
+ 
         return this.props.navigation.navigate('ViewClinic', { item })
     }
 

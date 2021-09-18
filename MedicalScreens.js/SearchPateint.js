@@ -12,28 +12,97 @@ const { height, width } = Dimensions.get("window");
 const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
 const url = settings.url;
-const screenHeight = Dimensions.get("screen").height
+const screenHeight = Dimensions.get("screen").height;
+import moment from 'moment';
+import axios from 'axios';
 class SearchPateint extends Component {
     constructor(props) {
         super(props);
         this.state = {
-           pateints:[],
-           loading:false
+           priscriptions:[],
+           loading:false,
+           query:""
         };
     }
-    SearchPateint = async(query)=>{
-        if(query.length>9){
-            this.setState({ loading:true})
-            let api = `${url}/api/profile/userss/?search=${query}&role=Customer`
-
-            const data = await HttpsClient.get(api)
-            console.log(api)
-            if (data.type == "success") {
-                this.setState({ pateints: data.data,loading:false })
-            }
-        }
+    SearchPriscription = async()=>{
+       this.setState({loading:true})
+      let api =`${url}/api/prescription/prescriptions/?search=${this.state.query}`
+      let data = await axios.get(api)
      
+     
+          this.setState({priscriptions:data.data,loading:false})
+       
+      
         
+    }
+        showDifferentPriscription = (item, index) => {
+      
+            let dp = null
+            if (item?.doctordetails?.dp) {
+                dp = `${url}${item?.doctordetails?.dp}`
+            }
+
+            return (
+                <TouchableOpacity style={[styles.card, { flexDirection: "row", borderRadius: 5 }]}
+                    onPress={() => { this.props.navigation.navigate('PrescriptionView', {item,}) }}
+                >
+                    <View style={{ flex: 0.3, alignItems: 'center', justifyContent: "center" }}>
+                        <Image
+                            source={{ uri: dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" }}
+                            style={{ height: 60, width: 60, borderRadius: 30 }}
+                        />
+                    </View>
+                    <View style={{ flex: 0.4,  }}>
+                        <View >
+                            <Text style={[styles.text, { fontSize: 18, }]}>{item?.clinicname.name}</Text>
+                            <Text style={[styles.text, { fontSize: 12, }]}>{item?.doctordetails?.name}</Text>
+                            <Text style={[styles.text, { fontSize: 12, }]}>Name : {item?.username?.name}</Text>
+
+                        </View>
+
+                    </View>
+                    <View style={{ flex: 0.3, justifyContent: 'center', alignItems: "center" }}>
+                        <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
+                            <Text>{moment(item.created).format("DD/MM/YYYY")}</Text>
+
+                        </View>
+                        <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
+                            <Text style={[styles.text]}> Id : {item.id}</Text>
+                        </View>
+
+                    </View>
+                </TouchableOpacity>
+            )
+        
+    }
+    handleCheck = ()=>{
+       
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => {
+            this.SearchPriscription();
+        }, 1500);
+    }
+    renderFooter =()=>{
+        if (this.state.next){
+            return (
+                <ActivityIndicator  size ={"large"} color={themeColor}/>
+            )
+        }
+        else{
+            return null
+        }
+    }
+      loadMore =()=>{
+        if(this.state.next){
+            this.setState({offset:this.state.offset+10},()=>{
+                this.SearchPriscription()
+            })
+        }
+    }
+    componentDidUpdate(prevProps,prevState){
+          if(prevState.query!==this.state.query){
+              this.handleCheck()
+          }
     }
     render() {
         return (
@@ -47,45 +116,39 @@ class SearchPateint extends Component {
                             >
                                 <Ionicons name="chevron-back-circle" size={30} color="#fff" />
                             </TouchableOpacity>
-                            <View style={{ flex: 0.7, alignItems: "center", justifyContent: "center" }}>
+                       
                                 <TextInput
-                                    maxLength={10}
-                                     keyboardType={"numeric"}
+                                    value={this.state.query}
+                                 
+                               
                                     autoFocus={true}
                                     selectionColor={themeColor}
-                                    style={{ height:35, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10, width: "100%" }}
-                                    placeholder="Enter Phone number"
-                                    onChangeText ={(text)=>{this.SearchPateint(text)}}
+                                    style={{ height:40, backgroundColor: "#fafafa", borderRadius: 15, paddingLeft: 10,flex:0.7}}
+                                    placeholder="Phone number , Prescription Id , Name"
+                                    onChangeText ={(query)=>{this.setState({query})}}
                                 />
-                            </View>
+                        
 
                         </View>
-                        <FlatList 
-                           data ={this.state.pateints}
-                           keyExtractor ={(item,index)=>index.toString()}
-                           renderItem ={({item,index})=>{
-                               return(
-                                   <TouchableOpacity style={[styles.card, { flexDirection: "row", borderRadius: 5, marginTop: 15 }]}
-                                       onPress={() => { this.props.navigation.navigate('ListPriscriptions', { item }) }}
-                                   >
-                                       <View style={{ flex: 0.3, alignItems: 'center', justifyContent: "center" }}>
-                                           <Image
-                                               source={{ uri: item.displayPicture||"https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" }}
-                                               style={{ height: 60, width: 60, borderRadius: 30 }}
-                                           />
-                                       </View>
-                                       <View style={{ flex: 0.4, justifyContent: 'center', alignItems: 'center' }}>
-                                           <View >
-                                               <Text style={[styles.text, { fontSize: 18, }]}>{item.name}</Text>
-                                               <Text style={[styles.text, { fontSize: 12, }]}>{item.mobile}</Text>
-                                           </View>
+                      <FlatList
+                            
+                     
+                            data={this.state.priscriptions}
+                            keyExtractor={(item, index) =>  index.toString() }
+                            renderItem={({ item, index }) => {
+                                
+                                return (
+                                    <View >
+                                        {
+                                            this.showDifferentPriscription(item, index)
+                                        }
+                                    </View>
+                                )
 
-                                       </View>
-                                      
-                                   </TouchableOpacity>
-                               )
-                           }}
+                            }}
                         />
+                    
+
                         <Modal
                          isVisible ={this.state.loading}
                          deviceHeight = {screenHeight}
@@ -104,7 +167,14 @@ const styles = StyleSheet.create({
         fontFamily
     },
   
+    card: {
 
+        backgroundColor: "#eeee",
+        height: height * 0.1,
+        marginHorizontal: 10,
+        marginVertical: 3
+
+    },
 })
 const mapStateToProps = (state) => {
 
