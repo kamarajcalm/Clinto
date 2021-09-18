@@ -653,14 +653,14 @@ class Appointments extends Component {
                                     <Text style={[styles.text, { color: "#000",  }]}> {item?.reason}</Text>
                                 </View>
                                 <View style={{ flexDirection: "row", marginTop: 10,}}>
-                                    <Text style={[styles.text, { color: "#000", }]}>{item?.requesteddate}</Text>
+                                    <Text style={[styles.text, { color: "#000", }]}>{moment(item?.requesteddate).format("DD-MM-YYYY")}</Text>
                                     <Text style={[styles.text, { color: "#000", }]}>|</Text>
                                     <Text style={[styles.text, { color: "#000", }]}>{item?.requestedtime}</Text>
                                 </View>
                                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 10,}}>
                                     <View style={{flex:0.7}}>
                                         <Text style={[styles.text,{color:this.validateColor(item?.status)}]}>{item?.status}</Text>
-                                      {item.status=="Accepted" && <Text style={[styles.text]}>{item.accepteddate}|{item.acceptedtime}</Text>}
+                                      {item.status=="Accepted" && <Text style={[styles.text]}>{moment(item.accepteddate).format("DD-MM-YYYY")}|{item.acceptedtime}</Text>}
                                     </View>
                                     <View style={{flexDirection:'row',justifyContent:"space-around",alignItems:"center",flex:0.3}}>
                                          <TouchableOpacity style={[styles.boxWithShadow,{backgroundColor:"#fff",height:30,width:30,borderRadius:15,alignItems:"center",justifyContent:'center'}]}
@@ -725,7 +725,7 @@ class Appointments extends Component {
                                      <View style={{ paddingLeft: 10, paddingTop: 10, flex:0.5 ,alignItems:"center",justifyContent:"space-around"}}>
                                             <View style={{flexDirection:"row"}}>
                                                                   <View>
-                                                                    <Text style={[styles.text, {}]}>{item.requesteddate}</Text>
+                                                                    <Text style={[styles.text, {}]}>{moment(item?.requesteddate).format("DD-MM-YYYY")}</Text>
                                                                 </View>
                                                                 <View>
                                                                     <Text style={[styles.text]}> | </Text>
@@ -838,7 +838,7 @@ class Appointments extends Component {
                                             <Text style={[styles.text, { color: "#000", }]}> {item?.reason}</Text>
                                         </View>
                                         <View style={{ flexDirection: "row", marginTop: 10, }}>
-                                            <Text style={[styles.text, { color: "#000", }]}>{item?.requesteddate}</Text>
+                                            <Text style={[styles.text, { color: "#000", }]}>{moment(item?.requesteddate).format("DD-MM-YYYY")}</Text>
                                             <Text style={[styles.text, { color: "#000", }]}>|</Text>
                                             <Text style={[styles.text, { color: "#000", }]}>{item?.requestedtime}</Text>
                                         </View>
@@ -911,7 +911,7 @@ class Appointments extends Component {
                                         <View style={{ paddingLeft: 10, paddingTop: 10, flex:0.5 ,alignItems:"center",justifyContent:"space-around"}}>
                                             <View style={{flexDirection:"row"}}>
                                                                   <View>
-                                                                    <Text style={[styles.text, {}]}>{item.requesteddate}</Text>
+                                                                    <Text style={[styles.text, {}]}>{moment(item?.requesteddate).format("DD-MM-YYYY")}</Text>
                                                                 </View>
                                                                 <View>
                                                                     <Text style={[styles.text]}> | </Text>
@@ -1003,14 +1003,14 @@ class Appointments extends Component {
                                             <Text style={[styles.text, { color: "#000", }]}> {item.reason}</Text>
                                         </View>
                                         <View style={{ flexDirection: "row", marginTop: 10, }}>
-                                            <Text style={[styles.text, { color: "#000", }]}>{item.requesteddate}</Text>
+                                            <Text style={[styles.text, { color: "#000", }]}>{moment(item?.requesteddate).format("DD-MM-YYYY")}</Text>
                                             <Text style={[styles.text, { color: "#000", }]}>|</Text>
                                             <Text style={[styles.text, { color: "#000", }]}>{item.requestedtime}</Text>
                                         </View>
                                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 10, }}>
                                             <View style={{ flex: 0.7 }}>
                                                 <Text style={[styles.text, { color: this.validateColor(item?.status) }]}>{item?.status}</Text>
-                                                {item.status=="Accepted" && <Text style={[styles.text]}>{item.accepteddate}|{item.acceptedtime}</Text>}
+                                                {item.status=="Accepted" && <Text style={[styles.text]}>{moment(item.accepteddate).format("DD-MM-YYYY")}|{item.acceptedtime}</Text>}
                                             </View>
                                             <View style={{ flexDirection: 'row', justifyContent: "space-around", alignItems: "center", flex: 0.3 }}>
                                                 <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center' }]}
@@ -1569,7 +1569,7 @@ class Appointments extends Component {
             <View style={{ flex: 0.4, alignItems: "center", justifyContent: "center" }}>
                     <View style={{ flexDirection: "row" }}>
                         <View style={{ alignItems: "center", justifyContent: "center" }}>
-                            <Text style={[styles.text, { color: "#fff" }]}>{this.state.today}</Text>
+                            <Text style={[styles.text, { color: "#fff" }]}>{moment(this.state.today).format("DD-MM-YYYY")}</Text>
                         </View>
 
                         <TouchableOpacity

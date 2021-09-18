@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import { selectTheme ,selectClinic} from '../actions';
 import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import { color } from 'react-native-reanimated';
+import moment from 'moment';
 
 class DoctorProfile extends Component {
     constructor(props) {
@@ -136,7 +137,7 @@ class DoctorProfile extends Component {
                                     >
                                         <View style={{ flex: 0.5, justifyContent: "center" }}>
                                             <Text style={[styles.text, { fontWeight: "bold", color: "#000", marginLeft: 10 }]}>{item.name}</Text>
-                                            {item?.validtill?.validTill?<Text style={[styles.text, { marginLeft: 10 }]}>{item?.validtill?.validTill}</Text>:
+                                            {item?.validtill?.validTill?<Text style={[styles.text, { marginLeft: 10 }]}>{moment(item?.validtill?.validTill).format("DD-MM-YYYY")}</Text>:
                                              <TouchableOpacity 
                                                     onPress={() => { this.props.navigation.navigate("PaymentPage",{item})}}
                                              
@@ -166,7 +167,7 @@ class DoctorProfile extends Component {
                                 </TouchableOpacity>
                         </View>
                 </View>
-                       <View style={{ borderColor: "#F0F0F0", borderBottomWidth: 3 }}>
+                       {/* <View style={{ borderColor: "#F0F0F0", borderBottomWidth: 3 }}>
                         <View style={{alignItems:"center",justifyContent:"center",marginVertical:20}}>
                                 <TouchableOpacity style={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:10}}
                             onPress={() => { this.props.navigation.navigate("ViewReports")}}
@@ -175,13 +176,13 @@ class DoctorProfile extends Component {
                                 </TouchableOpacity>
                         </View>
                         
-                </View>
+                </View> */}
                 <View style={{margin:20}}>
                       <View>
                           <Text style={[styles.text]}>Patients Attended</Text>
                       </View>
                       <View style={{marginTop:20}}>
-                          <Text style={[styles.text,{color:"red"}]}>Overall attended</Text>
+                          <Text style={[styles.text,{color:"red"}]}>Overall </Text>
                         <Text style={[styles.text, { color: "red" }]}>{this.props.user.totalPatients}</Text>
                       </View>
                     <View style={{ marginTop: 20 ,flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
