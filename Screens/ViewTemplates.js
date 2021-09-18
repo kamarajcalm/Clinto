@@ -98,20 +98,20 @@ class ViewTemplates extends Component {
                            ListHeaderComponent ={this.renderHeader()}
                            renderItem ={({item,index})=>{
                                 return(
-                                    <TouchableOpacity style={{ flexDirection: "row", paddingVertical: 10 ,backgroundColor:"gray"}}
+                                    <TouchableOpacity style={{ flexDirection: "row", paddingVertical: 10 ,}}
                                       onPress={()=>{this.props.navigation.navigate('ViewFullTemplates',{item})}}
                                     >
                                         <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
-                                            <Text style={[styles.text, { color: "#fff",  }]}>{index+1}</Text>
+                                            <Text style={[styles.text, { color: "gray",  }]}>{index+1}</Text>
                                         </View>
                                         <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
-                                            <Text style={[styles.text, { color: "#fff", }]}>{item.category}</Text>
+                                            <Text style={[styles.text, { color: "gray", }]}>{item.category}</Text>
                                         </View>
                                         <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
-                                            <Text style={[styles.text, { color: "#fff", }]}>{item.disease_name}</Text>
+                                            <Text style={[styles.text, { color: "gray", }]}>{item.disease_name}</Text>
                                         </View>
                                         <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
-                                            <Text style={[styles.text, { color: "#fff", }]}>{moment(item.created).format("DD-MM-YYYY")}</Text>
+                                            <Text style={[styles.text, { color: "gray", }]}>{moment(item.created).format("DD-MM-YYYY")}</Text>
                                         </View>
                                     </TouchableOpacity>
                                 )
@@ -132,7 +132,16 @@ const styles = StyleSheet.create({
         elevation: 6,
         margin: 20,
         height: height * 0.3
-    }
+    },
+
+    topSafeArea: {
+    flex: 0,
+    backgroundColor: themeColor
+},
+    bottomSafeArea: {
+    flex: 1,
+    backgroundColor: "#fff"
+},
 
 })
 const mapStateToProps = (state) => {

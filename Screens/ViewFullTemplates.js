@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, TextInput, FlatList, Image, SafeAreaView, StatusBar, ActivityIndicator, ScrollView, Keyboard, Alert} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, TextInput, FlatList, Image, SafeAreaView, StatusBar, ActivityIndicator, ScrollView, Keyboard, Alert, KeyboardAvoidingView, Platform} from 'react-native';
 import { Ionicons, Entypo, AntDesign, FontAwesome} from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
@@ -361,7 +361,11 @@ class ViewFullTemplates extends Component {
 
                         </View>
                     </View>
-                   
+                      <KeyboardAvoidingView 
+                        behavior={Platform.OS=="ios"?"padding":"height"}
+                      >
+
+                      
                         <ScrollView 
                           showsVerticalScrollIndicator={false}
                           contentContainerStyle ={{paddingBottom:200}}
@@ -414,6 +418,7 @@ class ViewFullTemplates extends Component {
                           
          
                     </ScrollView>
+                    </KeyboardAvoidingView>
                 </SafeAreaView>
                 {this.state.showTab&&<View style={{ position: "absolute", bottom: 50, width, alignItems: "center", justifyContent: "space-between" }}>
                     {
@@ -459,7 +464,16 @@ const styles = StyleSheet.create({
         elevation: 6,
         margin: 20,
         height: height * 0.3
-    }
+    },
+    topSafeArea: {
+        flex: 0,
+        backgroundColor: themeColor
+    },
+    bottomSafeArea: {
+        flex: 1,
+        backgroundColor: "#fff"
+    },
+
 
 })
 const mapStateToProps = (state) => {
