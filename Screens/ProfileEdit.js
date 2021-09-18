@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView,  TextInput ,ActivityIndicator} from 'react-native';
+import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView,  TextInput ,ActivityIndicator, KeyboardAvoidingView, Platform} from 'react-native';
 import settings from '../AppSettings';
 import axios from 'axios';
 import Modal from 'react-native-modal';
@@ -336,6 +336,11 @@ class ProfileEdit extends Component {
             <>
                 <SafeAreaView style={styles.topSafeArea} />
                 <SafeAreaView style={styles.bottomSafeArea}>
+                     <KeyboardAvoidingView 
+                       behavior={Platform.OS=="ios"?"padding":"height"}
+                     >
+
+                 
                     <View style={{ flex: 1, }}>
                         <StatusBar backgroundColor={themeColor}/>
                                     {/* Headers */}
@@ -559,7 +564,7 @@ class ProfileEdit extends Component {
                      
                         {this.renderModal()}
                     </View>
-
+                    </KeyboardAvoidingView>
                     <DateTimePickerModal
                         isVisible={this.state.show}
                         mode="date"
