@@ -544,7 +544,7 @@ sendMessage =async()=>{
           
                 
             {/* HEADERS */}
-                <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center", marginTop: Constants.statusBarHeight}}>
+                <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center", marginTop:Platform.OS=="ios"? Constants.statusBarHeight:0}}>
                 <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}
                   onPress={()=>{this.props.navigation.goBack()}}
                 >
@@ -569,7 +569,7 @@ sendMessage =async()=>{
             <FlatList
               contentContainerStyle={{paddingBottom:20,}} 
               onContentSizeChange={() => { this.flatRef.scrollToEnd({ animated: true }) }}
-              style={{marginTop:20,backgroundColor:"#fff"}}
+              style={{backgroundColor:"#fff"}}
               data={this.state.Messages}
               ref={ref => this.flatRef = ref}
               keyExtractor={(item,index)=>index.toString()}
@@ -975,10 +975,10 @@ sendMessage =async()=>{
                           
               
                 </View>
-                <KeyboardSpacer 
+           {Platform.OS=="ios" && <KeyboardSpacer 
                   topSpacing={0}
                 
-                />
+                />}
        
            
         </>
