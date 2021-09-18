@@ -184,7 +184,7 @@ getPendingAppoinments = async()=>{
             this.showSimpleMessage("requested SuccessFully", "#00A300", "success")
         } else {
             this.setState({ creating: false, showAppoinmentModal: false})
-            this.showSimpleMessage(`${post?.data?.error||"SomeThing Went Wrong"}`, "#B22222", "danger")
+            this.showSimpleMessage(`${post?.data?.error||"Oops! Something's wrong! "}`, "#B22222", "danger")
         }
     }
    componentDidMount(){

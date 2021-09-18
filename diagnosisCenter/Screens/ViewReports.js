@@ -327,7 +327,7 @@ getTotal =()=>{
                   return this.getReport()
             }else{
                 this.setState({editing:false})
-                this.showSimpleMessage("Something Went Wrong","red","danger")
+                this.showSimpleMessage("Oops! Something's wrong! ","red","danger")
             }
 }
       addReportModal = ()=>{

@@ -86,7 +86,8 @@ class Priscription extends React.Component {
             offset2:0,
             totalcount:0,
             count2:0,
-            showShimmer:true
+            showShimmer:true,
+            first:true
         };
         this.scrollY=new Animated.Value(0)
         this.translateYNumber= React.createRef()
@@ -263,22 +264,29 @@ hideDatePicker = () => {
     }
     componentDidMount(){
        console.log(this.props.user)
+               this.setState({first:false})
        this.findUser()
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
-            if(this.props.user.profile.occupation=="Doctor"){
+           if(!this.state.first){
+                        if(this.props.user.profile.occupation=="Doctor"){
+                console.warn("here as doctor")
               return  this.setState({prescriptions:[],offset:0,next:true,showShimmer:true},()=>{
                     this.getPrescription()
                 })
              
             }
             if(this.props.user.profile.occupation=="ClinicRecoptionist"){
+                console.warn("here as ClinicRecoptionist")
                 return  this.setState({prescriptions:[],offset:0,next:true,showShimmer:true},()=>{
                     this.getClinicPrescription()
                 })   
             }
                return  this.setState({prescriptions:[],offset:0,next:true,showShimmer:true},()=>{
+                        console.warn("here as patient")
                     this.getPateintPrescription()
                 }) 
+           }
+   
             
         });
         Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
@@ -625,7 +633,7 @@ hideDatePicker = () => {
                             <View style={{flexDirection:"row"}}>
                                 <Text style={[styles.text]}>Diagnosis : </Text>
                             </View>
-                            <View style={{flexDirection:"row",flexWrap:"wrap",alignItems:"center",justifyContent:"space-around",flex:1}}>
+                            <View style={{flexDirection:"row",flexWrap:"wrap",alignItems:"center",justifyContent:`${item?.diseaseTitle?.length>1?"space-around":"flex-start"}`,flex:1}}>
                                         {
                                 item?.diseaseTitle?.map((itemm,index)=>{
                                             return(

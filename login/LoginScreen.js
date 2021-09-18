@@ -139,19 +139,23 @@ class LoginScreen extends Component {
   }
   render() {
     return (
-      <View style={{height:screenHeight,backgroundColor:"#191720"}}>
-           <StatusBar backgroundColor={"#191720"}/>
+      <View style={{height:screenHeight,backgroundColor:"#000"}}>
+           <StatusBar backgroundColor={"#000"}/>
            <View style={{height:"50%"}}>
                  <View style={{flex:0.5,justifyContent:"center",paddingLeft:20}}>
+                          {/* <View style={{alignItems:"center",justifyContent:"center",marginVertical:20}}>
+                                <Image 
+                                   source={require('../assets/adaptive-icon.png')}
+                                   style={{height:70,width:60,}}
+                                />
+                             </View> */}
                              <View>
                                 <Text style={[styles.text,{color:"#fff",fontSize:height*0.04,fontWeight:"bold"}]}>Let`s Sign You in.</Text>
                             </View>
                               <View>
                                 <Text style={[styles.text,{color:"#fff",fontSize:height*0.03,}]}>Welcome back.</Text>
                             </View>
-                              <View>
-                                <Text style={[styles.text,{color:"#fff",fontSize:height*0.03,}]}>You have been Missed ! </Text>
-                            </View>
+                       
                  </View>
                   <View style={{flex:0.5,alignItems:"center",justifyContent:"space-around",}}>
                             <View   style={{height:"30%",borderColor:"gray",borderRadius:10,borderWidth:2,width:width*0.85,alignItems:"center",justifyContent:"center"}}>
@@ -198,7 +202,7 @@ class LoginScreen extends Component {
                           <Text style={[styles.text,{color:"#fff"}]}>Register</Text>
                      </TouchableOpacity>
                 </View>
-                <View style={{marginBottom:Constants.statusBarHeight+30,marginTop:20,alignItems:"center",justifyContent:"center"}}>
+                <View style={{marginBottom:Constants.statusBarHeight+60,marginTop:20,alignItems:"center",justifyContent:"center"}}>
                    { !this.state.loading? <TouchableOpacity style={{width:width*0.9,height:height*0.07,alignItems:"center",justifyContent:"center",borderRadius:10,backgroundColor:"#fff"}}
                        onPress={()=>{this.login()}}
                      >

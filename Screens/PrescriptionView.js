@@ -756,7 +756,7 @@ validateButton = (item,index) =>{
     headers =()=>{
         return(
             <View style={{alignItems:"center",justifyContent:"center",marginTop:10}}>
-                <Text style={[styles.text,{color:"#000",textDecorationLine:"underline",fontSize:20}]}>Available Clinics :</Text>
+                <Text style={[styles.text,{color:"#000",textDecorationLine:"underline",fontSize:20}]}>Available Pharmacies :</Text>
             </View>
         )
     }
@@ -806,7 +806,7 @@ validateButton = (item,index) =>{
                         });
              })
          }else{
-              this.showSimpleMessage("Something Went Wrong","red","danger")
+              this.showSimpleMessage("Oops! Something's wrong! ","red","danger")
               this.setState({confirming:false})
          }
     }
@@ -843,7 +843,7 @@ validateButton = (item,index) =>{
      console.log(post,"task Create")
      if(post.type =="success"){
         this.setState({paymentLoading:false})
-        this.showSimpleMessage("Order Placed SuccessFully","green","success")
+        this.showSimpleMessage("Hurray! Order Placed!!","green","success")
      }else{
         this.setState({paymentLoading:false})
         this.showSimpleMessage(`${post?.data?.dunzoerror}`,"orange","info")
@@ -901,7 +901,7 @@ validateButton = (item,index) =>{
     });
         }else{
             this.setState({ paymentLoading: false })
-            this.showSimpleMessage("Something Went Wrong","orange","info")
+            this.showSimpleMessage("Oops! Something's Wrong","orange","info")
         }
     }
     checkoutModal =() =>{
@@ -1038,7 +1038,7 @@ validateButton = (item,index) =>{
                 
                         <View style={{flex:0.5}}>
                               <View style={{alignItems:"center",justifyContent:"center",marginTop:10}}>
-                                     <Text style={[styles.text,{color:"#000",textAlign:"center"}]}>No, Clinics Found We will Notify Once the Clinic Found</Text>
+                                     <Text style={[styles.text,{color:"#000",textAlign:"center"}]}>Oops! Pharmacies have not accepted your request at the moment. We will notify you once the store accepts.</Text>
                               </View>
                               <View style={{alignItems:"center",justifyContent:"center",marginTop:10}}>
                                    <TouchableOpacity 
@@ -1418,7 +1418,7 @@ validateButton = (item,index) =>{
            this.showSimpleMessage("Rated SuccessFully","green","success")
            this.setState({rating:false,ratingModal:false})
        }else{
-            this.showSimpleMessage("Something Went Wrong","red","danger")
+            this.showSimpleMessage("Oops! Something's wrong! ","red","danger")
           this.setState({rating:false})  
        }
     }

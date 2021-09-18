@@ -334,7 +334,7 @@ addReport =()=>{
              return this.showSimpleMessage("Report Created Successfully","green","success")
         }else{
              this.setState({creating:false})
-             return this.showSimpleMessage("Something Went Wrong","red","danger")
+             return this.showSimpleMessage("Oops! Something's wrong! ","red","danger")
         }
     }
     componentDidUpdate(prevProps, prevState){

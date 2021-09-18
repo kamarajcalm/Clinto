@@ -267,7 +267,7 @@ class ViewPendingRequest extends Component {
     });
         }else{
             this.setState({ paymentLoading: false })
-            this.showSimpleMessage("Something Went Wrong","orange","info")
+            this.showSimpleMessage("Oops! Something's wrong! ","orange","info")
         }
     }
    componentDidMount(){

@@ -338,7 +338,7 @@ stopRecording =async()=>{
             this.setState({loading:false})
         }else{
             this.setState({ loading: false })
-            return this.showSimpleMessage("Something Went wrong", "#dd7030")
+            return this.showSimpleMessage("Oops! Something's wrong! ", "#dd7030")
         }
    
     }catch(err){
@@ -400,7 +400,7 @@ sendMessage =async()=>{
         this.setState({ message: "", selectedFile: null, selectedType:null,loading:false})
     }else{
         this.setState({loading:false})
-        return this.showSimpleMessage("Something Went wrong", "#dd7030")
+        return this.showSimpleMessage("Oops! Something's wrong! ", "#dd7030")
     }
    
 }

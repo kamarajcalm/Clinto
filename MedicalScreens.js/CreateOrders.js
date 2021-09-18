@@ -427,7 +427,7 @@ class CreateOrders extends Component {
                  this.setState({showModal:true})
              })
         }else{
-            this.showSimpleMessage("Something went wrong", "#B22222", "danger")
+            this.showSimpleMessage("Oops! Something's wrong! ", "#B22222", "danger")
         }
     }
     getMinOrder = async()=>{
@@ -439,7 +439,7 @@ class CreateOrders extends Component {
             this.setState({ medicines: data.data, loadModal:false})
         }else{
             this.setState({ loadModal: false })
-            this.showSimpleMessage("Something went wrong", "#B22222", "danger")
+            this.showSimpleMessage("Oops! Something's wrong! ", "#B22222", "danger")
         }
     }
   render() {

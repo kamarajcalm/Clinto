@@ -40,7 +40,9 @@ class ProfileEdit extends Component {
             email: this.props.user.email,
             healthIssues: this.props.user.profile.health_issues,
             Qualification:"",
-            Qualifications: this.props.user.profile.qualifications||[]
+            Qualifications: this.props.user.profile.qualifications||[],
+            oldPassword:"",
+            newPassword:""
         };
     }
     showSimpleMessage(content, color, type = "info", props = {}) {
@@ -536,7 +538,25 @@ class ProfileEdit extends Component {
                                 </View>
                                 </>
                                 }
-                             
+                                   <View>
+                                    <Text style={styles.text}>Old password</Text>
+                                    <TextInput
+                                        value={this.state.oldPassword}
+                                   
+                                        selectionColor={themeColor}
+                                        onChangeText={(oldPassword) => { this.setState({ oldPassword }) }}
+                                        style={{ width: width * 0.7, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                    />
+                                </View>
+                                        <View>
+                                    <Text style={styles.text}>New password</Text>
+                                    <TextInput
+                                        value={this.state.newPassword}
+                                        selectionColor={themeColor}
+                                        onChangeText={(newPassword) => { this.setState({ newPassword }) }}
+                                        style={{ width: width * 0.7, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                    />
+                                </View>
                                 <View style={{alignItems:'center',justifyContent:'center',marginVertical:20}}>
                                     <TouchableOpacity style={{ width: width * 0.4, height: height * 0.05, borderRadius: 10, alignItems: 'center', justifyContent: "center" ,backgroundColor:themeColor}}
                                      onPress ={()=>{

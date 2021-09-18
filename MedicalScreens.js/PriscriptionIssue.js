@@ -28,7 +28,7 @@ class PriscriptionIssue extends Component {
         const today = `${year}-${month}-${day}`
         super(props);
         this.state = {
-            today,
+            today:moment(new Date()).format("YYYY-MM-DD"),
             mode: 'date',
             date: new Date(),
             show: false,
@@ -84,7 +84,7 @@ class PriscriptionIssue extends Component {
             }
         }else{
             this.setState({  isFetching: false })
-           this.showSimpleMessage("Something Went Wrong", "#dd7030",)
+           this.showSimpleMessage("Oops! Something's wrong! ", "#dd7030",)
         }
 
     }
@@ -220,7 +220,7 @@ class PriscriptionIssue extends Component {
             <View style={{ alignItems: "center", justifyContent: "center", width: width * 0.32, }}>
                 <View style={{ flexDirection: "row" }}>
                     <View style={{ alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, { color: "#fff" }]}>{this.state.today}</Text>
+                        <Text style={[styles.text, { color: "#fff" }]}>{moment(this.state.today).format("DD-MM-YYYY")}</Text>
                     </View>
 
                     <TouchableOpacity
