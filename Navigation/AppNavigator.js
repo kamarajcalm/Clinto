@@ -41,7 +41,7 @@ import UploadImages from '../AdminScreens/UploadImages';
 import ViewReceptionProfile from '../Screens/ViewReceptionProfile';
 import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack';
 import * as Notifications from 'expo-notifications';
-import * as Linking from 'expo-linking';
+
 import EditHeathIssues from '../Screens/EditHeathIssues';
 import SelectAddress from '../Screens/SelectAddress';
 import ViewMedicalDetails from '../MedicalScreens.js/ViewMedicalDetails';
@@ -56,7 +56,7 @@ import ViewLabDetails from '../diagnosisCenter/Screens/ViewLabDetails';
 import CreateDiagnosisCenterUser from '../AdminScreens/CreateDiagnosisCenterUser';
 
 
-const prefix = Linking.makeUrl('/')
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -86,16 +86,10 @@ const authScreens = {
     }
    
     render() {
-         const linking = {
-             prefixes:[prefix],
-             config:{
-                 PrescriptionView:"PrescriptionView"
-             },
-    
-         }
+     
         
         return (
-            <NavigationContainer linking={linking} ref={ref=>this.navRef=ref}>
+            <NavigationContainer ref={ref=>this.navRef=ref}>
                 <Stack.Navigator
                 
                     screenOptions={{

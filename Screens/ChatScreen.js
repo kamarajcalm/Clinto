@@ -17,6 +17,8 @@ import wamp from 'wamp.js2';
 import HttpsClient from '../api/HttpsClient';
 import moment from 'moment';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+import KeyboardSpacer from 'react-native-keyboard-spacer';
+import Constants from 'expo-constants';
 const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
 const wampServer = settings.wampServer;
@@ -532,16 +534,17 @@ sendMessage =async()=>{
     return (
           <>
            
-            <SafeAreaView style={styles.topSafeArea} />
-            <SafeAreaView style={styles.bottomSafeArea}>
-   
-                <View style={{flex:1}}>
+           
+           
+
+            
+                <View style={{flex:1,backgroundColor:themeColor}}>
 
   
           
                 
             {/* HEADERS */}
-            <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
+                <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center", marginTop: Constants.statusBarHeight}}>
                 <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}
                   onPress={()=>{this.props.navigation.goBack()}}
                 >
@@ -566,7 +569,7 @@ sendMessage =async()=>{
             <FlatList
               contentContainerStyle={{paddingBottom:20,}} 
               onContentSizeChange={() => { this.flatRef.scrollToEnd({ animated: true }) }}
-              style={{marginTop:20,}}
+              style={{marginTop:20,backgroundColor:"#fff"}}
               data={this.state.Messages}
               ref={ref => this.flatRef = ref}
               keyExtractor={(item,index)=>index.toString()}
@@ -909,12 +912,9 @@ sendMessage =async()=>{
               }}
             />
               
-                    <KeyboardAvoidingView
-                        behavior={Platform.OS === "ios" ? "padding" : "height"}
-                      
-                    >
+               
           
-            <View style={{flexDirection:'row',alignItems:"center",justifyContent:"center",minHeight:height*0.07,elevation:5,backgroundColor:"#eee"}}> 
+            <View style={{flexDirection:'row',alignItems:"center",justifyContent:"center",minHeight:height*0.07,elevation:5,backgroundColor:"#eee",marginBottom:0}}> 
                 <View style={{ backgroundColor: "#fafafa",minHeight: height * 0.05, maxHeight: height * 0.2, borderRadius: 15,flex:1,marginLeft:20,flexDirection:"row",alignItems:"center",justifyContent:"center"}}>
                     <View style={{ flex:0.8 ,alignItems:"center",justifyContent:"center"}}>
                         {!this.state.recording?
@@ -958,7 +958,7 @@ sendMessage =async()=>{
                 
                
             </View>
-                    </KeyboardAvoidingView>
+                   
           {this.state.selectedType=="image"&&<View style={{position:"absolute",height:height*0.07,bottom:60,backgroundColor:"#fafafa",left:20,width:width*0.2,borderRadius:10}}>
                     <TouchableOpacity style={{alignSelf:"flex-end",marginTop:-15,marginRight:-10}}
                       onPress={()=>{this.setState({selectedFile:null,selectedType:null})}}
@@ -973,10 +973,13 @@ sendMessage =async()=>{
             </View>}
                     {this.renderModal()}
                           
-     
+              
                 </View>
-                              
-            </SafeAreaView>
+                <KeyboardSpacer 
+                  topSpacing={0}
+                
+                />
+       
            
         </>
     );

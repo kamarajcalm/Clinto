@@ -896,7 +896,7 @@ hideDatePicker = () => {
                             contentContainerStyle={{ paddingTop: headerHeight+height*0.01, paddingBottom: 150}}
                             onScroll={handleScroll}
                             ref={ref=>this.ref=ref}
-                             
+                            bounces={false}
                             onEndReached ={()=>{this.handleEndReached()}}
                             ListFooterComponent={this.renderFooter()}
                             onEndReachedThreshold={0.1}

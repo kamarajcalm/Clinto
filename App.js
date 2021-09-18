@@ -8,7 +8,7 @@ import { createStore } from 'redux';
 import reducers from './reducers';
 import FlashMessage from "react-native-flash-message";
 import * as Notifications from 'expo-notifications';
-import * as Linking from 'expo-linking';
+
 import notRef from './notificationRef';
 Notifications.setNotificationCategoryAsync("welcome", [
   {

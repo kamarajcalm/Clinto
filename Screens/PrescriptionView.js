@@ -1801,7 +1801,7 @@ const styles = StyleSheet.create({
     },
     topSafeArea: {
         flex: 0,
-        backgroundColor: "#5081BC"
+        backgroundColor: themeColor
     },
     bottomSafeArea: {
         flex: 1,

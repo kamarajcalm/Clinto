@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, SafeAreaView, ToastAndroid, Pressable, Switch, ActivityIndicator, TextInput, Alert, TouchableWithoutFeedback, ScrollView,Keyboard} from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, SafeAreaView, ToastAndroid, Pressable, Switch, ActivityIndicator, TextInput, Alert, TouchableWithoutFeedback, ScrollView,Keyboard, KeyboardAvoidingView, Platform} from 'react-native';
 import { connect, connectAdvanced } from 'react-redux';
 import { selectTheme } from '../actions';
 import settings from '../AppSettings';
@@ -866,7 +866,10 @@ getClinicDoctors = async()=>{
             <SafeAreaView style={styles.topSafeArea} />
             <SafeAreaView style={styles.bottomSafeArea}>
             
-               
+         <KeyboardAvoidingView behavior={Platform.OS=="ios"?"padding":"height"}
+           style={{flex:1}}
+         >
+              
         <View style={{flex:1}}>
                     {/* HEADERS */}
             <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection:'row',alignItems:"center"}}>
@@ -1279,7 +1282,7 @@ getClinicDoctors = async()=>{
                                    return(
                                        <TouchableOpacity 
                                            key ={index}
-                                           style={{padding:15,justifyContent:"center",width:width*0.9,borderColor:"#333",borderBottomWidth:0.3,height:35}}
+                                           style={{justifyContent:"center",width:width*0.9,borderColor:"#333",borderBottomWidth:0.3,height:35}}
                                            onPress={() => { 
                                                this.state.selectedReports.push(i.title)
                                                this.setState({ report:"",reports:[]})
@@ -1343,7 +1346,7 @@ getClinicDoctors = async()=>{
                         this.doctorModal()
                     }
         </View>
-
+                </KeyboardAvoidingView>
      </SafeAreaView>
        </>
         
