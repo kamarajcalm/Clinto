@@ -175,6 +175,14 @@ const styles = StyleSheet.create({
         marginVertical: 3
 
     },
+    topSafeArea: {
+        flex: 0,
+        backgroundColor: themeColor
+    },
+    bottomSafeArea: {
+        flex: 1,
+        backgroundColor: "#fff"
+    },
 })
 const mapStateToProps = (state) => {
 

@@ -834,7 +834,7 @@ class PrescriptionView extends Component {
                                     </View>
                                 </View>
                             </View>
-                            <View style={{ flex: 0.07, backgroundColor: themeColor, flexDirection: 'row', alignItems: "center", justifyContent: "space-around" }}>
+                            <View style={{ flex: 0.08, backgroundColor: themeColor, flexDirection: 'row', alignItems: "center", justifyContent: "space-around" }}>
                                 <TouchableOpacity style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center" }}
                                     onPress={() => {
                                         if (Platform.OS == "android") {
@@ -864,7 +864,7 @@ class PrescriptionView extends Component {
 
                         </View>
                     </GestureRecognizer>
-                    {<View style={{position:"absolute",width,justifyContent:"center",bottom:70,left:20}}>
+                    {<View style={{position:"absolute",width,justifyContent:"center",bottom:120,left:20}}>
                      <TouchableOpacity
                             style={{ backgroundColor:themeColor,height:height*0.05,width:width*0.4,alignItems:'center',justifyContent:'center',borderRadius:5}}
                         onPress={() => {
@@ -930,11 +930,11 @@ const styles = StyleSheet.create({
     },
     topSafeArea: {
         flex: 0,
-        backgroundColor: "#5081BC"
+        backgroundColor: themeColor
     },
     bottomSafeArea: {
         flex: 1,
-        backgroundColor: "#fff"
+        backgroundColor: themeColor
     },
     elevation: {
         shadowColor: "#000",

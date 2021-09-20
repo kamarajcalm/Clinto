@@ -39,6 +39,7 @@ import axios from 'axios';
 import {token} from '../dunzo/dunzo';
 import StarRating from 'react-native-star-rating-widget';
 import RazorpayCheckout from 'react-native-razorpay';
+import {openComposer} from "react-native-email-link";
 // import Image from 'react-native-scalable-image';
  class PrescriptionView extends Component {
   constructor(props) {
@@ -1688,7 +1689,7 @@ validateButton = (item,index) =>{
                             </View>
                         </View>
                     </View>
-                    <View style={{ flex: 0.07, backgroundColor:themeColor,flexDirection:'row'}}>
+                    <View style={{ flex: 0.08, backgroundColor:themeColor,flexDirection:'row'}}>
                         <TouchableOpacity style={{ flex: 0.5, flexDirection: "row",alignItems: 'center', justifyContent: "center"}}
                          onPress ={()=>{
                              if (Platform.OS == "android") {
@@ -1706,14 +1707,20 @@ validateButton = (item,index) =>{
                                     <Text style={[styles.text, { color: "#ffff" }]}>{this.state.item?.clinicname?.mobile}</Text>
                             </View>
                         </TouchableOpacity >
-                        <View style={{ flex: 0.5, flexDirection: "row"}}>
+                        <TouchableOpacity style={{ flex: 0.5, flexDirection: "row"}}
+                          onPress={()=>{
+                                openComposer({
+                                    to: this.state?.item?.clinicname?.email
+                                })
+                          }}
+                        >
                             <View style={{ alignItems: 'center', justifyContent: "center" }}>
                                 <Feather name="mail" size={height*0.035} color="#fff" />
                             </View>
                             <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5 }}>
                                     <Text style={[styles.text, { color: "#ffff" }]}>{this.state?.item?.clinicname?.email}</Text>
                             </View>
-                        </View>
+                        </TouchableOpacity>
                     </View>
                 
                  </View>
@@ -1805,7 +1812,7 @@ const styles = StyleSheet.create({
     },
     bottomSafeArea: {
         flex: 1,
-        backgroundColor: "#fff"
+        backgroundColor: themeColor
     },
     elevation: {
         shadowColor: "#000",

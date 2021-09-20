@@ -112,7 +112,7 @@ class ViewAppointments extends Component {
                             <Ionicons name="chevron-back-circle" size={30} color="#fff" />
                         </TouchableOpacity>
                         <View style={{ flex: 0.7, }}>
-                            <Text style={[styles.text, { color: "#fff", fontSize: 24, fontWeight: 'bold'}]}> Appointment Detailsgg</Text>
+                            <Text style={[styles.text, { color: "#fff", fontSize: 24, fontWeight: 'bold'}]}> Appointment Details</Text>
                         </View>
 
                     </View>
@@ -284,6 +284,14 @@ const styles = StyleSheet.create({
     text: {
         fontFamily
     },
+    topSafeArea: {
+        flex: 0,
+        backgroundColor: themeColor
+    },
+    bottomSafeArea: {
+        flex: 1,
+        backgroundColor: "#fff"
+    },
     boxWithShadow: {
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
@@ -291,7 +299,6 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
         elevation: 5
     }
-
 })
 const mapStateToProps = (state) => {
 

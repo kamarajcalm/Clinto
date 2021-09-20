@@ -1427,7 +1427,7 @@ class Appointments extends Component {
                         </View>
                             {this.state?.profiles?.length > 0 && <View style={{
                                 marginHorizontal: 20, marginVertical: 10, ...(Platform.OS !== 'android' && {
-                                    zIndex: 10
+                                    zIndex: 20
                                 }), }}>
                             <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Select Profile</Text>
                                 <View style={{
@@ -1469,7 +1469,10 @@ class Appointments extends Component {
                                 </View>
 
                             </View>
-              {this.props.user.profile.occupation!="Doctor"&&<View style={{ marginHorizontal: 20,marginVertical:10 }}>
+                            {this.props.user.profile.occupation != "Doctor" && <View style={{
+                                marginHorizontal: 20, marginVertical: 10, ...(Platform.OS !== 'android' && {
+                                    zIndex: 10
+                                }) }}>
                             <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Select Doctor</Text>
                             <View style={{ marginTop: 10 }}>
                                 <DropDownPicker

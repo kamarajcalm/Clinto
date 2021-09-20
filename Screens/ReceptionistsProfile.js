@@ -72,14 +72,7 @@ class ReceptionistsProfile extends Component {
                         </View>
 
                     </View>
-                    <View style={{ flexDirection: "row", marginTop: 15, }}>
-                        <View >
-                            <Text style={[styles.text, { color: "gray" }]}>Address</Text>
-                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.address}</Text>
-                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.city}-{this.props.user.profile.pincode}</Text>
-                        </View>
-
-                    </View>
+           
 
                 </View>
             </View>
