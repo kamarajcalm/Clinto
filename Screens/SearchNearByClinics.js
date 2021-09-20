@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, StatusBar, TouchableOpacity, SafeAreaView, Image, ActivityIndicator, Alert,PermissionsAndroid, Platform,ScrollView,FlatList,IntentLauncher,Linking} from 'react-native';
+import { View, Text, StyleSheet, Dimensions, StatusBar, TouchableOpacity, SafeAreaView, Image, ActivityIndicator, Alert,PermissionsAndroid, Platform,ScrollView,FlatList,Linking} from 'react-native';
 import MapView,{Marker,PROVIDER_GOOGLE,Callout} from 'react-native-maps';
 import settings from '../AppSettings';
 import { connect } from 'react-redux';
@@ -18,7 +18,7 @@ import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import SearchClinicView from '../components/SearchClinicView';
 import SearchPharmacyView from '../components/SearchPharmacyView';
 import SearchDiagnosisCenterView from '../components/SearchDiagnosisCenterView';
-
+import * as IntentLauncher from 'expo-intent-launcher';
 const { height, width } = Dimensions.get("window");
 const themeColor = settings.themeColor;
 const fontFamily =settings.fontFamily;
@@ -58,17 +58,12 @@ const url =settings.url
            this.setState({load:false})
         }
    }
-     goToSettings = () => {
-    if (Platform.OS == 'ios') {
-      // Linking for iOS
-      Linking.openURL('app-settings:');
-    } else {
-      // IntentLauncher for Android
-      IntentLauncher.startActivityAsync(
-        IntentLauncher.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS
-      );
-    }
-  };
+   goToSettings = () => {
+     if(Platform.OS=="ios"){
+       return Linking.openURL('app-settings:');
+     }
+     IntentLauncher.startActivityAsync(IntentLauncher.ACTION_LOCATION_SOURCE_SETTINGS);
+   };
 
    getLocation =async()=>{
  
@@ -93,10 +88,7 @@ const url =settings.url
      try {
     const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      {
-        'title': 'Example App',
-        'message': 'Example App access to your location '
-      }
+   
     )
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
        navigator.geolocation.getCurrentPosition(
@@ -108,9 +100,11 @@ const url =settings.url
           {enableHighAccuracy:true,timeout:20000,maximumAge:1000}
        );
     } else {
-      console.log("location permission denied")
-      alert("Location permission denied");
-    }
+      Alert.alert(
+        "User location not detected",
+        "You haven't granted permission to detect your location.",
+        [{ text: 'OK', onPress: () => this.goToSettings() }]
+      );    }
   } catch (err) {
     console.warn(err)
   }

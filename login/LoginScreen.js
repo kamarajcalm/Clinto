@@ -183,6 +183,7 @@ class LoginScreen extends Component {
                                 placeholderTextColor={"gray"}
                                 style={{height:"100%",width:"80%",color:"#fff"}} 
                                 onChangeText={(password)=>{this.setState({password})}}
+                                onSubmitEditing={()=>this.login()}
                             />
                             <TouchableOpacity 
                              onPress={()=>{this.setState({secure:!this.state.secure})}}

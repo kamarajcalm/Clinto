@@ -22,6 +22,7 @@
     "expo-document-picker": "~9.2.4",
     "expo-font": "~9.2.1",
     "expo-image-picker": "~10.2.2",
+    "expo-intent-launcher": "~9.1.0",
     "expo-linear-gradient": "~9.2.0",
     "expo-location": "~12.1.2",
     "expo-notifications": "~0.12.3",
