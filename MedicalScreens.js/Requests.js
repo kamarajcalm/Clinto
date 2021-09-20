@@ -288,7 +288,7 @@ import ViewMedicines from '../AdminScreens/ViewMedicines';
   }
   render() {
     return (
-      <View>
+      <View style={{flex:1}}>
           <FlatList
              contentContainerStyle={{paddingBottom:90}}
             refreshing={this.state.refreshing}
@@ -343,11 +343,11 @@ import ViewMedicines from '../AdminScreens/ViewMedicines';
                                       </TouchableOpacity>
                                   </View>
                                   <View>
-                              <TouchableOpacity style={{}} 
+                              {/* <TouchableOpacity style={{}} 
                                 onPress={()=>{this.rejectOrder()}}
                               >
                                             <Text style={[styles.text,{color:"red",textDecorationLine:"underline"}]}>Reject</Text>
-                                      </TouchableOpacity>
+                                      </TouchableOpacity> */}
                                   </View>
                           </View>
                      </TouchableOpacity>

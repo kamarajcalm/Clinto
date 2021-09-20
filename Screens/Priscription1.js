@@ -269,20 +269,20 @@ hideDatePicker = () => {
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
            if(!this.state.first){
                         if(this.props.user.profile.occupation=="Doctor"){
-                console.warn("here as doctor")
+               
               return  this.setState({prescriptions:[],offset:0,next:true,showShimmer:true},()=>{
                     this.getPrescription()
                 })
              
             }
             if(this.props.user.profile.occupation=="ClinicRecoptionist"){
-                console.warn("here as ClinicRecoptionist")
+                
                 return  this.setState({prescriptions:[],offset:0,next:true,showShimmer:true},()=>{
                     this.getClinicPrescription()
                 })   
             }
                return  this.setState({prescriptions:[],offset:0,next:true,showShimmer:true},()=>{
-                        console.warn("here as patient")
+                       
                     this.getPateintPrescription()
                 }) 
            }
@@ -477,7 +477,7 @@ hideDatePicker = () => {
                                   
                             </View>
                             <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                <Text>#{this.getIndex(index)}</Text>
+                                <Text style={[styles.text]}>#{item.id}</Text>
                             </View>
                         </View>
                      <View style={{ marginTop: 10,flexDirection:"row" }}>
@@ -551,8 +551,8 @@ hideDatePicker = () => {
                                 <Text style={[styles.text, { color: "#000", fontWeight: 'bold' }]}>Patient : {item?.username.name}</Text>
 
                             </View>
-                            <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                <Text>#{this.getIndex(index)}</Text>
+                                  <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                <Text style={[styles.text]}>#{item.id}</Text>
                             </View>
                         </View>
                         <View style={{ marginTop: 10,flexDirection:"row" }}>
@@ -625,9 +625,9 @@ hideDatePicker = () => {
                           
                          <Text style={[styles.text,{color:"#000",fontSize:18}]} numberOfLines={1}>{item.clinicname.name}</Text>
                         </View>
-                        <View style={{ alignItems: "center", justifyContent: "center" }}>
-                            <Text style={[styles.text,{marginRight:10}]}>#{this.getIndex(index)}</Text>
-                        </View>
+                           <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                <Text style={[styles.text]}>#{item.id}</Text>
+                            </View>
                     </View>
                       <View style={{ marginTop: 10,flexDirection:"row" }}>
                             <View style={{flexDirection:"row"}}>
@@ -1088,11 +1088,8 @@ const styles = StyleSheet.create({
     },
     card: {
         backgroundColor: "#fff",
-    
         borderColor:"gray",
         borderBottomWidth:0.5
-       
-
     },
     card2:{
         shadowColor: "#000",

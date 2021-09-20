@@ -88,7 +88,7 @@ class ProfileEdit extends Component {
              state: this.state.state,
              pincode: this.state.pincode,
              email: this.state.email
-
+             
          }
          if (this.state.image) {
              sendData.displayPicture = this.state.image,
@@ -339,6 +339,7 @@ class ProfileEdit extends Component {
                 <SafeAreaView style={styles.topSafeArea} />
                 <SafeAreaView style={styles.bottomSafeArea}>
                      <KeyboardAvoidingView 
+                       style={{flex:1}}
                        behavior={Platform.OS=="ios"?"padding":"height"}
                      >
 
@@ -361,7 +362,8 @@ class ProfileEdit extends Component {
                             </View>
                         </View>
                         <View style={{ flex: 1 }}>
-                            <ScrollView style={{ margin: 20 }}
+                            <ScrollView 
+                                contentContainerStyle={{paddingBottom:90,paddingHorizontal:20}}
                                 keyboardShouldPersistTaps ={"handled"}
                                 showsVerticalScrollIndicator={false}
                             >

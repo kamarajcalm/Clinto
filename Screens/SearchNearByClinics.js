@@ -96,7 +96,7 @@ const url =settings.url
      
 
 //    }
-   getAndroidLocation = async()=>{
+   getLocation = async()=>{
          Location.installWebGeolocationPolyfill();
      try {
     const granted = await PermissionsAndroid.request(
@@ -124,11 +124,9 @@ const url =settings.url
   }
    }
  componentDidMount(){
-   if(Platform.OS=="android"){
-     this.getAndroidLocation()
-   }else{
-      // this.getLocation()
-   }
+  
+     this.getLocation()
+
  
  }
       renderScene = ({ route, }) => {
