@@ -476,7 +476,7 @@ hideDatePicker = () => {
                                  </View>
                                   
                             </View>
-                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                            <View style={{ alignItems: "center", justifyContent: "center" ,marginRight:10}}>
                                 <Text style={[styles.text]}>#{item.id}</Text>
                             </View>
                         </View>
@@ -551,7 +551,7 @@ hideDatePicker = () => {
                                 <Text style={[styles.text, { color: "#000", fontWeight: 'bold' }]}>Patient : {item?.username.name}</Text>
 
                             </View>
-                                  <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                  <View style={{ alignItems: "center", justifyContent: "center",marginRight:10 }}>
                                 <Text style={[styles.text]}>#{item.id}</Text>
                             </View>
                         </View>
@@ -625,7 +625,7 @@ hideDatePicker = () => {
                           
                          <Text style={[styles.text,{color:"#000",fontSize:18}]} numberOfLines={1}>{item.clinicname.name}</Text>
                         </View>
-                           <View style={{ alignItems: "center", justifyContent: "center" }}>
+                           <View style={{ alignItems: "center", justifyContent: "center" ,marginRight:10}}>
                                 <Text style={[styles.text]}>#{item.id}</Text>
                             </View>
                     </View>
