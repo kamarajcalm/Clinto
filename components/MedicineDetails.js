@@ -156,6 +156,7 @@ export default class MedicineDetails extends Component {
                 <View
                     key={index}
                     style={styles.card}
+               
                 >
                     <View style={{ flex: 0.2, flexDirection: "row", margin: 10 }}>
                         <Text style={[styles.text, { fontWeight: "bold", fontSize: 20 }]}> {this.props.medicinesGiven.length+this.props.index+1}. {item.title || item.medicine}</Text>
@@ -374,7 +375,9 @@ export default class MedicineDetails extends Component {
                             </View>
 
                         </View>
-                        <View style={{ marginLeft: 10, alignItems: "center", marginTop: 10 }}>
+                        <View style={{  ...(Platform.OS !== 'android' && {
+            zIndex: 10
+        }),marginLeft: 10, alignItems: "center", marginTop: 10 }}>
                             <DropDownPicker
                                 placeholder={"select diagnosis"}
                                 items={this.state.diagnosis}
@@ -540,7 +543,9 @@ export default class MedicineDetails extends Component {
                             />
                         </View>
                     </View>
-                    <View style={{ marginLeft: 10, alignItems: "center", marginTop: 10 }}>
+                    <View style={{ ...(Platform.OS !== 'android' && {
+            zIndex: 10
+        }) ,marginLeft: 10, alignItems: "center", marginTop: 10 }}>
                         <DropDownPicker
                             placeholder={"select diagnosis"}
                             items={this.state.diagnosis}
@@ -714,7 +719,9 @@ export default class MedicineDetails extends Component {
                             />
                         </View>
                     </View>
-                    <View style={{ marginLeft: 10, alignItems: "center", marginTop: 10 }}>
+                    <View style={{ ...(Platform.OS !== 'android' && {
+            zIndex: 10
+        }) ,marginLeft: 10, alignItems: "center", marginTop: 10 }}>
                         <DropDownPicker
                             placeholder={"select diagnosis"}
                             items={this.state.diagnosis}
@@ -814,7 +821,9 @@ export default class MedicineDetails extends Component {
                             />
                         </View>
                     </View>
-                    <View style={{ marginLeft: 10, alignItems: "center", marginTop: 10 }}>
+                    <View style={{ ...(Platform.OS !== 'android' && {
+            zIndex: 10
+        }) ,marginLeft: 10, alignItems: "center", marginTop: 10 }}>
                         <DropDownPicker
                             placeholder={"select diagnosis"}
                             items={this.state.diagnosis}
@@ -905,7 +914,9 @@ export default class MedicineDetails extends Component {
                             onChangeText={(text) => { this.changeQty(text) }}
                         />
                     </View>
-                    <View style={{ marginLeft: 10, alignItems: "center", marginTop: 10 }}>
+                    <View style={{ ...(Platform.OS !== 'android' && {
+            zIndex: 10
+        }) ,marginLeft: 10, alignItems: "center", marginTop: 10 }}>
                         <DropDownPicker
                             placeholder={"select diagnosis"}
                             items={this.state.diagnosis}
@@ -982,7 +993,9 @@ export default class MedicineDetails extends Component {
                     </View>
                     {this.state.name.length > 0 && <View style={{ margin: 15 }}>
                         <Text style={[styles.text, { color: "#000" }]}>Select Type</Text>
-                        <View style={{ marginLeft: 10, marginTop: 10 }}>
+                        <View style={{ ...(Platform.OS !== 'android' && {
+            zIndex: 10
+        }), marginLeft: 10, marginTop: 10 }}>
                             <DropDownPicker
                                 items={types}
                                 containerStyle={{ height: 40, width: width * 0.4 }}

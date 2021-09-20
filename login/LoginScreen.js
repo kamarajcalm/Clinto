@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, Image, StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingView, ActivityIndicator, Platform, StatusBar, AsyncStorage } from 'react-native';
+import { View, Text, Dimensions, Image, StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingView, ActivityIndicator, Platform, StatusBar, AsyncStorage, TouchableWithoutFeedback ,Keyboard} from 'react-native';
 import settings from '../AppSettings';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
@@ -139,6 +139,14 @@ class LoginScreen extends Component {
   }
   render() {
     return (
+      <TouchableWithoutFeedback 
+      
+       onPress={()=>{
+           Keyboard.dismiss()
+       }}
+      >
+
+   
       <View style={{height:screenHeight,backgroundColor:"#000"}}>
            <StatusBar backgroundColor={"#000"}/>
            <View style={{height:"50%"}}>
@@ -160,6 +168,7 @@ class LoginScreen extends Component {
                   <View style={{flex:0.5,alignItems:"center",justifyContent:"space-around",}}>
                             <View   style={{height:"30%",borderColor:"gray",borderRadius:10,borderWidth:2,width:width*0.85,alignItems:"center",justifyContent:"center"}}>
                                    <TextInput 
+                                     
                                      value={this.state.username}
                               selectionColor={"#fff"}
                               style={{height:"100%",width:"90%",color:'#fff'}} 
@@ -176,6 +185,7 @@ class LoginScreen extends Component {
                         
                         >
                             <TextInput 
+                            
                                 secureTextEntry={this.state.secure}
                                 value={this.state.password}
                                 selectionColor={"#fff"}
@@ -217,6 +227,7 @@ class LoginScreen extends Component {
                 </View>
            </View>
       </View>
+         </TouchableWithoutFeedback>
     );
   }
 }
