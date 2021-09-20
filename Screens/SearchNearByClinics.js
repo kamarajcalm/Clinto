@@ -58,45 +58,45 @@ const url =settings.url
            this.setState({load:false})
         }
    }
-//    getLocation =async()=>{
+   getLocation =async()=>{
  
-//      let { status } = await Location.requestForegroundPermissionsAsync()
-//      if (status !== 'granted') {
-//         Alert.alert(
-//         "User location not detected",
-//         "You haven't granted permission to detect your location.",
-//         [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
-//       );
-//        return;
-//      }
-//    Location.getCurrentPositionAsync();
+     let { status } = await Location.requestForegroundPermissionsAsync()
+     if (status !== 'granted') {
+        Alert.alert(
+        "User location not detected",
+        "You haven't granted permission to detect your location.",
+        [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+      );
+       return;
+     }
+   Location.getCurrentPositionAsync();
 
-//        Location.installWebGeolocationPolyfill();
+       Location.installWebGeolocationPolyfill();
 
-//     GetLocation.getCurrentPosition({
-//     enableHighAccuracy: true,
-//     timeout: 15000,
-//     })
-//     .then(location => {
-//     console.log(location,"kkkkkk");
-//            this.getMarkers(location.latitude,location.longitude)
-//       this.setState({ location: {
-//         latitude: location.latitude,
-//         longitude: location.longitude, 
-//         latitudeDelta: 0.001, 
-//         longitudeDelta: 0.001}})
-// })
-// .catch(error => {
-//     const { code, message } = error;
-//     console.warn(code, message);
-// })
-//       //     let location = await Location.getLastKnownPositionAsync()
-//       //     console.log(location,"hjhj")
+    GetLocation.getCurrentPosition({
+    enableHighAccuracy: true,
+    timeout: 15000,
+    })
+    .then(location => {
+    console.log(location,"kkkkkk");
+           this.getMarkers(location.latitude,location.longitude)
+      this.setState({ location: {
+        latitude: location.latitude,
+        longitude: location.longitude, 
+        latitudeDelta: 0.001, 
+        longitudeDelta: 0.001}})
+})
+.catch(error => {
+    const { code, message } = error;
+    console.warn(code, message);
+})
+      //     let location = await Location.getLastKnownPositionAsync()
+      //     console.log(location,"hjhj")
    
      
 
-//    }
-   getLocation = async()=>{
+   }
+   getAndroidLocation = async()=>{
          Location.installWebGeolocationPolyfill();
      try {
     const granted = await PermissionsAndroid.request(
@@ -124,9 +124,11 @@ const url =settings.url
   }
    }
  componentDidMount(){
-  
-     this.getLocation()
-
+   if(Platform.OS=="android"){
+     this.getAndroidLocation()
+   }else{
+      this.getLocation()
+   }
  
  }
       renderScene = ({ route, }) => {
