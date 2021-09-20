@@ -11,7 +11,7 @@ import png from '../assets/marker/stethoscope.png'
 import { WebView } from 'react-native-webview';
 import HttpsClient from '../api/HttpsClient';
 import mapstyle from '../map.json';
-import GetLocation from 'react-native-get-location';
+
 import ShimmerLoader from '../components/ShimmerLoader';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
@@ -58,6 +58,18 @@ const url =settings.url
            this.setState({load:false})
         }
    }
+     goToSettings = () => {
+    if (Platform.OS == 'ios') {
+      // Linking for iOS
+      Linking.openURL('app-settings:');
+    } else {
+      // IntentLauncher for Android
+      IntentLauncher.startActivityAsync(
+        IntentLauncher.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS
+      );
+    }
+  };
+
    getLocation =async()=>{
  
      let { status } = await Location.requestForegroundPermissionsAsync()
@@ -65,33 +77,12 @@ const url =settings.url
         Alert.alert(
         "User location not detected",
         "You haven't granted permission to detect your location.",
-        [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+        [{ text: 'OK', onPress: () => this.goToSettings() }]
       );
        return;
      }
-   Location.getCurrentPositionAsync();
-
-       Location.installWebGeolocationPolyfill();
-
-    GetLocation.getCurrentPosition({
-    enableHighAccuracy: true,
-    timeout: 15000,
-    })
-    .then(location => {
-    console.log(location,"kkkkkk");
-           this.getMarkers(location.latitude,location.longitude)
-      this.setState({ location: {
-        latitude: location.latitude,
-        longitude: location.longitude, 
-        latitudeDelta: 0.001, 
-        longitudeDelta: 0.001}})
-})
-.catch(error => {
-    const { code, message } = error;
-    console.warn(code, message);
-})
-      //     let location = await Location.getLastKnownPositionAsync()
-      //     console.log(location,"hjhj")
+    const Location= await Location.getCurrentPositionAsync()
+    this.setState({location:{lat:location.coords.latitude,lng:location.coords.longitude},load:false})
    
      
 
