@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, StatusBar, TouchableOpacity, SafeAreaView, Image, ActivityIndicator, Alert,PermissionsAndroid, Platform,ScrollView,FlatList} from 'react-native';
+import { View, Text, StyleSheet, Dimensions, StatusBar, TouchableOpacity, SafeAreaView, Image, ActivityIndicator, Alert,PermissionsAndroid, Platform,ScrollView,FlatList,IntentLauncher,Linking} from 'react-native';
 import MapView,{Marker,PROVIDER_GOOGLE,Callout} from 'react-native-maps';
 import settings from '../AppSettings';
 import { connect } from 'react-redux';
@@ -11,7 +11,7 @@ import png from '../assets/marker/stethoscope.png'
 import { WebView } from 'react-native-webview';
 import HttpsClient from '../api/HttpsClient';
 import mapstyle from '../map.json';
-import GetLocation from 'react-native-get-location';
+
 import ShimmerLoader from '../components/ShimmerLoader';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
@@ -58,6 +58,18 @@ const url =settings.url
            this.setState({load:false})
         }
    }
+     goToSettings = () => {
+    if (Platform.OS == 'ios') {
+      // Linking for iOS
+      Linking.openURL('app-settings:');
+    } else {
+      // IntentLauncher for Android
+      IntentLauncher.startActivityAsync(
+        IntentLauncher.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS
+      );
+    }
+  };
+
    getLocation =async()=>{
  
      let { status } = await Location.requestForegroundPermissionsAsync()
@@ -65,7 +77,7 @@ const url =settings.url
         Alert.alert(
         "User location not detected",
         "You haven't granted permission to detect your location.",
-        [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+        [{ text: 'OK', onPress: () => this.goToSettings() }]
       );
        return;
      }
