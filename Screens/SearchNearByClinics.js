@@ -29,7 +29,7 @@ const url =settings.url
   const routes = [
             { key: 'Clinics', title: 'Clinics' },
             { key: 'Pharmacy', title:'Pharmacy'},
-            { key: 'DiagnosisCenter', title:'DiagnosisCenter'},
+            { key: 'Labs', title:'Labs'},
         ];
     this.state = {
        load:true,
@@ -69,31 +69,11 @@ const url =settings.url
       );
        return;
      }
-   Location.getCurrentPositionAsync();
-
-       Location.installWebGeolocationPolyfill();
-
-    GetLocation.getCurrentPosition({
-    enableHighAccuracy: true,
-    timeout: 15000,
-    })
-    .then(location => {
-    console.log(location,"kkkkkk");
-           this.getMarkers(location.latitude,location.longitude)
-      this.setState({ location: {
-        latitude: location.latitude,
-        longitude: location.longitude, 
-        latitudeDelta: 0.001, 
-        longitudeDelta: 0.001}})
-})
-.catch(error => {
-    const { code, message } = error;
-    console.warn(code, message);
-})
-      //     let location = await Location.getLastKnownPositionAsync()
-      //     console.log(location,"hjhj")
    
-     
+       const location = await Location.getCurrentPositionAsync();
+       this.setState({ location: { lat: location.coords.latitude, lng: location.coords.longitude }, load: false })
+  
+ 
 
    }
    getAndroidLocation = async()=>{
@@ -137,7 +117,7 @@ const url =settings.url
                  return <SearchClinicView navigation={this.props.navigation} location={this.state.location}/>
              case 'Pharmacy':
                  return <SearchPharmacyView navigation={this.props.navigation} location={this.state.location} />
-             case 'DiagnosisCenter':
+             case 'Labs':
                  return <SearchDiagnosisCenterView navigation={this.props.navigation} location={this.state.location} />
              default:
                  return null;
