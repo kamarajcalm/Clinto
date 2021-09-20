@@ -66,17 +66,19 @@ getOrders = async()=>{
           <>
            <SafeAreaView style={styles.topSafeArea} />
             <SafeAreaView style={styles.bottomSafeArea}>
-                  <View style={{}}>
+         <View style={{ height: height * 0.1, backgroundColor: themeColor,flexDirection: 'row', alignItems: "center" }}>
+                        <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}
+                            onPress={() => { this.props.navigation.goBack() }}
+                        >
+                            <Ionicons name="chevron-back-circle" size={30} color="#fff" />
+                        </TouchableOpacity>
+                        <View style={{ flex: 0.6,alignItems:"center",justifyContent:"center" }}>
+                            <Text style={[styles.text, { color: "#fff",fontSize:20,fontWeight:"bold"}]}>Your Orders</Text>
+                        </View>
+                        <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
 
-                      <TouchableOpacity style={{padding:15}}
-                          onPress={() => { this.props.navigation.goBack() }}
-                      >
-                          <Ionicons name="chevron-back-circle" size={30} color={themeColor} />
-                      </TouchableOpacity>
-                 </View>
-                 <View style={{marginLeft:15}}>
-                      <Text style={[styles.text,{color:"#000"}]}>Your Orders</Text>
-                 </View>
+                        </View>
+                    </View>
                    {this.state.loading&&
                         <ScrollView>
                           <ShimmerLoader />

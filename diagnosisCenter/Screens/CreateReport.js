@@ -85,7 +85,7 @@ addReport =()=>{
             this.searchUser(this.state.appoinment.patientname.mobile)
          }
          Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
-        Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+         Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
    
  
       }

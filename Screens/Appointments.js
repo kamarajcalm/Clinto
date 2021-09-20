@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, Linking, FlatList, Image, SafeAreaView, ToastAndroid, TextInput, ScrollView, ActivityIndicator} from 'react-native';
+import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, Linking, FlatList, Image, SafeAreaView, ToastAndroid, TextInput, ScrollView, ActivityIndicator, TouchableWithoutFeedback,Keyboard} from 'react-native';
 import settings from '../AppSettings';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
@@ -67,7 +67,8 @@ class Appointments extends Component {
             appoinmentFixDate:today,
             appoinmentFixTime:moment(new Date()).format('hh:mm a'),
             showAppoinmentDatePicker:false,
-            showAppoinmentTimePicker:false
+            showAppoinmentTimePicker:false,
+            keyBoardHeight:0
         };
     }
     searchUser = async (mobileNo) => {
@@ -360,6 +361,8 @@ class Appointments extends Component {
         this.getAppointments2();
         this.getAppointmentsPending();
         this.setState({first:false})
+        Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+        Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
         this._unsubscribe = this.props.navigation.addListener('focus',() => {
             if(!this.state.first){
                 this.setState({ modal: false })
@@ -382,6 +385,14 @@ class Appointments extends Component {
     componentWillUnmount(){
         this._unsubscribe();
     }
+    _keyboardDidShow = (e) => {
+
+        this.setState({ keyBoardHeight: e.endCoordinates.height })
+    };
+
+    _keyboardDidHide = () => {
+        this.setState({ keyBoardHeight: 0 })
+    };
     renderFooterPending =()=>{
         if(this.state.next3&&!this.state.isFectchingPending){
                return (
@@ -1385,12 +1396,13 @@ class Appointments extends Component {
     appoinmentModal =()=>{
         return (
             <Modal
+                style={{marginBottom:this.state.keyBoardHeight}}
                 deviceHeight={screenHeight}
                 isVisible={this.state.showAppoinmentModal}
                 onBackdropPress={() => { this.setState({ showAppoinmentModal: false }) }}
             >
                 <View style={{ flex: 1, justifyContent: "center" }}>
-                    <View style={{ height: height * 0.6, backgroundColor: "#eee", borderRadius: 10, }}>
+                    <View style={{ height: height * 0.5, backgroundColor: "#eee", borderRadius: 10, }}>
                         <ScrollView 
                          showsVerticalScrollIndicator ={false}
                         > 
@@ -1413,9 +1425,15 @@ class Appointments extends Component {
                                 </View>
                               
                         </View>
-                   { this.state?.profiles?.length>0&& <View style={{ marginHorizontal: 20,marginVertical:10 }}>
+                            {this.state?.profiles?.length > 0 && <View style={{
+                                marginHorizontal: 20, marginVertical: 10, ...(Platform.OS !== 'android' && {
+                                    zIndex: 10
+                                }), }}>
                             <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Select Profile</Text>
-                            <View style={{ marginTop: 10 }}>
+                                <View style={{
+                                
+                                    marginTop:10
+                                }}>
                                 <DropDownPicker
                                      defaultValue={this.state?.user?.value}
                                     items={this.state.profiles}
