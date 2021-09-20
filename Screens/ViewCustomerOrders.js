@@ -122,15 +122,15 @@ call =(mobile)=>{
           <>
            <SafeAreaView style={styles.topSafeArea} />
             <SafeAreaView style={styles.bottomSafeArea}>
-                  <View style={[styles.boxWithShadow,{height:height*0.09,backgroundColor:"#ffff",flexDirection:"row"}]}>
+                  <View style={[styles.boxWithShadow,{height:height*0.1,backgroundColor:themeColor,flexDirection:"row"}]}>
 
                       <TouchableOpacity style={{flex:0.2,alignItems:"center",justifyContent:"center"}}
                           onPress={() => { this.props.navigation.goBack() }}
                       >
-                          <Ionicons name="chevron-back-circle" size={30} color={themeColor} />
+                          <Ionicons name="chevron-back-circle" size={30} color={"#fff"} />
                       </TouchableOpacity>
                        <View style={{flex:0.6,alignItems:"center",justifyContent:"center"}}>
-                            <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>Order Details</Text>
+                            <Text style={[styles.text,{color:"#fff",fontSize:height*0.02}]}>Order Details</Text>
                        </View>
                        <View style={{flex:0.2}}>
 

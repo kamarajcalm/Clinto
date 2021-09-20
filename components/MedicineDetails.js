@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions, Switch, TextInput } from 'react-native';
 import settings from '../AppSettings'
-import { AntDesign, Entypo } from '@expo/vector-icons';
+import { AntDesign, Entypo ,FontAwesome5} from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 import Modal from "react-native-modal";
 
@@ -33,6 +33,7 @@ let types = [
         label: "Injections", value: 'Injections'
     },
 ]
+const screenHeight = Dimensions.get("screen").height
 import DropDownPicker from 'react-native-dropdown-picker';
 export default class MedicineDetails extends Component {
     constructor(props) {
@@ -53,7 +54,8 @@ export default class MedicineDetails extends Component {
             containsDrugs: this.props.item.is_drug ? true : false,
             validTimes: "",
             diagnosis: [],
-            selectedDiagnosis: null
+            selectedDiagnosis: null,
+            showModal:false
         };
     }
     toggleSwitch = () => {
@@ -134,6 +136,51 @@ export default class MedicineDetails extends Component {
         }
 
     }
+    Modal =()=>{
+        return (
+            <Modal 
+              isVisible={this.state.showModal}
+              deviceHeight={screenHeight}
+              statusBarTranslucent={true}
+              onBackdropPress ={()=>{
+                  this.setState({showModal:false})
+              }}
+            >
+                <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
+                        <View style={{height:height*0.4,width:width*0.8,backgroundColor:"#fff",borderRadius:10}}>
+                             <View style={{marginVertical:10,alignItems:"center",justifyContent:"center"}}>
+                                 <Text style={[styles.text]}>Select Diagnosis</Text>
+                             </View>
+                              {
+                           this.state.diagnosis.map((item,index)=>{
+                          
+                                    return(
+                                            <TouchableOpacity key={index} style={{flexDirection:"row",marginTop:10}}
+                                             onPress={()=>{
+                                                this.setState({showModal:false},()=>{
+                                                    this.changeDiagnosis(item.value)
+                                                }) 
+                                               }}
+                                            
+                                            >
+                                                <View style={{flex:0.7,alignItems:"center",justifyContent:"center"}}>
+                                                    <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{item.label}</Text>
+                                                </View>
+                                                <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                                                    <FontAwesome5 name="dot-circle" size={24} color={this.state.selectedDiagnosis===item.value?"#63BCD2":"gray"}/>
+                                                </View>
+                                            </TouchableOpacity>
+                                        )
+                                
+                           })
+                        }
+                        </View>
+                       
+                </View>
+
+            </Modal>
+        )
+    }
     render() {
         const { item, index } = this.props
         console.log(item)
@@ -168,29 +215,6 @@ export default class MedicineDetails extends Component {
                             <Text style={[styles.text, {}]}> {item.type}</Text>
                         </View>
 
-                        {/* <View style={{flexDirection:"row"}}>
-                             <View style={{alignItems:"center",justifyContent:"center"}}>
-                                <Text style={{ marginRight: 10 }}>Variant</Text>
-                             </View>
-                           
-                             <DropDownPicker
-                                 items={variants}
-                                 placeholder ="select"
-                                 containerStyle={{ height: 40, width: width * 0.25 }}
-                                 style={{ backgroundColor: '#fafafa' }}
-                                 itemStyle={{
-                                     justifyContent: 'flex-start'
-                                 }}
-                                 dropDownStyle={{ backgroundColor: '#fafafa', width: width * 0.25 }}
-                                 onChangeItem={item => this.setState({
-                                     selectedVariant: item.value
-                                 },()=>{
-                                     this.changeVariant(item.value)
-                                 })}
-
-                             />
-                         
-               </View> */}
                     </View>
                     <View style={{ marginHorizontal: 10, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
 
@@ -374,22 +398,20 @@ export default class MedicineDetails extends Component {
                             </View>
 
                         </View>
-                        <View style={{  ...(Platform.OS !== 'android' && {
-            zIndex: 10
-        }),marginLeft: 10, alignItems: "center", marginTop: 10 }}>
-                            <DropDownPicker
-                                placeholder={"select diagnosis"}
-                                items={this.state.diagnosis}
-                                defaultValue={this.state.selectedDiagnosis}
-                                containerStyle={{ height: 40, width: width * 0.5 }}
-                                style={{ backgroundColor: inputColor }}
-                                itemStyle={{
-                                    justifyContent: 'flex-start'
-                                }}
-                                dropDownStyle={{ backgroundColor: inputColor, width: width * 0.5 }}
-                                onChangeItem={(item) => { this.changeDiagnosis(item.value) }}
-
-                            />
+                        <View style={{marginLeft: 10, alignItems: "center", marginTop: 10 }}>
+                     
+                            <TouchableOpacity style={{height:height*0.05,width:width*0.5,backgroundColor:inputColor,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}
+                             onPress={()=>{
+                                 this.setState({showModal:true})
+                             }}
+                            >   
+                                  <View>
+                                         <Text style={[styles.text]}>{this?.state?.selectedDiagnosis||"Select Diagnosis"}</Text>
+                                  </View>
+                                  <View>
+                                      <Entypo name="chevron-small-down" size={20} color="black" />
+                                  </View>
+                            </TouchableOpacity>
                         </View>
                     </>
                     <View style={{ margin: 10 }}>
@@ -440,6 +462,9 @@ export default class MedicineDetails extends Component {
                     >
                         <Entypo name="circle-with-cross" size={24} color="red" />
                     </TouchableOpacity>
+                    {
+                        this.Modal()
+                    }
                 </View>
             );
         }
@@ -542,23 +567,18 @@ export default class MedicineDetails extends Component {
                             />
                         </View>
                     </View>
-                    <View style={{ ...(Platform.OS !== 'android' && {
-            zIndex: 10
-        }) ,marginLeft: 10, alignItems: "center", marginTop: 10 }}>
-                        <DropDownPicker
-                            placeholder={"select diagnosis"}
-                            items={this.state.diagnosis}
-                            defaultValue={this.state.selectedDiagnosis}
-                            containerStyle={{ height: 40, width: width * 0.5 }}
-                            style={{ backgroundColor: inputColor }}
-                            itemStyle={{
-                                justifyContent: 'flex-start'
-                            }}
-                            dropDownStyle={{ backgroundColor: inputColor, width: width * 0.5 }}
-                            onChangeItem={(item) => { this.changeDiagnosis(item.value) }}
-
-                        />
-                    </View>
+                          <TouchableOpacity style={{height:height*0.05,width:width*0.5,backgroundColor:inputColor,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}
+                             onPress={()=>{
+                                 this.setState({showModal:true})
+                             }}
+                            >   
+                                  <View>
+                                         <Text style={[styles.text]}>{this?.state?.selectedDiagnosis||"Select Diagnosis"}</Text>
+                                  </View>
+                                  <View>
+                                      <Entypo name="chevron-small-down" size={20} color="black" />
+                                  </View>
+                            </TouchableOpacity>
                     <View style={{ margin: 10 }}>
                         <Text>Comments:</Text>
                         <TextInput
@@ -604,7 +624,9 @@ export default class MedicineDetails extends Component {
                     >
                         <Entypo name="circle-with-cross" size={24} color="red" />
                     </TouchableOpacity>
-
+                    {
+                        this.Modal()
+                    }
                 </View>
             )
 
@@ -718,23 +740,18 @@ export default class MedicineDetails extends Component {
                             />
                         </View>
                     </View>
-                    <View style={{ ...(Platform.OS !== 'android' && {
-            zIndex: 10
-        }) ,marginLeft: 10, alignItems: "center", marginTop: 10 }}>
-                        <DropDownPicker
-                            placeholder={"select diagnosis"}
-                            items={this.state.diagnosis}
-                            defaultValue={this.state.selectedDiagnosis}
-                            containerStyle={{ height: 40, width: width * 0.5 }}
-                            style={{ backgroundColor: inputColor }}
-                            itemStyle={{
-                                justifyContent: 'flex-start'
-                            }}
-                            dropDownStyle={{ backgroundColor: inputColor, width: width * 0.5 }}
-                            onChangeItem={(item) => { this.changeDiagnosis(item.value) }}
-
-                        />
-                    </View>
+       <TouchableOpacity style={{height:height*0.05,width:width*0.5,backgroundColor:inputColor,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}
+                             onPress={()=>{
+                                 this.setState({showModal:true})
+                             }}
+                            >   
+                                  <View>
+                                         <Text style={[styles.text]}>{this?.state?.selectedDiagnosis||"Select Diagnosis"}</Text>
+                                  </View>
+                                  <View>
+                                      <Entypo name="chevron-small-down" size={20} color="black" />
+                                  </View>
+                            </TouchableOpacity>
                     <View style={{ margin: 10 }}>
                         <Text>Comments:</Text>
                         <TextInput
@@ -780,7 +797,9 @@ export default class MedicineDetails extends Component {
                     >
                         <Entypo name="circle-with-cross" size={24} color="red" />
                     </TouchableOpacity>
-
+                     {
+                        this.Modal()
+                    }
                 </View>
             )
 
@@ -820,23 +839,18 @@ export default class MedicineDetails extends Component {
                             />
                         </View>
                     </View>
-                    <View style={{ ...(Platform.OS !== 'android' && {
-            zIndex: 10
-        }) ,marginLeft: 10, alignItems: "center", marginTop: 10 }}>
-                        <DropDownPicker
-                            placeholder={"select diagnosis"}
-                            items={this.state.diagnosis}
-                            defaultValue={this.state.selectedDiagnosis}
-                            containerStyle={{ height: 40, width: width * 0.5 }}
-                            style={{ backgroundColor: inputColor }}
-                            itemStyle={{
-                                justifyContent: 'flex-start'
-                            }}
-                            dropDownStyle={{ backgroundColor: inputColor, width: width * 0.5 }}
-                            onChangeItem={(item) => { this.changeDiagnosis(item.value) }}
-
-                        />
-                    </View>
+     <TouchableOpacity style={{height:height*0.05,width:width*0.5,backgroundColor:inputColor,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}
+                             onPress={()=>{
+                                 this.setState({showModal:true})
+                             }}
+                            >   
+                                  <View>
+                                         <Text style={[styles.text]}>{this?.state?.selectedDiagnosis||"Select Diagnosis"}</Text>
+                                  </View>
+                                  <View>
+                                      <Entypo name="chevron-small-down" size={20} color="black" />
+                                  </View>
+                            </TouchableOpacity>
                     <View style={{ margin: 10, flex: 0.6, }}>
                         <Text>Comments:</Text>
                         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -885,7 +899,9 @@ export default class MedicineDetails extends Component {
                     >
                         <Entypo name="circle-with-cross" size={24} color="red" />
                     </TouchableOpacity>
-
+                    {
+                        this.Modal()
+                    }
                 </View>
             )
 
@@ -913,23 +929,18 @@ export default class MedicineDetails extends Component {
                             onChangeText={(text) => { this.changeQty(text) }}
                         />
                     </View>
-                    <View style={{ ...(Platform.OS !== 'android' && {
-            zIndex: 10
-        }) ,marginLeft: 10, alignItems: "center", marginTop: 10 }}>
-                        <DropDownPicker
-                            placeholder={"select diagnosis"}
-                            items={this.state.diagnosis}
-                            defaultValue={this.state.selectedDiagnosis}
-                            containerStyle={{ height: 40, width: width * 0.5 }}
-                            style={{ backgroundColor: inputColor }}
-                            itemStyle={{
-                                justifyContent: 'flex-start'
-                            }}
-                            dropDownStyle={{ backgroundColor: inputColor, width: width * 0.5 }}
-                            onChangeItem={(item) => { this.changeDiagnosis(item.value) }}
-
-                        />
-                    </View>
+    <TouchableOpacity style={{height:height*0.05,width:width*0.5,backgroundColor:inputColor,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}
+                             onPress={()=>{
+                                 this.setState({showModal:true})
+                             }}
+                            >   
+                                  <View>
+                                         <Text style={[styles.text]}>{this?.state?.selectedDiagnosis||"Select Diagnosis"}</Text>
+                                  </View>
+                                  <View>
+                                      <Entypo name="chevron-small-down" size={20} color="black" />
+                                  </View>
+                            </TouchableOpacity>
                     <View style={{ margin: 10 }}>
                         <Text>Comments:</Text>
                         <TextInput
@@ -975,6 +986,9 @@ export default class MedicineDetails extends Component {
                     >
                         <Entypo name="circle-with-cross" size={24} color="red" />
                     </TouchableOpacity>
+                     {
+                        this.Modal()
+                    }
                 </View>
             )
         }
@@ -992,25 +1006,18 @@ export default class MedicineDetails extends Component {
                     </View>
                     {this.state.name.length > 0 && <View style={{ margin: 15 }}>
                         <Text style={[styles.text, { color: "#000" }]}>Select Type</Text>
-                        <View style={{ ...(Platform.OS !== 'android' && {
-            zIndex: 10
-        }), marginLeft: 10, marginTop: 10 }}>
-                            <DropDownPicker
-                                items={types}
-                                containerStyle={{ height: 40, width: width * 0.4 }}
-                                style={{ backgroundColor: '#fafafa' }}
-                                itemStyle={{
-                                    justifyContent: 'flex-start'
-                                }}
-                                dropDownStyle={{ backgroundColor: '#fafafa', width: width * 0.4 }}
-                                //   onChangeItem={item => this.setState({
-                                //       selectedType: item.value
-                                //   })}
-                                onChangeItem={(item) => {
-                                    this.changeType(item)
-                                }}
-                            />
-                        </View>
+     <TouchableOpacity style={{height:height*0.05,width:width*0.5,backgroundColor:inputColor,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}
+                             onPress={()=>{
+                                 this.setState({showModal:true})
+                             }}
+                            >   
+                                  <View>
+                                         <Text style={[styles.text]}>{this?.state?.selectedDiagnosis||"Select Diagnosis"}</Text>
+                                  </View>
+                                  <View>
+                                      <Entypo name="chevron-small-down" size={20} color="black" />
+                                  </View>
+                            </TouchableOpacity>
                     </View>}
 
                     <TouchableOpacity

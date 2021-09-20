@@ -185,7 +185,6 @@ class LoginScreen extends Component {
                         
                         >
                             <TextInput 
-                            
                                 secureTextEntry={this.state.secure}
                                 value={this.state.password}
                                 selectionColor={"#fff"}
@@ -201,7 +200,9 @@ class LoginScreen extends Component {
                                     <Entypo name={`${this.state.secure?"eye":"eye-with-line"}`} size={24} color="#fff" />
                             </TouchableOpacity>
                             </View>
-                    
+                           <TouchableOpacity>
+                               <Text style={[styles.text,{color:"gray"}]}>Forgot Password?</Text>
+                           </TouchableOpacity>
                   </View>
            </View>
            <View style={{height:"50%",justifyContent:"flex-end",}}>
@@ -209,7 +210,9 @@ class LoginScreen extends Component {
                      <View style={{}}>
                               <Text style={[styles.text,{color:'gray'}]}>Don`t have an account?</Text>
                      </View>
-                     <TouchableOpacity style={{marginLeft:10}}>
+                     <TouchableOpacity style={{marginLeft:10}}
+                      onPress={()=>{this.props.navigation.navigate("CreateAccount")}}
+                     >
                           <Text style={[styles.text,{color:"#fff"}]}>Register</Text>
                      </TouchableOpacity>
                 </View>

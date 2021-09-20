@@ -19,6 +19,7 @@ import moment from 'moment';
 import Toast from 'react-native-simple-toast';
 import SimpleToast from 'react-native-simple-toast';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 class makeAppointmentClinic extends Component {
     constructor(props) {
@@ -119,16 +120,18 @@ class makeAppointmentClinic extends Component {
     requestAppointment = async () => {
 
         if(this.state.today ==null){
-            return this.showSimpleMessage("please select date", "#dd7030",)
+            return this.showSimpleMessage("please select date", "#dd7030","info")
             
         }
         if (this.state.time == null) {
-            return this.showSimpleMessage("please select time", "#dd7030",)
+            return this.showSimpleMessage("please select time", "#dd7030","info")
+        }
+        if(this.state.reason==""){
+              return this.showSimpleMessage("please Enter Reason", "#dd7030","info")  
         }
         let api = `${url}/api/prescription/addAppointment/`
         let sendData = {
             clinic: this.state.item.pk,
-    
             requesteduser: this.props.user.id,
             requesteddate: this.state.today,
             requestedtime: this.state.time,
@@ -144,10 +147,22 @@ class makeAppointmentClinic extends Component {
         if (post.type == "success") {
             this.setState({ creating: false })
             this.showSimpleMessage("requested SuccessFully", "#00A300", "success")
-                this.props.navigation.goBack()
+            return this.props.navigation.dispatch(
+                CommonActions.reset({
+                index: 0,
+                routes: [
+                    {
+                    name: 'Appointments',
+
+                    },
+
+                ],
+                })
+            )
+              
         } else {
             this.setState({creating:false})
-            this.showSimpleMessage(`${post.data.error ||"try again"}`, "#B22222", "danger")
+            this.showSimpleMessage(`${post?.data?.error||"try again"}`, "#B22222", "danger")
         }
     }
     getTodayTimings = (today) => {

@@ -909,7 +909,7 @@ getClinicDoctors = async()=>{
                              </TouchableOpacity>
                 </View>}
                 <View style={{ marginTop: 20 }}>
-                    <Text style={[styles.text], { color:"#000", fontSize:height*0.02 }}>Mobile No or UID</Text>
+                    <Text style={[styles.text], { color:"#000", fontSize:height*0.02 }}>Mobile No or UID *</Text>
                     <TextInput
                          maxLength ={10}
                          value ={this.state.mobileNo}
@@ -920,7 +920,7 @@ getClinicDoctors = async()=>{
                 </View>
                {this.state.profiles.length>0&&<View style={{ marginTop: 20 ,}}>
                             <View style={{}}>
-                                    <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Change Profile</Text>
+                                    <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Change Profile *</Text>
 
                             </View>
                               <TouchableOpacity style={{marginTop:10,backgroundColor:inputColor,height:35,width:width*0.4,flexDirection:"row"}}
@@ -972,7 +972,7 @@ getClinicDoctors = async()=>{
                           
                         </View>}
                 <View style={{ marginTop: 20 }}>
-                                <Text style={[styles.text], { color: "#000",fontSize:height*0.02 }}>Patient's Name</Text>
+                                <Text style={[styles.text], { color: "#000",fontSize:height*0.02 }}>Patient's Name *</Text>
                     <TextInput
                         value ={this.state.patientsName}
                         selectionColor={themeColor}
@@ -981,7 +981,7 @@ getClinicDoctors = async()=>{
                     />
                 </View>
                         <View style={{ marginTop: 20 }}>
-                                <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Age</Text>
+                                <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Age *</Text>
                             <TextInput
                                keyboardType ={"numeric"}
                                 value={this.state.Age}
@@ -992,7 +992,7 @@ getClinicDoctors = async()=>{
                         </View>
                         <View style={{ marginTop: 20 ,}}>
                             <View style={{}}>
-                                    <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Sex</Text>
+                                    <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Sex *</Text>
 
                             </View>
                            
@@ -1100,7 +1100,7 @@ getClinicDoctors = async()=>{
                             />
                         </View>
                         <View style={{ marginTop: 20 ,}}>
-                                <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Diagnosis</Text>
+                                <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Diagnosis *</Text>
                                 {
                                     this.state.selectedDiagonosis.map((item,index)=>{
                                             return(
@@ -1182,7 +1182,7 @@ getClinicDoctors = async()=>{
                                 })
                             }
                 <View style={{ marginTop: 20 }}>
-                                <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Prescribe Medicines</Text>
+                                <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Prescribe Medicines *</Text>
                                 <View style={{ flexDirection: "row", marginTop: 20,alignItems:'center',justifyContent:"space-around"}}>
                     <TouchableOpacity style={{ alignItems: "center", justifyContent: 'center', flexDirection: "row" }}
                         onPress={() => { this.props.navigation.navigate("SearchMedicines", { backFunction: (medicines) => { this.backFunction(medicines) } }) }}
@@ -1213,7 +1213,7 @@ getClinicDoctors = async()=>{
           
                 
                         <View style={{ marginTop: 20 }}>
-                                <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Doctor Fees</Text>
+                                <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Doctor Fees *</Text>
                             <TextInput
                                 value={this.state.doctorFees}
                                 selectionColor={themeColor}

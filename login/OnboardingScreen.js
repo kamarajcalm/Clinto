@@ -11,7 +11,7 @@ import * as Notifications from 'expo-notifications';
 // inspiration: https://dribbble.com/shots/11164698-Onboarding-screens-animation
 // https://twitter.com/mironcatalin/status/1321180191935373312
 
-const bgs = ['#A5BBFF', '#DDBEFE', '#FF63ED', '#B98EFF'];
+const bgs = ['#000', '#000', '#000', '#000'];
 const DATA = [
     {
         "key": "3571572",

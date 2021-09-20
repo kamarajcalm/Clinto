@@ -53,7 +53,7 @@ class PendingRequests extends Component {
                             <Ionicons name="chevron-back-circle" size={30} color="#fff" />
                         </TouchableOpacity>
                         <View style={{ flex: 0.6,alignItems:"center",justifyContent:"center" }}>
-                            <Text style={[styles.text, { color: "#fff", fontSize:height*0.02}]}>Pending Requests</Text>
+                            <Text style={[styles.text, { color: "#fff",fontSize:20,fontWeight:"bold"}]}>Pending Requests</Text>
                         </View>
                         <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
 
