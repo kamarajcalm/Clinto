@@ -18,7 +18,7 @@ import DoctorProfile from './DoctorProfile';
 import HttpsClient from '../api/HttpsClient';
 import ReceptionistsProfile from './ReceptionistsProfile';
 import PatientProfile from './PatientProfile';
-
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
  class Profile extends Component {
   constructor(props) {
     super(props);
@@ -30,7 +30,7 @@ import PatientProfile from './PatientProfile';
       isReceptionist:false,
       isPatient:false,
       showLottie:false,
-     
+      users:[]
     };
   }
 
@@ -72,7 +72,7 @@ import PatientProfile from './PatientProfile';
        this.props.selectClinic(activeClinic[0] || data.data.workingclinics[0])
      }
    }
-   findUser = () => {
+   findUser = async() => {
      if (this.props.user.profile.occupation == "Doctor") {
        this.getClinics()
        this.setState({ isDoctor: true, })
@@ -81,6 +81,25 @@ import PatientProfile from './PatientProfile';
     }
     else {
        this.setState({ isPatient: true, })
+       let user =   JSON.parse(await AsyncStorage.getItem("users"))
+       
+       if(user){
+              let users = []
+                let pushobj = {
+                      name:user.first_name,
+                      mobile:user.profile.user.username
+                }
+                users.push(pushobj)
+                user.profile.childUsers.forEach((item)=>{
+                    let pushobj = {
+                      name:item.name,
+                      mobile:item.mobile
+                }
+                  users.push(pushobj)
+                })
+                this.setState({users})
+       }
+       
      }
 
    
@@ -266,6 +285,80 @@ validateExpiry =()=>{
     );
 
   }
+  getToken = async(item)=>{
+    let api = `${url}/api/HR/login/`
+     let data  =new FormData();
+    // let sendData = {
+    //   username:item?.mobile,
+    //   skipauth:true,
+    //   bodyType:'formData'
+    // }
+    data.append("username",item.mobile)
+    data.append("skipauth",true)
+    // let post  =await axios.post(api,data,{
+    //   headers:{}
+    // })
+    // var sessionid = post.headers.get('set-cookie').split('sessionid=')[1].split(';')[0]
+    // console.log(sessionid,"oooo")
+    fetch(`${url}/api/HR/login/`, {
+      method: 'POST',
+      body: data,
+      headers: {
+
+      }
+    }).then((response) => {
+      console.log(response,"yyyyyyyyyyy")
+      if (response.status == 200) {
+        var sessionid = response.headers.get('set-cookie').split('sessionid=')[1].split(';')[0]
+        AsyncStorage.setItem('sessionid', sessionid)
+        console.log(sessionid, "ppp")
+        var d = response.json()
+        return d
+      }
+      else {
+        return undefined
+      }
+    })
+      
+      .then((responseJson) => {
+    
+        if (responseJson == undefined) {
+          this.setState({ loading: false })
+          return this.showSimpleMessage(`incorrect username or password`, "#dd7030")
+        }
+        console.log(responseJson.csrf_token, "ress")
+        AsyncStorage.setItem('csrf', responseJson.csrf_token)
+        AsyncStorage.setItem('login', "true")
+   
+        return this.props.navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'DefaultScreen',
+
+              },
+
+            ],
+          })
+        )
+      })
+      .catch((err) => {
+        this.setState({ loading: false })
+        return this.showSimpleMessage(`${err?.toString()}`, "#dd7030")
+      })
+  }
+      showSimpleMessage(content,color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor:color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
+
+        showMessage(message);
+    }
   render() {
     console.log(this.props.user.profile.displayPicture)
     return (
@@ -292,7 +385,7 @@ validateExpiry =()=>{
            <View style={{alignSelf:"flex-end",marginRight:10,marginTop:10}}>
             <TouchableOpacity style={{  marginLeft: 20, alignItems: "center", justifyContent: 'center', flexDirection: "row" }}
               onPress={() => { 
-                if(this.props.user.profile.childUsers.length>0){
+                if(this.state.users.length>0){
                       this.setState({ showModal: true })
                 }else{
                    this.createAlert()
@@ -439,13 +532,13 @@ validateExpiry =()=>{
                               
                                             <FlatList 
                                             showsVerticalScrollIndicator={false}
-                                    data={this.props.user.profile.childUsers}
+                                    data={this.state.users}
                                     keyExtractor={(item,index)=>index.toString()}
                                     renderItem={({item,index})=>{
-                                      
-                                         return(
+                                         if(item.name!=this.props.user.first_name){
+                                             return(
                                            <TouchableOpacity style={{flexDirection:"row",flex:1,marginTop:10}}
-                                            onPress={()=>{this.props.navigation.navigate('LoginScreen',{item})}}
+                                            onPress={()=>{this.getToken(item)}}
                                            >
                                                <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
                                                   <Ionicons name="person-circle-sharp" size={30} color={themeColor}/>
@@ -457,6 +550,8 @@ validateExpiry =()=>{
                                                </View>
                                            </TouchableOpacity>
                                          )
+                                         }
+                                        
                                     }}
                                   />
                                   </View>

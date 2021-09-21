@@ -80,7 +80,9 @@ class AddPrescription extends Component {
                 profileModal:false,
                 doctors:[],
                 doctorModal:false,
-                selectedDoctor:null
+                selectedDoctor:null,
+                dob:"",
+                Address:""
     };
   }
 getClinicDoctors = async()=>{
@@ -420,7 +422,9 @@ getClinicDoctors = async()=>{
             address:this.state.Address,
             diagonsis:this.state.selectedDiagonosis,
             reports:this.state.selectedReports,
-            type:"mobile",
+            dob:this.state.dob,
+          
+            
         }
     
         if(this.state.appointmentId){
@@ -478,6 +482,21 @@ getClinicDoctors = async()=>{
         this.setState({ nextVisit,show1:false})
         
         this.hideDatePicker();
+    };
+       showDatePicker2 = () => {
+        this.setState({ show2: true })
+    };
+
+    hideDatePicker2 = () => {
+        this.setState({ show2: false })
+    };
+    handleConfirm2 = (date) => {
+          
+        let dob =  moment(date).format('YYYY-MM-DD')
+        let Age = moment(dob, "YYYY-MM-DD").fromNow().split(' ')
+        this.setState({ dob,show2:false,Age:Age[0]})
+        
+        this.hideDatePicker2();
     };
     // onChange1 = (selectedDate) => {
     //     if (selectedDate.type == "set") {
@@ -560,7 +579,8 @@ getClinicDoctors = async()=>{
                        mobile:data.data.user.user.username,
                        sex:data.data.user.sex,
                        healthIssues:data.data.user.health_issues||[],
-                       age:data?.data?.user?.age?.toString()
+                       age:data?.data?.user?.age?.toString(),
+                       dob:data?.data?.user?.dob
                    }
                    profiles.push(pushObj)
                    data.data.user.childUsers.forEach((item)=>{
@@ -570,7 +590,8 @@ getClinicDoctors = async()=>{
                           age:item.age.toString(),
                           mobile:item.mobile,
                           sex:item.sex,
-                          healthIssues:item.health_issues||[]
+                          healthIssues:item.health_issues||[],
+                          dob:item?.dob
                       }
                      profiles.push(pushObj)
                    })
@@ -585,7 +606,8 @@ getClinicDoctors = async()=>{
                        appointmentId: data.data.user.appointment,
                        selectedSex:profiles[0].sex,
                        selectedProfile:profiles[0],
-                       mobileNo:profiles[0].mobile
+                       mobileNo:profiles[0].mobile,
+                       dob:profiles[0].dob
                     },()=>{
                        this.searchTemplates(this.state.Age,this.state.Disease)
                     })
@@ -777,7 +799,8 @@ getClinicDoctors = async()=>{
                                                 selectedSex:item.sex,
                                                 selectedProfile:item,
                                                 mobileNo:item.mobile,
-                                                profileModal:false
+                                                profileModal:false,
+                                                dob:item.dob
                                                 },()=>{
                                                 this.searchAppoinment(item.mobile)
                                                 this.searchTemplates(this.state.Age,this.state.selectedDiagonosis)
@@ -909,7 +932,7 @@ getClinicDoctors = async()=>{
                              </TouchableOpacity>
                 </View>}
                 <View style={{ marginTop: 20 }}>
-                    <Text style={[styles.text], { color:"#000", fontSize:height*0.02 }}>Mobile No or UID *</Text>
+                    <Text style={[styles.text], { color:"#000", fontSize:height*0.02 }}>Mobile No or UID*</Text>
                     <TextInput
                          maxLength ={10}
                          value ={this.state.mobileNo}
@@ -980,6 +1003,29 @@ getClinicDoctors = async()=>{
                                 style={{ width: width * 0.7, height: 35, backgroundColor: inputColor, borderRadius: 5, padding: 10, marginTop: 10 }}
                     />
                 </View>
+                 <View style={{marginTop:10}}>
+
+                                <Text style={[styles.text], { color: "#000", fontSize:height*0.02, }}> DOB* </Text>
+                            </View>
+                            <TouchableOpacity 
+                              onPress={() => { this.setState({ show2: true }) }}
+                              style={{ width: width * 0.7, height: height * 0.05, backgroundColor: inputColor, borderRadius: 5, padding: 10, marginTop: 10 ,flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
+                              
+                              
+                              <View style={{alignItems:"center",justifyContent:"center"}}>
+                                    <Text style={[styles.text]}>{this.state.dob!=""?moment(this.state.dob).format("DD-MM-YYYY"):""}</Text>
+                              </View>
+                                <View style={{}}>
+                                    <View
+                                        
+                                    >
+                                        <AntDesign name="calendar" size={24} color="black" />
+                                    </View>
+
+                                
+                                </View>
+                           
+                        </TouchableOpacity>
                         <View style={{ marginTop: 20 }}>
                                 <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Age *</Text>
                             <TextInput
@@ -1027,6 +1073,16 @@ getClinicDoctors = async()=>{
                                  </View>
                              </TouchableOpacity>
                           
+                        </View>
+                        <View style={{ marginTop: 20 }}>
+                                <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Address</Text>
+                            <TextInput
+                                value ={this.state.Address}
+                                onChangeText={(Address) => { this.setState({ Address}) }}
+                                selectionColor={themeColor}
+                                multiline={true}
+                                style={{ width: width * 0.7, height: height * 0.1, backgroundColor: inputColor, borderRadius: 5, padding: 10, marginTop: 10, textAlignVertical:"top"}}
+                            />
                         </View>
                         {/* <View style={{ marginTop: 20 }}>
                             <Text style={[styles.text], { fontWeight: "bold", fontSize:height*0.02 }}>Address</Text>
@@ -1232,7 +1288,7 @@ getClinicDoctors = async()=>{
                               
                               
                               <View style={{alignItems:"center",justifyContent:"center"}}>
-                                    <Text style={[styles.text]}>{this.state.nextVisit}</Text>
+                                    <Text style={[styles.text]}>{this.state.nextVisit?moment(this.state.nextVisit).format("DD-MM-YYYY"):""}</Text>
                               </View>
                                 <View style={{}}>
                                     <View
@@ -1332,6 +1388,12 @@ getClinicDoctors = async()=>{
                         mode="date"
                         onConfirm={this.handleConfirm}
                         onCancel={this.hideDatePicker}
+                    />
+                    <DateTimePickerModal
+                        isVisible={this.state.show2}
+                        mode="date"
+                        onConfirm={this.handleConfirm2}
+                        onCancel={this.hideDatePicker2}
                     />
                     {
                         this.addModal()

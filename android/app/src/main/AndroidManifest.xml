@@ -40,4 +40,10 @@
     <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity" android:theme="@style/Base.Theme.AppCompat"/>
     <uses-library android:name="org.apache.http.legacy" android:required="false"/>
   </application>
+  <queries>
+  <intent>
+    <action android:name="android.intent.action.VIEW" />
+    <data android:scheme="mailto"/>
+  </intent>
+</queries>
 </manifest>

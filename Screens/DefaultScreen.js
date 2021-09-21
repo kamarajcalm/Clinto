@@ -50,6 +50,10 @@ const url = settings.url;
               if(data.type =="success"){
                  
                 this.props.selectUser(data.data[0]);
+                if(data.data[0].profile.childUsers.length>0){
+                    let users = JSON.stringify(data.data[0])
+                    await AsyncStorage.setItem("users",users)
+                }
                 if (data.data[0].is_superuser) {
                   return this.props.navigation.dispatch(
                     CommonActions.reset({

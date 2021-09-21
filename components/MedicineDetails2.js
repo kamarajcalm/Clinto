@@ -162,7 +162,8 @@ export default class MedicineDetails2 extends Component {
 
                         />
                     </View> */}
-                        <TouchableOpacity style={{height:height*0.05,width:width*0.5,backgroundColor:inputColor,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}
+                    <View style={{ marginLeft: 10, alignItems: "center", marginTop: 10 }}>
+                                <TouchableOpacity style={{height:height*0.05,width:width*0.5,backgroundColor:inputColor,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}
                              onPress={()=>{
                                  this.setState({showModal:true})
                              }}
@@ -174,6 +175,8 @@ export default class MedicineDetails2 extends Component {
                                       <Entypo name="chevron-small-down" size={20} color="black" />
                                   </View>
                             </TouchableOpacity>
+                    </View>
+                    
             <View style={{ margin: 10, flex: 0.6, }}>
                 <Text>Comments:</Text>
                 <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>

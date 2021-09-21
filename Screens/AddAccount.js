@@ -109,7 +109,7 @@ class AddAccount extends Component {
            password:this.state.Password,
            sex:this.state.selectedSex,
            bodyType:'formData',
-           parent:this.state.parent.value||this.props.user.id,
+           parent:this.state?.parent?.value||this.props.user.id,
            type:"Customer",
            displayPicture:this.state.image
        }
@@ -117,9 +117,19 @@ class AddAccount extends Component {
 
       if(post.type =="success"){
             this.setState({creating:false})
-            this.getProfile()
             this.showSimpleMessage("Account Created SuccessFully", "#00A300", "success")
-          return this.props.navigation.goBack()
+           return this.props.navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'DefaultScreen',
+
+              },
+
+            ],
+          })
+        )
       }else{
             this.setState({creating:false})
           this.showSimpleMessage(`${post?.data?.failed}`, "#B22222", "danger")

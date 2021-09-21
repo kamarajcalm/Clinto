@@ -13,9 +13,7 @@ import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
 import { NavigationContainer, CommonActions } from '@react-navigation/native';
 
-
 import HttpsClient from '../api/HttpsClient';
-
 class LinkedAccounts extends Component {
     constructor(props) {
    
@@ -97,7 +95,7 @@ class LinkedAccounts extends Component {
                                       <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{item.name}</Text>
                                    </View>
                                    <View style={{flex:0.33,alignItems:"center",justifyContent:"center"}}>
-                                            <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{item.uniqueid}</Text>
+                                            <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{item.mobile}</Text>
                                    </View>
                               </View>
                             )
