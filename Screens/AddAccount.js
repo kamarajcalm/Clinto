@@ -56,6 +56,11 @@ class AddAccount extends Component {
       const data = await HttpsClient.get(`${url}/api/HR/users/?mode=mySelf&format=json`)
       if(data.type=="success"){
                this.props.selectUser(data.data[0]);
+               if(data.data[0].profile.childUsers.length>0){
+                    let users = JSON.stringify(data.data[0])
+                    await AsyncStorage.setItem("users",users)
+                }
+             
       }
     }
      CreateAccount = async()=>{
@@ -118,18 +123,11 @@ class AddAccount extends Component {
       if(post.type =="success"){
             this.setState({creating:false})
             this.showSimpleMessage("Account Created SuccessFully", "#00A300", "success")
-           return this.props.navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [
-              {
-                name: 'DefaultScreen',
-
-              },
-
-            ],
-          })
-        )
+            if(!this.props?.route?.params?.parent){
+                      this.getProfile()
+            }
+          
+            return this.props.navigation.goBack()
       }else{
             this.setState({creating:false})
           this.showSimpleMessage(`${post?.data?.failed}`, "#B22222", "danger")

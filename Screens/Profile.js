@@ -120,7 +120,28 @@ componentDidMount(){
    console.warn(this.props.showLottie)
   this.findUser()
  
-  this._unsubscribe = this.props.navigation.addListener('focus', () => {
+  this._unsubscribe = this.props.navigation.addListener('focus', async() => {
+          if(this.state.isPatient){
+               let user =   JSON.parse(await AsyncStorage.getItem("users"))
+       
+                  if(user){
+                        let users = []
+                          let pushobj = {
+                                name:user.first_name,
+                                mobile:user.profile.user.username
+                          }
+                          users.push(pushobj)
+                          user.profile.childUsers.forEach((item)=>{
+                              let pushobj = {
+                                name:item.name,
+                                mobile:item.mobile
+                          }
+                            users.push(pushobj)
+                          })
+                          this.setState({users})
+                }
+          }
+      
     this.validateLottie()
       this.getDetails()
     if (this.props.user.profile.occupation == "Doctor") {
