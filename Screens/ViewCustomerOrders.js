@@ -122,7 +122,7 @@ call =(mobile)=>{
           <>
            <SafeAreaView style={styles.topSafeArea} />
             <SafeAreaView style={styles.bottomSafeArea}>
-                  <View style={[styles.boxWithShadow,{height:height*0.1,backgroundColor:themeColor,flexDirection:"row"}]}>
+                  <View style={[{height:height*0.1,backgroundColor:themeColor,flexDirection:"row"}]}>
 
                       <TouchableOpacity style={{flex:0.2,alignItems:"center",justifyContent:"center"}}
                           onPress={() => { this.props.navigation.goBack() }}

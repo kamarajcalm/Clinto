@@ -145,8 +145,15 @@ const styles = StyleSheet.create({
         elevation: 6,
         margin: 20,
         height: height * 0.3
-    }
-
+    },
+    topSafeArea: {
+        flex: 0,
+        backgroundColor: themeColor
+    },
+    bottomSafeArea: {
+        flex: 1,
+        backgroundColor: "#fff"
+    },
 })
 const mapStateToProps = (state) => {
 

@@ -321,7 +321,10 @@ class AddAccount extends Component {
                                         style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
-                                       <View style={{ marginTop: 20 ,flexDirection:"row"}}>
+                                <View style={{
+                                    marginTop: 20, flexDirection: "row", ...(Platform.OS !== 'android' && {
+                                        zIndex: 20
+                                    })}}>
                             <View style={{alignItems:"center",justifyContent:"center"}}>
                                     <Text style={[styles.text]}>Sex</Text>
 
