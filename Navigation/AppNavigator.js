@@ -54,6 +54,7 @@ import LoginScreen from '../login/LoginScreen';
 import PetTab from './PetTab';
 import ViewLabDetails from '../diagnosisCenter/Screens/ViewLabDetails';
 import CreateDiagnosisCenterUser from '../AdminScreens/CreateDiagnosisCenterUser';
+import ChangePassword from '../Screens/ChangePassword';
 
 
 
@@ -108,6 +109,7 @@ const authScreens = {
                     <Stack.Screen name="DiagnosisTab" component={DiagnosisTab} options={{ headerShown: false }} />
                     <Stack.Screen name="Login" component={LoginStack} options={{ headerShown: false }} />
                     <Stack.Screen name="ProfileEdit" component={ProfileEdit} options={{ headerShown: false }} />
+                    <Stack.Screen name="ChangePassword" component={ChangePassword} options={{ headerShown: false }} />
                     <Stack.Screen name="AdminTab" component={AdminTab} options={{ headerShown: false }} />
                     <Stack.Screen name="MedicalTab" component={MediacalTab} options={{ headerShown: false }} />
                     <Stack.Screen name="ViewClinicDetails" component={ViewClinicDetails} options={{ headerShown: false }} />

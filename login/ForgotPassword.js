@@ -3,11 +3,14 @@ import { View, Text, Dimensions, Image, StyleSheet, TextInput, TouchableOpacity,
 import settings from '../AppSettings';
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
-import { AntDesign, Entypo } from '@expo/vector-icons';
+import { AntDesign, Entypo ,Ionicons} from '@expo/vector-icons';
 import * as Animatable from 'react-native-animatable';
 const { height, width } = Dimensions.get("window");
 const themeColor = settings.themeColor;
 const fontFamily = settings.fontFamily;
+const screenHeight =  Dimensions.get("screen").height
+import Constants from 'expo-constants';
+
 class ForgotPassword extends Component {
     constructor(props) {
         super(props);
@@ -23,49 +26,42 @@ class ForgotPassword extends Component {
     }
     render() {
         return (
-            <KeyboardAvoidingView
-                behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
-                style={styles.container}>
-              
-                <View style={{flex:1,backgroundColor:themeColor}}> 
-          <View style={{flex:0.3,alignItems:'center',justifyContent:"center"}}>
-                <Animatable.Image
-                    animation="fadeIn"
-                    source={{ uri:"https://cdn.pixabay.com/photo/2017/08/21/02/24/png-2663876_960_720.png"}}
-                    style={{height:"50%",width:"50%",resizeMode:"contain"}}
-               />
+          <View style={{height:screenHeight,backgroundColor:"#000",marginTop:Platform.OS=="ios"?Constants.statusBarHeight:0}}>
+                <View style={{height:"50%",}}>
+                        <TouchableOpacity style={{marginLeft:20,marginVertical:20}}
+                  onPress={()=>{this.props.navigation.goBack()}}
+                >
+                    <Ionicons name="chevron-back-circle" size={30} color="#fff" />
+                </TouchableOpacity>
+                        <View style={{height:"100%",justifyContent:"center",paddingHorizontal:20}}>
+                              <View>
+                                <Text style={[styles.text,{color:"#fff",fontSize:height*0.04,fontWeight:"bold"}]}>Enter Mobile Number</Text>
+                              </View>
+                                <View style={{marginTop:20}}>
+                                    <Text style={[styles.text,{color:"gray"}]}>Phone</Text>
+                                </View>
+                             
+                                <TextInput 
+                                   autoFocus={true}
+                                   style={{height:40,width:"100%",borderBottomColor:"gray",borderBottomWidth:1,color:"#fff"}}
+                                   keyboardType={"numeric"}
+                                   selectionColor={"#fff"}
+                                   maxLength={10}
+                                />
+
+                                <View style={{marginTop:40,alignItems:"center",justifyContent:"center"}}>
+                                        <TouchableOpacity style={{height:height*0.05,width:width*0.9,backgroundColor:"#fff",alignItems:"center",justifyContent:"center"}}
+                                         onPress={()=>{this.sendOTP()}}
+                                        >
+                                               <Text style={[styles.text]}>Send OTP</Text>
+                                        </TouchableOpacity>
+                                </View>
+                        </View>
+                </View>
+                <View style={{height:"50%",}}>
+
+                </View>
           </View>
-            <Animatable.View style={[{flex:0.7,backgroundColor:"#fff",borderTopLeftRadius:50,paddingLeft:30,paddingTop:30}]}
-                animation="slideInUp"
-            >
-             <View>
-                 <Text style={[styles.text,{}]}>Enter Mobile</Text>
-                 <View style={{width:width*0.7,height:height*0.07}}>
-                      <TextInput 
-                        maxLength={10}
-                        value={this.state.mobileNO}
-                        selectionColor={themeColor}
-                        autoFocus={true}
-                  onChangeText={(text) => { this.setState({ mobileNO:text})}}
-                        keyboardType="numeric"
-                        style={{ width: '100%', height: "100%", borderBottomWidth: 1, borderColor: "#000",alignItems:'center',justifyContent:'flex-start',paddingLeft:20}}
-                      />
-                 </View>
-            
-                 <View style={{alignItems:"center",justifyContent:'center',marginTop:40}}>
-                   
-                    { !this.state.loading? <TouchableOpacity style={{backgroundColor:themeColor,width:width*0.4,height:height*0.06,alignItems:'center',justifyContent:"center",borderRadius:10}}
-                            onPress={() => {this.sendOTP()}}
-                      >
-                          <Text style={{color:"#fff"}}>Login </Text>
-                      </TouchableOpacity>:
-                        <ActivityIndicator  size="large" color={themeColor}/>
-                      }
-                 </View>
-             </View>
-          </Animatable.View>
-      </View>
-            </KeyboardAvoidingView>
         );
     }
 }

@@ -12,6 +12,11 @@ import SimpleToast from 'react-native-simple-toast';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
+import Modal from 'react-native-modal';
+const clinicPng = "https://down-yuantu.pngtree.com/original_origin_pic/19/02/28/578033d86c05cf30ad84ef1f805beff5.png?e=1632225256&st=Njk5MmIwMTVjZTNkZTJkNjc5MGMzMmFiZWE3ZGFmOGI&n=%E2%80%94Pngtree%E2%80%94medical+clinic+building+illustration_4584268.png"
+const pharmacyPng=  "https://download.flaticon.com/download/icon/3140343?icon_id=3140343&author=352&team=352&keyword=Pharmacy&pack=3140269&style=Flat&style_id=919&format=png&color=%23000000&colored=2&size=512&selection=1&premium=0&type=standard&token=03AGdBq26sKVbmgqawJP0C3Y9No0VHvvy3KdZ8IQ2gKXr9NpyA52FphGwMuZHuQqzozJs3_f8WDfbThswVUuo2ThkxtYQB0yYy6359IugnkERBFlQ7wPeJu9ZwGo8Z9XfBE4AfU0ggBPxdlUtsm6WvgWTpNji4WzqZdEaMLt2lkvGcvTv4ELDwJ-Maq9it-XFkta6n06KXJNcx9TQTE_lD9gaIhBM0VAb9VKmPTBP6h6DDaUPqXdk4W0BfDMB2DTJruTdsl1N0muTTScAZDf2niCgoi6dSy3bg0oOgo3TPGd8w06-c6NO5uH2G_aS37eoujppcDcFESDOUXfpjsa_fM0t7bLR3eoVctCqgCZi8xNVok95LmMXNkwp7Xrs3NTl5192Y9YnnGZaYqBf5xHRRS_q7n7oeU3AnLVZGM1WOB_mqNrgsUmTcweZ9T868AXNv0RgBW7crwK3sReVCWqv9mtwoK7ERv0WPlTh6oWdiyqwZebtSLI4j036Gyj2vLErMyos9SgiIwXdpdIyczFRtfKZXhRMh3vpa1VA9RmNvp4nMaPLvWlsAva00_vS5whVDuWo_2llTeZsplUt1G7ctN7mi31kN9_4SjMo-QYTltKDt1XfTVL7EacCkoaYD163R9TtkExezp3P151lbYln-70ulf4WOMzuGkRIOAG1pzWRKOKsS4-j71xmJTpxsj8ntnvJ095wAmKIYPkClU6o7xm1p3silXcp7AV1cpQ_k58psrEZlCbyvFWIlg9oXS6qMpkN32AgCb7Xb5h5syaUhLILkECLjcgXvrTq1uS_n0deox19FesEQmfUFZtjrXwLuCOAoPr1hFQFZ3i2I1Vqy4ek2HuWjuHBH9uA4wYyb0AJiFNKJ1HvKbVcpQ4LcYY_POppDRonQ41lf3jfDmX3r0Zeunx4r91FcHdxck1onLWgOBONAg6d7wXeihEzuJX3KN0Arq6OHKp-DJy5Oi29CUzditq7_sXJkpovHQOFr9_5G6cjcDvE8vQrwtzZWbPD2QMuGZGCMXUG2UwXBYN7b5fUMJYuf57rSYtpAhXjxJ6_iJQIYTX68NhaLRstuPIsbL8tgZtc07dlVTuDrEJRE0FTmgDxd3nECYDRyZmiY3sn1eKSjseGRusrRnTKXVItOqYb9dFsXIEBiMc2gXsMYyD-y-FXyUN7FDaKuBfvhvvXEzLbTZ3sKMwDwXBl5qFxcVruAthPP24Llh9ZUojq2oge7y-cXL5hyMg&search=pharmacy&_gl=1*1gsh5a3*_ga*MTIyNzIzMzQ5OS4xNjMwNTY1MjY5*_ga_3Q8LH3P0VP*MTYzMjIyMjExNC40LjEuMTYzMjIyMjEyNC4w"
+const diagnosticCenter = "https://download.flaticon.com/download/icon/3470182?icon_id=3470182&author=219&team=219&keyword=Diagnostic+tool&pack=3470119&style=Flat&style_id=911&format=png&color=%23000000&colored=2&size=512&selection=1&premium=0&type=standard&search=diagnostic&_gl=1*paazi3*_ga*MTIyNzIzMzQ5OS4xNjMwNTY1MjY5*_ga_3Q8LH3P0VP*MTYzMjIyMjExNC40LjEuMTYzMjIyMjUxMy4w"
+const Patient = "https://download.flaticon.com/download/icon/3159817?icon_id=3159817&author=409&team=409&keyword=Medical+mask&pack=packs%2Fcovid-protection-measures&style=8&format=png&color=%23000000&colored=2&size=512&selection=1&premium=0&type=standard&search=patient&_gl=1*1b3cbi0*_ga*MTIyNzIzMzQ5OS4xNjMwNTY1MjY5*_ga_3Q8LH3P0VP*MTYzMjIyMjExNC40LjEuMTYzMjIyMzc0MS4w"
 const { height, width } = Dimensions.get("window");
 const  screenHeight= Dimensions.get("screen").height;
 const themeColor = settings.themeColor;
@@ -25,7 +30,8 @@ class LoginScreen extends Component {
       username:this?.props?.route?.params?.item?.mobile|| "",
       password: '',
       token: null,
-      secure:true
+      secure:true,
+      registerModal:false
     };
   }
   login = async () => {
@@ -137,6 +143,91 @@ class LoginScreen extends Component {
 
     return token;
   }
+  registerModal = ()=>{
+    return(
+      <Modal 
+        onBackdropPress ={()=>{this.setState({registerModal:false})}}
+        isVisible={this.state.registerModal}
+        deviceHeight={screenHeight}
+        statusBarTranslucent={true}
+      >
+        <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
+           <View style={{height:height*0.6,backgroundColor:"gray",borderRadius:10,width:width*0.9}}>
+               <View style={{marginVertical:20,alignItems:"center",justifyContent:"center"}}>
+                   <Text style={[styles.text,{color:"#000",fontSize:height*0.04}]}>Select </Text>
+               </View>
+                         <View style={{flex:1,alignItems:"center",justifyContent:"space-around"}}>
+                <TouchableOpacity style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}
+                 onPress={()=>{
+                    this.setState({registerModal:false})
+                   this.props.navigation.navigate("CreateAccount")
+                  }}
+                >
+                       <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
+                          <Image 
+                            source={{uri:Patient}}
+                            style={{height:50,width:50,alignSelf:"flex-end"}}
+                          />
+                     </View>
+                <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
+                              <Text style={[styles.text,{color:"#000",height:height*0.02}]}> - </Text>
+                       </View>
+                      <View style={{flex:0.5}}>
+                          <Text style={[styles.text,{color:"#000"}]}>User (Patient)</Text>
+                      </View>
+                </TouchableOpacity>
+                <TouchableOpacity style={{flexDirection:"row"}}>
+                     <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
+                          <Image 
+                            source={{uri:clinicPng}}
+                            style={{height:50,width:50,alignSelf:"flex-end"}}
+                          />
+                     </View>
+                       <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
+                              <Text style={[styles.text,{color:"#000"}]}> - </Text>
+                       </View>
+                      <View style={{flex:0.5,justifyContent:"center"}}>
+                          <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>Clinic </Text>
+                      </View>
+                </TouchableOpacity>
+                  <TouchableOpacity style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+
+                       <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
+                          <Image 
+                            source={{uri:pharmacyPng}}
+                            style={{height:50,width:50,alignSelf:"flex-end"}}
+                          />
+                     </View>
+                      <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
+                              <Text style={[styles.text,{color:"#000",height:height*0.02}]}> - </Text>
+                       </View>
+                      <View style={{flex:0.5}}>
+                          <Text style={[styles.text,{color:"#000"}]}>Pharmacy </Text>
+                      </View>
+                </TouchableOpacity>
+                  <TouchableOpacity style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                       <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
+                          <Image 
+                            source={{uri:diagnosticCenter}}
+                            style={{height:50,width:50,alignSelf:"flex-end"}}
+                          />
+                     </View>
+                <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
+                              <Text style={[styles.text,{color:"#000",height:height*0.02}]}> - </Text>
+                       </View>
+                      <View style={{flex:0.5}}>
+                          <Text style={[styles.text,{color:"#000"}]}>Diagnostic Center </Text>
+                      </View>
+                </TouchableOpacity>
+        
+           </View>
+           </View>
+ 
+        </View>
+      </Modal>
+    )
+
+  }
   render() {
     return (
       <TouchableWithoutFeedback 
@@ -200,7 +291,9 @@ class LoginScreen extends Component {
                                     <Entypo name={`${this.state.secure?"eye":"eye-with-line"}`} size={24} color="#fff" />
                             </TouchableOpacity>
                             </View>
-                           <TouchableOpacity>
+                           <TouchableOpacity 
+                             onPress={()=>{this.props.navigation.navigate("ForgotPassword")}}
+                           >
                                <Text style={[styles.text,{color:"gray"}]}>Forgot Password?</Text>
                            </TouchableOpacity>
                   </View>
@@ -211,7 +304,7 @@ class LoginScreen extends Component {
                               <Text style={[styles.text,{color:'gray'}]}>Don`t have an account?</Text>
                      </View>
                      <TouchableOpacity style={{marginLeft:10}}
-                      onPress={()=>{this.props.navigation.navigate("CreateAccount")}}
+                      onPress={()=>{this.setState({registerModal:true})}}
                      >
                           <Text style={[styles.text,{color:"#fff"}]}>Register</Text>
                      </TouchableOpacity>
@@ -229,7 +322,11 @@ class LoginScreen extends Component {
                      }
                 </View>
            </View>
+                {
+           this.registerModal()
+         }
       </View>
+    
          </TouchableWithoutFeedback>
     );
   }

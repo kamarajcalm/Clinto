@@ -7,6 +7,7 @@ import OTPScreen from '../login/OTPScreen';
 import ForgotPassword from '../login/ForgotPassword';
 import CreateAccount from '../login/CreateAccount';
 import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack';
+import CreatePassword from '../login/CreatePassword';
 const Stack = createStackNavigator();
 export default class LoginStack extends Component {
     constructor(props) {
@@ -32,6 +33,7 @@ export default class LoginStack extends Component {
                 <Stack.Screen name="OTPScreen" component={OTPScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false }} />
                 <Stack.Screen name="CreateAccount" component={CreateAccount} options={{ headerShown: false }} />
+                <Stack.Screen name="CreatePassword" component={CreatePassword} options={{ headerShown: false }} />
             </Stack.Navigator>
         );
     }
