@@ -24,6 +24,7 @@ import { selectTheme } from '../actions';
       next: true,
       cancelToken: undefined,
       refreshing: false,
+      first:true
     }
   }
     loadMore = () => {
@@ -59,11 +60,15 @@ import { selectTheme } from '../actions';
     }
   }
     componentDidMount() {
+      this.setState({first:false})
        this.getMedicines()
-           this._unsubscribe = this.props.navigation.addListener('focus', () => {
-      this.setState({ offset: 0, next: true, medicines: [] }, () => {
-        this.getMedicines()
-      })
+     this._unsubscribe = this.props.navigation.addListener('focus', () => {
+       if(!this.state.first){
+              this.setState({ offset: 0, next: true, medicines: [] }, () => {
+                this.getMedicines()
+              })
+       }
+            
 
     });
     }
