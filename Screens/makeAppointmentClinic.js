@@ -141,7 +141,7 @@ class makeAppointmentClinic extends Component {
         if(this.state.selectedDoctor){
             sendData.doctor = this.state.selectedDoctor.pk
         }
-      
+        
         let post = await HttpsClient.post(api, sendData)
         console.log(post,"klkk")
         if (post.type == "success") {

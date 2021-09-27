@@ -448,6 +448,10 @@ refresh =()=>{
             </Modal>
         )
     }
+        viewAppointments =(item)=>{
+   
+        return this.props.navigation.navigate('ViewAppointmentDoctors',{item})
+    }
     render() {
         return (
             <>

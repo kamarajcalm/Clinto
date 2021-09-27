@@ -27,6 +27,7 @@ class SearchPateint extends Component {
     SearchPriscription = async()=>{
        this.setState({loading:true})
       let api =`${url}/api/prescription/prescriptions/?search=${this.state.query}`
+      console.log(api)
       let data = await axios.get(api)
      
      
@@ -49,17 +50,19 @@ class SearchPateint extends Component {
                     <View style={{ flex: 0.3, alignItems: 'center', justifyContent: "center" }}>
                         <Image
                             source={{ uri: dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" }}
-                            style={{ height: 60, width: 60, borderRadius: 30 }}
+                            style={{ height: height*0.1, width: height*0.1, borderRadius: height*0.05 }}
                         />
                     </View>
-                    <View style={{ flex: 0.4,  }}>
+                    <View style={{ flex: 0.4, alignItems:"center",justifyContent:"space-around" }}>
                         <View >
                             <Text style={[styles.text, { fontSize: 18, }]}>{item?.clinicname.name}</Text>
-                            <Text style={[styles.text, { fontSize: 12, }]}>{item?.doctordetails?.name}</Text>
-                            <Text style={[styles.text, { fontSize: 12, }]}>Name : {item?.username?.name}</Text>
-
                         </View>
-
+                        <View>
+                            <Text style={[styles.text, { fontSize: 12, }]}>{item?.doctordetails?.name}</Text>
+                        </View>
+                        <View>
+                                 <Text style={[styles.text, { fontSize:height*0.02, color:"#000"}]} numberOfLines={1}>Name : {item?.username?.name}</Text>
+                        </View>
                     </View>
                     <View style={{ flex: 0.3, justifyContent: 'center', alignItems: "center" }}>
                         <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
@@ -80,7 +83,7 @@ class SearchPateint extends Component {
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
             this.SearchPriscription();
-        }, 1500);
+        }, 1000);
     }
     renderFooter =()=>{
         if (this.state.next){
@@ -123,7 +126,7 @@ class SearchPateint extends Component {
                                
                                     autoFocus={true}
                                     selectionColor={themeColor}
-                                    style={{ height:40, backgroundColor: "#fafafa", borderRadius: 15, paddingLeft: 10,flex:0.7}}
+                                    style={{ height:35, backgroundColor: "#fafafa", borderRadius: 15, paddingLeft: 10,flex:0.7}}
                                     placeholder="Phone number , Prescription Id , Name"
                                     onChangeText ={(query)=>{this.setState({query})}}
                                 />
@@ -170,7 +173,7 @@ const styles = StyleSheet.create({
     card: {
 
         backgroundColor: "#eeee",
-        height: height * 0.1,
+        height: height * 0.15,
         marginHorizontal: 10,
         marginVertical: 3
 

@@ -15,6 +15,8 @@ import CheckBox from '@react-native-community/checkbox';
 import HttpsClient from '../api/HttpsClient';
 import moment from 'moment';
 import ViewMedicines from '../AdminScreens/ViewMedicines';
+import * as Notifications from 'expo-notifications';
+
  const data =[
    {
      medicineName:"Dolomites",
@@ -73,11 +75,18 @@ import ViewMedicines from '../AdminScreens/ViewMedicines';
    }
   }
   componentDidMount(){
+     this.subscribe =  Notifications.addNotificationResponseReceivedListener( async(resposnse)=>{
+        await Notifications.dismissAllNotificationsAsync()
+          if(resposnse.actionIdentifier=="1"){
+            this.setState({availabilityModal:true})
+          }
+     })
        Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
     this.getRequests()
   }
       componentWillUnmount(){
+        this.subscribe.remove()
         Keyboard.removeListener('keyboardDidShow', this._keyboardDidShow);
         Keyboard.removeListener('keyboardDidHide', this._keyboardDidHide);
     }
@@ -189,10 +198,19 @@ import ViewMedicines from '../AdminScreens/ViewMedicines';
       }
      
     }
+    changeTotalPrice =()=>{
+      const total = this.state?.selectedItem?.medicineDetails.reduce((total,item)=>{
+        return total+Number(item.price)
+      },0)
+      let duplicate = this.state.selectedItem
+      duplicate.total_price = total
+      this.setState({selectedItem:duplicate})
+    }
     changePrice =(price,item,index)=>{
       let duplicate = this.state.selectedItem
       duplicate.medicineDetails[index].price = price
       this.setState({selectedItem:duplicate},()=>{
+        this.changeTotalPrice()
         this.checkChange(item,price)
       })
     }
@@ -267,7 +285,7 @@ import ViewMedicines from '../AdminScreens/ViewMedicines';
        let sendData ={
          accepted: true,
          order:this.state.selectedItem.id,
-         price:this.state.price,
+         price:this.state.selectedItem.total_price,
          clinic:this.props.medical.clinicpk,
          changedmedicines:this.state.changedMedicines
        }

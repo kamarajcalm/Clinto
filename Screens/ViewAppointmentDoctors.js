@@ -142,6 +142,14 @@ class ViewAppointmentDoctors extends Component {
             Linking.canOpenURL(`telprompt:${this.state.item?.patientname?.mobile}`)
         }
     }
+    getCallClinic  = ()=>{
+             if (Platform.OS == "android") {
+            Linking.openURL(`tel:${this.state.item?.patientname?.mobile}`)
+        } else {
+
+            Linking.canOpenURL(`telprompt:${this.state.item?.patientname?.mobile}`)
+        }
+    }
     chatDoctor = async () => {
         let api =null
         if (this.props.user.profile.occupation == "Doctor"){
@@ -157,11 +165,12 @@ class ViewAppointmentDoctors extends Component {
         }
     }
     chatClinic = async () => {
-        let api = `${url}/api/prescription/createClinicChat/?clinic=${this.state.item.clinic}&customer=${this.props.user.id}`
+     
+        let api = `${url}/api/prescription/createClinicChat/?clinic=${this.state.item.clinic}&customer=${this.state.item.requesteduser}`
 
         let data = await HttpsClient.get(api)
         console.log(data)
-
+    
         if (data.type == "success") {
             this.props.navigation.navigate('Chat', { item: data.data })
         }
@@ -222,6 +231,16 @@ class ViewAppointmentDoctors extends Component {
     componentDidMount(){
         this.getClinicImages()
     }
+        getDirections =(item)=>{
+        
+        Linking.openURL(
+            `https://www.google.com/maps/dir/?api=1&destination=` +
+            this.state.item?.clinicname.lat+
+            `,` +
+            this.state.item?.clinicname.long+
+            `&travelmode=driving`
+        );
+    }
     render() {
         let dp = null
         console.log(this.state.item.patientname,"ppp")
@@ -240,11 +259,13 @@ class ViewAppointmentDoctors extends Component {
                             <Ionicons name="chevron-back-circle" size={30} color="#fff" />
                         </TouchableOpacity>
                         <View style={{ flex: 0.7, }}>
-                            <Text style={[styles.text, { color: "#fff" ,fontSize:24,fontWeight:'bold'}]}> Appointment Details</Text>
+                            <Text style={[styles.text, { color: "#fff" ,fontSize: height*0.03,fontWeight:'bold'}]}> Appointment Details</Text>
                         </View>
 
                     </View>
-                    <ScrollView>
+                    <ScrollView 
+                      contentContainerStyle={{paddingBottom:90}}
+                    >
 
 
                         <View style={{ height: height * 0.25, }}>
@@ -285,8 +306,8 @@ class ViewAppointmentDoctors extends Component {
                                     >
                                         <Ionicons name="md-chatbox" size={20} color="#63BCD2" />
                                     </TouchableOpacity> */}
-                                    <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
-                                        onPress={() => {this.getCall() }}
+                                    {/* <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                                        onPress={() => {this.getCallClinic() }}
                                     >
                                         <FontAwesome name="phone" size={20} color="#63BCD2" />
                                     </TouchableOpacity>
@@ -296,7 +317,7 @@ class ViewAppointmentDoctors extends Component {
                                         }}
                                     >
                                         <FontAwesome5 name="directions" size={20} color="#63BCD2" />
-                                    </TouchableOpacity>
+                                    </TouchableOpacity> */}
 
                                 </View>
                             </View>
@@ -328,7 +349,7 @@ class ViewAppointmentDoctors extends Component {
                                         </View>
                                         <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" ,flexDirection:"row"}}>
                                             <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center' }]}
-                                                onPress={() => { this.chatDoctor() }}
+                                                onPress={() => { this.chatClinic() }}
                                             >
                                                 <Ionicons name="md-chatbox" size={20} color="#63BCD2" />
                                             </TouchableOpacity>
@@ -345,6 +366,10 @@ class ViewAppointmentDoctors extends Component {
                                 <View style={{ flexDirection: "row" }}>
                                     <Text style={[styles.text]}>Appointment Status:</Text>
                                     <Text style={[styles.text, { marginLeft: 10, color: this.validateColor(this.state.item.status) }]}>{this.state.item.status}</Text>
+                                </View>
+                                   <View style={{ flexDirection: "row" ,marginTop:10}}>
+                                    <Text style={[styles.text]}>Reason:</Text>
+                                    <Text style={[styles.text, { marginLeft: 10, color: "#000" }]}>{this.state.item.reason}</Text>
                                 </View>
                                 <View style={{ marginTop: 10 }}>
                                     <View>

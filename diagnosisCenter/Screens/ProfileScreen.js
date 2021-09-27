@@ -20,10 +20,11 @@ import {
     Platform,
     Linking,
     AsyncStorage,
-    Alert
+    Alert,
+    ImageBackground
 
 } from "react-native";
-import { Ionicons, Entypo, AntDesign,Fontisto ,FontAwesome} from '@expo/vector-icons';
+import { Ionicons, Entypo, AntDesign,Fontisto ,FontAwesome,MaterialCommunityIcons} from '@expo/vector-icons';
 import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import { connect } from 'react-redux';
 import { selectTheme } from '../../actions';
@@ -68,7 +69,7 @@ class ProfileScreen extends Component {
             })
         )
     }
-          createAlert = () => {
+createAlert = () => {
     Alert.alert(
       `Do you want Logout?`,
        ``,
@@ -88,58 +89,76 @@ class ProfileScreen extends Component {
             <>
                 <SafeAreaView style={styles.topSafeArea} />
                 <SafeAreaView style={styles.bottomSafeArea}>
-                    <View style={{ flex: 1, backgroundColor: "#fff" }}>
-                        <StatusBar backgroundColor={themeColor} />
-                        {/* HEADERS */}
-                        <View style={{ height: height * 0.1, backgroundColor: themeColor, flexDirection: 'row', alignItems: "center" }}>
-                            <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}
+         
 
-                            >
-                               
-                            </TouchableOpacity>
-                            <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
-                                <Text style={[styles.text, { color: '#fff', fontWeight: 'bold', fontSize: 18 }]}>Profile</Text>
-                            </View>
-                     
-                        </View>
-                        {/* CHATS */}
-                        <View style={{flex:1,backgroundColor:"#fff"}}>
-                                     <TouchableOpacity style={{ flexDirection: "row", height: height * 0.05, paddingHorizontal: 20, width, marginTop: 20 }}
-                        onPress={() => { this.props.navigation.navigate('ViewProfile')}}
+                    <ScrollView
+                         contentContainerStyle={{ paddingBottom: 90 }}
+                         showsVerticalScrollIndicator={false}
                     >
-                        <View style={{ flex: 0.8, flexDirection: "row" }}>
-                            <View style={{ alignItems: "center", justifyContent: "center" }}>
-                               <Ionicons name="person" size={24} color={themeColor} />
-                            </View>
-                            <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
-                                <Text style={[styles.text, { color: themeColor}]}>Your Profile</Text>
-                            </View>
-                        </View>
+                        <ImageBackground
+                                blurRadius={1}
+                                style ={{height:height*0.3,alignItems:"center",}}
+                                source={require('../../assets/Doctor.png')}
+                                
+                        >
+                                               {/* headers */}
+                                    <View style={{alignSelf:"flex-end",marginRight:10,marginTop:10}}>
+                                        <TouchableOpacity style={{  marginLeft: 20, alignItems: "center", justifyContent: 'center', flexDirection: "row" }}
+                                        onPress={() => { 
+                                         
+                                            this.createAlert()
+                                            
+                                        }}
+                                        >
+                                    
+                                        <MaterialCommunityIcons name="logout" size={30} color="black" />
+                                        </TouchableOpacity>
+                                    </View>
+                                          <View style={{alignItems:"center",justifyContent:"center",flex:1}}>
 
-                        <View style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}>
-                            <Entypo name="triangle-right" size={24} color={themeColor} />
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{ flexDirection: "row", height: height * 0.05, paddingHorizontal: 20, width, marginTop: 20 }}
+              <View style={{ alignItems: "center", justifyContent: "center", flexDirection: "row", marginLeft: 20 }}>
+                <Image
+                  source={{ uri: this.props.user.profile.displayPicture || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" }}
+                  style={{ height:height*0.15, width: height*0.15, borderRadius: height*0.07}}
+                />
+                <TouchableOpacity style={{}}
+                  onPress={() => { this.props.navigation.navigate('ProfileEdit') }}
+                >
+                  <Entypo name="edit" size={20} color={themeColor} />
+                </TouchableOpacity>
+              </View>
+              <View style={{ alignItems: 'center', justifyContent: "center", }}>
+                <Text style={[styles.text, { fontWeight: "bold", fontSize: height*0.022, color: "#000" }]}>{this.props.user.first_name}</Text>
+              </View>
+              <View style={{ alignItems: 'center', justifyContent: "center", }}>
+                <Text style={[styles.text, { fontWeight: "bold", fontSize: height*0.022, color: "gray" }]}>{this.props.user.profile.specialization}</Text>
+              </View>
+           </View> 
+                        </ImageBackground>
+              <View style={{marginHorizontal:20,elevation:5,backgroundColor:"#fafafa",borderRadius:15,height:height*0.6}}>
+                    <View style={{borderWidth:2,alignSelf:'center',borderColor:"gray",width:width*0.3,marginVertical:10,borderRadius:10}}>
+
+                    </View>
+                    <TouchableOpacity style={{ flexDirection: "row",  paddingHorizontal: 20, width, marginTop: 20 }}
                         onPress={() => { this.props.navigation.navigate('ViewFeautures')}}
                     >
-                        <View style={{ flex: 0.8, flexDirection: "row" }}>
+                        <View style={{ flex: 0.7, flexDirection: "row" }}>
                             <View style={{ alignItems: "center", justifyContent: "center" }}>
                                <FontAwesome name="money" size={24} color={themeColor}/>
                             </View>
                             <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
-                                <Text style={[styles.text, { color: themeColor}]}> Diagnosis Features</Text>
+                                <Text style={[styles.text, { color: themeColor}]}> Diagnosis Types</Text>
                             </View>
                         </View>
 
-                        <View style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}>
-                            <Entypo name="triangle-right" size={24} color={themeColor} />
+                        <View style={{ flex: 0.3, alignItems: "center", justifyContent: 'center' }}>
+                            <AntDesign name="rightcircleo" size={20} color="black" />
                         </View>
                     </TouchableOpacity>
-                              <TouchableOpacity style={{ flexDirection: "row", height: height * 0.05, paddingHorizontal: 20, width, marginTop: 20 }}
+                                 <TouchableOpacity style={{ flexDirection: "row",paddingHorizontal: 20, width, marginTop: 20 }}
                         onPress={() => { this.props.navigation.navigate('ViewLab')}}
                     >
-                        <View style={{ flex: 0.8, flexDirection: "row" }}>
+                        <View style={{ flex: 0.7, flexDirection: "row" }}>
                             <View style={{ alignItems: "center", justifyContent: "center" }}>
                                <FontAwesome name="money" size={24} color={themeColor}/>
                             </View>
@@ -148,29 +167,12 @@ class ProfileScreen extends Component {
                             </View>
                         </View>
 
-                        <View style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}>
-                            <Entypo name="triangle-right" size={24} color={themeColor} />
+                        <View style={{ flex: 0.3, alignItems: "center", justifyContent: 'center' }}>
+                            <AntDesign name="rightcircleo" size={20} color="black" />
                         </View>
                     </TouchableOpacity>
-                      <TouchableOpacity style={{ flexDirection: "row", height: height * 0.05, paddingHorizontal: 20, width, marginTop: 20 }}
-                         onPress={() => { this.createAlert()}}
-                      >
-                        <View style={{ flex: 0.8, flexDirection: "row" }}>
-                            <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                <Entypo name="log-out" size={24} color={themeColor} />
-                            </View>
-                            <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
-                                <Text style={[styles.text, { color: {themeColor}}]}>Logout</Text>
-                            </View>
-                        </View>
-
-                        <View style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}>
-                            <Entypo name="triangle-right" size={24} color={themeColor} />
-                        </View>
-                    </TouchableOpacity>
-                        </View>
-                
-                    </View>
+                </View>
+                    </ScrollView>
                 </SafeAreaView>
             </>
         );
@@ -193,7 +195,7 @@ const mapStateToProps = (state) => {
 
     return {
         theme: state.selectedTheme,
-
+        user:state.selectedUser
     }
 }
 export default connect(mapStateToProps, { selectTheme })(ProfileScreen);

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions, Switch, TextInput } from 'react-native';
 import settings from '../AppSettings'
-import { AntDesign, Entypo ,FontAwesome5} from '@expo/vector-icons';
+import { AntDesign, Entypo ,FontAwesome5,FontAwesome} from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 import Modal from "react-native-modal";
 
@@ -55,7 +55,8 @@ export default class MedicineDetails extends Component {
             validTimes: "",
             diagnosis: [],
             selectedDiagnosis: null,
-            showModal:false
+            showModal:false,
+            typeModal:false
         };
     }
     toggleSwitch = () => {
@@ -127,7 +128,9 @@ export default class MedicineDetails extends Component {
 
     componentDidMount() {
         this.getDiagnosis()
-
+        if(this.props.item.manual){
+             this.setState({name:this.props.item.title})
+        }
 
     }
     componentDidUpdate(prevProps, prevState) {
@@ -181,48 +184,74 @@ export default class MedicineDetails extends Component {
             </Modal>
         )
     }
+    changeTypeModal =(types)=>{
+        return (
+                   <Modal 
+              isVisible={this.state.typeModal}
+              deviceHeight={screenHeight}
+              statusBarTranslucent={true}
+              onBackdropPress ={()=>{
+                  this.setState({typeModal:false})
+              }}
+            >
+                <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
+                        <View style={{height:height*0.4,width:width*0.8,backgroundColor:"#fff",borderRadius:10}}>
+                             <View style={{marginVertical:10,alignItems:"center",justifyContent:"center"}}>
+                                 <Text style={[styles.text]}>Select Type</Text>
+                             </View>
+                              {
+                                  types.map((item,index)=>{
+                          
+                                    return(
+                                            <TouchableOpacity key={index} style={{flexDirection:"row",marginTop:10}}
+                                             onPress={()=>{
+                                                this.setState({typeModal:false},()=>{
+                                                    this.changeType(item)
+                                                }) 
+                                               }}
+                                            
+                                            >
+                                                <View style={{flex:0.7,alignItems:"center",justifyContent:"center"}}>
+                                                    <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{item.label}</Text>
+                                                </View>
+                                                <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                                                    <FontAwesome5 name="dot-circle" size={24} color={this.state.selectedDiagnosis===item.value?"#63BCD2":"gray"}/>
+                                                </View>
+                                            </TouchableOpacity>
+                                        )
+                                
+                           })
+                        }
+                        </View>
+                       
+                </View>
+
+            </Modal>
+        )
+    }
     render() {
         const { item, index } = this.props
-        console.log(item)
-        //   let variants = []
-        //   try{
-        //       item.variants.forEach((i) => {
-        //           let obj = {
-        //               label: i,
-        //               value: i,
-        //           }
-        //           variants.push(obj)
-        //       })
-        //   }catch(e){
-        //       console.log(e)
-        //   }
-
-        // if tablets
-        if (item.type == "Tablet" || item.type == "Drops" || item.type == "Capsules") {
+       
+        if (item.type == "Tablet"|| item.type == "Capsules") {
             return (
                 <View
                     key={index}
-                    style={styles.card}
-               
+                    style={[styles.card,{}]}
                 >
-                    <View style={{ flex: 0.2, flexDirection: "row", margin: 10 }}>
-                        <Text style={[styles.text, { fontWeight: "bold", fontSize: 20 }]}> {this.props.medicinesGiven.length+this.props.index+1}. {item.title || item.medicine}</Text>
-
-
+                    <View style={{margin:10, justifyContent:"center"}}>
+                        <Text style={[styles.text, { fontWeight: "bold", fontSize: height*0.023 }]}> {this.props.medicinesGiven.length+this.props.index+1}. {item.title || item.medicine}</Text>
                     </View>
-                    <View style={{ flexDirection: "row", marginHorizontal: 10, alignItems: "center", justifyContent: "space-between" }}>
+                    <View style={{ flexDirection: "row", paddingLeft: 15, alignItems: "center", justifyContent: "space-between" }}>
                         <View style={{ flexDirection: "row" }}>
-                            <Text style={[styles.text]}>Category :</Text>
-                            <Text style={[styles.text, {}]}> {item.type}</Text>
+                            <Text style={[styles.text,{fontSize:height*0.02}]}>Category :</Text>
+                            <Text style={[styles.text, {fontSize:height*0.02}]}> {item.type}</Text>
                         </View>
 
                     </View>
-                    <View style={{ marginHorizontal: 10, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+       
+                    <View style={{ flexDirection: "row", marginTop:10 ,flex:1}}>
 
-                    </View>
-                    <View style={{ flexDirection: "row", flex: 0.5, }}>
-
-                        <View style={{ flex: 1, justifyContent: "center" }}>
+                        <View style={{ flex: 1, justifyContent: "center" ,}}>
 
                             <View style={{ flexDirection: "row", }}>
                                 <View style={{ flex: 0.33, alignItems: 'center', justifyContent: "center" }}>
@@ -230,8 +259,8 @@ export default class MedicineDetails extends Component {
                                         onPress={() => {
                                             this.setState({ morning: !this.state.morning }, () => {
                                                 if (this.state.morning) {
-                                                    this.props.changeFunction("morning_count", 1, index)
-                                                    this.setState({ morningCount: 1 })
+                                                    this.props.changeFunction("morning_count", 0.5, index)
+                                                    this.setState({ morningCount: 0.5})
                                                 } else {
                                                     this.props.changeFunction("morning_count", 0, index)
                                                     this.setState({ morningCount: 0 })
@@ -239,7 +268,7 @@ export default class MedicineDetails extends Component {
                                             })
                                         }}
                                     >
-                                        <Text style={[styles.text, { color: "#fff" }]}>Morning</Text>
+                                        <Text style={[styles.text, { color: "#fff",fontSize:height*0.02 }]}>Morning</Text>
                                     </TouchableOpacity>
                                     {this.state.morning && <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-around", width: width * 0.15, marginTop: 10 }}>
                                         <TouchableOpacity
@@ -257,7 +286,7 @@ export default class MedicineDetails extends Component {
                                         </TouchableOpacity>
 
                                         <View>
-                                            <Text style={[styles.text, { color: "gray" }]}>{this.state.morningCount}</Text>
+                                            <Text style={[styles.text, { color: "gray" ,fontSize:height*0.02 }]}>{this.state.morningCount}</Text>
                                         </View>
                                         <TouchableOpacity
                                             onPress={() => {
@@ -276,8 +305,8 @@ export default class MedicineDetails extends Component {
                                             this.setState({ afterNoon: !this.state.afterNoon }, () => {
 
                                                 if (this.state.afterNoon) {
-                                                    this.props.changeFunction("afternoon_count", 1, index)
-                                                    this.setState({ afterNoonCount: 1 })
+                                                    this.props.changeFunction("afternoon_count", 0.5, index)
+                                                    this.setState({ afterNoonCount: 0.5 })
                                                 } else {
                                                     this.props.changeFunction("afternoon_count", 0, index)
                                                     this.setState({ afterNoonCount: 0 })
@@ -286,7 +315,7 @@ export default class MedicineDetails extends Component {
                                             })
                                         }}
                                     >
-                                        <Text style={[styles.text, { color: "#fff" }]}>Afternoon</Text>
+                                        <Text style={[styles.text, { color: "#fff" ,fontSize:height*0.02}]}>Afternoon</Text>
                                     </TouchableOpacity>
                                     {this.state.afterNoon && <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-around", width: width * 0.15, marginTop: 10 }}>
                                         <TouchableOpacity
@@ -304,7 +333,7 @@ export default class MedicineDetails extends Component {
 
 
                                         <View>
-                                            <Text style={[styles.text, { color: "gray" }]}>{this.state.afterNoonCount}</Text>
+                                            <Text style={[styles.text, { color: "gray" ,fontSize:height*0.02 }]}>{this.state.afterNoonCount}</Text>
                                         </View>
                                         <TouchableOpacity
                                             onPress={() => {
@@ -322,8 +351,8 @@ export default class MedicineDetails extends Component {
                                         onPress={() => {
                                             this.setState({ night: !this.state.night }, () => {
                                                 if (this.state.night) {
-                                                    this.props.changeFunction("night_count", 1, index)
-                                                    this.setState({ nightCount: 1 })
+                                                    this.props.changeFunction("night_count",0.5, index)
+                                                    this.setState({ nightCount: 0.5})
                                                 } else {
                                                     this.props.changeFunction("night_count", 0, index)
                                                     this.setState({ nightCount: 0 })
@@ -333,7 +362,7 @@ export default class MedicineDetails extends Component {
                                             })
                                         }}
                                     >
-                                        <Text style={[styles.text, { color: "#fff" }]}>Night</Text>
+                                        <Text style={[styles.text, { color: "#fff",fontSize:height*0.02 }]}>Night</Text>
                                     </TouchableOpacity>
                                     {this.state.night && <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: "space-around", width: width * 0.15, marginTop: 10 }}>
                                         <TouchableOpacity
@@ -351,7 +380,7 @@ export default class MedicineDetails extends Component {
 
 
                                         <View>
-                                            <Text style={[styles.text, { color: "gray" }]}>{this.state.nightCount}</Text>
+                                            <Text style={[styles.text, { color: "gray",fontSize:height*0.02 }]}>{this.state.nightCount}</Text>
                                         </View>
                                         <TouchableOpacity
                                             onPress={() => {
@@ -370,9 +399,12 @@ export default class MedicineDetails extends Component {
                         </View>
                     </View>
                     <>
-                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", flex: 0.2 }}>
+                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginTop:10,paddingHorizontal:10}}>
                             {<View style={{ flexDirection: "row" }}>
-                                <Text style={[styles.text, { fontWeight: 'bold' }]}>After food</Text>
+                                <View style={{alignItems:"center",justifyContent:"center"}}>
+                                    <Text style={[styles.text, { fontWeight: 'bold' ,fontSize:height*0.025}]}>After food</Text>
+                                </View>
+                               
 
                                 <Switch
                                     style={{ marginLeft: 10 }}
@@ -387,15 +419,17 @@ export default class MedicineDetails extends Component {
                                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                                     <Text>No of days</Text>
                                 </View>
-
-                                <TextInput
+                                <View style={{marginTop:4}}>
+                                           <TextInput
                                     value={this.state.days}
                                     selectionColor={themeColor}
                                     keyboardType="numeric"
-                                    style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5, alignItems: "center", justifyContent: "center" }}
+                                    style={{ height:35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5, alignItems: "center", justifyContent: "center" }}
                                     onChangeText={(text) => { this.changeDays(text) }}
 
                                 />
+                                </View>
+                         
                             </View>
 
                         </View>
@@ -469,556 +503,54 @@ export default class MedicineDetails extends Component {
                 </View>
             );
         }
-        if (item.type == "Liquid") {
-            return (
-                <View
-                    key={index}
-                    style={[styles.card, {}]}
-                >
-                    <View style={{ flex: 0.4, alignItems: 'center', justifyContent: "center" }}>
-                        <Text style={[styles.text, { fontWeight: "bold", fontSize: 20 }]}>{item.title}</Text>
-                    </View>
-                    <View style={{ flexDirection: "row", marginHorizontal: 10, alignItems: "center", justifyContent: "space-between" }}>
-                        <View style={{ flexDirection: "row" }}>
-                            <Text style={[styles.text]}>Category :</Text>
-                            <Text style={[styles.text, {}]}> {item.type}</Text>
-                        </View>
 
+      
+      
 
-                    </View>
-                    <View style={{ flex: 0.6, alignItems: 'center', justifyContent: "space-around", flexDirection: "row" }}>
-                        <TouchableOpacity style={{ height: height * 0.03, width: width * 0.2, backgroundColor: this.state.morning ? themeColor : "gray", alignItems: "center", justifyContent: 'center', borderRadius: 10 }}
-                            onPress={() => {
-                                this.setState({ morning: !this.state.morning }, () => {
-                                    if (this.state.morning) {
-                                        this.props.changeFunction("morning_count", 1, index)
-                                        this.setState({ morningCount: 1 })
-                                    } else {
-                                        this.props.changeFunction("morning_count", 0, index)
-                                        this.setState({ morningCount: 0 })
-                                    }
-
-                                })
-                            }}
-                        >
-                            <Text style={[styles.text, { color: "#fff" }]}>Morning</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: height * 0.03, width: width * 0.2, backgroundColor: this.state.afterNoon ? themeColor : "gray", alignItems: "center", justifyContent: 'center', borderRadius: 10 }}
-                            onPress={() => {
-                                this.setState({ afterNoon: !this.state.afterNoon }, () => {
-
-                                    if (this.state.afterNoon) {
-                                        this.props.changeFunction("afternoon_count", 1, index)
-                                        this.setState({ afterNoonCount: 1 })
-                                    } else {
-                                        this.props.changeFunction("afternoon_count", 0, index)
-                                        this.setState({ afterNoonCount: 0 })
-                                    }
-
-                                })
-                            }}
-                        >
-                            <Text style={[styles.text, { color: "#fff" }]}>Afternoon</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{ height: height * 0.03, width: width * 0.2, backgroundColor: this.state.night ? themeColor : "gray", alignItems: "center", justifyContent: 'center', borderRadius: 10 }}
-                            onPress={() => {
-                                this.setState({ night: !this.state.night }, () => {
-                                    if (this.state.night) {
-                                        this.props.changeFunction("night_count", 1, index)
-                                        this.setState({ nightCount: 1 })
-                                    } else {
-                                        this.props.changeFunction("night_count", 0, index)
-                                        this.setState({ nightCount: 0 })
-                                    }
-
-
-                                })
-                            }}
-
-                        >
-                            <Text style={[styles.text, { color: "#fff" }]}>Night</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around" }}>
-                        {/* <View style={{flexDirection:"row"}}>
-                        <View style={{alignItems:'center',justifyContent:"center"}}>
-                              <Text>Enter ml</Text>
-                        </View>
-                       
-                          <TextInput
-                              keyboardType={"numeric"}
-                              selectionColor ={themeColor}
-                              style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5 }}
-                              onChangeText={(text) => {this.changeQty(text)}}
-                          />
-                    </View> */}
-
-                        <View style={{ flexDirection: "row" }}>
-                            <View style={{ alignItems: 'center', justifyContent: "center" }}>
-                                <Text>Enter no of days</Text>
-                            </View>
-
-                            <TextInput
-                                keyboardType={"numeric"}
-                                selectionColor={themeColor}
-                                style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5, alignItems: "center", justifyContent: "center" }}
-                                value={this.state.days}
-                                onChangeText={(text) => { this.changeDays(text) }}
-                            />
-                        </View>
-                    </View>
-                          <TouchableOpacity style={{height:height*0.05,width:width*0.5,backgroundColor:inputColor,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}
-                             onPress={()=>{
-                                 this.setState({showModal:true})
-                             }}
-                            >   
-                                  <View>
-                                         <Text style={[styles.text]}>{this?.state?.selectedDiagnosis||"Select Diagnosis"}</Text>
-                                  </View>
-                                  <View>
-                                      <Entypo name="chevron-small-down" size={20} color="black" />
-                                  </View>
-                            </TouchableOpacity>
-                    <View style={{ margin: 10 }}>
-                        <Text>Comments:</Text>
-                        <TextInput
-                            selectionColor={themeColor}
-                            multiline={true}
-                            onChangeText={(comment) => { this.changeComment(comment) }}
-                            style={{ height: height * 0.07, width: "100%", backgroundColor: "#eee", borderRadius: 10, marginTop: 10, textAlignVertical: "top", padding: 5 }}
-                            value={this.state.comment}
-                        />
-                    </View>
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", flex: 0.2, marginVertical: 20 }}>
-                        {<View style={{ flexDirection: "row" }}>
-                            <Text style={[styles.text, { fontWeight: 'bold' }]}>Contains Drugs</Text>
-
-                            <Switch
-                                style={{ marginLeft: 10 }}
-                                trackColor={{ false: '#767577', true: '#34eb40' }}
-                                thumbColor={this.state.containsDrugs ? '#fff' : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={() => { this.toggleDrug() }}
-                                value={this.state.containsDrugs}
-                            />
-                        </View>}
-                        {/* <View style={{ flexDirection: 'row' }}>
-                          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                              <Text>Enter valid Times</Text>
-                          </View>
-
-                          <TextInput
-                              value={this.state.validTimes}
-                              selectionColor={themeColor}
-                              keyboardType="numeric"
-                              style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5 }}
-                              onChangeText={(text) => { this.changeValidTimes(text) }}
-
-                          />
-                      </View> */}
-
-                    </View>
-                    <TouchableOpacity
-                        onPress={() => { this.props.changeFunction("delete", item, index) }}
-                        style={{ position: "absolute", top: 10, right: 10, }}
-                    >
-                        <Entypo name="circle-with-cross" size={24} color="red" />
-                    </TouchableOpacity>
-                    {
-                        this.Modal()
-                    }
-                </View>
-            )
-
-        }
-        if (item.type == "Cream") {
-            return (
-                <View
-                    key={index}
-                    style={[styles.card, {}]}
-                >
-                    <View style={{ flex: 0.4, alignItems: 'center', justifyContent: "center" }}>
-                        <Text style={[styles.text, { fontWeight: "bold", fontSize: 20 }]}>{item.title}</Text>
-                    </View>
-                    <View style={{ flexDirection: "row", marginHorizontal: 10, alignItems: "center", justifyContent: "space-between" }}>
-                        <View style={{ flexDirection: "row" }}>
-                            <Text style={[styles.text]}>Category :</Text>
-                            <Text style={[styles.text, {}]}> {item.type}</Text>
-                        </View>
-
-                        {/* <View style={{ flexDirection: "row" }}>
-                          <View style={{ alignItems: "center", justifyContent: "center" }}>
-                              <Text style={{ marginRight: 10 }}>Variant</Text>
-                          </View>
-
-                          <DropDownPicker
-                              items={variants}
-                              placeholder="select"
-                              containerStyle={{ height: 40, width: width * 0.25 }}
-                              style={{ backgroundColor: '#fafafa' }}
-                              itemStyle={{
-                                  justifyContent: 'flex-start'
-                              }}
-                              dropDownStyle={{ backgroundColor: '#fafafa', width: width * 0.25 }}
-                              onChangeItem={item => this.setState({
-                                  selectedVariant: item.value
-                              }, () => {
-                                  this.changeVariant(item.value)
-                              })}
-
-                          />
-
-                      </View> */}
-                    </View>
-                    <View style={{ flex: 0.6, alignItems: 'center', justifyContent: "space-around", flexDirection: "row" }}>
-                        <TouchableOpacity style={{ height: height * 0.03, width: width * 0.2, backgroundColor: this.state.morning ? themeColor : "gray", alignItems: "center", justifyContent: 'center', borderRadius: 10 }}
-                            onPress={() => {
-                                this.setState({ morning: !this.state.morning }, () => {
-                                    if (this.state.morning) {
-                                        this.props.changeFunction("morning_count", 1, index)
-                                        this.setState({ morningCount: 1 })
-                                    } else {
-                                        this.props.changeFunction("morning_count", 0, index)
-                                        this.setState({ morningCount: 0 })
-                                    }
-
-                                })
-                            }}
-                        >
-                            <Text style={[styles.text, { color: "#fff" }]}>Morning</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ height: height * 0.03, width: width * 0.2, backgroundColor: this.state.afterNoon ? themeColor : "gray", alignItems: "center", justifyContent: 'center', borderRadius: 10 }}
-                            onPress={() => {
-                                this.setState({ afterNoon: !this.state.afterNoon }, () => {
-
-                                    if (this.state.afterNoon) {
-                                        this.props.changeFunction("afternoon_count", 1, index)
-                                        this.setState({ afterNoonCount: 1 })
-                                    } else {
-                                        this.props.changeFunction("afternoon_count", 0, index)
-                                        this.setState({ afterNoonCount: 0 })
-                                    }
-
-                                })
-                            }}
-                        >
-                            <Text style={[styles.text, { color: "#fff" }]}>Afternoon</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{ height: height * 0.03, width: width * 0.2, backgroundColor: this.state.night ? themeColor : "gray", alignItems: "center", justifyContent: 'center', borderRadius: 10 }}
-                            onPress={() => {
-                                this.setState({ night: !this.state.night }, () => {
-                                    if (this.state.night) {
-                                        this.props.changeFunction("night_count", 1, index)
-                                        this.setState({ nightCount: 1 })
-                                    } else {
-                                        this.props.changeFunction("night_count", 0, index)
-                                        this.setState({ nightCount: 0 })
-                                    }
-
-
-                                })
-                            }}
-                        >
-                            <Text style={[styles.text, { color: "#fff" }]}>Night</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around" }}>
-
-
-                        <View style={{ flexDirection: "row" }}>
-                            <View style={{ alignItems: 'center', justifyContent: "center" }}>
-                                <Text>Enter no of Times</Text>
-                            </View>
-
-                            <TextInput
-                                keyboardType={"numeric"}
-                                selectionColor={themeColor}
-                                style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5, alignItems: "center", justifyContent: "center" }}
-
-                                onChangeText={(text) => { this.changeQty(text) }}
-                            />
-                        </View>
-                    </View>
-       <TouchableOpacity style={{height:height*0.05,width:width*0.5,backgroundColor:inputColor,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}
-                             onPress={()=>{
-                                 this.setState({showModal:true})
-                             }}
-                            >   
-                                  <View>
-                                         <Text style={[styles.text]}>{this?.state?.selectedDiagnosis||"Select Diagnosis"}</Text>
-                                  </View>
-                                  <View>
-                                      <Entypo name="chevron-small-down" size={20} color="black" />
-                                  </View>
-                            </TouchableOpacity>
-                    <View style={{ margin: 10 }}>
-                        <Text>Comments:</Text>
-                        <TextInput
-                            selectionColor={themeColor}
-                            multiline={true}
-                            onChangeText={(comment) => { this.changeComment(comment) }}
-                            style={{ height: height * 0.07, width: "100%", backgroundColor: "#eee", borderRadius: 10, marginTop: 10, textAlignVertical: "top", padding: 5 }}
-                            value={this.state.comment}
-                        />
-                    </View>
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", flex: 0.2, marginVertical: 20 }}>
-                        {<View style={{ flexDirection: "row" }}>
-                            <Text style={[styles.text, { fontWeight: 'bold' }]}>Contains Drugs</Text>
-
-                            <Switch
-                                style={{ marginLeft: 10 }}
-                                trackColor={{ false: '#767577', true: '#34eb40' }}
-                                thumbColor={this.state.containsDrugs ? '#fff' : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={() => { this.toggleDrug() }}
-                                value={this.state.containsDrugs}
-                            />
-                        </View>}
-                        {/* <View style={{ flexDirection: 'row' }}>
-                          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                              <Text>Enter valid Times</Text>
-                          </View>
-
-                          <TextInput
-                              value={this.state.validTimes}
-                              selectionColor={themeColor}
-                              keyboardType="numeric"
-                              style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5 }}
-                              onChangeText={(text) => { this.changeValidTimes(text) }}
-
-                          />
-                      </View> */}
-
-                    </View>
-                    <TouchableOpacity
-                        onPress={() => { this.props.changeFunction("delete", item, index) }}
-                        style={{ position: "absolute", top: 10, right: 10, }}
-                    >
-                        <Entypo name="circle-with-cross" size={24} color="red" />
-                    </TouchableOpacity>
-                     {
-                        this.Modal()
-                    }
-                </View>
-            )
-
-        }
-        if (item.type == "Injections") {
-            return (
-                <View
-                    key={index}
-                    style={[styles.card3, { flex: 1 }]}
-                >
-                    <View style={{ alignItems: 'center', justifyContent: "center", flex: 0.2 }}>
-                        <Text style={[styles.text, { fontWeight: "bold", fontSize: 20 }]}>{item.title}</Text>
-                    </View>
-                    <View style={{ flexDirection: "row", marginHorizontal: 10, alignItems: "center", flex: 0.2 }}>
-                        <View style={{ flexDirection: "row" }}>
-                            <Text style={[styles.text]}>Category :</Text>
-                            <Text style={[styles.text, {}]}> {item.type}</Text>
-                        </View>
-
-
-                    </View>
-
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", flex: 0.2 }}>
-
-
-                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
-                            <View style={{ alignItems: 'center', justifyContent: "center" }}>
-                                <Text>Enter Qty</Text>
-                            </View>
-
-                            <TextInput
-                                keyboardType={"numeric"}
-                                selectionColor={themeColor}
-                                style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5, alignItems: "center", justifyContent: "center" }}
-                                value={this.state.qty}
-                                onChangeText={(text) => { this.changeQty(text) }}
-                            />
-                        </View>
-                    </View>
-     <TouchableOpacity style={{height:height*0.05,width:width*0.5,backgroundColor:inputColor,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}
-                             onPress={()=>{
-                                 this.setState({showModal:true})
-                             }}
-                            >   
-                                  <View>
-                                         <Text style={[styles.text]}>{this?.state?.selectedDiagnosis||"Select Diagnosis"}</Text>
-                                  </View>
-                                  <View>
-                                      <Entypo name="chevron-small-down" size={20} color="black" />
-                                  </View>
-                            </TouchableOpacity>
-                    <View style={{ margin: 10, flex: 0.6, }}>
-                        <Text>Comments:</Text>
-                        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-                            <TextInput
-                                selectionColor={themeColor}
-                                multiline={true}
-                                onChangeText={(comment) => { this.changeComment(comment) }}
-                                style={{ height: "70%", width: "100%", backgroundColor: "#eee", borderRadius: 10, textAlignVertical: "top", padding: 5 }}
-                                value={this.state.comment}
-                            />
-                        </View>
-
-                    </View>
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", flex: 0.2, marginVertical: 20 }}>
-                        {<View style={{ flexDirection: "row" }}>
-                            <Text style={[styles.text, { fontWeight: 'bold' }]}>Contains Drugs</Text>
-
-                            <Switch
-                                style={{ marginLeft: 10 }}
-                                trackColor={{ false: '#767577', true: '#34eb40' }}
-                                thumbColor={this.state.containsDrugs ? '#fff' : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={() => { this.toggleDrug() }}
-                                value={this.state.containsDrugs}
-                            />
-                        </View>}
-                        {/* <View style={{ flexDirection: 'row' }}>
-                          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                              <Text>Enter valid Times</Text>
-                          </View>
-
-                          <TextInput
-                              value={this.state.validTimes}
-                              selectionColor={themeColor}
-                              keyboardType="numeric"
-                              style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5 }}
-                              onChangeText={(text) => { this.changeValidTimes(text) }}
-
-                          />
-                      </View> */}
-
-                    </View>
-                    <TouchableOpacity
-                        onPress={() => { this.props.changeFunction("delete", item, index) }}
-                        style={{ position: "absolute", top: 10, right: 10, }}
-                    >
-                        <Entypo name="circle-with-cross" size={24} color="red" />
-                    </TouchableOpacity>
-                    {
-                        this.Modal()
-                    }
-                </View>
-            )
-
-        }
-
-        if (item.type == "Others" || item.type == "Suppositories" || item.type == "Inhalers") {
-            return (
-                <View
-                    key={index}
-                    style={[styles.card2, styles.elevation]}
-                >
-                    <View style={{ margin: 20 }}>
-                        <Text style={[styles.text, { fontWeight: "bold", fontSize: 20 }]}>{item.title}</Text>
-                    </View>
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", }}>
-                        <View style={{ alignItems: 'center', justifyContent: "center" }}>
-                            <Text>Enter Qty</Text>
-                        </View>
-
-                        <TextInput
-                            keyboardType={"numeric"}
-                            selectionColor={themeColor}
-                            style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5, alignItems: "center", justifyContent: "center" }}
-                            value={this.state.qty}
-                            onChangeText={(text) => { this.changeQty(text) }}
-                        />
-                    </View>
-    <TouchableOpacity style={{height:height*0.05,width:width*0.5,backgroundColor:inputColor,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}
-                             onPress={()=>{
-                                 this.setState({showModal:true})
-                             }}
-                            >   
-                                  <View>
-                                         <Text style={[styles.text]}>{this?.state?.selectedDiagnosis||"Select Diagnosis"}</Text>
-                                  </View>
-                                  <View>
-                                      <Entypo name="chevron-small-down" size={20} color="black" />
-                                  </View>
-                            </TouchableOpacity>
-                    <View style={{ margin: 10 }}>
-                        <Text>Comments:</Text>
-                        <TextInput
-                            selectionColor={themeColor}
-                            multiline={true}
-                            onChangeText={(comment) => { this.changeComment(comment) }}
-                            style={{ height: height * 0.07, width: "100%", backgroundColor: "#eee", borderRadius: 10, marginTop: 10, textAlignVertical: "top", padding: 5 }}
-                            value={this.state.comment}
-                        />
-                    </View>
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", flex: 0.2, marginVertical: 20 }}>
-                        {<View style={{ flexDirection: "row" }}>
-                            <Text style={[styles.text, { fontWeight: 'bold' }]}>Contains Drugs</Text>
-
-                            <Switch
-                                style={{ marginLeft: 10 }}
-                                trackColor={{ false: '#767577', true: '#34eb40' }}
-                                thumbColor={this.state.containsDrugs ? '#fff' : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={() => { this.toggleDrug() }}
-                                value={this.state.containsDrugs}
-                            />
-                        </View>}
-                        {/* <View style={{ flexDirection: 'row' }}>
-                          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                              <Text>Enter valid Times</Text>
-                          </View>
-
-                          <TextInput
-                              value={this.state.validTimes}
-                              selectionColor={themeColor}
-                              keyboardType="numeric"
-                              style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5 }}
-                              onChangeText={(text) => { this.changeValidTimes(text) }}
-
-                          />
-                      </View> */}
-
-                    </View>
-                    <TouchableOpacity
-                        onPress={() => { this.props.changeFunction("delete", item, index) }}
-                        style={{ position: "absolute", top: 10, right: 10, }}
-                    >
-                        <Entypo name="circle-with-cross" size={24} color="red" />
-                    </TouchableOpacity>
-                     {
-                        this.Modal()
-                    }
-                </View>
-            )
-        }
+       
         if (item.manual) {
             return (
-                <View style={[styles.card4]}>
-                    <View style={{ marginLeft: 15, }}>
+               <View style={[styles.card4,{justifyContent:"space-around"}]}>
+                    <View style={{ marginLeft: 20, marginTop:5}}>
                         <Text style={[styles.text, { color: "#000" }]}>Enter Name</Text>
                         <TextInput
                             value={this.state.name}
                             selectionColor={themeColor}
                             onChangeText={(name) => { this.changeName(name) }}
-                            style={{ width: width * 0.8, height: 35, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 }}
+                            style={{ width: width * 0.7, height: 35, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 }}
                         />
                     </View>
-                    {this.state.name.length > 0 && <View style={{ margin: 15 }}>
+                    {this.state.name.length > 0 && <View style={{ marginTop:10,marginLeft:20}}>
                         <Text style={[styles.text, { color: "#000" }]}>Select Type</Text>
-     <TouchableOpacity style={{height:height*0.05,width:width*0.5,backgroundColor:inputColor,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}
+                        <View style={{ marginTop: 10 }}>
+                            {/* <DropDownPicker
+                                items={types}
+                                containerStyle={{ height: 40, width: width * 0.4 }}
+                                style={{ backgroundColor: '#fafafa' }}
+                                itemStyle={{
+                                    justifyContent: 'flex-start'
+                                }}
+                                dropDownStyle={{ backgroundColor: '#fafafa', width: width * 0.4 }}
+                                //   onChangeItem={item => this.setState({
+                                //       selectedType: item.value
+                                //   })}
+                                onChangeItem={(item) => {
+                                    this.changeType(item)
+                                }}
+                            /> */}
+                            <TouchableOpacity style={{height:height*0.05,width:width*0.5,alignItems:"center",justifyContent:"space-around",backgroundColor:inputColor,flexDirection:"row",alignSelf:"center"}}
                              onPress={()=>{
-                                 this.setState({showModal:true})
+                                 this.setState({typeModal:true})
                              }}
-                            >   
-                                  <View>
-                                         <Text style={[styles.text]}>{this?.state?.selectedDiagnosis||"Select Diagnosis"}</Text>
-                                  </View>
-                                  <View>
-                                      <Entypo name="chevron-small-down" size={20} color="black" />
-                                  </View>
+                            >
+                                   <View>
+                                        <Text style={[styles.text,{color:"#000"}]}>Select Type</Text>
+                                   </View>
+                                    <View>
+                                         <FontAwesome name="angle-down" size={24} color="black" />      
+                                    </View>
                             </TouchableOpacity>
+                        </View>
                     </View>}
 
                     <TouchableOpacity
@@ -1027,10 +559,106 @@ export default class MedicineDetails extends Component {
                     >
                         <Entypo name="circle-with-cross" size={24} color="red" />
                     </TouchableOpacity>
+                    {
+                        this.changeTypeModal(types)
+                    }
                 </View>
             )
         }
-        return null
+        return (
+                <View
+                    key={index}
+                    style={[styles.card2,{...((this.props.medicinesGiven.length+this.props.index+1)==(this.props.errorIndex+1)&&styles.errorStyle)}]}
+                >
+                    <View style={{ flex: 1,flexDirection:"row",alignItems:"center",marginLeft:10}}>
+                        <Text style={[styles.text, { fontWeight: "bold", fontSize: height*0.03 }]}> {this.props.medicinesGiven.length+this.props.index+1} . {item.title || item.medicine}</Text>
+                    </View>
+                    <View style={{ flexDirection: "row", marginHorizontal: 10, alignItems: "center", justifyContent: "space-between" ,marginTop:10}}>
+                        <View style={{ flexDirection: "row" }}>
+                            <Text style={[styles.text,{fontSize:height*0.02}]}>Category :</Text>
+                            <Text style={[styles.text, {fontSize:height*0.02}]}> {item.type}</Text>
+                        </View>
+                    </View>
+                 
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around" }}>
+                        <View style={{flexDirection:"row"}}>
+                        <View style={{alignItems:'center',justifyContent:"center"}}>
+                              <Text>Enter  Qty</Text>
+                        </View>
+                       
+                          <TextInput
+                              keyboardType={"numeric"}
+                              selectionColor ={themeColor}
+                              style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5 }}
+                              onChangeText={(text) => {this.changeQty(text)}}
+                          />
+                    </View>
+
+                   
+                    </View>
+                          <TouchableOpacity style={{height:height*0.05,width:width*0.5,backgroundColor:inputColor,alignItems:"center",justifyContent:"space-around",flexDirection:"row",alignSelf:"center",marginTop:10}}
+                             onPress={()=>{
+                                 this.setState({showModal:true})
+                             }}
+                            >   
+                                  <View>
+                                         <Text style={[styles.text]}>{this?.state?.selectedDiagnosis||"Select Diagnosis"}</Text>
+                                  </View>
+                                  <View>
+                                      <Entypo name="chevron-small-down" size={20} color="black" />
+                                  </View>
+                            </TouchableOpacity>
+                    <View style={{ margin: 10 }}>
+                        <Text>Comments:</Text>
+                        <TextInput
+                            selectionColor={themeColor}
+                            multiline={true}
+                            onChangeText={(comment) => { this.changeComment(comment) }}
+                            style={{ height: height * 0.07, width: "100%", backgroundColor: "#eee", borderRadius: 10, marginTop: 10, textAlignVertical: "top", padding: 5 }}
+                            value={this.state.comment}
+                        />
+                    </View>
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", flex: 0.2, marginVertical: 20 }}>
+                        {<View style={{ flexDirection: "row" }}>
+                            <Text style={[styles.text, { fontWeight: 'bold' }]}>Contains Drugs</Text>
+
+                            <Switch
+                                style={{ marginLeft: 10 }}
+                                trackColor={{ false: '#767577', true: '#34eb40' }}
+                                thumbColor={this.state.containsDrugs ? '#fff' : '#f4f3f4'}
+                                ios_backgroundColor="#3e3e3e"
+                                onValueChange={() => { this.toggleDrug() }}
+                                value={this.state.containsDrugs}
+                            />
+                        </View>}
+                        {/* <View style={{ flexDirection: 'row' }}>
+                          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                              <Text>Enter valid Times</Text>
+                          </View>
+
+                          <TextInput
+                              value={this.state.validTimes}
+                              selectionColor={themeColor}
+                              keyboardType="numeric"
+                              style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5 }}
+                              onChangeText={(text) => { this.changeValidTimes(text) }}
+
+                          />
+                      </View> */}
+
+                    </View>
+                    <TouchableOpacity
+                        onPress={() => { this.props.changeFunction("delete", item, index) }}
+                        style={{ position: "absolute", top: 10, right: 10, }}
+                    >
+                        <Entypo name="circle-with-cross" size={24} color="red" />
+                    </TouchableOpacity>
+                    {
+                        this.Modal()
+                    }
+                    
+                </View>
+            )
     }
 }
 const styles = StyleSheet.create({
@@ -1054,7 +682,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         elevation: 6,
         margin: 10,
-        height: height * 0.5,
+        minHeight: height * 0.5,
         borderRadius: 10,
 
     },
@@ -1062,7 +690,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         elevation: 6,
         margin: 10,
-        height: height * 0.37,
+        minHeight: height * 0.4,
         borderRadius: 10,
 
     },
@@ -1078,8 +706,11 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         elevation: 6,
         margin: 10,
-        minHeight: height * 0.4,
+        minHeight: height * 0.25,
         borderRadius: 10,
 
     },
+    errorStyle:{
+        borderColor:"orange",borderWidth:3
+    }
 })

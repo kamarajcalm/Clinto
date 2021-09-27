@@ -398,66 +398,7 @@ class ViewClinic extends Component {
                
                             <View style={{ padding: 10, }}>
                                 
-                                {/* <View style={{ marginHorizontal: 20, marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View>
-                                        <Text style={[styles.text, {  fontSize: height*0.02}]}>OpeningTime:</Text>
-                                    </View>
-                                    <View>
-                                        <Text style={[styles.text, {  fontSize: height*0.02}]}>ClosingTime:</Text>
-                                    </View>
-                                </View>
-                                <View style={{ marginHorizontal: 20, marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                    <View>
-                                        <View style={{ alignSelf: "flex-start" }}>
-                                            <Text style={[styles.text, {  fontSize: 18, color: "gray" }]}>Today:</Text>
-                                        </View>
-
-                                        <Text style={[styles.text, {  fontSize: height*0.02}]}>{this.state?.clinicDetails?.working_hours[date.getDay()][0]}</Text>
-                                    </View>
-                                    <View>
-                                        <Text style={[styles.text, {  fontSize: height*0.02}]}>{this.state?.clinicDetails?.working_hours[date.getDay()][1]}</Text>
-                                    </View>
-
-                                </View>
-                                <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                    <TouchableOpacity
-                                        onPress={() => { this.setState({ showAll: !this.state.showAll }) }}
-                                    >
-                                        <Text>{this.state.showAll ? "showLess" : "showAll"}</Text>
-                                    </TouchableOpacity>
-                                </View> */}
-                                 {/* <View style={{ marginHorizontal: 20, marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                <View>
-                                    <Text style={[styles.text, { color:"#000", fontSize: height*0.02}]}>Opening Time:</Text>
-                                </View>
-                                <View>
-                                    <Text style={[styles.text, { color:"#000", fontSize: height*0.02}]}>Closing Time:</Text>
-                                </View>
-                            </View>
-                            <View style={{ marginHorizontal: 20, marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                <View>
-                                    <View style={{ alignSelf: "flex-start" }}>
-                                        <Text style={[styles.text, {color:"#000",fontSize: 18,}]}>Today:</Text>
-                                    </View>
-
-                                   
-                                </View>
-
-                            </View>
-                             <View style={{}}>
-                                    {this.state.clinicDetails&&
-                                         this.getTodayTimings2(this.state.clinicDetails)
-                                      }
-                               
-                            </View>
-                            <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                <TouchableOpacity
-                                    onPress={() => { this.setState({ showAll: !this.state.showAll }) }}
-                                >
-                                    <Text style={[styles.text,{color:"#000"}]}>{this.state.showAll ? "show Less" : "show All"}</Text>
-                                </TouchableOpacity>
-                            </View>
-                               */}
+              
                                <View style={{flexDirection:"row"}}>
                                    <View style={{flex:0.3}}>
 

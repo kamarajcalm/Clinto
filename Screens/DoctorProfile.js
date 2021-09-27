@@ -88,7 +88,7 @@ class DoctorProfile extends Component {
                          <TouchableOpacity style={[styles.boxWithShadow,{height:height*0.03,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,flex:0.4,marginTop:5,marginRight:5,borderRadius:5}]}
                             onPress={() => { this.props.ClinicSelect()}}
                          >
-                             <Text style={[styles.text,{color:"#fff"}]}>Change Clinic</Text>
+                             <Text style={[styles.text,{color:"#fff",fontSize:height*0.02}]}>Change Clinic</Text>
                          </TouchableOpacity>
                      </View>
 
@@ -163,7 +163,7 @@ class DoctorProfile extends Component {
                                 <TouchableOpacity style={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:10}}
                             onPress={() => { this.props.navigation.navigate("ViewTemplates")}}
                                 >
-                                    <Text style={[styles.text,{color:"#fff"}]}>View Templates</Text>
+                                    <Text style={[styles.text,{color:"#fff",fontSize:height*0.02}]}>View Templates</Text>
                                 </TouchableOpacity>
                         </View>
                 </View>

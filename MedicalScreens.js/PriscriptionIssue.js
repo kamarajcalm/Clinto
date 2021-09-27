@@ -329,7 +329,7 @@ class PriscriptionIssue extends Component {
                             data={this.state.priscriptions}
                             keyExtractor={(item, index) => index.toString()}
                             scrollEventThrottle={16}
-                            contentContainerStyle={{ paddingTop: headerHeight - 20, paddingBottom: 150 }}
+                            contentContainerStyle={{ paddingTop: headerHeight -10, paddingBottom: 150 }}
                             onScroll={handleScroll}
                             onMomentumScrollEnd={handleSnap}
                             onEndReached={() => { this.handleEndReached() }}
@@ -337,7 +337,7 @@ class PriscriptionIssue extends Component {
                             onEndReachedThreshold={0.1}
                             renderItem={({ item, index }) => {
                                 return (
-                                    <TouchableOpacity style={[styles.card, { flexDirection: "row", borderRadius: 5 ,marginTop:15}]}
+                                    <TouchableOpacity style={[styles.card, { flexDirection: "row", borderRadius: 5 ,marginTop:15,}]}
                                         onPress={() => { this.props.navigation.navigate('PrescriptionView', { pk:item.prescription,})}}
                                     >
                                           <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>

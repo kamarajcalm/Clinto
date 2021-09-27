@@ -36,6 +36,7 @@ import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures'
 import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import Modal from 'react-native-modal';
 import LottieView from 'lottie-react-native';
+import {openComposer} from "react-native-email-link";
 // import Image from 'react-native-scalable-image';
 class PrescriptionView extends Component {
     constructor(props) {
@@ -59,7 +60,7 @@ class PrescriptionView extends Component {
         const data = await HttpsClient.get(api)
         console.log(api)
         if (data.type == "success") {
-            this.setState({ item: data.data },()=>{
+            this.setState({ item: data.data ,valid:data.data.active},()=>{
                 this.validateAnimations()
                 this.filterMedicines()
                 this.filterDrugs()
@@ -622,17 +623,20 @@ class PrescriptionView extends Component {
             <>
                 <SafeAreaView style={styles.topSafeArea} />
                 <SafeAreaView style={styles.bottomSafeArea}>
-                    <StatusBar backgroundColor={themeColor} />
+                    <StatusBar backgroundColor={themeColor}/>
                     <View style={{ height: height * 0.1, backgroundColor: themeColor, flexDirection: "row" }}>
                         <View style={{ flex: 0.7 }}>
                             <View style={{ flex: 0.5, justifyContent: "center", marginLeft: 20 }}>
-                                <Text style={[styles.text, { color: "#ffff", fontWeight: 'bold', fontSize: 20 }]}>{this.state?.item?.clinicname?.name?.toUpperCase()}</Text>
+                                <Text style={[styles.text, { color: "#ffff", fontWeight: 'bold', fontSize: height*0.025 }]}>{this.state?.item?.clinicname?.name?.toUpperCase()}</Text>
 
                             </View>
                             <View style={{ flex: 0.5, marginLeft: 20 }}>
-                                <Text style={[styles.text, { color: "#fff" }]}>{this.state?.item?.clinicname?.address}</Text>
+                                <View>
+                                             <Text style={[styles.text, { color: "#fff" ,fontSize:height*0.017}]} numberOfLines={1}>{this.state?.item?.clinicname?.address}</Text>
+                                </View>
+                           
                                 <View style={{}}>
-                                    <Text style={[styles.text, { color: "#fff" }]}>{this.state?.item?.clinicname?.city}-{this.state?.item?.clinicname?.pincode}</Text>
+                                    <Text style={[styles.text, { color: "#fff",fontSize:height*0.017 }]}>{this.state?.item?.clinicname?.city}-{this.state?.item?.clinicname?.pincode}</Text>
                                 </View>
                             </View>
                         </View>
@@ -692,12 +696,12 @@ class PrescriptionView extends Component {
                                 </View>
                             </View>
 
-                            <View style={{ flex: 0.2 }}>
+                            <View style={{ flex: 0.15,justifyContent:"center" }}>
                                 {
                                     this.renderHeader()
                                 }
                             </View>
-                            <View style={{ flex: 0.48, }}>
+                            <View style={{ flex: 0.53, }}>
 
                                 {this.state.selected == "Prescribed" ? 
                                 
@@ -852,14 +856,20 @@ class PrescriptionView extends Component {
                                         <Text style={[styles.text, { color: "#ffff" }]}>{this.state.item?.clinicname?.mobile}</Text>
                                     </View>
                                 </TouchableOpacity >
-                                <View style={{ flexDirection: "row" }}>
+                                <TouchableOpacity style={{ flexDirection: "row" }}
+                                   onPress={()=>{
+                                   openComposer({
+                                                to: this.state?.item?.clinicname?.email
+                                            })
+                                    }}
+                                >
                                     <View style={{ alignItems: 'center', justifyContent: "center" }}>
                                         <Feather name="mail" size={24} color="#fff" />
                                     </View>
                                     <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5 }}>
                                         <Text style={[styles.text, { color: "#ffff" }]}>{this.state.item?.clinicname?.email}</Text>
                                     </View>
-                                </View>
+                                </TouchableOpacity>
                             </View>
 
                         </View>

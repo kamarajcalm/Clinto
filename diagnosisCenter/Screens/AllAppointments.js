@@ -50,6 +50,10 @@ class AllAppointments extends Component {
               
         });
    }
+    viewAppointments =(item)=>{
+   
+        return this.props.navigation.navigate('ViewAppointmentDoctors',{item})
+    }
    componentWillUnmount(){
        this._unsubscribe();
    }

@@ -32,6 +32,7 @@ import HttpsClient from '../api/HttpsClient';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 import Modal from 'react-native-modal';
 import LottieView from 'lottie-react-native';
+import {openComposer} from "react-native-email-link";
 const screenHeight = Dimensions.get("screen").height
 // import Image from 'react-native-scalable-image';
 class PrescriptionViewDoctor extends Component {
@@ -343,54 +344,52 @@ sepeartor =()=>{
 }
     renderHeader =()=>{
         return(
-            <View>
-             {this.state.item.ongoing_treatment?   <View style={{marginHorizontal:20,flexDirection:"row",marginTop:10}}>
-                    <View style={{alignItems:"center",justifyContent:"center"}}> 
-                        <Text style={[styles.text, { }]}>Reason : </Text>
-                    </View>
-                    <View style={{alignItems:"center",justifyContent:"center"}}>
-                        <Text style={[styles.text, {color:"#000" }]}>{this.state.item.ongoing_treatment}</Text>
-                    </View>
-                </View>:null}
-                <View style={{ marginHorizontal: 20, flexDirection: "row" ,marginTop:10}}>
-                    <View style={{ alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, { }]}>Diagnosis : </Text>
-                    </View>
-                    <View style={{flexDirection:"row"}}>
-                                    <FlatList 
-                                      horizontal={true}
-                       data={this.state.item.diseaseTitle}
-                       keyExtractor={(item,index)=>index.toString()}
-                       ItemSeparatorComponent={this.sepeartor}
-                       renderItem ={({item,index})=>{
-                            return(
-                             <View style={{ alignItems: "center", justifyContent: "center" ,flexDirection:"row"}}>
-                                 <Text style={[styles.text, {color:"#000"}]}>{item}</Text>
-                              </View>
-                            )
-                       }}
+          <View style={{flex:1}}>
+                     <View style={{flex:0.5,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                        {this.state?.item?.ongoing_treatment?<View style={{flexDirection:"row"}}>
+                                  <View>
+                                             <Text style={[styles.text, { color: "#000",fontSize:height*0.02 }]}>Reason : </Text>
+                                  </View>
+                                  <View>
+                                             <Text style={[styles.text, {fontSize:height*0.02}]}>{this.state?.item?.ongoing_treatment}</Text>
+                                  </View>
+                            </View>:null}
+                            <View style={{flexDirection:"row"}}>
+                                           <Text style={[styles.text, { color: "#000",fontSize:height*0.02 }]}>Diagnosis : </Text>
+                                           <View>
+                                                   <FlatList 
+                                        horizontal={true}
+                                        data={this.state.item.diseaseTitle}
+                                        keyExtractor={(item,index)=>index.toString()}
+                                        ItemSeparatorComponent={this.sepeartor}
+                                        renderItem ={({item,index})=>{
+                                                return(
+                                                <View style={{ alignItems: "center", justifyContent: "center" ,flexDirection:"row"}}>
+                                                    <Text style={[styles.text, {color:"#000",fontSize:height*0.02}]}>{item}</Text>
+                                                </View>
+                                                )
+                                        }}
                     
-                    />
+                                    />
+                                           </View>
+                                 
                     </View>
-            
-                  
-                </View>
-           
-                <View style={{ marginHorizontal: 20, flexDirection: "row", marginTop: 10 ,alignItems:"center",justifyContent:"space-around"}}>
-                    <TouchableOpacity
-                        onPress={() => { this.setState({selected:"Prescribed"})}}
-                        style={{ height: height * 0.04, width: width * 0.4, backgroundColor: this.state.selected =="Prescribed"?themeColor:"gray",alignItems:"center",justifyContent:"center",borderRadius:5}}
-                    >
-                        <Text style={[styles.text,{color:"#fff"}]}>Prescribed</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => { this.setState({ selected:"Medicines Given"})}}
-                        style={{ height: height * 0.04, width: width * 0.4, backgroundColor: this.state.selected == "Medicines Given" ? themeColor : "gray", alignItems: "center", justifyContent: "center", borderRadius: 5 }}
-                    >
-                        <Text style={[styles.text, { color: "#fff" }]}>Medicines Given</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
+                     </View>
+                     <View style={{flex:0.5,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                                <TouchableOpacity
+                         onPress={() => { this.setState({ selected: "Prescribed" }) }}
+                         style={{ height: height * 0.04, width: width * 0.4, backgroundColor: this.state.selected == "Prescribed" ? themeColor : "gray", alignItems: "center", justifyContent: "center", borderRadius: 5 }}
+                     >
+                         <Text style={[styles.text, { color: "#fff",fontSize:height*0.02 }]}>Prescribed</Text>
+                     </TouchableOpacity>
+                     <TouchableOpacity
+                         onPress={() => { this.setState({ selected: "Medicines Given" }) }}
+                         style={{ height: height * 0.04, width: width * 0.4, backgroundColor: this.state.selected == "Medicines Given" ? themeColor : "gray", alignItems: "center", justifyContent: "center", borderRadius: 5 }}
+                     >
+                         <Text style={[styles.text, { color: "#fff",fontSize:height*0.02 }]}>Medicines Given</Text>
+                     </TouchableOpacity>
+                     </View>
+             </View>
         )
     }
 
@@ -485,7 +484,10 @@ sepeartor =()=>{
   
                             </View>
                             <View style={{ flex: 0.5, marginLeft: 20 }}>
-                                <Text style={[styles.text, { color: "#fff",fontSize:height*0.02 }]}>{this.state?.item?.clinicname?.address}</Text>
+                                <View>
+                                       <Text style={[styles.text, { color: "#fff",fontSize:height*0.02 }]} numberOfLines={1}>{this.state?.item?.clinicname?.address}</Text>
+                                </View>
+                             
                                 <View style={{}}>
                                     <Text style={[styles.text, { color: "#fff", fontSize: height * 0.02 }]}>{this.state?.item?.clinicname?.city}-{this.state?.item?.clinicname?.pincode}</Text>
                                 </View>
@@ -510,7 +512,7 @@ sepeartor =()=>{
 
 
                         <View style={{ flex: 1 ,}}>
-                            <View style={{ flex: 0.15, borderColor: "#eee", borderBottomWidth: 0.5 ,}}>
+                            <View style={{ flex: 0.15, borderColor: "#eee", borderBottomWidth: 0.5 ,justifyContent:"center"}}>
                                 <View style={{ marginHorizontal: 20, flexDirection: "row", alignItems: 'center', justifyContent: 'space-around', marginVertical: 15 }}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <View>
@@ -549,12 +551,12 @@ sepeartor =()=>{
                              
                             </View>
 
-                            <View style={{ flex: 0.2 }}>
+                            <View style={{ flex: 0.15,justifyContent:"center",}}>
                                 {
                                     this.renderHeader()
                                 }
                             </View>
-                            <View style={{ flex: 0.48, }}>
+                            <View style={{ flex: 0.53,}}>
                                 
                                {this.state.selected=="Prescribed"?<FlatList
                                     data={this.state.prescribed}
@@ -587,12 +589,14 @@ sepeartor =()=>{
                                                             <View style={{ marginLeft: 10 }}>
                                                                 <Text style={[styles.text, { color: "#000", fontWeight: "bold" }]}>({item.medicinename.type})</Text>
                                                             </View>
-                                                            <View>
-                                                                <Text style={[styles.text,]}>*</Text>
-                                                            </View>
-                                                            <View>
-                                                                <Text style={[styles.text]}> {item.days} days</Text>
-                                                            </View>
+                                                        { (item.medicinename.type === "Tablet" || item.medicinename.type === "Capsules") &&    <>
+                                                                <View>
+                                                                    <Text style={[styles.text,]}>*</Text>
+                                                                </View>
+                                                                <View>
+                                                                    <Text style={[styles.text]}> {item.days} days</Text>
+                                                                </View>
+                                                            </>}
                                                         </View>
                                                         {(item.medicinename.type === "Tablet" || item.medicinename.type === "Capsules") && <View style={{ flexDirection: "row" }}>
                                                             <View>
@@ -725,14 +729,22 @@ sepeartor =()=>{
                                         <Text style={[styles.text, { color: "#ffff" }]}>{this.state.item.clinicname.mobile}</Text>
                                     </View>
                                 </TouchableOpacity >
-                                <View style={{ flexDirection: "row" }}>
+                                <TouchableOpacity style={{ flexDirection: "row" }}
+                                  onPress={()=>{
+                                   
+                               
+                                openComposer({
+                                    to: this.state?.item?.clinicname?.email
+                                })
+                          }}
+                                >
                                     <View style={{ alignItems: 'center', justifyContent: "center" }}>
                                         <Feather name="mail" size={24} color="#fff" />
                                     </View>
                                     <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5 }}>
                                         <Text style={[styles.text, { color: "#ffff" }]}>{this.state.item.clinicname.email}</Text>
                                     </View>
-                                </View>
+                                </TouchableOpacity>
                             </View>
 
                         </View>

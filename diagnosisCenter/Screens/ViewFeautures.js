@@ -211,7 +211,9 @@ editModal =()=>{
                 <SafeAreaView style={styles.topSafeArea} />
                 <SafeAreaView style={styles.bottomSafeArea}>
                     <StatusBar backgroundColor={themeColor} barStyle={"default"} />
+                    <View style={{flex:1,backgroundColor:"#fff"}}>
 
+            
                     <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
                         <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}
                             onPress={() => { this.props.navigation.goBack() }}
@@ -225,7 +227,9 @@ editModal =()=>{
                              
                         </View>
                     </View>
+                
                      <FlatList
+                        
                         refreshing={this.state.refreshing} 
                         onRefresh={()=>{this.getReports()}}
                        ListHeaderComponent={this.header()}
@@ -263,7 +267,7 @@ editModal =()=>{
                      {
                          this.editModal()
                      }
-                   
+                           </View>
                 </SafeAreaView>
                     <View style={{
                             position: "absolute",
@@ -295,8 +299,15 @@ const styles = StyleSheet.create({
         elevation: 6,
         margin: 20,
         height: height * 0.3
-    }
-
+    },
+  topSafeArea: {
+    flex: 0,
+    backgroundColor: themeColor
+  },
+  bottomSafeArea: {
+    flex: 1,
+    backgroundColor: "#fff"
+  },
 })
 const mapStateToProps = (state) => {
 

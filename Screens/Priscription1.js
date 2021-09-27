@@ -87,7 +87,8 @@ class Priscription extends React.Component {
             totalcount:0,
             count2:0,
             showShimmer:true,
-            first:true
+            first:true,
+          
         };
         this.scrollY=new Animated.Value(0)
         this.translateYNumber= React.createRef()
@@ -148,7 +149,7 @@ hideDatePicker = () => {
     };
 
     getPateintPrescription = async()=>{
-        let api = `${url}/api/prescription/prescriptions/?forUser=${this.props.user.id}&limit=6&offset=${this.state.offset}`
+        let api = `${url}/api/prescription/prescriptions/?forUser=${this.props.user.id}&limit=6&offset=${this.state.offset}&invalid=True`
         let data =await HttpsClient.get(api)
         console.log(api)
         if(data.type =="success"){
@@ -452,7 +453,7 @@ hideDatePicker = () => {
                 ref={ref=>this.swipeRef[index]=ref}
                 renderRightActions={(progress, dragX) => this.rightSwipe(progress, dragX, item, index)}
             >
-                <TouchableOpacity style={[styles.card, { flexDirection: "row",    height: height * 0.15,}]}
+                <TouchableOpacity style={[styles.card, { flexDirection: "row",    height: height * 0.18,}]}
                     // onPress={() => { props.navigation.navigate('showCard', { item }) }}
                     onPress={() => { this.props.navigation.navigate('PrescriptionViewDoctor',{item})}}
                 >
@@ -500,13 +501,13 @@ hideDatePicker = () => {
                      
                         </View>
                          <View style={{marginTop:10,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
-                                   <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                                   <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: height*0.05, width:height*0.05, borderRadius: height*0.025, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
                                         onPress={() => { this.chatWithDoctor(item.forUser) }}
                                     >
-                                        <Ionicons name="chatbox" size={24} color="#63BCD2" />
+                                        <Ionicons name="chatbox" size={height*0.04} color="#63BCD2" />
 
                                     </TouchableOpacity>
-                                               <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                                               <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.05, width: height*0.05, borderRadius:height*0.025, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
                             onPress={() => {
                        
                                       if (Platform.OS == "android") {
@@ -518,7 +519,7 @@ hideDatePicker = () => {
     
     
                         >
-                           <Ionicons name="call" size={24} color="#63BCD2" />
+                           <Ionicons name="call" size={height*0.04} color="#63BCD2" />
                         </TouchableOpacity>
                            <View>
                                 <Text style={[styles.text]}>{moment(item.created).format("h:mm a")}</Text>
@@ -999,7 +1000,7 @@ const screenHeight =Dimensions.get('screen').height;
 
                   { this.props.user.profile.occupation!="Customer"&&!this.state.keyBoard&&<View style={{
                             position: "absolute",
-                            bottom: 100,
+                            bottom: height*0.15,
                             left: 20,
                             right: 20,
                             flex: 1,
@@ -1011,7 +1012,7 @@ const screenHeight =Dimensions.get('screen').height;
                             <TouchableOpacity
                                 onPress={() => { this.props.navigation.navigate('addPriscription',) }}
                             >
-                                <AntDesign name="pluscircle" size={40} color={themeColor} />
+                                <AntDesign name="pluscircle" size={height*0.06} color={themeColor} />
                             </TouchableOpacity>
                         </View>}
             </Animated.View>

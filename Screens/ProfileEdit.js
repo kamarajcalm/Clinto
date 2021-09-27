@@ -42,7 +42,8 @@ class ProfileEdit extends Component {
             Qualification:"",
             Qualifications: this.props.user.profile.qualifications||[],
             oldPassword:"",
-            newPassword:""
+            newPassword:"",
+            doctorFees:this.props.user.profile.base_fees.toString()
         };
     }
     showSimpleMessage(content, color, type = "info", props = {}) {
@@ -87,14 +88,15 @@ class ProfileEdit extends Component {
              city: this.state.city,
              state: this.state.state,
              pincode: this.state.pincode,
-             email: this.state.email
-             
+             email: this.state.email,
+             base_fees:this.state.doctorFees
          }
          if (this.state.image) {
              sendData.displayPicture = this.state.image,
              sendData.bodyType = "formData"
          }
          let patch = await HttpsClient.patch(api, sendData)
+         console.log(patch)
          return patch
      }
     updateDoctorProfile = async()=>{
@@ -445,7 +447,16 @@ class ProfileEdit extends Component {
                                             <Text style={[styles.text, { color: "#fff" }]}>Add</Text>
                                         </TouchableOpacity>
                                     </View>
-
+                                    <View>
+                                           <Text style={styles.text}>Doctor Fees</Text>
+                                    <TextInput
+                                        value={this.state.doctorFees}
+                                        keyboardType="numeric"
+                                        selectionColor={themeColor}
+                                        onChangeText={(doctorFees) => { this.setState({doctorFees})}}
+                                        style={{ width: width * 0.7, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                    />
+                                    </View>
                                 </View>}
                                 {this.props.user.profile.occupation =="Customer"&& <View style={{marginVertical:10}}>
                                     <View>

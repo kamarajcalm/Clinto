@@ -49,6 +49,9 @@ class DiagnosisTab extends Component {
       if (routeName == "ViewReports") {
             return false
         }
+      if (routeName == "AddAccount") {
+            return false
+        }
         return true
     }
        getTabBarVisibility4 = (route) => {
@@ -56,7 +59,12 @@ class DiagnosisTab extends Component {
         if (routeName == "CreateReport") {
             return false
         }
-    
+        if (routeName == "ViewAppointmentDoctors") {
+            return false
+        }
+        if (routeName == "Chat") {
+            return false
+        }
    
         return true
     }

@@ -554,7 +554,7 @@ class Appointments extends Component {
     // }
     viewAppointments =(item)=>{
         if(this.props.user.profile.occupation =="Customer"){
-           return   this.props.navigation.navigate('ViewAppointment',{item})
+           return   this.props.navigation.navigate('ViewAppointments',{item})
         }
         return this.props.navigation.navigate('ViewAppointmentDoctors',{item})
     }
@@ -709,7 +709,7 @@ class Appointments extends Component {
                             onPress={() => { this.viewAppointments(item)}}
                             style={{
                                 marginTop: 10,
-                                height: height * 0.15,
+                                height: height * 0.2,
                                 backgroundColor: "#eee",
                                 marginHorizontal: 10,
                                 borderRadius: 10,
@@ -736,13 +736,13 @@ class Appointments extends Component {
                                      <View style={{ paddingLeft: 10, paddingTop: 10, flex:0.5 ,alignItems:"center",justifyContent:"space-around"}}>
                                             <View style={{flexDirection:"row"}}>
                                                                   <View>
-                                                                    <Text style={[styles.text, {}]}>{moment(item?.requesteddate).format("DD-MM-YYYY")}</Text>
+                                                                    <Text style={[styles.text, {fontSize:height*0.02}]}>{moment(item?.requesteddate).format("DD-MM-YYYY")}</Text>
                                                                 </View>
                                                                 <View>
-                                                                    <Text style={[styles.text]}> | </Text>
+                                                                    <Text style={[styles.text,{fontSize:height*0.02}]}> | </Text>
                                                                 </View>
                                                                 <View>
-                                                                    <Text style={[styles.text]}> {item.requestedtime} </Text>
+                                                                    <Text style={[styles.text,{fontSize:height*0.02}]}> {item.requestedtime} </Text>
                                                                 </View>
                                             </View>
                                           {this.props.user.profile.occupation!="Doctor"&&  <View>
@@ -830,6 +830,7 @@ class Appointments extends Component {
                                     backgroundColor: "#eee",
                                     marginHorizontal: 10,
                                     borderRadius: 10,
+                              
                                 }}
                             >
                                 <View style={{ flexDirection: "row", flex: 1, }}>
@@ -893,7 +894,7 @@ class Appointments extends Component {
                                 onPress={() => { this.viewAppointments(item) }}
                                 style={{
                                     marginTop: 10,
-                                    height: height * 0.15,
+                                    height: height * 0.2,
                                     backgroundColor: "#eee",
                                     marginHorizontal: 10,
                                     borderRadius: 10,
@@ -922,13 +923,13 @@ class Appointments extends Component {
                                         <View style={{ paddingLeft: 10, paddingTop: 10, flex:0.5 ,alignItems:"center",justifyContent:"space-around"}}>
                                             <View style={{flexDirection:"row"}}>
                                                                   <View>
-                                                                    <Text style={[styles.text, {}]}>{moment(item?.requesteddate).format("DD-MM-YYYY")}</Text>
+                                                                    <Text style={[styles.text, {fontSize:height*0.02}]}>{moment(item?.requesteddate).format("DD-MM-YYYY")}</Text>
                                                                 </View>
                                                                 <View>
-                                                                    <Text style={[styles.text]}> | </Text>
+                                                                    <Text style={[styles.text,{fontSize:height*0.02}]}> | </Text>
                                                                 </View>
                                                                 <View>
-                                                                    <Text style={[styles.text]}> {item.requestedtime} </Text>
+                                                                    <Text style={[styles.text,{fontSize:height*0.02}]}> {item.requestedtime} </Text>
                                                                 </View>
                                             </View>
                                           {this.props.user.profile.occupation!="Doctor"&&  <View>
@@ -1060,7 +1061,7 @@ class Appointments extends Component {
                                 onPress={() => { this.viewAppointments(item) }}
                                 style={{
                                     marginTop: 10,
-                                    minHeight: height * 0.15,
+                                    minHeight: height * 0.2,
                                     backgroundColor: "#eee",
                                     marginHorizontal: 10,
                                     borderRadius: 10,
@@ -1335,14 +1336,15 @@ class Appointments extends Component {
       
         return(
             <Modal 
+                statusBarTranslucent={true}
                 deviceHeight={screenHeight}
                 isVisible={this.state.modal}
                 onBackdropPress={()=>{this.setState({modal:false})}}
             >
                  <View style={{flex:1,justifyContent:"center"}}>
-                     <View style={{height:height*0.3,backgroundColor:"#eee",borderRadius:10,alignItems:'center',justifyContent:'center'}}>
-                          <Text style={[styles.text,{fontWeight:"bold",fontSize:18}]}>Select Date:</Text>
-                          <View style={{flexDirection:"row"}}>
+                     <View style={{height:height*0.4,backgroundColor:"#eee",borderRadius:10,alignItems:'center',justifyContent:'center'}}>
+                          <Text style={[styles.text,{fontWeight:"bold",fontSize:height*0.03,marginTop:10}]}>Select Date:</Text>
+                          <View style={{flexDirection:"row",}}>
                             <TouchableOpacity
                                 style={{ marginTop: 10 }}
                                 onPress={() => { this.setState({modal:false},()=>{
@@ -1359,8 +1361,8 @@ class Appointments extends Component {
                    
                           </View>
                          
-                        <Text style={[styles.text, { fontWeight: "bold", fontSize: 18}]}>Select Time</Text>
-                        <View style={{flexDirection:"row"}}>
+                        <Text style={[styles.text, { fontWeight: "bold", fontSize:height*0.03,marginTop:10}]}>Select Time</Text>
+                        <View style={{flexDirection:"row",}}>
                             <TouchableOpacity
                                 style={{ marginTop: 10 }}
                                 onPress={() => { this.setState({ modal:false},()=>{
@@ -1625,7 +1627,7 @@ class Appointments extends Component {
                     
                             <View style={{ flex: 0.6,  }}>
                                 <View>
-                                    <Text style={[styles.text, { color: '#fff', marginLeft: 20, fontWeight: 'bold', fontSize: 25 }]}>Appointments</Text>
+                                    <Text style={[styles.text, { color: '#fff', marginLeft: 20, fontWeight: 'bold', fontSize: height*0.04 }]}>Appointments</Text>
 
                                 </View>
                             </View>

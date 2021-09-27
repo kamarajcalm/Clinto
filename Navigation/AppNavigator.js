@@ -98,8 +98,8 @@ const authScreens = {
                             open: TransitionSpecs.TransitionIOSSpec,
                             close: TransitionSpecs.TransitionIOSSpec,
                         },
-                        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
-
+                        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+                        cardStyle: { backgroundColor: '#000' }
                     }}
                 >
                 

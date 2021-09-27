@@ -10,7 +10,7 @@ const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
 const url = settings.url;
 const date = new Date()
-import { Entypo } from '@expo/vector-icons';
+import { Entypo,FontAwesome,FontAwesome5 } from '@expo/vector-icons';
 import { Linking } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import HttpsClient from '../api/HttpsClient';
@@ -100,7 +100,7 @@ class ViewClinicDetails extends Component {
     getClinicDetails =async()=>{
         let api = `${url}/api/prescription/clinics/${this.state.pk.clinicpk}/`
         const data =await HttpsClient.get(api)
-        console.log(data,"JK")
+        console.log(api,"JK")
         if(data.type =="success"){
             this.setState({item:data.data})
         }
@@ -154,8 +154,7 @@ class ViewClinicDetails extends Component {
     }
     getTodayTimings2 = (item)=>{
          let  days =["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
-      let today =days[date.getDay()]
-      console.log(today,"kkkkkk")
+         let today =days[date.getDay()]
       return(
           item.clinicShifts[today][0].timings.map((i, index) => {
               return (
@@ -166,16 +165,16 @@ class ViewClinicDetails extends Component {
               
                      <View style={{flex:1,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}>
                                 <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
-                            <Text style={[styles.text,{color:"#000"}]}>{index+1} .</Text>
+                            <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{index+1} .</Text>
                      </View>
                        <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
-                              <Text style={[styles.text, { marginLeft: 5 }]}>{i[0]}</Text>
+                              <Text style={[styles.text, { marginLeft: 5,fontSize:height*0.02 }]}>{i[0]}</Text>
                        </View>
                         <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
                             
                         </View> 
                         <View style={{flex:0.4,}}>
-                            <Text style={[styles.text]}>{i[1]}</Text>
+                            <Text style={[styles.text,{fontSize:height*0.02}]}>{i[1]}</Text>
                         </View>
     
                    </View>
@@ -222,6 +221,13 @@ class ViewClinicDetails extends Component {
 
 
     }
+      validateOpen = ()=>{
+         if(this.state?.item?.clinicOpened=="opened"){
+             return "green"
+         }else{
+             return "red"
+         }
+     }
     componentWillUnmount() {
         this._unsubscribe();
     }
@@ -271,71 +277,113 @@ class ViewClinicDetails extends Component {
                                 </View>
                               
                             </View>
-                            <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 10 }}>
-                                <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={[styles.text, { fontSize: 18, color: "#000"  }]}>Owned By:</Text>
+                             <View style={{ margin: 20 }}>
+
+                                <View style={{flexDirection:"row"}}>
+                                    <View>
+                                            <Text style={{  fontSize: 18, color: "#000" }}>{this.state?.item?.companyName?.toUpperCase()}</Text>
+                                    </View>
+                                    <View style={{height:10,width:10,borderRadius:5,marginLeft:10,backgroundColor:this.validateOpen(),marginTop:8}}>
+                                        
+                                    </View>
+                        
+                                    <View style={{marginLeft:10,flexDirection:"row"}}>
+                                        <View style={{alignItems:"center",justifyContent:"center"}}>
+                                                 <Text style={[styles.text,{color:"black"}]}>{this.state?.item?.ratings}</Text>
+                                        </View>
+                                       <View style={{alignItems:"center",justifyContent:"center",marginLeft:5}}>
+                                           <AntDesign name="star" size={24} color="#63BCD2" />
+                                       </View>
+                                    </View>
                                 </View>
-                                <View style={{ alignItems: 'center', justifyContent: "center" }}>
-                                    <Text style={[styles.text, { marginLeft: 10 }]}>{this.state?.item?.owner.first_name}</Text>
-                                </View>
-                            </View>
-                            <View style={{ marginHorizontal: 20, marginTop: 10 }}>
-                                <View style={{}}>
-                                    <Text style={[styles.text, {fontSize: 18,color:"#000" }]}>Address:</Text>
-                                </View>
+
+
+
                                 <View style={{ marginTop: 10 }}>
-                                    <View style={{flexDirection:"row"}}>
+                                    <View style={{}}>
+                                        <Text style={[styles.text]}>{ this.state?.item?.address }</Text>
 
                                     </View>
-                                    <Text style={[styles.text, { marginLeft: 10 }]}>{this.state?.item?.address}</Text>
-                                    <Text style={[styles.text, { marginLeft: 10 }]}>{this.state?.item?.city}</Text>
-                                    <Text style={[styles.text, { marginLeft: 10 }]}>{this.state?.item?.state}</Text>
-                                    <Text style={[styles.text, { marginLeft: 10, fontWeight: "bold" }]}>{this.state?.item?.pincode}</Text>
-                                </View>
+                                    <View style={{}}>
+                                        <Text style={[styles.text]}>{this.state?.item?.city} - {this.state?.item?.pincode}</Text>
 
-                            </View>
-                            <View style={{ marginHorizontal: 20, marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                <View>
-                                    <Text style={[styles.text, { color:"#000", fontSize: 18 }]}>Opening Time:</Text>
-                                </View>
-                                <View>
-                                    <Text style={[styles.text, { color:"#000", fontSize: 18 }]}>Closing Time:</Text>
-                                </View>
-                            </View>
-                            <View style={{ marginHorizontal: 20, marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
-                                <View>
-                                    <View style={{ alignSelf: "flex-start" }}>
-                                        <Text style={[styles.text, {color:"#000",fontSize: 18,}]}>Today:</Text>
                                     </View>
-
-                                   
                                 </View>
+                                <View style={{ marginTop: 10, flexDirection: "row" ,}}>
+                                   <View style={{flex:0.5,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
 
-                            </View>
-                             <View>
-                                          {this.state.item&&
-                                         this.getTodayTimings2(this.state.item)
-                                      }
+                                
+ 
+                                    <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                                        onPress={() => {
+                                            if (Platform.OS == "android") {
+                                                Linking.openURL(`tel:${this.state?.item?.mobile}`)
+                                            } else {
+
+                                                Linking.canOpenURL(`telprompt:${this.state?.item?.mobile}`)
+                                            }
+                                         }}
+                                    >
+                                        <FontAwesome name="phone" size={20} color="#63BCD2" />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                                        onPress={() => {
+                                            Linking.openURL(
+                                                `https://www.google.com/maps/dir/?api=1&destination=` +
+                                                this.state.item.lat +
+                                                `,` +
+                                                this.state.item.long +
+                                                `&travelmode=driving`
+                                            );
+                                        }}
+                                    >
+                                        <FontAwesome5 name="directions" size={20} color="#63BCD2" />
+                                    </TouchableOpacity>
                                     </View>
-                            <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                <TouchableOpacity
-                                    onPress={() => { this.setState({ showAll: !this.state.showAll }) }}
-                                >
-                                    <Text style={[styles.text,{color:"#000"}]}>{this.state.showAll ? "show Less" : "show All"}</Text>
-                                </TouchableOpacity>
+                      
+                                </View>
                             </View>
-                                   {this.state.showAll&&
+                   
+                                       <View style={{ padding: 10, }}>
+                                
+              
+                               <View style={{flexDirection:"row"}}>
+                                   <View style={{flex:0.3}}>
+
+                                   </View>
+                                          <View style={{flex:0.7,flexDirection:"row"}}>
+
+                                    <View style={{flex:0.5,alignItems:"center",justifyContent:"center"}}>
+                                                <Text style={[styles.text,{color:"#000"}]}>Open</Text>
+                                            </View>
+                                            <View style={{flex:0.5,alignItems:"center",justifyContent:"center"}}>
+                                                <Text style={[styles.text,{color:"#000"}]}>Close</Text>
+                                            </View>  
+                               </View>
+                               </View>
+                        
+                                         {
                                weekdays.map((item)=>{
+                                     let today =weekdays[date.getDay()]
+                                     let color = item==today?"red":"#000"
                                  return (
-                                     <View style={{marginTop:5}}>
-                                         <View style={{alignItems:"center",justifyContent:"center"}}>
-                                                 <Text style={[styles.text, { fontWeight: "bold" }]}>{item} : </Text>
-                                         </View>
-                                         <View style={{}}>
+                                     <View style={{marginTop:15}}>
+                                         <View style={{flexDirection:"row"}}>
+                                                <View style={{flex:0.3,alignItems:"center",justifyContent:"center",flexDirection:"row"}}>
+                                                    <View style={{flex:0.8,alignItems:"center",justifyContent:"center"}}>
+                                                                      <Text style={[styles.text, { color}]}>{item}  </Text>
+                                                    </View>
+                                                    <View style={{alignItems:"center",justifyContent:"center"}}>
+                                                         <Text style={[styles.text, { }]}> : </Text> 
+                                                    </View>
+                                                </View>
+                                                            <View style={{flex:0.7}}>
                                                   {this.state.item&&
-                                            this.getTodayTimings3(item)
+                                            this.getTodayTimings3(item,color)
                                         }
                                          </View>
+                                         </View>
+                             
                                   
                                      </View>
                                  ) 
@@ -344,70 +392,12 @@ class ViewClinicDetails extends Component {
                              }
 
 
-
-
-
-
-                            <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 10 }}>
-                                <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={[styles.text, { color:"#000",fontSize: 18 }]}>Mobile:</Text>
-                                </View>
-                                <View style={{ alignItems: 'center', justifyContent: "center" }}>
-                                    <Text style={[styles.text, { marginLeft: 10 }]}>{this.state?.item?.mobile}</Text>
-                                </View>
-                                <TouchableOpacity style={{ marginLeft: 5, alignItems: "center", justifyContent: "center" }}
-                                    onPress={() => {
-                                        if (Platform.OS == "android") {
-                                            Linking.openURL(`tel:${this.state?.item?.mobile}`)
-                                        } else {
-
-                                            Linking.canOpenURL(`telprompt:${this.state?.item?.mobile}`)
-                                        }
-                                    }}
-                                >
-                                    <Feather name="phone" size={20} color="black" />
-                                </TouchableOpacity>
                             </View>
-                            <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 10 }}>
-                                <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={[styles.text, {color:"#000", fontSize: 18 }]}>Emergency Contact 1</Text>
-                                </View>
-                                <View style={{ alignItems: 'center', justifyContent: "center" }}>
-                                    <Text style={[styles.text, { marginLeft: 10 }]}>{this.state?.item?.firstEmergencyContactNo}</Text>
-                                </View>
-                                <TouchableOpacity style={{ marginLeft: 5 }}
-                                    onPress={() => {
-                                        if (Platform.OS == "android") {
-                                            Linking.openURL(`tel:${this.state?.item?.firstEmergencyContactNo}`)
-                                        } else {
 
-                                            Linking.canOpenURL(`telprompt:${this.state?.item?.firstEmergencyContactNo}`)
-                                        }
-                                    }}
-                                >
-                                    <Feather name="phone" size={20} color="black" />
-                                </TouchableOpacity>
-                            </View>
-                            <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 10 }}>
-                                <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={[styles.text, {color:"#000", fontSize: 18 }]}>Emergency Contact 2</Text>
-                                </View>
-                                <View style={{ alignItems: 'center', justifyContent: "center" }}>
-                                    <Text style={[styles.text, { marginLeft: 10 }]}>{this.state?.item?.secondEmergencyContactNo}</Text>
-                                </View>
-                                <TouchableOpacity style={{ marginLeft: 5 }}
-                                    onPress={() => {
-                                        if (Platform.OS == "android") {
-                                            Linking.openURL(`tel:${this.state?.item?.secondEmergencyContactNo}`)
-                                        } else {
 
-                                            Linking.canOpenURL(`telprompt:${this.state?.item?.secondEmergencyContactNo}`)
-                                        }
-                                    }}
-                                >
-                                    <Feather name="phone" size={20} color="black" />
-                                </TouchableOpacity>
-                            </View>
+
+
+
                            
                            {this.state.owner&& <View>
                             <View style={[styles.boxWithShadow, { height: height * 0.07, width, backgroundColor: "#eee", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 20 }]}>
@@ -493,16 +483,16 @@ class ViewClinicDetails extends Component {
                                                 <View style={{ alignItems: "center", justifyContent: "center", flex: 0.2 }}>
                                                     <Image
                                                         source={{ uri: item.doctor.profile.displayPicture || "https://s3-ap-southeast-1.amazonaws.com/practo-fabric/practices/711061/lotus-multi-speciality-health-care-bangalore-5edf8fe3ef253.jpeg" }}
-                                                        style={{ height: 60, width: 60, borderRadius: 30, }}
+                                                        style={{ height:height*0.05, width: height*0.05, borderRadius: height*0.025, }}
                                                     />
                                                 </View>
 
                                                 <View style={{ alignItems: 'center', justifyContent: "center", flex: 0.2 }}>
-                                                    <Text>{item.doctor.first_name}</Text>
+                                                    <Text style={[styles.text,{fontSize:height*0.02}]}>{item.doctor.first_name}</Text>
                                                 </View>
                                                 <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
                                                     <View >
-                                                        <Text style={[styles.text]}>Today Timings:</Text>
+                                                        <Text style={[styles.text,{fontSize:height*0.02}]}>Today Timings:</Text>
                                                     </View>
                                                     {
                                                         this.getTodayTimings(item)

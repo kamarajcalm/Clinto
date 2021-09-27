@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Dimensions, TouchableOpacity, StyleSheet, TextInput, FlatList, Image, SafeAreaView, StatusBar,ActivityIndicator ,ScrollView,Keyboard,AsyncStorage} from 'react-native';
-import { Ionicons, Entypo, AntDesign,Fontisto } from '@expo/vector-icons';
+import { Ionicons, Entypo, AntDesign,Fontisto ,FontAwesome5} from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { selectTheme } from '../../actions';
 import settings from '../../AppSettings';
@@ -63,7 +63,9 @@ class CreateReport extends Component {
             resultDate:null,
             dob:"",
             bloodGroup:"",
-            appoinment
+            appoinment,
+            addAccount:false,
+            sexModal:false
         };
     }
     
@@ -84,6 +86,12 @@ addReport =()=>{
            
             this.searchUser(this.state.appoinment.patientname.mobile)
          }
+     this._unsubscribe = this.props.navigation.addListener('focus',()=>{
+         if(this.state.addAccount){
+                 this.searchUser(this.state.patientNo)
+         }  
+        
+    })
          Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
          Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
    
@@ -145,7 +153,7 @@ addReport =()=>{
 }
     searchUser = async (mobileNo) => {
         let api = `${url}/api/profile/userss/?search=${mobileNo}&role=Customer`
-        this.setState({ patientNo: mobileNo ,})
+        this.setState({ patientNo: mobileNo ,addAccount:false})
      
         if (mobileNo.length > 9) {
             this.setState({loading:true})
@@ -243,7 +251,44 @@ addReport =()=>{
     }
 
 
-
+  sexModal =()=>{
+        return(
+            <Modal
+              deviceHeight={screenHeight}
+              isVisible={this.state.sexModal}
+              onBackdropPress={()=>{this.setState({sexModal:false})}}
+              statusBarTranslucent={true}
+            >
+              <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
+                        <View style={{height:height*0.3,width:width*0.7,backgroundColor:"#fff",borderRadius:10}}>
+                                <View style={{marginVertical:20,alignItems:"center",justifyContent:"center"}}>
+                                    <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>Select Sex :</Text>
+                                </View>
+                                          
+                            {
+                                this.state.sex.map((item,index)=>{
+                                        return(
+                                            <TouchableOpacity key={index} style={{flexDirection:"row",marginTop:10}}
+                                             onPress={()=>{this.setState({selectedSex:item.value,sexModal:false})}}
+                                            
+                                            >
+                                                <View style={{flex:0.7,alignItems:"center",justifyContent:"center"}}>
+                                                    <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{item.label}</Text>
+                                                </View>
+                                                <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                                                    <FontAwesome5 name="dot-circle" size={24} color={this.state.selectedSex===item.value?"#63BCD2":"gray"}/>
+                                                </View>
+                                            </TouchableOpacity>
+                                        )
+                                })
+                            }
+                        </View>
+              
+                     
+              </View>
+            </Modal>
+        )
+    }
     create = async()=>{
                 //    cases:
         // 1.if user enter the prescription id
@@ -427,6 +472,62 @@ addReport =()=>{
             </Modal>
         )
     }
+      changeProfileModal =()=>{
+       return(
+            <Modal
+              deviceHeight={screenHeight}
+              isVisible={this.state.profileModal}
+              onBackdropPress={()=>{this.setState({profileModal:false})}}
+              statusBarTranslucent={true}
+            >
+              <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
+                        <View style={{height:height*0.6,width:width*0.7,backgroundColor:"#fff",borderRadius:10}}>
+                                <View style={{marginVertical:20,alignItems:"center",justifyContent:"center"}}>
+                                    <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>Select Profile :</Text>
+                                </View>
+                                <FlatList 
+                                   showsVerticalScrollIndicator={false}
+                                   data={this.state.profiles}
+                                   keyExtractor={(item,index)=>index.toString()}
+                                   renderItem={({item,index})=>{
+                                       return(
+                                           <TouchableOpacity key={index} style={{flexDirection:"row",marginTop:10}}
+                                             onPress={()=>{
+
+                                           this.setState({selectedProfile:item,patientsName:item.label,loading:false,selectedSex:item.sex,Age:item.age.toString(),profileModal:false})
+                                               
+                                            
+                                            }}
+                                            
+                                            >
+                                                <View style={{flex:0.7,alignItems:"center",justifyContent:"center"}}>
+                                                    <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{item.label}</Text>
+                                                </View>
+                                                <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                                                    <FontAwesome5 name="dot-circle" size={24} color={this.state.selectedProfile.value===item.value?"#63BCD2":"gray"}/>
+                                                </View>
+                                            </TouchableOpacity>
+                                       )
+                                    }}
+                                />            
+                                <View style={{marginVertical:20,alignItems:"center",justifyContent:"center"}}>
+                                        <TouchableOpacity style={{backgroundColor:themeColor,borderRadius:5,height:height*0.04,alignItems:"center",justifyContent:"center",width:width*0.3}}
+                                          onPress={()=>{
+                                              this.setState({profileModal:false,addAccount:true})
+                                              this.props.navigation.navigate("AddAccount",{parent:this.state.profiles[0]})
+                                            }}
+                                        
+                                        >
+                                               <Text style={[styles.text,{color:"#fff"}]}>Add New</Text>
+                                        </TouchableOpacity>
+                                </View>
+                        </View>
+              
+                     
+              </View>
+            </Modal> 
+       )
+    }
     render() {
         return (
             <>
@@ -470,14 +571,14 @@ addReport =()=>{
                                             style={{ width: width * 0.7, height: 35, backgroundColor: inputColor, borderRadius: 10, padding: 10, marginTop: 10}}
                                 />
                                </View>
-                               {this.state?.profiles?.length>0&&<View style={{ marginTop: 20 ,flexDirection:"row",paddingHorizontal:20}}>
+                               {this.state?.profiles?.length>0&&<View style={{ marginTop: 20 ,paddingHorizontal:20,flexDirection:"row"}}>
                             <View style={{alignItems:"center",justifyContent:"center"}}>
                                     <Text style={[styles.text], { color: "#000", fontSize: 18 }}>Change Profile</Text>
 
                             </View>
                            
                              <View style={{marginLeft:10}}>
-                                <DropDownPicker
+                                {/* <DropDownPicker
                                     placeholder={"select Profile"}
                                     defaultValue={this.state.selectedProfile.value}
                                     items={this.state.profiles}
@@ -495,7 +596,20 @@ addReport =()=>{
                                 }
                                 }
 
-                                />
+                                /> */}
+                                   <TouchableOpacity style={{marginTop:10,backgroundColor:inputColor,height:35,width:width*0.4,flexDirection:"row"}}
+                             
+                             onPress={()=>{
+                                 this.setState({profileModal:true})
+                             }}
+                             >
+                                 <View style={{flex:0.8,alignItems:"center",justifyContent:"center"}}>
+                                    <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{this.state.selectedProfile?this.state.selectedProfile.label:"Select"}</Text>
+                                 </View>
+                                 <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                                     <Entypo name="chevron-small-down" size={20} color="black" />
+                                 </View>
+                             </TouchableOpacity>
                              </View>
                           
                         </View>}
@@ -515,7 +629,7 @@ addReport =()=>{
                             </View>
                            
                              <View style={{marginLeft:10}}>
-                                <DropDownPicker
+                                {/* <DropDownPicker
                                       placeholder={"select"}
                                     items={this.state.sex}
                                     defaultValue={this.state.selectedSex}
@@ -529,7 +643,20 @@ addReport =()=>{
                                         selectedSex: item.value
                                     })}
 
-                                />
+                                /> */}
+                                    <TouchableOpacity style={{marginTop:10,backgroundColor:inputColor,height:35,width:width*0.4,flexDirection:"row"}}
+                             
+                             onPress={()=>{
+                                 this.setState({sexModal:true})
+                             }}
+                             >
+                                 <View style={{flex:0.8,alignItems:"center",justifyContent:"center"}}>
+                                    <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{this.state.selectedSex?this.state.selectedSex:"Select"}</Text>
+                                 </View>
+                                 <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                                     <Entypo name="chevron-small-down" size={20} color="black" />
+                                 </View>
+                             </TouchableOpacity>
                              </View>
                           
                         </View>
@@ -697,6 +824,12 @@ addReport =()=>{
                                     onConfirm={this.handleConfirm2}
                                     onCancel={this.hideDatePicker2}
                        />
+                       {
+                           this.changeProfileModal()
+                       }
+                       {
+                           this.sexModal()
+                       }
                 </SafeAreaView>
             </>
         );

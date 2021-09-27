@@ -933,26 +933,7 @@ console.log(sendData,"ppp")
                                             <Text style={[styles.text, { color: "#fff" }]}>Add</Text>
                                         </TouchableOpacity>
                                     </View>
-                                    {this.state.show1 && (
-                                        <DateTimePicker
-                                            testID="TimePicker1"
-                                            value={this.state.date}
-                                            mode={this.state.mode}
-                                            is24Hour={false}
-                                            display="default"
-                                            onChange={(time) => { this.onChange1(time) }}
-                                        />
-                                    )}
-                                    {this.state.show2 && (
-                                        <DateTimePicker
-                                            testID="TimePicker2"
-                                            value={this.state.date}
-                                            mode={this.state.mode}
-                                            is24Hour={false}
-                                            display="default"
-                                            onChange={(time) => { this.onChange2(time) }}
-                                        />
-                                    )}
+                          
                                 </View>
 
                                 <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>

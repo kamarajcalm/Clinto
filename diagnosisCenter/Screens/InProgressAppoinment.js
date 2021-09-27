@@ -52,7 +52,10 @@ class InProgressAppoinment extends Component {
        
         
     }
-
+        viewAppointments =(item)=>{
+   
+        return this.props.navigation.navigate('ViewAppointmentDoctors',{item})
+    }
 getProgressAppoinments= async()=>{
       let   api = `${url}/api/prescription/appointments/?clinic=${this.props.clinic.clinicpk}&status=Accepted&limit=5&offset=${this.state.offset}`
       let data = await HttpsClient.get(api)
@@ -97,11 +100,11 @@ getProgressAppoinments= async()=>{
         console.log(sendData)
         let post = await HttpsClient.patch(api, sendData)
         if (post.type == "success") {
-            let duplicate = this.state.AppointmentsPending
+            let duplicate = this.state.appoinments
             duplicate.splice(this.state.selectedIndex, 1)
             this.showSimpleMessage("Rejected SuccessFully", "#dd7030",)
             this.getProgressAppoinments();
-            this.setState({ modal: false, AppointmentsPending: duplicate })
+            this.setState({ modal: false, appoinments: duplicate })
         } else {
             this.showSimpleMessage("Try again", "#B22222", "danger")
             this.setState({ modal: false })

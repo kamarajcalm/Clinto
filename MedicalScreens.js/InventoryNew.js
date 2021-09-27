@@ -211,7 +211,7 @@ class InventoryNew extends Component {
         let api = `${url}/api/prescription/createCategory/`
         let sendData ={
            title:this.state.categoryName,
-            clinic: this?.props?.medical?.clinicpk || this?.props?.clinic?.clinicpk
+           clinic: this?.props?.medical?.inventory || this?.props?.clinic?.inventory
         }
         let post = await HttpsClient.post(api,sendData)
         console.log(post,"ppp")

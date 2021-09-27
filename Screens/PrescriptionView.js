@@ -1434,7 +1434,7 @@ validateButton = (item,index) =>{
               statusBarTranslucent={true}
             >
               <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
-                    <View style={[styles.boxWithShadow,{height:height*0.4,backgroundColor:"#fff",width:width*0.8,borderRadius:10}]}>
+                    <View style={[styles.boxWithShadow,{height:height*0.5,backgroundColor:"#fff",width:width*0.8,borderRadius:10}]}>
                          <View style={{marginVertical:20,alignItems:"center",justifyContent:"center"}}>
                               <Text style={[styles.text]}>Tell us your experience with</Text>
                          </View>
@@ -1497,7 +1497,7 @@ validateButton = (item,index) =>{
                          </View>
                          <View style={{flex:0.5,marginLeft:20,}}>
                              <View>
-                                   <Text style={[styles.text,{color:"#fff",fontSize:height*0.017}]}>{this.state?.item?.clinicname?.address}</Text>
+                                   <Text style={[styles.text,{color:"#fff",fontSize:height*0.017}]} numberOfLines={1}>{this.state?.item?.clinicname?.address}</Text>
                              </View>
                          
                             <View style={{ }}>
@@ -1524,7 +1524,7 @@ validateButton = (item,index) =>{
                    
              
                  <View style={{flex:1}}>
-                    <View style={{ flex: 0.13,borderColor:"#eee",borderBottomWidth:0.5,}}>
+                    <View style={{ flex: 0.15,borderColor:"#eee",borderBottomWidth:0.5,}}>
                         <View style={{flex:0.5,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
                              <View style={{flexDirection:'row'}}>
                                <View>
@@ -1539,7 +1539,7 @@ validateButton = (item,index) =>{
                                     <Text style={[styles.text,{fontSize:height*0.02}]}>Age : </Text>
                                 </View>
                                 <View>
-                                        <Text style={[styles.text, { color: "#000",fontSize:height*0.02 }]}>{this.state?.item?.username.age}</Text>
+                                        <Text style={[styles.text, { color: "#000",fontSize:height*0.02 }]}>{this.state?.item?.age}</Text>
                                 </View>
                             </View>
                             <View style={{ flexDirection: 'row' }}>
@@ -1560,13 +1560,13 @@ validateButton = (item,index) =>{
                         </View>
                        
                     </View>
-                    <View style={{flex:0.22}}>
+                    <View style={{flex:0.15,justifyContent:"center"}}>
                             {
                                 this.renderHeader()
                             }
                     </View>
                   
-                        <View style={{flex:0.48,}}>
+                        <View style={{flex:0.53,}}>
 
                             {this.state.selected =="Prescribed"?
                             <FlatList
@@ -1577,39 +1577,67 @@ validateButton = (item,index) =>{
                              keyExtractor={(item, index) => index.toString()}
                              renderItem={({ item, index }) => {
                                 return (
-                                    <View style={{
-                                        paddingBottom:10,
-                                        flex: 1,
-                                        borderBottomWidth: 0.5,
-                                        borderColor: '#D1D2DE',
-                                        backgroundColor: '#FFFFFF',
-                                    }}>
-                                        <View style={{ flexDirection: "row", justifyContent: "space-between", paddingLeft: 15, marginTop: 5 }}>
-                                            <View style={{ flexDirection: "row", flex: 0.7 }}>
-                                                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+                        <TouchableOpacity style={{
+                                                paddingBottom: 10,
+                                                flex: 1,
+                                                borderBottomWidth: 0.5,
+                                                borderColor: '#D1D2DE',
+                                                backgroundColor: '#FFFFFF',
+                                               
+                                                marginTop:10
+                                            }}>
+                                                <View style={{flexDirection:"row"}}>
+                                                    <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
+                                                        <Text style={[styles.text,{color:"#000",fontWeight:"bold"}]}>{index + 1} . </Text>
+                                                    </View>
+                                                    <View style={{ flex: 0.8 }}>
 
+                                                        <View style={{ flexDirection: "row" }}>
+                                                            <View>
+                                                                <Text style={[styles.text, { color: "#000", fontWeight: "bold"}]}>{item.medicinename.name}</Text>
+                                                            </View>
+                                                            <View style={{ marginLeft: 10 }}>
+                                                                <Text style={[styles.text, { color: "#000", fontWeight: "bold" }]}>({item.medicinename.type})</Text>
+                                                            </View>
+                                                        { (item.medicinename.type === "Tablet" || item.medicinename.type === "Capsules") &&    <>
+                                                                <View>
+                                                                    <Text style={[styles.text,]}>*</Text>
+                                                                </View>
+                                                                <View>
+                                                                    <Text style={[styles.text]}> {item.days} days</Text>
+                                                                </View>
+                                                            </>}
+                                                        </View>
+                                                        {(item.medicinename.type === "Tablet" || item.medicinename.type === "Capsules") && <View style={{ flexDirection: "row" }}>
+                                                            <View>
+                                                                <Text style={[styles.text]}> {item.morning_count} - {item.afternoon_count} -{item.night_count} </Text>
+                                                            </View>
+                                                            <View>
+                                                                <Text style={[styles.text]}>( {item.after_food ? "AF" : "BF"} )</Text>
+                                                            </View>
+                                                       
+                                                        </View>}
+                                                             <View style={{marginTop:5}}>
+                                                                <Text style={[styles.text,{color:"#DEB887"}]}>Diagnosis : {item.diagonisname}</Text>
+                                                            </View>
+                                                    </View>
+                                                    <View style={{ flex: 0.2, alignItems: "center", justifyContent: "space-around" }}>
 
-                                                    <Text style={[styles.text, { color: "#000", fontSize: 18 }]}>{item.medicinename.name}</Text>
-                                                    <Text style={[styles.text, { color: "gray",}]}> * {item.days} days</Text>
-                                                    <Text style={[styles.text, { color: "gray", }]}> </Text>
+                                                        <View>
+                                                            <Text style={[styles.text]}>Qty : {item.total_qty} </Text>
+                                                        </View>
+                                                    </View>
                                                 </View>
+                                           
+                                                <View style={{flexDirection:"row"}}>
+                                                    <View style={{flex: 0.1,}}>
 
-                                            </View>
-
-
-                                        </View>
-
-                                        {
-                                            this.renderItem(item,index)
-                                        }
-                                    {item.isAdded&&this.state.buy&&<View style={{position:"absolute",right:20,}}>
-                                                <TouchableOpacity
-                                                  onPress={()=>{this.removeMedicine(item,index)}}
-                                                >
-                                                    <Entypo name="circle-with-cross" size={24} color="red" />
-                                                </TouchableOpacity>
-                                         </View>}
-                                    </View>
+                                                    </View>
+                                                    <View style={{ marginTop: 10 ,flex: 0.9,paddingRight:10}}>
+                                                        <Text style={[styles.text]}>{item.command}</Text>
+                                                    </View>
+                                                </View>
+                                            </TouchableOpacity>
                                 )
                             }}
                         />:

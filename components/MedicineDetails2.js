@@ -116,7 +116,7 @@ export default class MedicineDetails2 extends Component {
     return (
         <View
             key={index}
-            style={[styles.card, { flex: 1 }]}
+            style={[styles.card, { flex: 1, }]}
         >
             <View style={{ alignItems: 'center', justifyContent: "center", flex: 0.2 }}>
                 <Text style={[styles.text, { fontWeight: "bold", fontSize: 20 }]}>{index+1}. {item.title}</Text>
@@ -162,7 +162,7 @@ export default class MedicineDetails2 extends Component {
 
                         />
                     </View> */}
-                    <View style={{ marginLeft: 10, alignItems: "center", marginTop: 10 }}>
+                    <View style={{ marginLeft: 10, alignItems: "center", marginTop: 10,justifyContent:"center" }}>
                                 <TouchableOpacity style={{height:height*0.05,width:width*0.5,backgroundColor:inputColor,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}
                              onPress={()=>{
                                  this.setState({showModal:true})

@@ -35,7 +35,7 @@ export default class AppointmentStack extends Component {
             >
                 <Stack.Screen name="Appointments" component={Appointments} options={{ headerShown: false }} />
                 <Stack.Screen name="ProfileView" component={ProfileView} options={{ headerShown: false }} />
-                <Stack.Screen name="ViewAppointment" component={ViewAppointments} options={{ headerShown: false }} />
+                <Stack.Screen name="ViewAppointments" component={ViewAppointments} options={{ headerShown: false }} />
                 <Stack.Screen name="ViewAppointmentDoctors" component={ViewAppointmentDoctors} options={{ headerShown: false }} />
                 <Stack.Screen name="Chat" component={ChatScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="ViewPriscription" component={ViewPriscriptions} options={{ headerShown: false }} />

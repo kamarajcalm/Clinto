@@ -26,10 +26,10 @@ class ViewAppointments extends Component {
     }
     getCall = () => {
         if (Platform.OS == "android") {
-            Linking.openURL(`tel:${this.state.item?.patientname?.mobile}`)
+            Linking.openURL(`tel:${this.state.item?.clinicname?.mobile}`)
         } else {
 
-            Linking.canOpenURL(`telprompt:${this.state.item?.patientname?.mobile}`)
+            Linking.canOpenURL(`telprompt:${this.state.item?.clinicname?.mobile}`)
         }
     }
     validateColor = (status) => {
@@ -112,7 +112,7 @@ class ViewAppointments extends Component {
                             <Ionicons name="chevron-back-circle" size={30} color="#fff" />
                         </TouchableOpacity>
                         <View style={{ flex: 0.7, }}>
-                            <Text style={[styles.text, { color: "#fff", fontSize: 24, fontWeight: 'bold'}]}> Appointment Details</Text>
+                            <Text style={[styles.text, { color: "#fff", fontSize: height*0.03, fontWeight: 'bold'}]}> Appointment Details</Text>
                         </View>
 
                     </View>
@@ -182,7 +182,7 @@ class ViewAppointments extends Component {
                                   <AntDesign name="down" size={20} color="black" />
                               </View>
                         </View>
-                        <View style={{margin:20}}>
+                { this.state.item.clinicname.type!="Lab"   &&   <View style={{margin:20}}>
                             <View >
                                <Text style={[styles.text]}>Doctor</Text>
                             </View>
@@ -211,8 +211,8 @@ class ViewAppointments extends Component {
                                     </View>
                                 </View>
                             </View>
-                        </View>
-                        <View style={{marginHorizontal:20}}>
+                        </View>}
+                        <View style={{marginHorizontal:20,marginTop:20}}>
                             <View style={{flexDirection:"row"}}>
                                 <Text style={[styles.text]}>Appointment Status:</Text>
                                 <Text style={[styles.text, { marginLeft: 10, color: this.validateColor(this.state.item.status)}]}>{this.state.item.status}</Text>

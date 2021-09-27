@@ -12,6 +12,7 @@ const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
 const url = settings.url;
 import axios from 'axios';
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
  class SearchMedicines extends Component {
   constructor(props) {
     super(props);
@@ -19,19 +20,37 @@ import axios from 'axios';
         selected:[],
         medicines:[],
         cancelToken: undefined,
-        toGive:false
+        toGive:false,
+        value:""
     };
    
   }
 
     addNew =()=>{
         let duplicate = this.state.medicines
-        duplicate.push({manual:true})
+        duplicate.push({manual:true,title:this.state.value})
         this.props.route.params.backFunction(duplicate)
         this.props.navigation.goBack()
     }
      selectMedicine =(item)=>{
-
+         let prescribedMedicines = this.props.route?.params?.prescribedMedicines||null
+         let medicinesGiven =  this.props.route?.params?.medicinesGiven||null
+         if(prescribedMedicines){
+               const found  = prescribedMedicines.find((medi)=>{
+                    return medi.id == item.id
+               })
+               if(found){
+                   return this.showSimpleMessage("Medicine Already Added to prescribed Medicines","orange","info")
+               }
+         }
+        if(medicinesGiven){
+                const found  = medicinesGiven.find((medi)=>{
+                    return medi.id == item.id
+               })
+               if(found){
+                   return this.showSimpleMessage("Medicine Already Added to Medicines Given","orange","info")
+               }
+        }
          let data =this.state.selected
          var found = data.find(function (element) {
              return element === item;
@@ -47,8 +66,19 @@ import axios from 'axios';
          
          
      }
+         showSimpleMessage(content,color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor:color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
+
+        showMessage(message);
+    }
      SearchMedicines =async(query)=>{
-         this.setState({ search: true })
+         this.setState({ search: true ,value:query})
     if(this.state.toGive){
         if (typeof this.state.cancelToken != typeof undefined) {
             this.state.cancelToken.cancel('cancelling the previous request')
@@ -87,7 +117,7 @@ import axios from 'axios';
          <>
             <SafeAreaView style={styles.topSafeArea} />
             <SafeAreaView style={styles.bottomSafeArea}>
-      <View style={{flex:1}}>
+       <View style={{flex:1}}>
             <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
                 <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}
                     onPress={() => { 
@@ -105,6 +135,7 @@ import axios from 'axios';
                 </TouchableOpacity>
                 <View style={{ flex: 0.7, alignItems: "center", justifyContent: "center" }}>
                     <TextInput
+                        value={this.state.value}
                         autoFocus={true}
                         selectionColor={themeColor}
                         style={{  height:35, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 ,width:"100%"}}
@@ -119,7 +150,7 @@ import axios from 'axios';
                 keyExtractor={(item,index)=>index.toString()}
                 renderItem={({item,index})=>{
                     return(
-                      <Medicine item ={item} selection={(item)=>{this.selectMedicine(item)}}/>
+                      <Medicine item ={item} selection={(item)=>{this.selectMedicine(item)}} selected ={this.state.selected}/>
                     )
                 }}
             />}

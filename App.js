@@ -10,7 +10,7 @@ import FlashMessage from "react-native-flash-message";
 import * as Notifications from 'expo-notifications';
 
 import notRef from './notificationRef';
-Notifications.setNotificationCategoryAsync("welcome", [
+Notifications.setNotificationCategoryAsync("Medical-Accept", [
   {
     identifier: "1",
     buttonTitle: "accept",
@@ -23,7 +23,7 @@ Notifications.setNotificationCategoryAsync("welcome", [
 
 ],
 )
-Notifications.setNotificationChannelAsync('new-emails', {
+Notifications.setNotificationChannelAsync('Medical-Accept', {
   name: 'E-mail notifications',
   sound: 'starwar.wav', // Provide ONLY the base filename
 });

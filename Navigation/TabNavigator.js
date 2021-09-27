@@ -104,7 +104,7 @@ class TabNavigator extends Component {
     }
     getTabBarVisibility4 = (route) => {
         const routeName = route.state ? route.state.routes[route.state.index].name : ''
-        if (routeName == "ViewAppointment") {
+        if (routeName == "ViewAppointments") {
             return false
         }
       

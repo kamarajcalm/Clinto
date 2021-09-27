@@ -155,7 +155,8 @@ class CreateClinics extends Component {
             city:this.state.city,
             lat:this.state.latitude,
             long:this.state.longitude,
-            offical_email:this.state.email
+            offical_email:this.state.email,
+             type:"Clinic",
         }
         console.log(sendData)
         if (this.state.image){
@@ -412,6 +413,7 @@ class CreateClinics extends Component {
                                 <View>
                                     <Text style={styles.text}>address</Text>
                                     <TextInput
+                                         multiline={true}
                                         onChangeText={(address) => { this.setState({ address }) }}
                                         value={this.state.address}
                                         selectionColor={themeColor}
@@ -473,7 +475,7 @@ class CreateClinics extends Component {
                                        keyboardType ="numeric"
                                         onChangeText={(text) => { this.setState({ latitude:text})}}
                                         value={this.state?.latitude.toString()}
-                                        multiline={true}
+                                     
                                         selectionColor={themeColor}
                                         style={{ width: width * 0.8, height: 35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
@@ -483,7 +485,7 @@ class CreateClinics extends Component {
                                     <TextInput
                                         onChangeText={(text) => { this.setState({ longitude: text }) }}
                                         value={this.state?.longitude.toString()}
-                                        multiline={true}
+                                   
                                         selectionColor={themeColor}
                                         style={{ width: width * 0.8, height:35, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />

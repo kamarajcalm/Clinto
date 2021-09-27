@@ -49,7 +49,7 @@ class AddPrescription extends Component {
                 Reason:"",
                 healthIssues:[],
                 loading: false,
-                doctorFees:"",
+                doctorFees:this.props.user.profile.base_fees.toString()||"",
                 sex,
                 healthIssue:"",
                 Age:"",
@@ -82,7 +82,9 @@ class AddPrescription extends Component {
                 doctorModal:false,
                 selectedDoctor:null,
                 dob:"",
-                Address:""
+                Address:"",
+                errorIndex:"fff",
+                addAccount:false
     };
   }
 getClinicDoctors = async()=>{
@@ -92,16 +94,16 @@ getClinicDoctors = async()=>{
         if (data.type == "success") {
             this.setState({ doctors: data.data })
                 if(this.state.appoinment){
-         let findDoctor = data.data.find((item)=>{
-             return item.doctor.profile.name==this.state?.appoinment?.doctordetails.name
-         })
-       if(findDoctor){
-           this.setState({selectedDoctor:findDoctor},()=>{
-                 this.searchUser(this.state?.appoinment?.patientname.mobile, this.state?.appoinment?.requesteddate, this.state?.appoinment?.clinic)
-           })
-       }
+                        let findDoctor = data.data.find((item)=>{
+                            return item.doctor.profile.name==this.state?.appoinment?.doctordetails.name
+                        })
+                    if(findDoctor){
+                        this.setState({selectedDoctor:findDoctor},()=>{
+                                this.searchUser(this.state?.appoinment?.patientname.mobile, this.state?.appoinment?.requesteddate, this.state?.appoinment?.clinic)
+                        })
+                    }
 
-    }
+                    }
         }
 }
   componentDidMount(){
@@ -112,7 +114,10 @@ getClinicDoctors = async()=>{
         Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
 
     this._unsubscribe = this.props.navigation.addListener('focus',()=>{
-         this.searchUser(this.state.mobileNo)
+        if(this.state.addAccount){
+            this.searchUser(this.state.mobileNo)
+        }
+         
     })
       this._subscribe = this.props.navigation.addListener('beforeRemove', (e) => {
           if (this.state.check&&(this.state.medicines.length>0||this.state.MedicinesGiven.length>0)) {
@@ -243,6 +248,9 @@ getClinicDoctors = async()=>{
     backFunction =(medicines)=>{
         try{
             medicines.forEach((i) => {
+                if(i.manual){
+                    this.scrollRef.scrollToEnd({animated:true})
+                }
                     i.after_food = false,
                     i.morning_count = 0,
                     i.afternoon_count = 0,
@@ -330,7 +338,22 @@ getClinicDoctors = async()=>{
             this.setState({ creating: false })
         return  this.showSimpleMessage("Please recharge to create Prescription", "#B22222", "danger")
         }
- 
+        if(this.state.mobileNo==""){
+            this.setState({ creating: false })
+            return this.showSimpleMessage("Please Enter Mobile No", "#dd7030",)  
+        }
+           if(this.state.patientsName==""){
+            this.setState({ creating: false })
+            return this.showSimpleMessage("Please Enter patientsName", "#dd7030",)  
+        }
+               if(this.state.dob==""){
+            this.setState({ creating: false })
+            return this.showSimpleMessage("Please Enter dob", "#dd7030",)  
+        }
+                     if(this.state.Age==""){
+            this.setState({ creating: false })
+            return this.showSimpleMessage("Please Enter Age", "#dd7030",)  
+        }
         if(this.state.selectedSex==null){
              this.setState({ creating: false })
             return this.showSimpleMessage("Please Select Sex", "#dd7030",) 
@@ -357,24 +380,43 @@ getClinicDoctors = async()=>{
             }
         }
         for(let i=0;i<this.state.medicines.length;i++){
-               
-            if(this.state.medicines[i].morning_count==0&&this.state.medicines[i].afternoon_count==0&&this.state.medicines[i].night_count==0){
-               
-                error.error=`please select atlease one Frequency in medicine number ${this.state.MedicinesGiven.length+i+1}`
-                error.index= i
-                break;
-              
-            }
-            if(this.state.medicines[i].days=="0"||this.state.medicines[i].days==""){
+            if(this.state.medicines[i].type=="Tablet"||this.state.medicines[i].type=="Capsules") {
+                if(this.state.medicines[i].morning_count==0&&this.state.medicines[i].afternoon_count==0&&this.state.medicines[i].night_count==0){
+                    error.error=`please select atlease one Frequency in medicine number ${this.state.MedicinesGiven.length+i+1}`
+                    error.index= i
+                    this.setState({errorIndex:i})
+                    break;
+                }
+                if(this.state.medicines[i].days=="0"||this.state.medicines[i].days==""){
                   error.error=`please select No of Days in medicine number ${this.state.MedicinesGiven.length+i+1}`
-                error.index= i
+                  error.index= i
+                  this.setState({errorIndex:i})
+                 
                 break;
-            }
-            if(this.state.medicines[i].diagonsis==null||this.state.medicines[i].diagonsis==undefined||this.state.medicines[i].diagonsis==""){
+              }
+                  if(this.state.medicines[i].diagonsis==null||this.state.medicines[i].diagonsis==undefined||this.state.medicines[i].diagonsis==""){
                   error.error=`please select diagnosis in medicine number ${this.state.MedicinesGiven.length+i+1}`
-                error.index= i
+                  error.index= i
+                  this.setState({errorIndex:i})
                 break;
             }
+            }else{
+                if(this.state.medicines[i].diagonsis==null||this.state.medicines[i].diagonsis==undefined||this.state.medicines[i].diagonsis==""){
+                  error.error=`please select diagnosis in medicine number ${this.state.MedicinesGiven.length+i+1}`
+                  error.index= i
+                  this.setState({errorIndex:i})
+                  break;
+                }
+                if(this.state.medicines[i].total_qty==""||this.state.medicines[i].total_qty==0||this.state.medicines[i].total_qty==undefined){
+                      error.error=`please Enter QTY in medicine number ${this.state.MedicinesGiven.length+i+1}`
+                      error.index= i
+                      this.setState({errorIndex:i})
+                      break;
+                }
+            }
+        
+        
+        
         
         }
         if(error?.error){
@@ -384,17 +426,10 @@ getClinicDoctors = async()=>{
         this.state.medicines.forEach((i)=>{
        
             try{
-                if (i.type == "Liquid"){
+                if (i.type == "Tablet"||i.type=="Capsules" ){
+                     i.total_qty = i.days * (i.morning_count||0 + i.afternoon_count||0 + i.night_count||0)
+                }else{
                     return 
-                } else if (i.type == "Injections"){
-                    return
-                }
-                else if (i.type == "Cream"){
-                    return
-                }
-                else{
-                    console.log("gjhj")
-                    i.total_qty = i.days * (i.morning_count||0 + i.afternoon_count||0 + i.night_count||0)
                 }
                
                  
@@ -493,8 +528,13 @@ getClinicDoctors = async()=>{
     handleConfirm2 = (date) => {
           
         let dob =  moment(date).format('YYYY-MM-DD')
-        let Age = moment(dob, "YYYY-MM-DD").fromNow().split(' ')
-        this.setState({ dob,show2:false,Age:Age[0]})
+        let Age = moment(dob, "YYYY-MM-DD").fromNow().split(" ")
+         if(Age[1]=="years"){
+             this.setState({Age:Age[0]})
+         }else{
+                  this.setState({Age:"0"})
+         }
+        this.setState({ dob,show2:false,})
         
         this.hideDatePicker2();
     };
@@ -563,7 +603,7 @@ getClinicDoctors = async()=>{
           api  = `${url}/api/prescription/getAppointmentUser/?doctor=${this.props.user.id}&user=${mobileNo}&clinic=${clinic||this.props.clinic.clinicpk}&requesteddate=${date||moment(new Date()).format('YYYY-MM-DD')}`
         }
        console.log(api,'ppppppp')
-       this.setState({mobileNo})
+       this.setState({mobileNo,addAccount:false})
         if(mobileNo.length>9){
              this.setState({loading:true})
             const data = await HttpsClient.get(api)
@@ -615,7 +655,18 @@ getClinicDoctors = async()=>{
                
              this.setState({loading:false})
            }else{
-               this.setState({ loading: false })
+               this.setState({ 
+                   loading: false ,
+                   profiles:[] ,
+                   Age:"",
+                   patientsName:"",
+                   healthIssues:[],
+                   Reason:"",
+                   appointment_taken:false,
+                   selectedSex:null,
+                   selectedProfile:null,
+                   dob:""
+                })
            }
         }
     }
@@ -654,9 +705,7 @@ getClinicDoctors = async()=>{
         let data = await HttpsClient.get(api)
         console.log(data,"jjj")
         if(data.type =="success"){
-            if(data.data.length>0){
-                this.scrollRef.scrollTo( {x:0,y:height*0.8,animated: true})
-            }
+          
             this.setState({ Diseases:data.data })
         }
         
@@ -823,7 +872,7 @@ getClinicDoctors = async()=>{
                                 <View style={{marginVertical:20,alignItems:"center",justifyContent:"center"}}>
                                         <TouchableOpacity style={{backgroundColor:themeColor,borderRadius:5,height:height*0.04,alignItems:"center",justifyContent:"center",width:width*0.3}}
                                           onPress={()=>{
-                                              this.setState({profileModal:false})
+                                              this.setState({profileModal:false,addAccount:true})
                                               this.props.navigation.navigate("AddAccount",{parent:this.state.profiles[0]})
                                             }}
                                         
@@ -1199,7 +1248,7 @@ getClinicDoctors = async()=>{
                                    return(
                                        <TouchableOpacity 
                                            key ={index}
-                                           style={{padding:5,justifyContent:"center",width:width*0.6,borderColor:"#333",borderBottomWidth:0.3,height:35,}}
+                                           style={{padding:5,justifyContent:"center",width:width*0.7,borderColor:"#333",borderBottomWidth:0.3,height:35,}}
                                            onPress={() => { this.setState({ Disease: "",Diseases:[]},()=>{
                                                this.state.selectedDiagonosis.push(i.title)
                                                this.searchTemplates(this.state.Age, i.title)
@@ -1215,7 +1264,7 @@ getClinicDoctors = async()=>{
                                 <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Medicines Given</Text>
                                 <View style={{ flexDirection: "row", marginTop: 20, alignItems: 'center', justifyContent: "space-around" }}>
                                     <TouchableOpacity style={{ alignItems: "center", justifyContent: 'center', flexDirection: "row" }}
-                                        onPress={() => { this.props.navigation.navigate("SearchMedicines", { backFunction2: (medicines) => { this.backFunction2(medicines) },toGive:true }) }}
+                                        onPress={() => { this.props.navigation.navigate("SearchMedicines", { backFunction2: (medicines) => { this.backFunction2(medicines) },toGive:true ,medicinesGiven:this.state.MedicinesGiven}) }}
                                     >
                                         <AntDesign name={"search1"} size={30} color={themeColor} />
                                     </TouchableOpacity>
@@ -1241,7 +1290,7 @@ getClinicDoctors = async()=>{
                                 <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Prescribe Medicines *</Text>
                                 <View style={{ flexDirection: "row", marginTop: 20,alignItems:'center',justifyContent:"space-around"}}>
                     <TouchableOpacity style={{ alignItems: "center", justifyContent: 'center', flexDirection: "row" }}
-                        onPress={() => { this.props.navigation.navigate("SearchMedicines", { backFunction: (medicines) => { this.backFunction(medicines) } }) }}
+                        onPress={() => { this.props.navigation.navigate("SearchMedicines", { backFunction: (medicines) => { this.backFunction(medicines) }, prescribedMedicines:this.state.medicines}) }}
                     >
                         <AntDesign name={"search1"} size={30} color={themeColor} />
                     </TouchableOpacity>
@@ -1258,7 +1307,7 @@ getClinicDoctors = async()=>{
                                     medicinesGiven = {this.state.MedicinesGiven} 
                                     changeFunction={(type, value, index) => { this.changeFunction(type, value, index)}} 
                                     diagonsis={[...this.state.selectedDiagonosis]}
-
+                                     errorIndex={this.state.errorIndex}
                                     />
                         )
                   })

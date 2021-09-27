@@ -80,7 +80,7 @@ class ViewDoctorProfile extends Component {
                                 </View>
                              
                                     {
-                                        this.state.item.qualifications.map((item,index)=>{
+                                        this.state?.item?.qualifications?.map((item,index)=>{
                                                 return(
                                                     <View style={{flexDirection:"row",alignItems:"center",justifyContent:"center"}}>
                                                         <Text style={[styles.text, { fontSize: 22 }]}>{item},</Text>
