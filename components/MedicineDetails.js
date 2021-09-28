@@ -464,7 +464,7 @@ export default class MedicineDetails extends Component {
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", flex: 0.2, marginVertical: 20 }}>
                         <View style={{ flexDirection: "row" }}>
-                            <Text style={[styles.text, { fontWeight: 'bold' }]}>Contains Drugs</Text>
+                            <Text style={[styles.text, { fontWeight: 'bold' }]}>Do not issue without prescription</Text>
 
                             <Switch
                                 style={{ marginLeft: 10 }}
@@ -620,7 +620,7 @@ export default class MedicineDetails extends Component {
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", flex: 0.2, marginVertical: 20 }}>
                         {<View style={{ flexDirection: "row" }}>
-                            <Text style={[styles.text, { fontWeight: 'bold' }]}>Contains Drugs</Text>
+                        <Text style={[styles.text, { fontWeight: 'bold' }]}>Do not issue without prescription</Text>
 
                             <Switch
                                 style={{ marginLeft: 10 }}

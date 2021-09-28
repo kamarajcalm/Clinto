@@ -259,7 +259,7 @@ class ViewFullTemplates extends Component {
         return (
             <>
             <View style={{ marginVertical: 20, alignItems: "center" }}>
-                <Text style={[styles.text, { color: "#000", fontSize: 22, textDecorationLine: "underline" }]}>Prescribed :</Text>
+                <Text style={[styles.text, { color: "#000", fontSize: 22,  }]}>Prescribed :</Text>
             </View>
         {
             this.state.edit &&
@@ -285,7 +285,7 @@ class ViewFullTemplates extends Component {
         return (
             <>
                 <View style={{ marginVertical: 20, alignItems: "center" }}>
-                    <Text style={[styles.text, { color: "#000", fontSize: 22, textDecorationLine: "underline" }]}>MedicinesGiven:</Text>
+                    <Text style={[styles.text, { color: "#000", fontSize: 22, }]}>Medicines Given:</Text>
                 </View>
                 {
                     this.state.edit &&

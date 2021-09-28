@@ -381,7 +381,7 @@ export default class MedicineDetailsTemplate extends Component {
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", flex: 0.2, marginVertical: 20 }}>
                         <View style={{ flexDirection: "row" }}>
-                            <Text style={[styles.text, { fontWeight: 'bold' }]}>Contains Drugs</Text>
+                            <Text style={[styles.text, { fontWeight: 'bold' }]}>Do not issue without prescription</Text>
 
                             <Switch
                                 disabled={!this.props.edit}
@@ -540,7 +540,7 @@ export default class MedicineDetailsTemplate extends Component {
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", flex: 0.2, marginVertical: 20 }}>
                         {<View style={{ flexDirection: "row" }}>
-                            <Text style={[styles.text, { fontWeight: 'bold' }]}>Contains Drugs</Text>
+                            <Text style={[styles.text, { fontWeight: 'bold' }]}>Do not issue without prescription</Text>
 
                             <Switch
                                 disabled={!this.props.edit}
@@ -711,7 +711,7 @@ export default class MedicineDetailsTemplate extends Component {
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", flex: 0.2, marginVertical: 20 }}>
                         {<View style={{ flexDirection: "row" }}>
-                            <Text style={[styles.text, { fontWeight: 'bold' }]}>Contains Drugs</Text>
+                            <Text style={[styles.text, { fontWeight: 'bold' }]}>Do not issue without prescription</Text>
 
                             <Switch
                                 disabled={!this.props.edit}
@@ -802,7 +802,7 @@ export default class MedicineDetailsTemplate extends Component {
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", flex: 0.2, marginVertical: 20 }}>
                         {<View style={{ flexDirection: "row" }}>
-                            <Text style={[styles.text, { fontWeight: 'bold' }]}>Contains Drugs</Text>
+                            <Text style={[styles.text, { fontWeight: 'bold' }]}>Do not issue without prescription</Text>
 
                             <Switch
                                 disabled={!this.props.edit}
@@ -878,7 +878,7 @@ export default class MedicineDetailsTemplate extends Component {
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", flex: 0.2, marginVertical: 20 }}>
                         {<View style={{ flexDirection: "row" }}>
-                            <Text style={[styles.text, { fontWeight: 'bold' }]}>Contains Drugs</Text>
+                            <Text style={[styles.text, { fontWeight: 'bold' }]}>Do not issue without prescription</Text>
 
                             <Switch
                                 disabled={!this.props.edit}

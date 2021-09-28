@@ -1627,7 +1627,7 @@ class Appointments extends Component {
                     
                             <View style={{ flex: 0.6,  }}>
                                 <View>
-                                    <Text style={[styles.text, { color: '#fff', marginLeft: 20, fontWeight: 'bold', fontSize: height*0.04 }]}>Appointments</Text>
+                                    <Text style={[styles.text, { color: '#fff', marginLeft: 20, fontWeight: 'bold', fontSize: height*0.03}]}>Appointment</Text>
 
                                 </View>
                             </View>
