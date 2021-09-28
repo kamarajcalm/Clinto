@@ -258,6 +258,7 @@ class InventoryNew extends Component {
         }
     }
     changeOrientation =async()=>{
+     
         await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
     }
     handleNavigate = async()=>{
@@ -292,7 +293,7 @@ class InventoryNew extends Component {
         )
     }
     componentDidMount() {
-      this.changeOrientation()
+       
      this.getItems()  
      this.getOrders()
      this.getSold()

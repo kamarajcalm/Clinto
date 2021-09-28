@@ -64,10 +64,7 @@ class DoctorProfile extends Component {
                             <Text style={[styles.text, { color: "gray" }]}>Mobile</Text>
                             <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.mobile}</Text>
                         </View>
-                        <View style={{ flex: 0.4 }}>
-                            <Text style={[styles.text, { color: "gray" }]}>Email</Text>
-                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.email}</Text>
-                        </View>
+                    
                     </View>
                     <View style={{ flexDirection: "row", marginTop: 15,}}>
                         <View >
@@ -77,7 +74,13 @@ class DoctorProfile extends Component {
                         </View>
                        
                     </View>
-                        
+                    <View style={{ flexDirection: "row", marginTop: 15, }}>
+                        <View style={{ }}>
+                            <Text style={[styles.text, { color: "gray" }]}>Email</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.email}</Text>
+                        </View>
+
+                    </View>
                 </View>
                 {/* Working Clinics */}
                 <View style={{ borderColor: "#F0F0F0", borderTopWidth: 3,borderBottomWidth:3 }}>
@@ -131,13 +134,13 @@ class DoctorProfile extends Component {
                         renderItem={({ item, index }) => {
                             console.log(item)
                             return (
-                                <View style={{ marginBottom: 10 }}>
+                                <View style={{ marginBottom: 10 ,marginLeft:10}}>
                                     <TouchableOpacity style={{ flexDirection: "row", minHeight: height * 0.05, borderBottomColor: "#fff", borderBottomWidth: 0.185 }}
                                         onPress={() => { this.props.navigation.navigate('ViewClinicDetails', { item, owner:true}) }}
                                     >
                                         <View style={{ flex: 0.5, justifyContent: "center" }}>
                                             <Text style={[styles.text, { fontWeight: "bold", color: "#000", marginLeft: 10 }]}>{item.name}</Text>
-                                            {item?.validtill?.validTill?<Text style={[styles.text, { marginLeft: 10 }]}>{moment(item?.validtill?.validTill).format("DD-MM-YYYY")}</Text>:
+                                            {item?.validtill?.validTill?<Text style={[styles.text, { marginLeft: 10 ,color:"green"}]}>{moment(item?.validtill?.validTill).format("DD-MM-YYYY")}</Text>:
                                              <TouchableOpacity 
                                                     onPress={() => { this.props.navigation.navigate("PaymentPage",{item})}}
                                              

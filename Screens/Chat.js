@@ -728,7 +728,7 @@ if(type=="clinic"){
             <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
              
               <View style={{flex:0.7 }}>
-                <Text style={[styles.text, { color: '#fff', marginLeft: 20 ,fontWeight:'bold',fontSize:25}]}>Chats</Text>
+                <Text style={[styles.text, { color: '#fff', marginLeft: 20 ,fontWeight:'bold',fontSize:height*0.03}]}>Chats</Text>
               </View>
              <View style={{flex:0.3,alignItems:"center",justifyContent:'center'}}>
                  {

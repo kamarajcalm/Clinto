@@ -501,13 +501,13 @@ hideDatePicker = () => {
                      
                         </View>
                          <View style={{marginTop:10,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
-                                   <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: height*0.05, width:height*0.05, borderRadius: height*0.025, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                                   <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: height*0.04, width:height*0.04, borderRadius: height*0.02, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
                                         onPress={() => { this.chatWithDoctor(item.forUser) }}
                                     >
-                                        <Ionicons name="chatbox" size={height*0.04} color="#63BCD2" />
+                                        <Ionicons name="chatbox" size={height*0.02} color="#63BCD2" />
 
                                     </TouchableOpacity>
-                                               <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.05, width: height*0.05, borderRadius:height*0.025, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                                               <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width: height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
                             onPress={() => {
                        
                                       if (Platform.OS == "android") {
@@ -519,7 +519,7 @@ hideDatePicker = () => {
     
     
                         >
-                           <Ionicons name="call" size={height*0.04} color="#63BCD2" />
+                           <Ionicons name="call" size={height*0.02} color="#63BCD2" />
                         </TouchableOpacity>
                            <View>
                                 <Text style={[styles.text]}>{moment(item.created).format("h:mm a")}</Text>
@@ -779,7 +779,7 @@ hideDatePicker = () => {
                                            <View style={{justifyContent:"center",}}>
                              <View style={{}}>
 
-                              <Text style={{ color: '#fff', fontFamily: "openSans" ,fontSize: height*0.04, fontWeight: "bold" }}>{!this.state.ReportsState?"Prescription":"Reports"}</Text>
+                              <Text style={{ color: '#fff', fontFamily: "openSans" ,fontSize: height*0.03, fontWeight: "bold" }}>{!this.state.ReportsState?"Prescription":"Reports"}</Text>
 
                              </View>
 
@@ -790,11 +790,11 @@ hideDatePicker = () => {
                          </View>
                   
                      </TouchableOpacity>:
-                     <View style={{flex:0.6,justifyContent:"center",flexDirection:"row",}}>
+                     <View style={{flex:0.6,flexDirection:"row",}}>
                                          <View style={{justifyContent:"center",}}>
-                             <View style={{}}>
+                             <View style={{marginLeft:20}}>
 
-                              <Text style={{ color: '#fff', fontFamily: "openSans" ,fontSize: height*0.04, fontWeight: "bold" }}>{!this.state.ReportsState?"Prescription":"Reports"}</Text>
+                              <Text style={{ color: '#fff', fontFamily: "openSans" ,fontSize: height*0.03, fontWeight: "bold" }}>{!this.state.ReportsState?"Prescription":"Reports"}</Text>
 
                              </View>
 
@@ -814,6 +814,7 @@ hideDatePicker = () => {
                             <EvilIcons name="search" size={24} color="black" />
                         </View>
                         <TextInput
+                            placeholderTextColor={"#000"}
                             selectionColor={themeColor}
                             style={{ height: "99%", flex: 0.8, backgroundColor: "#eee", paddingLeft: 10,justifyContent:"center" }}
                             placeholder={`search  ${this.state.ReportsState?"report":this.props?.clinic?.name ||"prescription"}`}
