@@ -292,7 +292,7 @@ class InventoryNew extends Component {
         )
     }
     componentDidMount() {
-    
+      this.changeOrientation()
      this.getItems()  
      this.getOrders()
      this.getSold()
