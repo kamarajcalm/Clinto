@@ -55,10 +55,10 @@ class SearchPateint extends Component {
                     </View>
                     <View style={{ flex: 0.4, alignItems:"center",justifyContent:"space-around" }}>
                         <View >
-                            <Text style={[styles.text, { fontSize: 18, }]}>{item?.clinicname.name}</Text>
+                            <Text style={[styles.text, { fontSize: height*0.02, }]}>{item?.clinicname.name}</Text>
                         </View>
                         <View>
-                            <Text style={[styles.text, { fontSize: 12, }]}>{item?.doctordetails?.name}</Text>
+                            <Text style={[styles.text, { fontSize: height*0.014, }]}>{item?.doctordetails?.name}</Text>
                         </View>
                         <View>
                                  <Text style={[styles.text, { fontSize:height*0.02, color:"#000"}]} numberOfLines={1}>Name : {item?.username?.name}</Text>
@@ -66,11 +66,11 @@ class SearchPateint extends Component {
                     </View>
                     <View style={{ flex: 0.3, justifyContent: 'center', alignItems: "center" }}>
                         <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
-                            <Text>{moment(item.created).format("DD/MM/YYYY")}</Text>
+                            <Text style={[styles.text,{color:"#000",fontSize:height*0.015}]}>{moment(item.created).format("DD/MM/YYYY")}</Text>
 
                         </View>
                         <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
-                            <Text style={[styles.text]}> Id : {item.id}</Text>
+                            <Text style={[styles.text,{color:"#000",fontSize:height*0.015}]}> Id : {item.id}</Text>
                         </View>
 
                     </View>

@@ -14,14 +14,16 @@ const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
 const url = settings.url;
 
-
+import NetInfo from '@react-native-community/netinfo';
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 
 
  class DefaultScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        token:null
+        token:null,
+        internet:true
     };
   
   }
@@ -142,11 +144,36 @@ const url = settings.url;
            return this.props.navigation.navigate('Login')
          }
      }
+         showSimpleMessage(content,color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor:color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
+
+        showMessage(message);
+    }
   componentDidMount(){
       this.getUserDetails()
-    // const subscriptionn = Notifications.addNotificationReceivedListener(notification => {
-    //   console.log(notification,"ppppp");
-    // });
+    const subscriptionn = Notifications.addNotificationReceivedListener(notification => {
+      console.log(notification,"ppppp");
+    });
+   this.unsubscribe = NetInfo.addEventListener(state => {
+        if(!state.isConnected){
+           this.showSimpleMessage("No internet connection","orange","info")
+           return this.setState({internet:false})
+        }
+        if(state.isConnected){
+             if(!this.state.internet){
+                  this.getUserDetails()
+                  this.showSimpleMessage("Back to online","orange","info")
+                  this.setState({internet:true})
+             }
+           
+        }
+    });
     Notifications.addNotificationResponseReceivedListener(response => {
         
       if (response.notification.request.content.categoryIdentifier =="prescription"){
@@ -161,7 +188,9 @@ const url = settings.url;
     });
 
   }
-  
+  componentWillUnmount(){
+    
+  }
   render() {
     return (
           <>

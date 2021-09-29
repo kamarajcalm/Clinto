@@ -184,7 +184,7 @@ class ViewClinicDetails extends Component {
           })
       ) 
     }
-     getTodayTimings3 = (today) => {
+     getTodayTimings3 = (today,color) => {
     
    return(
        this.state.item.clinicShifts[today][0].timings.map((i, index) => {
@@ -197,16 +197,16 @@ class ViewClinicDetails extends Component {
               
                      <View style={{flex:1,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}>
                                 <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
-                            <Text style={[styles.text,{color:"#000"}]}>{index+1} .</Text>
+                            <Text style={[styles.text,{color}]}>{index+1} .</Text>
                      </View>
                        <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
-                              <Text style={[styles.text, { marginLeft: 5 }]}>{i[0]}</Text>
+                              <Text style={[styles.text, { marginLeft: 5 ,color}]}>{i[0]}</Text>
                        </View>
                         <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
                              
                         </View> 
                         <View style={{flex:0.4,}}>
-                            <Text style={[styles.text]}>{i[1]}</Text>
+                            <Text style={[styles.text,{color}]}>{i[1]}</Text>
                         </View>
     
                    </View>
@@ -409,7 +409,7 @@ class ViewClinicDetails extends Component {
                             <View>
                                 <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 10 }}>
                                     <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                        <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Valid Till:</Text>
+                                        <Text style={[styles.text, { fontWeight: "bold", fontSize: height*0.02 }]}>Valid Till:</Text>
                                     </View>
                                     <View style={{ alignItems: 'center', justifyContent: "center" }}>
                                         <Text style={[styles.text, { marginLeft: 10 }]}>{this.state?.pk?.validtill.validTill}</Text>

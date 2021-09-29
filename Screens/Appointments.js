@@ -19,6 +19,7 @@ import { FontAwesome, FontAwesome5, Octicons, Fontisto, EvilIcons, Feather, AntD
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import { color } from 'react-native-reanimated';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { LinearGradient } from 'expo-linear-gradient';
 const Date1 = new Date()
 const today = moment(Date1).format("YYYY-MM-DD")
 const url = settings.url
@@ -637,123 +638,165 @@ class Appointments extends Component {
                             }
                
                 return(
-                    <TouchableOpacity
-                        onPress={() => { this.viewAppointments(item)}}
-                      style={{
-                            marginTop: 10,
-                            minHeight: height * 0.2,
-                            backgroundColor: "#eee",
-                            marginHorizontal: 10,
-                            borderRadius: 10,
-                      }}
-                    >
-                     <View style={{flexDirection:"row",flex:1,}}>
-                          <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}> 
-                              <Image
-                                style={{height:'80%',width:"95%",borderRadius:5}}
-                                source ={{uri:dp}}
-                                resizeMode ={"cover"}
-                              />
-                          </View>
-                          <View style={{flex:0.7,paddingLeft:10}}>
-                              <View style={{marginTop:20}}>
-                                    <Text style={[styles.text,{color:"#000",fontWeight:"bold"}]}>{item?.clinicname?.name}</Text>
-                              </View>
-                                <View style={{ marginTop: 10,flexDirection:"row" }}>
-                                    <Text style={[styles.text, { color: "#000", }]}>Reason :</Text>
-                                    <Text style={[styles.text, { color: "#000",  }]}> {item?.reason}</Text>
-                                </View>
-                                <View style={{ flexDirection: "row", marginTop: 10,}}>
-                                    <Text style={[styles.text, { color: "#000", }]}>{moment(item?.requesteddate).format("DD-MM-YYYY")}</Text>
-                                    <Text style={[styles.text, { color: "#000", }]}>|</Text>
-                                    <Text style={[styles.text, { color: "#000", }]}>{item?.requestedtime}</Text>
-                                </View>
-                                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 10,}}>
-                                    <View style={{flex:0.7}}>
-                                        <Text style={[styles.text,{color:this.validateColor(item?.status)}]}>{item?.status}</Text>
-                                      {item.status=="Accepted" && <Text style={[styles.text]}>{moment(item.accepteddate).format("DD-MM-YYYY")}|{item.acceptedtime}</Text>}
-                                    </View>
-                                    <View style={{flexDirection:'row',justifyContent:"space-around",alignItems:"center",flex:0.3}}>
-                                         <TouchableOpacity style={[styles.boxWithShadow,{backgroundColor:"#fff",height:30,width:30,borderRadius:15,alignItems:"center",justifyContent:'center'}]}
-                                          onPress ={()=>{this.chatClinic(item)}}
-                                         >
-                                            <Ionicons name="md-chatbox" size={20} color="#63BCD2" />
-                                         </TouchableOpacity>
-                                        <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center' }]}
-                                            onPress={() => {
-                                                Linking.openURL(
-                                                    `https://www.google.com/maps/dir/?api=1&destination=` +
-                                                    item.clinicname.lat +
-                                                    `,` +
-                                                    item.clinicname.long +
-                                                    `&travelmode=driving`
-                                                );
-                                            }}
+                          <TouchableOpacity
+                                onPress={() => { this.viewAppointments(item) }}
+                                style={[styles.boxWithShadow,{
+                                    marginTop: 10,
+                                    minHeight: height * 0.2,
+                                    backgroundColor: "#fff",
+                                    marginHorizontal: 10,
+                                    borderRadius: 10,
+                              
+                                }]}
+                            >
+                                <View style={{ flexDirection: "row", flex: 1, }}>
+                                    <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                                       <LinearGradient 
+                                            style={{ height: height*0.08, width: height*0.08, borderRadius: height*0.04,alignItems: "center", justifyContent: "center" }}
+                                            colors={["#333", themeColor, themeColor]}
                                         >
-                                            <FontAwesome5 name="directions" size={20} color="#63BCD2" />
-                                        </TouchableOpacity>
+                                            <View >
+                                                <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 22 }]}>{this.getFirstLetter(item)}</Text>
+                                            </View>
+                                        </LinearGradient>
+                                    </View>
+                                    <View style={{ flex: 0.7, paddingLeft: 10 }}>
+                                        <View style={{ marginTop:height*0.01}}>
+                                            <Text style={[styles.text, { color: "#000", fontWeight: "bold", fontSize:height*0.02}]}>{item?.clinicname?.name}</Text>
+                                        </View>
+                                        <View style={{ marginTop:height*0.01, flexDirection: "row" }}>
+                                            <Text style={[styles.text, { color: "#000",fontSize:height*0.018 }]}>Reason :</Text>
+                                            <Text style={[styles.text, { color: "#000",fontSize:height*0.018 }]}> {item?.reason}</Text>
+                                        </View>
+                                        <View style={{ flexDirection: "row", marginTop: height*0.01, }}>
+                                            <Text style={[styles.text, { color: "#000", fontSize:height*0.018 }]}>Accepted : </Text>
+                                            <Text style={[styles.text, { color: "#000", fontSize:height*0.018 }]}>{moment(item?.accepteddate).format("DD-MM-YYYY")}</Text>
+                                            <Text style={[styles.text, { color: "#000", fontSize:height*0.018 }]}>|</Text>
+                                            <Text style={[styles.text, { color: "#000", fontSize:height*0.018 }]}>{item?.acceptedtime}</Text>
+                                        </View>
+                                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop:height*0.01, }}>
+                                            <View style={{ flex: 0.5 }}>
+                                                <Text style={[styles.text, { color: this.validateColor(item?.status) }]}>{item?.status}</Text>
+                                            </View>
+                                            <View style={{ flexDirection: 'row', justifyContent: "space-around", alignItems: "center", flex: 0.5,}}>
+                                                <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width:height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center' }]}
+                                                    onPress={() => { this.chatClinic(item) }}
+                                                >
+                                                    <Ionicons name="md-chatbox" size={height*0.02} color="#63BCD2" />
+                                                </TouchableOpacity>
+                                                                                       <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width: height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center', }]}
+                            onPress={() => {
+                       
+                                      if (Platform.OS == "android") {
+                                        Linking.openURL(`tel:${item?.clinicname.mobile}`)
+                                    } else {
+
+                                        Linking.canOpenURL(`telprompt:${item?.clinicname.mobile}`)
+                                    }}}
+    
+    
+                        >
+                           <Ionicons name="call" size={height*0.02} color="#63BCD2" />
+                        </TouchableOpacity>
+                                                <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width:height*0.04, borderRadius: height*0.02, alignItems: "center", justifyContent: 'center' }]}
+                                                    onPress={() => {
+                                                        Linking.openURL(
+                                                            `https://www.google.com/maps/dir/?api=1&destination=` +
+                                                            item.clinicname.lat +
+                                                            `,` +
+                                                            item.clinicname.long +
+                                                            `&travelmode=driving`
+                                                        );
+                                                    }}
+                                                >
+                                                    <FontAwesome5 name="directions" size={height*0.02} color="#63BCD2" />
+                                                </TouchableOpacity>
+                                            </View>
+                                        </View>
                                     </View>
                                 </View>
-                          </View>
-                     </View>
-               
-                       
-                   
 
-                
-                    </TouchableOpacity>
+
+
+
+
+                            </TouchableOpacity>
                 )
                 }else{
                     return(
-                        <TouchableOpacity
-                            onPress={() => { this.viewAppointments(item)}}
-                            style={{
-                                marginTop: 10,
-                                height: height * 0.2,
-                                backgroundColor: "#eee",
-                                marginHorizontal: 10,
-                                borderRadius: 10,
-                         }}
-                        >
-
-                 
-                    
-                            <View style={{flex:0.6,flexDirection:'row'}}>
-                                <View style={{flex:0.5}}>
-                                    <View style={{ paddingLeft: 10, paddingTop: 10 }}>
-                                        <Text style={[styles.text, { fontWeight: "bold", color: "#000" }]}>{item.patientname.name}</Text>
-                                    </View>
-                                    <View style={{ paddingLeft: 10, paddingTop: 10, flexDirection: "row" }}>
-                                        <View>
-                                            <Text style={[styles.text, { fontWeight: "bold" }]}>Reason : </Text>
-                                        </View>
-                                        <View>
-                                            <Text style={[styles.text, { fontWeight: "bold" }]}>{item.reason}</Text>
-                                        </View>
-
-                                    </View>
-                                </View>
-                                     <View style={{ paddingLeft: 10, paddingTop: 10, flex:0.5 ,alignItems:"center",justifyContent:"space-around"}}>
-                                            <View style={{flexDirection:"row"}}>
-                                                                  <View>
-                                                                    <Text style={[styles.text, {fontSize:height*0.02}]}>{moment(item?.requesteddate).format("DD-MM-YYYY")}</Text>
-                                                                </View>
-                                                                <View>
-                                                                    <Text style={[styles.text,{fontSize:height*0.02}]}> | </Text>
-                                                                </View>
-                                                                <View>
-                                                                    <Text style={[styles.text,{fontSize:height*0.02}]}> {item.requestedtime} </Text>
-                                                                </View>
+                                  <TouchableOpacity
+                                onPress={() => { this.viewAppointments(item) }}
+                                style={[styles.boxWithShadow,{
+                                    marginTop: 10,
+                                    minHeight: height * 0.2,
+                                    backgroundColor: "#fff",
+                                    marginHorizontal: 10,
+                                    borderRadius: 10,
+                                    paddingBottom:20
+                                }]}
+                            >
+                             <View style={{ flexDirection: "row", flex: 1, }}>
+                                    
+                                        <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                                       <LinearGradient 
+                                            style={{ height: height*0.08, width: height*0.08, borderRadius: height*0.04,alignItems: "center", justifyContent: "center" }}
+                                            colors={["#333", themeColor, themeColor]}
+                                        >
+                                            <View >
+                                                <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 22 }]}>{this.getFirstLetter(item,"patient")}</Text>
                                             </View>
-                                          {this.props.user.profile.occupation!="Doctor"&&  <View>
-                                                <Text style={[styles.text, {textAlign:"center"}]}>Doctor :{item.doctordetails.name}</Text>
-                                            </View>}
-                                        </View>
-                                  
-                               </View>
-                               <View style={{flex:0.4,flexDirection:"row"}}>
-                                      
-                                      <TouchableOpacity style={{flex:0.5,alignItems:"center",justifyContent:"center"}}
+                                        </LinearGradient>
+                                      </View>
+                                      <View style={{flex:0.7}}>
+                                             <View style={{marginTop:height*0.02,flexDirection:"row"}}>
+                                                     <View style={{flexDirection:"row",flex:0.7}}>
+                                                     <View style={{alignItems:"center",justifyContent:"center"}}>
+                                                           <Text style={[styles.text,{color:"#000",fontSize:height*0.02,fontWeight:"bold"}]}>{item.patientname.name}</Text>
+                                                    </View>
+                                                    <View style={{alignItems:"center",justifyContent:"center"}}>
+                                                        <Text style={[styles.text,{color:"#000",fontSize:height*0.017,}]}> ({item.patientname.age} - {item.patientname.sex})</Text>
+                                                    </View>
+                                                </View>
+                                                <View style={{flex:0.3,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                                                          <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width:height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center' }]}
+                                                    onPress={() => { this.chatwithCustomer(item) }}
+                                                >
+                                                    <Ionicons name="md-chatbox" size={height*0.02} color="#63BCD2" />
+                                                </TouchableOpacity>
+                                                                                       <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width: height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center', }]}
+                                                                                onPress={() => {
+                                                                        
+                                                                                        if (Platform.OS == "android") {
+                                                                                            Linking.openURL(`tel:${item?.patientname.mobile}`)
+                                                                                        } else {
+
+                                                                                            Linking.canOpenURL(`telprompt:${item?.patientname.mobile}`)
+                                                                                        }}}
+                                                        
+                                                        
+                                                                            >
+                                                                            <Ionicons name="call" size={height*0.02} color="#63BCD2" />
+                                                                            </TouchableOpacity>
+                                             
+                                                </View>
+                                             </View>
+                                                 {this.props.user.profile.occupation!="Doctor"&&     <View style={{marginTop:height*0.01,}}>
+                                                    <View>
+                                                        <Text style={[styles.text,{color:"#000",fontSize:height*0.018}]}>Doctor : {item.doctordetails.name}</Text>
+                                                    </View>
+                                             </View>}
+                                             <View style={{marginTop:height*0.01,}}>
+                                                    <View>
+                                                        <Text style={[styles.text,{color:"#000",fontSize:height*0.018}]}>Reason : {item.reason}</Text>
+                                                    </View>
+                                             </View>
+                                                <View style={{marginTop:height*0.01,}}>
+                                                    <View>
+                                                        <Text style={[styles.text,{color:"#000",fontSize:height*0.018}]}>Accepted : {item.accepteddate} | {item.acceptedtime}</Text>
+                                                    </View>
+                                             </View>
+                                             <View style={{marginTop:height*0.01,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                                           <TouchableOpacity style={{flex:0.5,alignItems:"center",justifyContent:"center"}}
                                             onPress={() => {
 
                                                 this.setState({ selectedAppointment: item, selectedIndex: index, }, () => {
@@ -772,13 +815,16 @@ class Appointments extends Component {
                                         >
                                               <Text style={[styles.text, { color: "#B22222" }]}>Reject</Text>
                                         </TouchableOpacity>
-                                      
-                       
-                               </View>
-                        
-                     
-              
-                        </TouchableOpacity>
+                                             </View>
+                                      </View>
+                             </View>
+
+                            
+                                   
+
+                              
+                      
+                            </TouchableOpacity>
                     )
                 }
                  
@@ -797,6 +843,18 @@ class Appointments extends Component {
             return "#63BCD2"
         }
       
+    }
+        getFirstLetter =(item ,patient=null)=>{
+            if(patient){
+                let name = item.patientname.name.split("")
+                return name[0].toUpperCase()
+            }
+       
+           let clinicName = item?.clinicname?.name.split("")
+  
+            return clinicName[0].toUpperCase();
+        
+     
     }
     PendingRoute = () => {
         return (
@@ -824,47 +882,65 @@ class Appointments extends Component {
                         return (
                             <TouchableOpacity
                                 onPress={() => { this.viewAppointments(item) }}
-                                style={{
+                                style={[styles.boxWithShadow,{
                                     marginTop: 10,
                                     minHeight: height * 0.2,
-                                    backgroundColor: "#eee",
+                                    backgroundColor: "#fff",
                                     marginHorizontal: 10,
                                     borderRadius: 10,
                               
-                                }}
+                                }]}
                             >
                                 <View style={{ flexDirection: "row", flex: 1, }}>
                                     <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
-                                        <Image
-                                            style={{ height: '80%', width: "95%", borderRadius: 5 }}
-                                            source={{ uri: dp }}
-                                            resizeMode={"cover"}
-                                        />
+                                       <LinearGradient 
+                                            style={{ height: height*0.08, width: height*0.08, borderRadius:height*0.04,alignItems: "center", justifyContent: "center" }}
+                                            colors={["#333", themeColor, themeColor]}
+                                        >
+                                            <View >
+                                                <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 22 }]}>{this.getFirstLetter(item)}</Text>
+                                            </View>
+                                        </LinearGradient>
                                     </View>
                                     <View style={{ flex: 0.7, paddingLeft: 10 }}>
-                                        <View style={{ marginTop: 20 }}>
-                                            <Text style={[styles.text, { color: "#000", fontWeight: "bold" }]}>{item?.clinicname?.name}</Text>
+                                        <View style={{ marginTop:height*0.01}}>
+                                            <Text style={[styles.text, { color: "#000", fontWeight: "bold", fontSize:height*0.02}]}>{item?.clinicname?.name}</Text>
                                         </View>
-                                        <View style={{ marginTop: 10, flexDirection: "row" }}>
-                                            <Text style={[styles.text, { color: "#000", }]}>Reason :</Text>
-                                            <Text style={[styles.text, { color: "#000", }]}> {item?.reason}</Text>
+                                        <View style={{ marginTop:height*0.01, flexDirection: "row" }}>
+                                            <Text style={[styles.text, { color: "#000",fontSize:height*0.018 }]}>Reason :</Text>
+                                            <Text style={[styles.text, { color: "#000",fontSize:height*0.018 }]}> {item?.reason}</Text>
                                         </View>
-                                        <View style={{ flexDirection: "row", marginTop: 10, }}>
-                                            <Text style={[styles.text, { color: "#000", }]}>{moment(item?.requesteddate).format("DD-MM-YYYY")}</Text>
-                                            <Text style={[styles.text, { color: "#000", }]}>|</Text>
-                                            <Text style={[styles.text, { color: "#000", }]}>{item?.requestedtime}</Text>
+                                        <View style={{ flexDirection: "row", marginTop: height*0.01, }}>
+                                            <Text style={[styles.text, { color: "#000", fontSize:height*0.018 }]}>Requested : </Text>
+                                            <Text style={[styles.text, { color: "#000", fontSize:height*0.018 }]}>{moment(item?.requesteddate).format("DD-MM-YYYY")}</Text>
+                                            <Text style={[styles.text, { color: "#000", fontSize:height*0.018 }]}>|</Text>
+                                            <Text style={[styles.text, { color: "#000", fontSize:height*0.018 }]}>{item?.requestedtime}</Text>
                                         </View>
-                                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 10, }}>
-                                            <View style={{ flex: 0.7 }}>
+                                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop:height*0.01, }}>
+                                            <View style={{ flex: 0.5 }}>
                                                 <Text style={[styles.text, { color: this.validateColor(item?.status) }]}>{item?.status}</Text>
                                             </View>
-                                            <View style={{ flexDirection: 'row', justifyContent: "space-around", alignItems: "center", flex: 0.3 }}>
-                                                <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center' }]}
+                                            <View style={{ flexDirection: 'row', justifyContent: "space-around", alignItems: "center", flex: 0.5,}}>
+                                                <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width:height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center' }]}
                                                     onPress={() => { this.chatClinic(item) }}
                                                 >
-                                                    <Ionicons name="md-chatbox" size={20} color="#63BCD2" />
+                                                    <Ionicons name="md-chatbox" size={height*0.02} color="#63BCD2" />
                                                 </TouchableOpacity>
-                                                <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center' }]}
+                                                                                       <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width: height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center', }]}
+                            onPress={() => {
+                       
+                                      if (Platform.OS == "android") {
+                                        Linking.openURL(`tel:${item?.clinicname.mobile}`)
+                                    } else {
+
+                                        Linking.canOpenURL(`telprompt:${item?.clinicname.mobile}`)
+                                    }}}
+    
+    
+                        >
+                           <Ionicons name="call" size={height*0.02} color="#63BCD2" />
+                        </TouchableOpacity>
+                                                <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width:height*0.04, borderRadius: height*0.02, alignItems: "center", justifyContent: 'center' }]}
                                                     onPress={() => {
                                                         Linking.openURL(
                                                             `https://www.google.com/maps/dir/?api=1&destination=` +
@@ -875,7 +951,7 @@ class Appointments extends Component {
                                                         );
                                                     }}
                                                 >
-                                                    <FontAwesome5 name="directions" size={20} color="#63BCD2" />
+                                                    <FontAwesome5 name="directions" size={height*0.02} color="#63BCD2" />
                                                 </TouchableOpacity>
                                             </View>
                                         </View>
@@ -892,54 +968,77 @@ class Appointments extends Component {
                         return (
                             <TouchableOpacity
                                 onPress={() => { this.viewAppointments(item) }}
-                                style={{
+                                style={[styles.boxWithShadow,{
                                     marginTop: 10,
-                                    height: height * 0.2,
-                                    backgroundColor: "#eee",
+                                    minHeight: height * 0.2,
+                                    backgroundColor: "#fff",
                                     marginHorizontal: 10,
                                     borderRadius: 10,
-                                }}
+                                    paddingBottom:20
+                                }]}
                             >
-
-
-                            
-                                    <View style={{ flex: 0.6,flexDirection:"row" }}>
-                                        <View style={{flex:0.5}}>
-                                                <View style={{ paddingLeft: 10, paddingTop: 10 }}>
-                                                    <Text style={[styles.text, { fontWeight: "bold", color: "#000" }]}>{item.patientname.name}</Text>
+                             <View style={{ flexDirection: "row", flex: 1, }}>
+                                    
+                                        <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                                       <LinearGradient 
+                                            style={{ height: height*0.08, width: height*0.08, borderRadius: height*0.04,alignItems: "center", justifyContent: "center" }}
+                                            colors={["#333", themeColor, themeColor]}
+                                        >
+                                            <View >
+                                                <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 22 }]}>{this.getFirstLetter(item,"patient")}</Text>
+                                            </View>
+                                        </LinearGradient>
+                                      </View>
+                                      <View style={{flex:0.7}}>
+                                             <View style={{marginTop:height*0.02,flexDirection:"row"}}>
+                                                     <View style={{flexDirection:"row",flex:0.7}}>
+                                                     <View style={{alignItems:"center",justifyContent:"center"}}>
+                                                           <Text style={[styles.text,{color:"#000",fontSize:height*0.02,fontWeight:"bold"}]}>{item.patientname.name}</Text>
+                                                    </View>
+                                                    <View style={{alignItems:"center",justifyContent:"center"}}>
+                                                        <Text style={[styles.text,{color:"#000",fontSize:height*0.017,}]}> ({item.patientname.age} - {item.patientname.sex})</Text>
+                                                    </View>
                                                 </View>
+                                                <View style={{flex:0.3,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                                                          <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width:height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center' }]}
+                                                    onPress={() => { this.chatwithCustomer(item) }}
+                                                >
+                                                    <Ionicons name="md-chatbox" size={height*0.02} color="#63BCD2" />
+                                                </TouchableOpacity>
+                                                                                       <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width: height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center', }]}
+                                                                                onPress={() => {
+                                                                        
+                                                                                        if (Platform.OS == "android") {
+                                                                                            Linking.openURL(`tel:${item?.patientname.mobile}`)
+                                                                                        } else {
 
-                                        <View style={{ paddingLeft: 10, paddingTop: 10, flexDirection: "row" }}>
-                                            <View>
-                                                <Text style={[styles.text, { fontWeight: "bold" }]}>Reason : </Text>
-                                            </View>
-                                            <View>
-                                                <Text style={[styles.text, { fontWeight: "bold" }]}>{item.reason}</Text>
-                                            </View>
-
-                                        </View>
-                                    </View>
-                                        
-                                        <View style={{ paddingLeft: 10, paddingTop: 10, flex:0.5 ,alignItems:"center",justifyContent:"space-around"}}>
-                                            <View style={{flexDirection:"row"}}>
-                                                                  <View>
-                                                                    <Text style={[styles.text, {fontSize:height*0.02}]}>{moment(item?.requesteddate).format("DD-MM-YYYY")}</Text>
-                                                                </View>
-                                                                <View>
-                                                                    <Text style={[styles.text,{fontSize:height*0.02}]}> | </Text>
-                                                                </View>
-                                                                <View>
-                                                                    <Text style={[styles.text,{fontSize:height*0.02}]}> {item.requestedtime} </Text>
-                                                                </View>
-                                            </View>
-                                          {this.props.user.profile.occupation!="Doctor"&&  <View>
-                                                <Text style={[styles.text, {textAlign:"center"}]}>Doctor :{item.doctordetails.name}</Text>
-                                            </View>}
-                                        </View>
-                                       
-                                    </View>
-                                    <View style={{ flex: 0.4, flexDirection: "row",}}>
-                                             <TouchableOpacity 
+                                                                                            Linking.canOpenURL(`telprompt:${item?.patientname.mobile}`)
+                                                                                        }}}
+                                                        
+                                                        
+                                                                            >
+                                                                            <Ionicons name="call" size={height*0.02} color="#63BCD2" />
+                                                                            </TouchableOpacity>
+                                             
+                                                </View>
+                                             </View>
+                                           {this.props.user.profile.occupation!="Doctor"&&     <View style={{marginTop:height*0.01,}}>
+                                                    <View>
+                                                        <Text style={[styles.text,{color:"#000",fontSize:height*0.018}]}>Doctor : {item.doctordetails.name}</Text>
+                                                    </View>
+                                             </View>}
+                                             <View style={{marginTop:height*0.01,}}>
+                                                    <View>
+                                                        <Text style={[styles.text,{color:"#000",fontSize:height*0.018}]}>Reason : {item.reason}</Text>
+                                                    </View>
+                                             </View>
+                                                <View style={{marginTop:height*0.01,}}>
+                                                    <View>
+                                                        <Text style={[styles.text,{color:"#000",fontSize:height*0.018}]}>Requested : {item.requesteddate} | {item.requestedtime}</Text>
+                                                    </View>
+                                             </View>
+                                             <View style={{marginTop:height*0.01,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                                                   <TouchableOpacity 
                                               style={{flex:0.5,alignItems:"center",justifyContent:"center"}}
                                               onPress={() => { this.setState({ modal: true, selectedAppointment: item, selectedIndex: index, today2: item.requesteddate, time: item.requestedtime }) }}
                                              >
@@ -955,9 +1054,12 @@ class Appointments extends Component {
                                         >
                                             <Text style={[styles.text, { color: "#B22222" }]}>Reject</Text>
                                         </TouchableOpacity>
-                                     
-                                    </View>
-                
+                                             </View>
+                                      </View>
+                             </View>
+
+                            
+                                   
 
                               
                       
@@ -988,49 +1090,73 @@ class Appointments extends Component {
                             dp = `${url}${item.doctordetails.dp}`
                         }
                         return (
-                            <TouchableOpacity
+                               <TouchableOpacity
                                 onPress={() => { this.viewAppointments(item) }}
-                                style={{
+                                style={[styles.boxWithShadow,{
                                     marginTop: 10,
                                     minHeight: height * 0.2,
-                                    backgroundColor: "#eee",
+                                    backgroundColor: "#fff",
                                     marginHorizontal: 10,
                                     borderRadius: 10,
-                                }}
+                              
+                                }]}
                             >
                                 <View style={{ flexDirection: "row", flex: 1, }}>
                                     <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
-                                        <Image
-                                            style={{ height: '80%', width: "95%", borderRadius: 5 }}
-                                            source={{ uri: dp }}
-                                            resizeMode={"cover"}
-                                        />
+                                       <LinearGradient 
+                                            style={{ height: height*0.08, width: height*0.08, borderRadius:height*0.04,alignItems: "center", justifyContent: "center" }}
+                                            colors={["#333", themeColor, themeColor]}
+                                        >
+                                            <View >
+                                                <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 22 }]}>{this.getFirstLetter(item)}</Text>
+                                            </View>
+                                        </LinearGradient>
                                     </View>
                                     <View style={{ flex: 0.7, paddingLeft: 10 }}>
-                                        <View style={{ marginTop: 20 }}>
-                                            <Text style={[styles.text, { color: "#000", fontWeight: "bold" }]}>{item.clinicname.name}</Text>
+                                        <View style={{ marginTop:height*0.01}}>
+                                            <Text style={[styles.text, { color: "#000", fontWeight: "bold", fontSize:height*0.02}]}>{item?.clinicname?.name}</Text>
                                         </View>
-                                        <View style={{ marginTop: 10, flexDirection: "row" }}>
-                                            <Text style={[styles.text, { color: "#000", }]}>Reason :</Text>
-                                            <Text style={[styles.text, { color: "#000", }]}> {item.reason}</Text>
+                                        <View style={{ marginTop:height*0.01, flexDirection: "row" }}>
+                                            <Text style={[styles.text, { color: "#000",fontSize:height*0.018 }]}>Reason :</Text>
+                                            <Text style={[styles.text, { color: "#000",fontSize:height*0.018 }]}> {item?.reason}</Text>
                                         </View>
-                                        <View style={{ flexDirection: "row", marginTop: 10, }}>
-                                            <Text style={[styles.text, { color: "#000", }]}>{moment(item?.requesteddate).format("DD-MM-YYYY")}</Text>
-                                            <Text style={[styles.text, { color: "#000", }]}>|</Text>
-                                            <Text style={[styles.text, { color: "#000", }]}>{item.requestedtime}</Text>
+                                        <View style={{ flexDirection: "row", marginTop: height*0.01, }}>
+                                            <Text style={[styles.text, { color: "#000", fontSize:height*0.018 }]}>Requested : </Text>
+                                            <Text style={[styles.text, { color: "#000", fontSize:height*0.018 }]}>{moment(item?.requesteddate).format("DD-MM-YYYY")}</Text>
+                                            <Text style={[styles.text, { color: "#000", fontSize:height*0.018 }]}>|</Text>
+                                            <Text style={[styles.text, { color: "#000", fontSize:height*0.018 }]}>{item?.requestedtime}</Text>
                                         </View>
-                                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 10, }}>
-                                            <View style={{ flex: 0.7 }}>
+                                    { item.accepteddate&&      <View style={{ flexDirection: "row", marginTop: height*0.01, }}>
+                                            <Text style={[styles.text, { color: "#000", fontSize:height*0.018 }]}>Accepted: </Text>
+                                            <Text style={[styles.text, { color: "#000", fontSize:height*0.018 }]}>{moment(item?.accepteddate).format("DD-MM-YYYY")}</Text>
+                                            <Text style={[styles.text, { color: "#000", fontSize:height*0.018 }]}>|</Text>
+                                            <Text style={[styles.text, { color: "#000", fontSize:height*0.018 }]}>{item?.acceptedtime}</Text>
+                                        </View>}
+                                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop:height*0.01, }}>
+                                            <View style={{ flex: 0.5 }}>
                                                 <Text style={[styles.text, { color: this.validateColor(item?.status) }]}>{item?.status}</Text>
-                                                {item.status=="Accepted" && <Text style={[styles.text]}>{moment(item.accepteddate).format("DD-MM-YYYY")}|{item.acceptedtime}</Text>}
                                             </View>
-                                            <View style={{ flexDirection: 'row', justifyContent: "space-around", alignItems: "center", flex: 0.3 }}>
-                                                <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center' }]}
+                                            <View style={{ flexDirection: 'row', justifyContent: "space-around", alignItems: "center", flex: 0.5,}}>
+                                                <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width:height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center' }]}
                                                     onPress={() => { this.chatClinic(item) }}
                                                 >
-                                                    <Ionicons name="md-chatbox" size={20} color="#63BCD2"/>
+                                                    <Ionicons name="md-chatbox" size={height*0.02} color="#63BCD2" />
                                                 </TouchableOpacity>
-                                                <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center' }]}
+                                                                                       <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width: height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center', }]}
+                            onPress={() => {
+                       
+                                      if (Platform.OS == "android") {
+                                        Linking.openURL(`tel:${item?.clinicname.mobile}`)
+                                    } else {
+
+                                        Linking.canOpenURL(`telprompt:${item?.clinicname.mobile}`)
+                                    }}}
+    
+    
+                        >
+                           <Ionicons name="call" size={height*0.02} color="#63BCD2" />
+                        </TouchableOpacity>
+                                                <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width:height*0.04, borderRadius: height*0.02, alignItems: "center", justifyContent: 'center' }]}
                                                     onPress={() => {
                                                         Linking.openURL(
                                                             `https://www.google.com/maps/dir/?api=1&destination=` +
@@ -1041,7 +1167,7 @@ class Appointments extends Component {
                                                         );
                                                     }}
                                                 >
-                                                    <FontAwesome5 name="directions" size={20} color="#63BCD2"/>
+                                                    <FontAwesome5 name="directions" size={height*0.02} color="#63BCD2" />
                                                 </TouchableOpacity>
                                             </View>
                                         </View>
@@ -1057,120 +1183,98 @@ class Appointments extends Component {
                         )
                     } else {
                         return (
-                             <TouchableOpacity
+                                    <TouchableOpacity
                                 onPress={() => { this.viewAppointments(item) }}
-                                style={{
+                                style={[styles.boxWithShadow,{
                                     marginTop: 10,
                                     minHeight: height * 0.2,
-                                    backgroundColor: "#eee",
+                                    backgroundColor: "#fff",
                                     marginHorizontal: 10,
                                     borderRadius: 10,
-                                }}
-
+                                    paddingBottom:20
+                                }]}
                             >
-                               
-
-                                <View
-
-                                    style={{
-                                        flex:1,
-                                       
-                                    }}
-
-                                >
-                                    <View style={{ flex: 0.6 ,flexDirection:"row"}}>
-                                        <View style={{flex:0.6}}>
-
-                                        
-                                        <View style={{ paddingLeft: 10, paddingTop: 10 }}>
-                                            <Text style={[styles.text, { fontWeight: "bold", color: "#000" }]}>{item.patientname.name}</Text>
-                                        </View>
-                                        <View style={{ paddingLeft: 10, paddingTop: 10, flexDirection: "row" }}>
-                                            <View>
-                                                <Text style={[styles.text, { fontWeight: "bold" }]}>Reason : </Text>
+                             <View style={{ flexDirection: "row", flex: 1, }}>
+                                    
+                                        <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                                       <LinearGradient 
+                                            style={{ height: height*0.08, width: height*0.08, borderRadius: height*0.04,alignItems: "center", justifyContent: "center" }}
+                                            colors={["#333", themeColor, themeColor]}
+                                        >
+                                            <View >
+                                                <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 22 }]}>{this.getFirstLetter(item,"patient")}</Text>
                                             </View>
-                                            <View>
-                                                <Text style={[styles.text, { fontWeight: "bold" }]}>{item.reason}</Text>
-                                            </View>
+                                        </LinearGradient>
+                                      </View>
+                                      <View style={{flex:0.7}}>
+                                             <View style={{marginTop:height*0.02,flexDirection:"row"}}>
+                                                     <View style={{flexDirection:"row",flex:0.7}}>
+                                                     <View style={{alignItems:"center",justifyContent:"center"}}>
+                                                           <Text style={[styles.text,{color:"#000",fontSize:height*0.02,fontWeight:"bold"}]}>{item.patientname.name}</Text>
+                                                    </View>
+                                                    <View style={{alignItems:"center",justifyContent:"center"}}>
+                                                        <Text style={[styles.text,{color:"#000",fontSize:height*0.017,}]}> ({item.patientname.age} - {item.patientname.sex})</Text>
+                                                    </View>
+                                                </View>
+                                                <View style={{flex:0.3,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                                                          <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width:height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center' }]}
+                                                    onPress={() => { this.chatwithCustomer(item) }}
+                                                >
+                                                    <Ionicons name="md-chatbox" size={height*0.02} color="#63BCD2" />
+                                                </TouchableOpacity>
+                                                                                       <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width: height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center', }]}
+                                                                                onPress={() => {
+                                                                        
+                                                                                        if (Platform.OS == "android") {
+                                                                                            Linking.openURL(`tel:${item?.patientname.mobile}`)
+                                                                                        } else {
 
-                                        </View>
-                                        </View>
-                                        <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
-                                                                   {
-                                             this.validateInformation(item)
-                                         }
-                                         <View style={{marginTop:5}}>
-                                             <Text style={[styles.text,{color:this.validateColor(item?.status)}]}>{item?.status}</Text>
-                                         </View>
-                                        </View>
+                                                                                            Linking.canOpenURL(`telprompt:${item?.patientname.mobile}`)
+                                                                                        }}}
+                                                        
+                                                        
+                                                                            >
+                                                                            <Ionicons name="call" size={height*0.02} color="#63BCD2" />
+                                                                            </TouchableOpacity>
+                                             
+                                                </View>
+                                             </View>
+                                                 {this.props.user.profile.occupation!="Doctor"&&     <View style={{marginTop:height*0.01,}}>
+                                                    <View>
+                                                        <Text style={[styles.text,{color:"#000",fontSize:height*0.018}]}>Doctor : {item.doctordetails.name}</Text>
+                                                    </View>
+                                             </View>}
+                                             <View style={{marginTop:height*0.01,}}>
+                                                    <View>
+                                                        <Text style={[styles.text,{color:"#000",fontSize:height*0.018}]}>Reason : {item.reason}</Text>
+                                                    </View>
+                                             </View>
+                                                 <View style={{marginTop:height*0.01,}}>
+                                                    <View>
+                                                        <Text style={[styles.text,{color:"#000",fontSize:height*0.018}]}>Requested : {item.requesteddate} | {item.requestedtime}</Text>
+                                                    </View>
+                                             </View>
+                                                <View style={{marginTop:height*0.01,}}>
+                                                    <View>
+                                                        <Text style={[styles.text,{color:"#000",fontSize:height*0.018}]}>Accepted : {item.accepteddate} | {item.acceptedtime}</Text>
+                                                    </View>
+                                               </View>
+                                              <View style={{marginTop:height*0.01,flexDirection:"row"}}>
+                                                    <View>
+                                                        <Text style={[styles.text,{color:"#000",fontSize:height*0.018}]}>Status : </Text>
+                                                    </View>
+                                                     <View>
+                                                        <Text style={[styles.text,{color:this.validateColor(item.status),fontSize:height*0.018}]}>{item.status}</Text>
+                                                    </View>
+                                               </View>
+                                      </View>
+                             </View>
+
+                            
+                                   
+
                               
-                                    </View>
-                                     <View style={{flex:0.4,flexDirection:"row"}}>
-                                      <View style={{ flexDirection: 'row',  alignItems: "center", flex:0.3,}}>
-                                            <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center',marginLeft:10 }]}
-                                                onPress={() => {this.chatwithCustomer(item) }}
-                                            >
-                                                <Ionicons name="md-chatbox" size={20} color="#63BCD2" />
-                                            </TouchableOpacity>
-                                            <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center' ,marginLeft:10}]}
-                                                onPress={() => {this.getCall(item) }}
-                                            >
-                                                <Ionicons name="call" size={20} color="#63BCD2" />
-                                            </TouchableOpacity>
-                                     </View>
-                                       {this.props.user.profile.occupation!="Doctor"&&  <View style={{flex:0.7,alignItems:"center",justifyContent:"center"}}>
-                                                <Text style={[styles.text, {textAlign:"center"}]}>Doctor :{item.doctordetails.name}</Text>
-                                            </View>}
-                                     </View>
-                                     
-                                    {/* <View style={{ flex: 0.6, justifyContent: "center" }}>
-                                                     <View style={{ flexDirection: "row", margin: 5, flex: 0.5 }}>
-
-                                        <Text style={[styles.text, { fontWeight: "bold" }]}>Name   :</Text>
-                                        <Text style={[styles.text, { marginLeft: 10 }]}>{item.patientname.name}</Text>
-                                    </View>
-                                    <View style={{ flexDirection: "row", margin: 5, flex: 0.5 }}>
-                                        <Text style={[styles.text, { fontWeight: "bold" }]}>Reason:</Text>
-                                        <View style={{ justifyContent: 'center', flex: 1 }}>
-                                            <Text style={[styles.text, { marginLeft: 10 }]}>{item.reason}</Text>
-
-                                        </View>
-
-                                    </View>
-                                    </View> */}
-
-                                    {/* TABS */}
-{/* 
-                                    <View style={{ flex: 0.4, flexDirection: "row", alignItems: "center", justifyContent: 'center', }}>
-                                        <View style={{ alignItems: 'center', justifyContent: "center" }}>
-                                            <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                                <Text style={[styles.text]}>Status:</Text>
-                                            </View>
-                                            <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                                <Text style={[styles.text, { color: this.validateColor(item.status) }]}>{item.status}</Text>
-
-                                            </View>
-                                        </View>
-
-                                    </View> */}
-
-                                </View>
-
-                                {/* <View style={{
-                                    margin: 10,
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    flexDirection: "row"
-                                }}>
-
-                                    <View style={{ flex: 1 }}>
-                                        {
-                                            this.validateInformation(item)
-                                        }
-                                    </View>
-
-
-                                </View> */}
+                      
                             </TouchableOpacity>
 
                            

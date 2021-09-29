@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, SafeAreaView, ToastAndroid, Pressable, Switch, ActivityIndicator, TextInput, Alert, TouchableWithoutFeedback, ScrollView,Keyboard, KeyboardAvoidingView, Platform} from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, SafeAreaView, ToastAndroid, Pressable, Switch, ActivityIndicator, TextInput, Alert, TouchableWithoutFeedback, ScrollView,Keyboard, KeyboardAvoidingView, Platform,FlatList} from 'react-native';
 import { connect, connectAdvanced } from 'react-redux';
 import { selectTheme } from '../actions';
 import settings from '../AppSettings';
@@ -23,7 +23,7 @@ import FlashMessage, { showMessage, hideMessage } from "react-native-flash-messa
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import moment from 'moment';
-import { FlatList } from 'react-native-gesture-handler';
+
 
 class AddPrescription extends Component {
   constructor(props) {
@@ -188,11 +188,11 @@ getClinicDoctors = async()=>{
             return   this.setState({ medicines: duplicate })
         }
         if (type == "total_qty") {
-            duplicate[index].total_qty = value
+            duplicate[index].total_qty =Number(value) 
             return   this.setState({ medicines: duplicate })
         }
         if (type == "days") {
-            duplicate[index].days = value
+            duplicate[index].days = Number(value)
             return  this.setState({ medicines: duplicate })
         }
         if (type == "comment") {
@@ -205,6 +205,7 @@ getClinicDoctors = async()=>{
         }
         if (type == "type") {
             duplicate[index].type = value
+            duplicate[index].manual = false
             return this.setState({ medicines: duplicate })
         }
         if (type == "name") {
@@ -256,7 +257,7 @@ getClinicDoctors = async()=>{
                     i.afternoon_count = 0,
                     i.night_count = 0,
                     i.total_qty = 0,
-                    i.days = 0,
+                    i.days = "",
                     i.medicine = i?.title,
                     i.is_drug=false,
                     i.invalid_count=0,
@@ -426,10 +427,12 @@ getClinicDoctors = async()=>{
         this.state.medicines.forEach((i)=>{
        
             try{
+              
                 if (i.type == "Tablet"||i.type=="Capsules" ){
-                     i.total_qty = i.days * (i.morning_count||0 + i.afternoon_count||0 + i.night_count||0)
+                     i.total_qty = i.days * ((i.morning_count||0) + (i.afternoon_count||0) + (i.night_count||0))
+                     
                 }else{
-                    return 
+                     i.days=0
                 }
                
                  
@@ -465,6 +468,7 @@ getClinicDoctors = async()=>{
         if(this.state.appointmentId){
           sendData.appointment =this.state.appointmentId
         }
+   
        const post = await HttpsClient.post(api,sendData)
        console.log(sendData,"seeee")
        console.log(post,"post")
@@ -1123,7 +1127,7 @@ getClinicDoctors = async()=>{
                              </TouchableOpacity>
                           
                         </View>
-                        <View style={{ marginTop: 20 }}>
+                        {/* <View style={{ marginTop: 20 }}>
                                 <Text style={[styles.text], { color: "#000", fontSize:height*0.02 }}>Address</Text>
                             <TextInput
                                 value ={this.state.Address}
@@ -1132,7 +1136,7 @@ getClinicDoctors = async()=>{
                                 multiline={true}
                                 style={{ width: width * 0.7, height: height * 0.1, backgroundColor: inputColor, borderRadius: 5, padding: 10, marginTop: 10, textAlignVertical:"top"}}
                             />
-                        </View>
+                        </View> */}
                         {/* <View style={{ marginTop: 20 }}>
                             <Text style={[styles.text], { fontWeight: "bold", fontSize:height*0.02 }}>Address</Text>
                             <TextInput
@@ -1200,8 +1204,8 @@ getClinicDoctors = async()=>{
                                 value ={this.state.Reason}
                                 onChangeText={(Reason) => { this.setState({ Reason}) }}
                                 selectionColor={themeColor}
-                                multiline={true}
-                                style={{ width: width * 0.7, height: height * 0.1, backgroundColor: inputColor, borderRadius: 5, padding: 10, marginTop: 10, textAlignVertical:"top"}}
+                              
+                                style={{ width: width * 0.7, height:40, backgroundColor: inputColor, borderRadius: 5, padding: 10, marginTop: 10, textAlignVertical:"top"}}
                             />
                         </View>
                         <View style={{ marginTop: 20 ,}}>
@@ -1372,7 +1376,7 @@ getClinicDoctors = async()=>{
                                 value={this.state.report}
                                 onChangeText={(report) => { this.searchReports(report) }}
                                 selectionColor={themeColor}
-                                multiline={true}
+                             
                                 style={{ width: width * 0.7, height:35, backgroundColor: inputColor,  padding: 10, marginTop: 10, textAlignVertical: "top" }}
                             />
                         </View>

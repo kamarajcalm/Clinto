@@ -165,7 +165,7 @@ class LoginScreen extends Component {
                 >
                        <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
                           <Image 
-                            source={{uri:Patient}}
+                            source={require('../assets/medical-mask.png')}
                             style={{height:50,width:50,alignSelf:"flex-end"}}
                           />
                      </View>
@@ -179,7 +179,7 @@ class LoginScreen extends Component {
                 <TouchableOpacity style={{flexDirection:"row"}}>
                      <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
                           <Image 
-                            source={{uri:clinicPng}}
+                            source={require('../assets/hospital.png')}
                             style={{height:50,width:50,alignSelf:"flex-end"}}
                           />
                      </View>
@@ -194,7 +194,7 @@ class LoginScreen extends Component {
 
                        <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
                           <Image 
-                            source={{uri:pharmacyPng}}
+                            source={require('../assets/pharmacy.png')}
                             style={{height:50,width:50,alignSelf:"flex-end"}}
                           />
                      </View>
@@ -208,7 +208,7 @@ class LoginScreen extends Component {
                   <TouchableOpacity style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
                        <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
                           <Image 
-                            source={{uri:diagnosticCenter}}
+                            source={require("../assets/diagnostic-tool.png")}
                             style={{height:50,width:50,alignSelf:"flex-end"}}
                           />
                      </View>

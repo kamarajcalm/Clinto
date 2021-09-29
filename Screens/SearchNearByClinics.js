@@ -165,9 +165,16 @@ const url =settings.url
            {
              this.state.load?
                 <ScrollView>
-                          <ShimmerLoader />
-                          <ShimmerLoader />
-                          <ShimmerLoader />
+                  <View style={{marginTop:30}}>
+                        <ShimmerLoader />
+                  </View>
+                  <View style={{marginTop:30}}>
+                       <ShimmerLoader />
+                  </View>     
+                  <View style={{marginTop:30}}>
+                         <ShimmerLoader />
+                    </View>   
+                     
                 </ScrollView>:
                        <TabView
                         style={{ backgroundColor: "#ffffff", }}

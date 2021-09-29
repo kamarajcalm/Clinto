@@ -79,7 +79,7 @@ addReport =()=>{
       file:this.state.selectedFile||null
   }
   this.state.files.push(pushObj)
-  this.setState({files:this.state.files,addModal:false})
+  this.setState({files:this.state.files,addModal:false,report:""})
 }
      componentDidMount(){
          if(this.state.appoinment){

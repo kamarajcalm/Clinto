@@ -139,7 +139,7 @@ import FlashMessage, { showMessage, hideMessage } from "react-native-flash-messa
                         autoFocus={true}
                         selectionColor={themeColor}
                         style={{  height:35, backgroundColor: "#fafafa", borderRadius: 15, padding: 10, marginTop: 10 ,width:"100%"}}
-                        placeholder="search Medicines"
+                        placeholder="Search Medicines"
                         onChangeText ={(text)=>{this.SearchMedicines(text)}}
                     />
                 </View>

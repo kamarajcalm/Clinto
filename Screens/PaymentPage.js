@@ -25,22 +25,22 @@ class PaymentPage extends Component {
         this.state = {
           plans:[
               {
-                  name:"1 Month Subscriptions",
+                  name:"1 Month Subscription",
                   cost:"₹500",
                   packname:"Monthly"
               },
             {
-                name: "3 Month Subscriptions",
+                name: "3 Month Subscription",
                 cost: "₹1400",
                 packname: "Quarterly"
             },
             {
-                name: "6 Month Subscriptions",
+                name: "6 Month Subscription",
                 cost: "₹2800",
                 packname: "Halfly"
             },
             {
-                name: "year Subscriptions",
+                name: "Year Subscription",
                 cost: "₹4700",
                 packname: "Yearly"
             },
@@ -171,7 +171,7 @@ class PaymentPage extends Component {
                                          <LinearGradient
                                             key={index}
                                             style={[styles.card2, styles.elevation]}
-                                            colors={['#4c669f', '#3b5998', '#192f6a']}
+                                            colors={['#3333', '#3333', '#333']}
                                          >
                                             <TouchableOpacity 
                                              style={{flex:1}}

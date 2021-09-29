@@ -252,9 +252,9 @@ console.log(sendData,"ppp")
         console.log(post, "jkjjj")
         if (post.type == "success") {
             this.showSimpleMessage("Added Successfully", "#00A300", "success")
-            setTimeout(() => {
-                this.props.navigation.goBack()
-            })
+    
+                this.props.navigation.pop(2)
+                
         } else {
             this.showSimpleMessage("Try again", "#B22222", "danger")
         }

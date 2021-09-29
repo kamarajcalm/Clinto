@@ -73,7 +73,7 @@ class ViewReports extends Component {
          }
      }
    componentDidMount(){
-       
+        console.log(this.state.item.user.profile.age,"uuuuu")
          this.validateAnimations();
          Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
          Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
@@ -200,16 +200,16 @@ getTotal =()=>{
                  
                          <View style={{flexDirection:"row",marginTop:15}}>
                             <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
-                                <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>#</Text>
+                                <Text style={[styles.text,{color:"#000",fontSize:width*0.037,fontWeight:"bold"}]}>#</Text>
                             </View>
                             <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
-                                <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>Report</Text>
+                                <Text style={[styles.text,{color:"#000",fontSize:width*0.037,fontWeight:"bold"}]}>Report</Text>
                             </View>
                             <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
-                                <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>Price</Text>
+                                <Text style={[styles.text,{color:"#000",fontSize:width*0.037,fontWeight:"bold"}]}>Price</Text>
                             </View>
                             <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
-                                <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>Actions</Text>
+                                <Text style={[styles.text,{color:"#000",fontSize:width*0.037,fontWeight:"bold"}]}>Actions</Text>
                             </View>
                         </View>
            </View>
@@ -220,10 +220,10 @@ getTotal =()=>{
        return(
          <View style={{marginVertical:20,alignItems:"center",justifyContent:"center"}}>
              <View style={{alignSelf:"flex-end",justifyContent:"center",marginRight:20}}>
-                 <Text style={[styles.text,{color:"#000"}]}>Total :{this.getTotal()}</Text>
+                 <Text style={[styles.text,{color:"#000",fontSize:width*0.037}]}>Total :{this.getTotal()}</Text>
              </View>
                   <View style={{marginTop:10,alignItems:"center",justifyContent:"center"}}>
-                            <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>Result Expected On : {this.state.item.result_expected}</Text>
+                            <Text style={[styles.text,{color:"red",fontSize:width*0.037}]}>Result Expected On : {this.state.item.result_expected}</Text>
                       </View>
          </View>
        )
@@ -275,6 +275,46 @@ getTotal =()=>{
                     }
 }
      }
+         createCallAlert = () => {
+                Alert.alert(
+                "Do you want to Call?",
+                ``,
+                [
+                    {
+                    text: "No",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                    },
+                    { text: "Yes", onPress: () => {
+                            if (Platform.OS == "android") {
+                                            Linking.openURL(`tel:${this.state.item?.diagonistic_clinic.mobile}`)
+                                        } else {
+
+                                            Linking.canOpenURL(`telprompt:${this.state.item?.diagonistic_clinic.mobile}`)
+                                    }
+                    } }
+                ]
+                );
+
+  }
+  createMailAlert = ()=>{
+               Alert.alert(
+                "Do you want to Mail?",
+                ``,
+                [
+                    {
+                    text: "No",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                    },
+                    { text: "Yes", onPress: () => {
+                                openComposer({
+                                    to: this.state?.item?.diagonistic_clinic?.offical_email
+                                })
+                    } }
+                ]
+                );
+  }
      searchReports = async(report)=>{
        this.setState({report,searched:false})   
         let api =`${url}/api/prescription/labreports/?clinic=${this.props.clinic.clinicpk}`
@@ -432,12 +472,12 @@ getTotal =()=>{
                 <View style={{ height: height * 0.1, backgroundColor:themeColor,flexDirection:"row"}}>
                      <View style={{flex:0.7}}>
                          <View style={{flex:0.5,justifyContent:"center",marginLeft:20}}>
-                            <Text style={[styles.text,{color:"#ffff",fontWeight:'bold',fontSize:height*0.03}]}>{this.state?.item?.diagonistic_clinic?.companyName?.toUpperCase()}</Text>
+                            <Text style={[styles.text,{color:"#ffff",fontWeight:'bold',fontSize:height*0.02}]}>{this.state?.item?.diagonistic_clinic?.companyName?.toUpperCase()}</Text>
 
                          </View>
                          <View style={{flex:0.5,marginLeft:20,}}>
                              <View>
-                                   <Text style={[styles.text,{color:"#fff",fontSize:height*0.017}]}>{this.state?.item?.diagonistic_clinic?.address}</Text>
+                                   <Text style={[styles.text,{color:"#fff",fontSize:height*0.017}]} numberOfLines={1}>{this.state?.item?.diagonistic_clinic?.address}</Text>
                              </View>
                          
                             <View style={{ }}>
@@ -468,35 +508,38 @@ getTotal =()=>{
                         <View style={{flex:0.5,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
                              <View style={{flexDirection:'row'}}>
                                <View>
-                                    <Text style={[styles.text,{fontSize:height*0.02}]}>Name : </Text>
+                                    <Text style={[styles.text,{fontSize:height*0.016}]}>Name : </Text>
                                </View>
                                 <View>
-                                    <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{this.state?.item?.user?.profile?.name}</Text>
+                                    <Text style={[styles.text,{color:"#000",fontSize:height*0.016}]}>{this.state?.item?.user?.profile?.name}</Text>
                                 </View>
                            </View>
                                <View style={{ flexDirection: 'row' }}>
                                 <View>
-                                    <Text style={[styles.text,{fontSize:height*0.02}]}>Age : </Text>
+                                    <Text style={[styles.text,{fontSize:height*0.016}]}>Age : </Text>
                                 </View>
                                 <View>
-                                        <Text style={[styles.text, { color: "#000",fontSize:height*0.02 }]}>{this.state?.item?.user?.profile?.age}</Text>
+                                        <Text style={[styles.text, { color: "#000",fontSize:height*0.016}]}>{this.state.item.user.profile.age}</Text>
                                 </View>
                             </View>
                             <View style={{ flexDirection: 'row' }}>
                                 <View>
-                                    <Text style={[styles.text,{fontSize:height*0.02}]}>Sex : </Text>
+                                    <Text style={[styles.text,{fontSize:height*0.016}]}>Sex : </Text>
                                 </View>
                                 <View>
-                                    <Text style={[styles.text, { color: "#000",fontSize:height*0.02}]}>{this.state?.item?.user?.profile?.sex}</Text>
+                                    <Text style={[styles.text, { color: "#000",fontSize:height*0.016}]}>{this.state?.item?.user?.profile?.sex}</Text>
                                 </View>
                             </View>
                         </View>
-                        <View style={{flex:0.5,paddingRight:20,flexDirection:"row",justifyContent:"space-around"}}>
+                        <View style={{flex:0.5,paddingRight:30,flexDirection:"row",justifyContent:"space-between",paddingLeft:30}}>
                             <View>
-                                
+                            <Text style={[styles.text,{fontSize:height*0.016}]}>Report No : {this.state?.item?.id}</Text>
+
                             </View>
-                            <Text style={[styles.text,{fontSize:height*0.016}]}>Prescription No : {this.state?.item?.prescription}</Text>
+                            <View>
                             <Text style={[styles.text,{textAlign:"right",fontSize:height*0.016}]}>{moment(this.state?.item?.created).format('DD/MM/YYYY')}</Text>
+
+                            </View>
                         </View>
                        
                     </View>
@@ -515,14 +558,14 @@ getTotal =()=>{
                                 return(
                                        <View style={{flexDirection:"row",marginTop:15}}>
                                           <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
-                                              <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{index+1}</Text>
+                                              <Text style={[styles.text,{color:"#000",fontSize:width*0.037}]}>{index+1}</Text>
                                           </View>
                                           <View style={{flex:0.4,alignItems:"center",justifyContent:"center"}}>
-                                                <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{item.category}</Text>
+                                                <Text style={[styles.text,{color:"#000",fontSize:width*0.037}]}>{item.category}</Text>
                                                 {item.report_file==null&&<Text style={[styles.text,{color:"red",fontSize:height*0.02}]}>(File Not Uploaded)</Text>}
                                           </View>
                                             <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
-                                                <Text style={[styles.text,{color:"#000",fontSize:height*0.02}]}>{item.price}</Text>
+                                                <Text style={[styles.text,{color:"#000",fontSize:width*0.037}]}>{item.price}</Text>
                                           </View>
                                           <View style={{flex:0.3,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
                                            {this.props.user.profile.occupation!="Customer"&&<TouchableOpacity 
@@ -531,7 +574,7 @@ getTotal =()=>{
                                                     this.setEdit(item)
                                                 }}
                                               >
-                                                  <Entypo name="edit" size={24} color={themeColor} />
+                                                  <Entypo name="edit" size={20} color={themeColor} />
                                               </TouchableOpacity>}   
                                            {item.report_file&&<TouchableOpacity 
                                                    onPress={()=>{
@@ -539,14 +582,14 @@ getTotal =()=>{
                                                    }}
                                                  
                                                  >
-                                                     <Feather name="download" size={24} color={themeColor}/>
+                                                     <Feather name="download" size={20} color={themeColor}/>
                                               </TouchableOpacity>  }
                                              {this.props.user.profile.occupation!="Customer"&&   <TouchableOpacity 
                                                   onPress={()=>{
                                                     this.createAlert(item)
                                                   }}
                                                 >
-                                                    <AntDesign name="delete" size={24} color={themeColor} />
+                                                    <AntDesign name="delete" size={20} color={themeColor} />
                                               </TouchableOpacity> } 
                                           </View>
                                       </View>
@@ -556,33 +599,33 @@ getTotal =()=>{
 
                     </View>
          
-                    <View style={{ flex: 0.07, backgroundColor:themeColor,flexDirection:'row'}}>
-                        <TouchableOpacity style={{ flex: 0.5, flexDirection: "row",alignItems: 'center', justifyContent: "center"}}
-                         onPress ={()=>{
-                             if (Platform.OS == "android") {
-                                 Linking.openURL(`tel:${this.state.appDetails?.mobile}`)
-                             } else {
-
-                                 Linking.canOpenURL(`telprompt:${this.state.appDetails?.mobile}`)
-                             }
-                         }}
-                        >
-                            <View style={{alignItems:'center',justifyContent:"center"}}>
-                                <Feather name="phone" size={height*0.035} color="#fff" />
+                         <View style={{ flex: 0.07, backgroundColor: themeColor, flexDirection: 'row' ,}}>
+                                <TouchableOpacity style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center" ,flex:0.5}}
+                                    onPress={() => {
+                                          this.createCallAlert()
+                                    }}
+                                >
+                                    <View style={{ alignItems: 'center', justifyContent: "center" }}>
+                                        <Feather name="phone" size={height*0.02} color="#fff" />
+                                    </View>
+                                    <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5 }}>
+                                        <Text style={[styles.text, { color: "#ffff" ,fontSize:height*0.017}]}>{this.state.item?.diagonistic_clinic.mobile}</Text>
+                                    </View>
+                                </TouchableOpacity >
+                                <TouchableOpacity style={{ flexDirection: "row",flex:0.5,alignItems:"center",justifyContent:"center" }}
+                                  onPress={()=>{
+                                   
+                                    this.createMailAlert()
+                          }}
+                                >
+                                    <View style={{ alignItems: 'center', justifyContent: "center" }}>
+                                        <Feather name="mail" size={height*0.02} color="#fff" />
+                                    </View>
+                                    <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5 }}>
+                                        <Text style={[styles.text, { color: "#ffff" ,fontSize:height*0.017}]} numberOfLines={1}>Mail</Text>
+                                    </View>
+                                </TouchableOpacity>
                             </View>
-                            <View style={{alignItems:'center',justifyContent:"center",marginLeft:5}}>
-                                    <Text style={[styles.text, { color: "#ffff" }]}>{this.state.item?.diagonistic_clinic?.mobile}</Text>
-                            </View>
-                        </TouchableOpacity >
-                        <View style={{ flex: 0.5, flexDirection: "row"}}>
-                            <View style={{ alignItems: 'center', justifyContent: "center" }}>
-                                <Feather name="mail" size={height*0.035} color="#fff" />
-                            </View>
-                            <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5 }}>
-                                    <Text style={[styles.text, { color: "#ffff" }]}>{this.state?.item?.diagonistic_clinic?.offical_email}</Text>
-                            </View>
-                        </View>
-                    </View>
                 
                  </View>
                 </GestureRecognizer>

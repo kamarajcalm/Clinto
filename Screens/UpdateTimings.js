@@ -128,18 +128,7 @@ class UpdateTimings extends Component {
         if(post.type =="success"){
             this.showSimpleMessage("Updated SuccessFully", "#00A300", "success")
                
-                    return this.props.navigation.dispatch(
-                        CommonActions.reset({
-                            index: 0,
-                            routes: [
-                                {
-                                    name: '',
-
-                                },
-
-                            ],
-                        })
-                    )
+                    return  this.props.navigation.pop(2)
                 }
       
         

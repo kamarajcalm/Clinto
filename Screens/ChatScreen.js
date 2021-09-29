@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component,PureComponent } from 'react';
 import { View, Text, StatusBar, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, TextInput, SafeAreaView, ActivityIndicator ,KeyboardAvoidingView, Platform,Keyboard,} from 'react-native';
 import settings from '../AppSettings';
 import { connect } from 'react-redux';
@@ -23,7 +23,7 @@ const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
 const wampServer = settings.wampServer;
 const url =settings.url
-class ChatScreen extends Component {
+class ChatScreen extends PureComponent {
   constructor(props) {
       
     super(props);
@@ -557,12 +557,12 @@ sendMessage =async()=>{
                   
                         <Image
                             source={{ uri:this.state?.item?.displaypicture||"https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" }}
-                            style={{ height: 60, width: 60, borderRadius: 30, }}
+                            style={{ height:height*0.08, width:height*0.08, borderRadius: height*0.04, }}
                             
                         />
                  
                       <View style={{alignItems:"center",justifyContent:"center"}}>
-                                <Text style={[styles.text, { color: '#fff', marginLeft: 20, fontWeight: 'bold', fontSize: 20 }]}>{chatTitle}</Text>
+                                <Text style={[styles.text, { color: '#fff', marginLeft: 20, fontWeight: 'bold', fontSize: height*0.03 }]}>{chatTitle}</Text>
 
                       </View>
                 </View>

@@ -52,7 +52,7 @@ const {url} =settings
      return (
       <View>
       
-                <TouchableOpacity style={[styles.card2, { flexDirection: "row", minHeight: height * 0.15,}]}
+                <TouchableOpacity style={[styles.card2, { flexDirection: "row", }]}
                     
                     onPress={() => { this.props.navigation.navigate('ViewReports',{item})}}
                 >
@@ -71,7 +71,7 @@ const {url} =settings
                         <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" ,}}>
                             <View style={{  }}>
                                  <View style={{flexDirection:"row",flex:1,width:"100%"}}>
-                                      <Text style={[styles.text, { color: "#000", fontSize:height*0.02 }]} numberOfLines={1}>{item?.diagonistic_clinic?.companyName}</Text>
+                                      <Text style={[styles.text, { color: "#000", fontSize:height*0.02,fontWeight:"bold" }]} numberOfLines={1}>{item?.diagonistic_clinic?.companyName}</Text>
                                       
                                  </View>
                                   
@@ -80,12 +80,22 @@ const {url} =settings
                                 <Text>#{this.getIndex(index)}</Text>
                             </View>
                         </View>
-                   <View style={{flexDirection:"row",flexWrap:"wrap",alignItems:"center",justifyContent:"space-around",marginTop:10}}>
+                      
+                   <View style={{flexDirection:"row",flexWrap:"wrap",marginTop:10}}>
+                               <View>
+                            <Text style={[styles.text,{fontSize:height*0.018}]}>Reports : </Text>
+                        </View>
+                             
                                         {
                                 item?.subReports?.map((itemm,index)=>{
                                             return(
-                                        <View>
-                                            <Text style={[styles.text]}>{index+1}. {itemm.category}</Text> 
+                                        <View style={{flexDirection:"row"}}>
+                                            <View>
+                                                        <Text style={[styles.text,{fontSize:height*0.018}]}>{itemm.category}</Text> 
+                                            </View>
+                                        {index < item.subReports.length-1   && <View>
+                                                <Text style={[styles.text,{fontSize:height*0.018}]}> , </Text>
+                                            </View>}
                                            
                                         </View>
                                     ) 
@@ -94,27 +104,14 @@ const {url} =settings
                             </View>
                                 <View style={{ flexDirection: "row", marginVertical:10 }}>
                         <View style={{flexDirection:"row",flex:0.5,alignItems:"center",justifyContent:"space-around"}}>
-                                            <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                                            <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: height*0.04, width:height*0.04, borderRadius: height*0.02, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
                             onPress={() => { this.chatClinic(item) }}
                         >
-                            <Ionicons name="chatbox" size={24} color="#63BCD2" />
+                            <Ionicons name="chatbox" size={height*0.02} color="#63BCD2" />
 
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
-                            onPress={() => {
-                       
-                                      if (Platform.OS == "android") {
-                                        Linking.openURL(`tel:${item?.diagonistic_clinic.mobile}`)
-                                    } else {
-
-                                        Linking.canOpenURL(`telprompt:${item?.diagonistic_clinic.mobile}`)
-                                    }}}
-    
-    
-                        >
-                           <Ionicons name="call" size={24} color="#63BCD2" />
-                        </TouchableOpacity>
-                            <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+           
+                            <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: height*0.04 , width:height*0.04 , borderRadius:  height*0.02, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
                             onPress={() => {
                                     
                                           Linking.openURL(
@@ -129,16 +126,16 @@ const {url} =settings
                                  }}
     
                         >
-                           <FontAwesome5 name="directions" size={24}  color="#63BCD2" />
+                           <FontAwesome5 name="directions" size={height*0.02}  color="#63BCD2" />
                         </TouchableOpacity>
                         </View>
                      <View style={{alignItems:"center",justifyContent:"center",flex:0.5}}>
                             <View style={{}}>
-                                <Text style={[styles.text,{fontSize:height*0.017}]}>{moment(item.created).format("h:mm A")}</Text>
+                                <Text style={[styles.text,{fontSize:height*0.02}]}>{moment(item.created).format("h:mm A")}</Text>
 
                             </View>
                             <View style={{}}>
-                                <Text style={[styles.text,{fontSize:height*0.017}]}>{moment(item.created).format('DD/MM/YYYY')}</Text>
+                                <Text style={[styles.text,{fontSize:height*0.02}]}>{moment(item.created).format('DD/MM/YYYY')}</Text>
                             </View>
                          </View>
                  
@@ -204,7 +201,7 @@ const styles = StyleSheet.create({
      
         marginHorizontal: 10,
         marginVertical: 3,
-        paddingVertical:10
+        paddingVertical:5
     },
     topSafeArea: {
         flex: 0,

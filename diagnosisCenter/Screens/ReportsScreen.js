@@ -240,7 +240,7 @@ hideDatePicker = () => {
                 <View style={{ alignItems: "center", justifyContent: "center", width: width * 0.32, }}>
                     <View style={{ flexDirection: "row" }}>
                         <View style={{ alignItems: "center", justifyContent: "center" }}>
-                            <Text style={[styles.text, { color: "#fff" }]}>{this.state.today}</Text>
+                            <Text style={[styles.text, { color: "#fff",fontSize:height*0.019 }]}>{moment(this.state.today).format("DD-MM-YYYY")}</Text>
                         </View>
 
                         <TouchableOpacity
@@ -271,7 +271,7 @@ hideDatePicker = () => {
             <View>
                 <View style={{ height: headerHeight / 2,flexDirection:"row",}}>
                      <View style={{flex:0.6,justifyContent:"center"}}>
-                        <Text style={{ color: '#fff', fontFamily: "openSans", marginLeft: 20, fontSize: height*0.04, fontWeight: "bold" }}>Reports</Text>
+                        <Text style={{ color: '#fff', fontFamily: "openSans", marginLeft: 20, fontSize: height*0.03, fontWeight: "bold"  }}>Reports</Text>
                      </View>
                     <View style={{flex:0.4,alignItems: "center", justifyContent: 'center'}}>
                         {
@@ -395,7 +395,7 @@ const screenHeight =Dimensions.get('screen').height;
                 ref={ref=>this.swipeRef[index]=ref}
                 renderRightActions={(progress, dragX) => this.rightSwipe(progress, dragX, item, index)}
             >
-                <TouchableOpacity style={[styles.card, { flexDirection: "row",    height: height * 0.1,}]}
+                <TouchableOpacity style={[styles.card, { flexDirection: "row",    minHeight: height * 0.1,paddingVertical:20}]}
                     
                     onPress={() => { this.props.navigation.navigate('ViewReports',{item})}}
                 >
@@ -420,19 +420,41 @@ const screenHeight =Dimensions.get('screen').height;
                                   
                             </View>
                             <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                <Text>#{this.getIndex(index)}</Text>
+                                <Text style={[styles.text,{fontSize:height*0.018}]}>#{item.id}</Text>
                             </View>
                         </View>
-        
+                                 <View style={{ marginTop: 10,flexDirection:"row" }}>
+                         {<View style={{flexDirection:"row"}}>
+                                <Text style={[styles.text]}>Diagnosis : </Text>
+                            </View>}
+                            <View style={{flexDirection:"row",flexWrap:"wrap",flex:1}}>
+                               {
+                                   ["hhhh","hhhhh","ghhhh"].map((it,index)=>{
+                                      
+                                        return(
+                                            <View style={{flexDirection:"row"}}>
+                                                 
+                                                          <Text style={[styles.text]}>{it}</Text>
+                                                 
+                                              
+                                                   { index < ["hhhh","hhhhh","ghhhh"].length-1&&<Text style={[styles.text]}> , </Text> }
+                                                
+                                            </View>
+                                        )
+                                   })
+                               }
+                            </View>
+                  
+                        </View>
                                 <View style={{ flexDirection: "row", marginVertical:10 }}>
                         <View style={{flex:0.5,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}>
-                                            <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                                            <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: height*0.04, width: height*0.04, borderRadius: height*0.02, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
                             onPress={() => { this.chatClinic(item) }}
                         >
-                            <Ionicons name="chatbox" size={24} color="#63BCD2" />
+                            <Ionicons name="chatbox" size={height*0.02} color="#63BCD2" />
 
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                        <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: height*0.04, width:height*0.04, borderRadius: height*0.02, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
                             onPress={() => {
                        
                                     if (Platform.OS == "android") {
@@ -443,10 +465,12 @@ const screenHeight =Dimensions.get('screen').height;
                                     }}}
     
                         >
-                           <Ionicons name="call" size={24} color="#63BCD2" />
+                           <Ionicons name="call" size={height*0.02} color="#63BCD2" />
                         </TouchableOpacity>
                         </View>
-                
+                        <View style={{flex:0.5,alignItems:"flex-end",justifyContent:"center"}}>
+                           <Text style={[styles.text,{fontSize:height*0.018}]}>{moment(item.created).format("hh:mm a")}</Text>
+                        </View>
                  
                          
                     </View>

@@ -348,15 +348,15 @@ class ViewAppointmentDoctors extends Component {
                                         
                                         </View>
                                         <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" ,flexDirection:"row"}}>
-                                            <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center' }]}
+                                            <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: height*0.04, width: height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center' }]}
                                                 onPress={() => { this.chatClinic() }}
                                             >
-                                                <Ionicons name="md-chatbox" size={20} color="#63BCD2" />
+                                                <Ionicons name="md-chatbox" size={height*0.02} color="#63BCD2" />
                                             </TouchableOpacity>
                                             <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
                                                 onPress={() => { this.getCall()}}
                                             >
-                                                <FontAwesome name="phone" size={20} color="#63BCD2" />
+                                                <FontAwesome name="phone" size={height*0.02} color="#63BCD2" />
                                             </TouchableOpacity>
                                         </View>
                                     </View>

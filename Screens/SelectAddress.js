@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView, ScrollView, Linking,ActivityIndicator, TextInput, KeyboardAvoidingView, Platform ,Keyboard,KeyboardEvent, Alert} from 'react-native';
+import { View, Text, StatusBar, Dimensions, Image, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView, ScrollView, Linking,ActivityIndicator, TextInput, KeyboardAvoidingView, Platform ,Keyboard,KeyboardEvent, Alert,PermissionsAndroid} from 'react-native';
 import settings from '../AppSettings';
 import axios from 'axios';
 import Modal from 'react-native-modal';
@@ -73,6 +73,45 @@ class SelectAddress extends Component {
     Alert.alert("Please enable Location")
 })
    }
+      getAndroidLocation = async()=>{
+         Location.installWebGeolocationPolyfill();
+     try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+   
+    )
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+       navigator.geolocation.getCurrentPosition(
+          async(position)=>{
+                  let  address = await   Location.reverseGeocodeAsync({
+           latitude: position.coords.latitude,
+           longitude:position.coords.longitude,
+       })
+                this.setState({ address:`${address[0]?.district},${address[0].subregion}-${address[0].postalCode}`})
+      this.setState({ location: {
+        latitude: position.coords.latitude,
+        longitude:position.coords.latitude, 
+        latitudeDelta: 0.001, 
+        longitudeDelta: 0.001
+    },
+        latitude: position.coords.latitude,
+        longitude: position.coords.latitude, 
+    })
+            
+          },
+          error=>this.getAndroidLocation(),
+          {enableHighAccuracy:true,timeout:20000,maximumAge:1000}
+       );
+    } else {
+      Alert.alert(
+        "User location not detected",
+        "You haven't granted permission to detect your location.",
+        [{ text: 'OK', onPress: () => this.goToSettings() }]
+      );    }
+  } catch (err) {
+    console.warn(err)
+  }
+   }
        handleChange = async(region)=>{
 
         
@@ -112,7 +151,12 @@ class SelectAddress extends Component {
         console.log(this.props.user)
         Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
-      this.getCurrenLocation();
+  
+     if(Platform.OS=="android"){
+     this.getAndroidLocation()
+   }else{
+          this.getCurrenLocation();
+   }
     }
     componentWillUnmount(){
         Keyboard.removeListener('keyboardDidShow', this._keyboardDidShow);

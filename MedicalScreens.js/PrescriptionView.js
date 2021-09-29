@@ -16,7 +16,8 @@ import {
     ActivityIndicator,
     AsyncStorage,
     ScrollView,
-    TextInput
+    TextInput,
+    Alert
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 const width = Dimensions.get("screen").width
@@ -471,40 +472,46 @@ class PrescriptionView extends Component {
 
         )
     }
+    sepeartor =()=>{
+    return(
+        <View>
+            <Text style={[styles.text,{color:"#000"}]}> , </Text>
+        </View>
+    )
+}
     renderHeader = () => {
         return (
-            <View>
-                <View style={{ marginHorizontal: 20, flexDirection: "row", marginTop: 10 }}>
-                    <View style={{ alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, { color: "#000", }]}>Reason : </Text>
-                    </View>
-                    <View style={{ alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, {}]}>{this.state?.item?.ongoing_treatment}</Text>
-                    </View>
-                </View>
-                <View style={{ marginHorizontal: 20, flexDirection: "row", marginTop: 10 }}>
-                    <View style={{ alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, { color: "#000", }]}>Diagnosis : </Text>
-                    </View>
-                    <View style={{ alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, {}]}>{this.state.item?.diseaseTitle}</Text>
-                    </View>
-                </View>
+            <View style={{flex:1,paddingLeft:30}}>
+                        {this.state?.item?.ongoing_treatment?<View style={{flex:0.5,flexDirection:"row"}}>
+                                  <View style={{alignItems:"center",justifyContent:"center"}}>
+                                             <Text style={[styles.text, { color: "#000",fontSize:height*0.017 }]}>Reason : </Text>
+                                  </View>
+                                  <View style={{alignItems:"center",justifyContent:"center"}}>
+                                             <Text style={[styles.text, {fontSize:height*0.017}]}>{this.state?.item?.ongoing_treatment}</Text>
+                                  </View>
+                            </View>:null}
+                            <View style={{flexDirection:"row",flex:this.state?.item?.ongoing_treatment?0.5:1}}>
+                                <View>
+                                           <Text style={[styles.text, { color: "#000",fontSize:height*0.017 }]}>Diagnosis : </Text>
+                                </View>
+                                        
 
-                {/* <View style={{ marginHorizontal: 20, flexDirection: "row", marginTop: 10, alignItems: "center", justifyContent: "space-around" }}>
-                    <TouchableOpacity
-                        onPress={() => { this.setState({ selected: "Prescribed" }) }}
-                        style={{ height: height * 0.04, width: width * 0.4, backgroundColor: this.state.selected == "Prescribed" ? themeColor : "gray", alignItems: "center", justifyContent: "center", borderRadius: 5 }}
-                    >
-                        <Text style={[styles.text, { color: "#fff" }]}>Prescribed</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => { this.setState({ selected: "Medicines Given" }) }}
-                        style={{ height: height * 0.04, width: width * 0.4, backgroundColor: this.state.selected == "Medicines Given" ? themeColor : "gray", alignItems: "center", justifyContent: "center", borderRadius: 5 }}
-                    >
-                        <Text style={[styles.text, { color: "#fff" }]}>Medicines Given</Text>
-                    </TouchableOpacity>
-                </View> */}
+                                    {
+                                        this.state.item.diseaseTitle.map((item,index)=>{
+                                            return(
+                                                    <View style={{flexDirection:"row"}}>
+                                                        <View>
+                                                              <Text style={[styles.text, {color:"#000",fontSize:height*0.017}]}>{item}</Text>
+                                                        </View>
+                                                       { index < this.state.item.diseaseTitle.length-1&&<View>
+                                                                <Text style={[styles.text, {color:"#000",fontSize:height*0.017}]}> , </Text>
+                                                        </View>}
+                                                     </View> 
+                                            )
+                                        })
+                                    }
+                                          
+                    </View>
             </View>
         )
     }
@@ -613,6 +620,46 @@ class PrescriptionView extends Component {
             </Modal>
         )
     }
+     createCallAlert = () => {
+                Alert.alert(
+                "Do you want to Call?",
+                ``,
+                [
+                    {
+                    text: "No",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                    },
+                    { text: "Yes", onPress: () => {
+                            if (Platform.OS == "android") {
+                                            Linking.openURL(`tel:${this.state.item?.clinicname.mobile}`)
+                                        } else {
+
+                                            Linking.canOpenURL(`telprompt:${this.state.item?.clinicname.mobile}`)
+                                    }
+                    } }
+                ]
+                );
+
+  }
+  createMailAlert = ()=>{
+               Alert.alert(
+                "Do you want to Mail?",
+                ``,
+                [
+                    {
+                    text: "No",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                    },
+                    { text: "Yes", onPress: () => {
+                                openComposer({
+                                    to: this.state?.item?.clinicname?.email
+                                })
+                    } }
+                ]
+                );
+  }
     render() {
         const config = {
             velocityThreshold: 0.3,
@@ -624,29 +671,30 @@ class PrescriptionView extends Component {
                 <SafeAreaView style={styles.topSafeArea} />
                 <SafeAreaView style={styles.bottomSafeArea}>
                     <StatusBar backgroundColor={themeColor}/>
-                    <View style={{ height: height * 0.1, backgroundColor: themeColor, flexDirection: "row" }}>
-                        <View style={{ flex: 0.7 }}>
-                            <View style={{ flex: 0.5, justifyContent: "center", marginLeft: 20 }}>
-                                <Text style={[styles.text, { color: "#ffff", fontWeight: 'bold', fontSize: height*0.025 }]}>{this.state?.item?.clinicname?.name?.toUpperCase()}</Text>
+              <View style={{ height: height * 0.1, backgroundColor:themeColor,flexDirection:"row"}}>
+                     <View style={{flex:0.7}}>
+                         <View style={{flex:0.5,justifyContent:"center",marginLeft:20}}>
+                            <Text style={[styles.text,{color:"#ffff",fontWeight:'bold',fontSize:height*0.02}]} numberOfLines={1}>{this.state?.item?.clinicname?.name?.toUpperCase()}</Text>
 
+                         </View>
+                         <View style={{flex:0.5,marginLeft:20,}}>
+                             <View>
+                                   <Text style={[styles.text,{color:"#fff",fontSize:height*0.017}]} numberOfLines={1}>{this.state?.item?.clinicname?.address}</Text>
+                             </View>
+                         
+                            <View style={{ }}>
+                                <Text style={[styles.text, { color: "#fff" ,fontSize:height*0.017}]}>{this.state?.item?.clinicname?.city}-{this.state?.item?.clinicname?.pincode}</Text>
                             </View>
-                            <View style={{ flex: 0.5, marginLeft: 20 }}>
-                                <View>
-                                             <Text style={[styles.text, { color: "#fff" ,fontSize:height*0.017}]} numberOfLines={1}>{this.state?.item?.clinicname?.address}</Text>
-                                </View>
-                           
-                                <View style={{}}>
-                                    <Text style={[styles.text, { color: "#fff",fontSize:height*0.017 }]}>{this.state?.item?.clinicname?.city}-{this.state?.item?.clinicname?.pincode}</Text>
-                                </View>
-                            </View>
-                        </View>
-                        <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
-                            <Image
-                                style={{ height: '80%', width: '80%', resizeMode: "contain" }}
-                                source={{ uri: "https://i.pinimg.com/originals/8d/a6/79/8da6793d7e16e36123db17c9529a3c40.png" }}
-                            />
-                        </View>
-                    </View>
+                         </View>
+                        
+                     </View>
+                     <View style={{flex:0.3,alignItems:'center',justifyContent:'center'}}>
+                          <Image 
+                            style={{height:'80%',width:'80%',resizeMode:"contain"}}
+                            source={{ uri:"https://i.pinimg.com/originals/8d/a6/79/8da6793d7e16e36123db17c9529a3c40.png"}}
+                          />
+                     </View>
+                </View>
                     <GestureRecognizer
                         onSwipe={(direction, state) => this.onSwipe(direction, state)}
                         config={config}
@@ -658,50 +706,51 @@ class PrescriptionView extends Component {
 
 
                         <View style={{ flex: 1 }}>
-                            <View style={{ flex: 0.15, borderColor: "#eee", borderBottomWidth: 0.5 }}>
-                                <View style={{ marginHorizontal: 20, flexDirection: "row", alignItems: 'center', justifyContent: 'space-around', marginVertical: 15 }}>
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <View>
-                                            <Text style={[styles.text]}>Name : </Text>
-                                        </View>
-                                        <View>
-                                            <Text style={[styles.text, { color: "#000", }]}>{this.state?.item?.username.name}</Text>
-                                        </View>
-                                    </View>
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <View>
-                                            <Text style={[styles.text]}>Age : </Text>
-                                        </View>
-                                        <View>
-                                            <Text style={[styles.text, { color: "#000", }]}>{this.state?.item?.username.age}</Text>
-                                        </View>
-                                    </View>
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <View>
-                                            <Text style={[styles.text]}>Sex : </Text>
-                                        </View>
-                                        <View>
-                                            <Text style={[styles.text, { color: "#000", }]}>{this?.state?.item?.sex}</Text>
-                                        </View>
-                                    </View>
+                  <View style={{ flex: 0.15,borderColor:"#eee",borderBottomWidth:0.5,}}>
+                        <View style={{flex:0.5,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                             <View style={{flexDirection:'row'}}>
+                               <View>
+                                    <Text style={[styles.text,{fontSize:height*0.016}]}>Name : </Text>
+                               </View>
+                                <View>
+                                    <Text style={[styles.text,{color:"#000",fontSize:height*0.016}]}>{this.state?.item?.username.name}</Text>
                                 </View>
-                                <View style={{ marginHorizontal: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                    <View>
-                                        <Text style={[styles.text, { textAlign: "right" }]}>{moment(this.state?.item?.created).format('DD/MM/YYYY')}</Text>
-                                    </View>
-                                    <View style={{}}>
-                                        <Text style={[styles.text]}>Prescription No : {this.state?.item?.id}</Text>
-
-                                    </View>
+                           </View>
+                               <View style={{ flexDirection: 'row' }}>
+                                <View>
+                                    <Text style={[styles.text,{fontSize:height*0.016}]}>Age : </Text>
+                                </View>
+                                <View>
+                                        <Text style={[styles.text, { color: "#000",fontSize:height*0.016 }]}>{this.state?.item?.age}</Text>
                                 </View>
                             </View>
+                            <View style={{ flexDirection: 'row' }}>
+                                <View>
+                                    <Text style={[styles.text,{fontSize:height*0.016}]}>Sex : </Text>
+                                </View>
+                                <View>
+                                    <Text style={[styles.text, { color: "#000",fontSize:height*0.016}]}>{this?.state?.item?.sex}</Text>
+                                </View>
+                            </View>
+                        </View>
+                        <View style={{flex:0.5,paddingRight:30,flexDirection:"row",justifyContent:"space-between",paddingLeft:30}}>
+                            <View>
+                                      <Text style={[styles.text,{fontSize:height*0.016}]}>Prescription ID : {this.state?.item?.id}</Text>
+                            </View>
+                           <View>
+                                      <Text style={[styles.text,{textAlign:"right",fontSize:height*0.016}]}>{moment(this.state?.item?.created).format('DD/MM/YYYY')}</Text>
+                           </View>
+                          
+                        </View>
+                       
+                    </View>
 
-                            <View style={{ flex: 0.15,justifyContent:"center" }}>
+                            <View style={{ flex: 0.1,justifyContent:"center" }}>
                                 {
                                     this.renderHeader()
                                 }
                             </View>
-                            <View style={{ flex: 0.53, }}>
+                            <View style={{ flex: 0.58, }}>
 
                                 {this.state.selected == "Prescribed" ? 
                                 
@@ -716,46 +765,64 @@ class PrescriptionView extends Component {
 
 
                                         return (
-                                            <TouchableOpacity style={{
+                                                       <TouchableOpacity style={{
                                                 paddingBottom: 10,
                                                 flex: 1,
                                                 borderBottomWidth: 0.5,
                                                 borderColor: '#D1D2DE',
                                                 backgroundColor: '#FFFFFF',
-                                                flexDirection: "row",
-                                                marginTop: 10
+                                               
+                                                marginTop:10
                                             }}>
-                                                <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
-                                                    <Text style={[styles.text]}>{index + 1} . </Text>
-                                                </View>
-                                                <View style={{ flex: 0.7 }}>
-                                                    <View style={{ flexDirection: "row" }}>
-                                                        <View>
-                                                            <Text style={[styles.text, { color: "#000", fontWeight:"bold"}]}>{item.medicinename.name}</Text>
-                                                        </View>
-                                                        <View style={{ marginLeft: 10 }}>
-                                                            <Text style={[styles.text, { color: "#000", }]}>({item.medicinename.type})</Text>
-                                                        </View>
+                                                <View style={{flexDirection:"row"}}>
+                                                    <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
+                                                        <Text style={[styles.text,{color:"#000",fontWeight:"bold",fontSize:width*0.037}]}>{index + 1} . </Text>
                                                     </View>
-                                                    {(item.medicinename.type === "Tablet" || item.medicinename.type === "Capsules") && <View style={{ flexDirection: "row" }}>
-                                                        <View>
-                                                            <Text style={[styles.text]}> {item.morning_count} - {item.afternoon_count} -{item.night_count} </Text>
-                                                        </View>
-                                                        <View>
-                                                            <Text style={[styles.text]}>( {item.after_food ? "AF" : "BF"} )</Text>
-                                                        </View>
-                                                    </View>}
-                                                    <View style={{ marginTop: 10 }}>
-                                                        <Text style={[styles.text]}>{item.command}</Text>
-                                                    </View>
+                                                    <View style={{ flex: 0.8 }}>
 
-                                                </View>
-                                                <View style={{ flex: 0.2, alignItems: "center", justifyContent: "space-around" }}>
-                                                    <View>
-                                                        <Text style={[styles.text]}> {item.days} days</Text>
+                                                        <View style={{ flexDirection: "row" }}>
+                                                            <View>
+                                                                <Text style={[styles.text, { color: "#000", fontWeight: "bold",fontSize:width*0.037}]}>{item.medicinename.name}</Text>
+                                                            </View>
+                                                            <View style={{ marginLeft: 10 }}>
+                                                                <Text style={[styles.text, { color: "#000", fontWeight: "bold",fontSize:width*0.037 }]}>({item.medicinename.type})</Text>
+                                                            </View>
+                                                        { (item.medicinename.type === "Tablet" || item.medicinename.type === "Capsules") &&    <>
+                                                                <View>
+                                                                    <Text style={[styles.text,{fontSize:width*0.037}]}>*</Text>
+                                                                </View>
+                                                                <View>
+                                                                    <Text style={[styles.text,{fontSize:width*0.037}]}> {item.days} days</Text>
+                                                                </View>
+                                                            </>}
+                                                        </View>
+                                                        {(item.medicinename.type === "Tablet" || item.medicinename.type === "Capsules") && <View style={{ flexDirection: "row" }}>
+                                                            <View>
+                                                                <Text style={[styles.text,{fontSize:width*0.037}]}> {item.morning_count} - {item.afternoon_count} -{item.night_count} </Text>
+                                                            </View>
+                                                            <View>
+                                                                <Text style={[styles.text,{fontSize:width*0.037}]}>( {item.after_food ? "AF" : "BF"} )</Text>
+                                                            </View>
+                                                       
+                                                        </View>}
+                                                             <View style={{marginTop:5}}>
+                                                                <Text style={[styles.text,{color:"#DEB887",fontSize:width*0.037}]}>Diagnosis : {item.diagonisname}</Text>
+                                                            </View>
                                                     </View>
-                                                    <View>
-                                                        <Text style={[styles.text]}>count : {item.total_qty} </Text>
+                                                    <View style={{ flex: 0.2, alignItems: "center", justifyContent: "space-around" }}>
+
+                                                        <View>
+                                                            <Text style={[styles.text,{fontSize:width*0.037}]}>Qty : {item.total_qty} </Text>
+                                                        </View>
+                                                    </View>
+                                                </View>
+                                           
+                                                <View style={{flexDirection:"row"}}>
+                                                    <View style={{flex: 0.1,}}>
+
+                                                    </View>
+                                                    <View style={{ marginTop: 10 ,flex: 0.9,paddingRight:10}}>
+                                                        <Text style={[styles.text,{fontSize:width*0.037}]}>{item.command}</Text>
                                                     </View>
                                                 </View>
                                             </TouchableOpacity>
@@ -821,61 +888,9 @@ class PrescriptionView extends Component {
                                 }
 
                             </View>
-                            <View style={{ flex: 0.1, }}>
-                                <View style={{ flex: 0.5 }}>
-
-                                </View>
-                                <View style={{ alignSelf: 'flex-end', flex: 0.5, alignItems: "flex-end", justifyContent: "center", marginRight: 10 }}>
-                                    <View>
-                                        <Text style={styles.text}>Dr.{this.state?.item?.doctordetails?.name}</Text>
-
-                                    </View>
-                                    <View>
-                                        <Text style={styles.text}>{this.state?.item?.doctordetails?.specialization}</Text>
-                                    </View>
-                                    <View>
-                                        <Text style={styles.text}>{this.state?.item?.doctordetails?.mobile}</Text>
-                                    </View>
-                                </View>
-                            </View>
-                            <View style={{ flex: 0.08, backgroundColor: themeColor, flexDirection: 'row', alignItems: "center", justifyContent: "space-around" }}>
-                                <TouchableOpacity style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center" }}
-                                    onPress={() => {
-                                        if (Platform.OS == "android") {
-                                            Linking.openURL(`tel:${this.state.appDetails?.mobile}`)
-                                        } else {
-
-                                            Linking.canOpenURL(`telprompt:${this.state.appDetails?.mobile}`)
-                                        }
-                                    }}
-                                >
-                                    <View style={{ alignItems: 'center', justifyContent: "center" }}>
-                                        <Feather name="phone" size={24} color="#fff" />
-                                    </View>
-                                    <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5 }}>
-                                        <Text style={[styles.text, { color: "#ffff" }]}>{this.state.item?.clinicname?.mobile}</Text>
-                                    </View>
-                                </TouchableOpacity >
-                                <TouchableOpacity style={{ flexDirection: "row" }}
-                                   onPress={()=>{
-                                   openComposer({
-                                                to: this.state?.item?.clinicname?.email
-                                            })
-                                    }}
-                                >
-                                    <View style={{ alignItems: 'center', justifyContent: "center" }}>
-                                        <Feather name="mail" size={24} color="#fff" />
-                                    </View>
-                                    <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5 }}>
-                                        <Text style={[styles.text, { color: "#ffff" }]}>{this.state.item?.clinicname?.email}</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            </View>
-
-                        </View>
-                    </GestureRecognizer>
-                    {<View style={{position:"absolute",width,justifyContent:"center",bottom:120,left:20}}>
-                     <TouchableOpacity
+                            <View style={{ flex: 0.1,flexDirection:"row" }}>
+                                <View style={{ flex: 0.5,alignItems:"center",justifyContent:"center", }}>
+                                               <TouchableOpacity
                             style={{ backgroundColor:themeColor,height:height*0.05,width:width*0.4,alignItems:'center',justifyContent:'center',borderRadius:5}}
                         onPress={() => {
                             if (!this.state.valid) {
@@ -908,8 +923,51 @@ class PrescriptionView extends Component {
 
                      }
                      </TouchableOpacity>
-               
-                 </View>}
+                                </View>
+                                <View style={{ alignSelf: 'flex-end', flex: 0.5, alignItems: "flex-end", justifyContent: "center", marginRight: 10 }}>
+                                    <View>
+                                        <Text style={styles.text}>Dr.{this.state?.item?.doctordetails?.name}</Text>
+
+                                    </View>
+                                    <View>
+                                        <Text style={styles.text}>{this.state?.item?.doctordetails?.specialization}</Text>
+                                    </View>
+                                    <View>
+                                        <Text style={styles.text}>{this.state?.item?.doctordetails?.mobile}</Text>
+                                    </View>
+                                </View>
+                            </View>
+                         <View style={{ flex: 0.08, backgroundColor: themeColor, flexDirection: 'row' ,}}>
+                                <TouchableOpacity style={{ flexDirection: "row", alignItems: 'center', justifyContent: "center" ,flex:0.5}}
+                                    onPress={() => {
+                                          this.createCallAlert()
+                                    }}
+                                >
+                                    <View style={{ alignItems: 'center', justifyContent: "center" }}>
+                                        <Feather name="phone" size={height*0.02} color="#fff" />
+                                    </View>
+                                    <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5 }}>
+                                        <Text style={[styles.text, { color: "#ffff" ,fontSize:height*0.017}]}>{this.state.item.clinicname.mobile}</Text>
+                                    </View>
+                                </TouchableOpacity >
+                                <TouchableOpacity style={{ flexDirection: "row",flex:0.5,alignItems:"center",justifyContent:"center" }}
+                                  onPress={()=>{
+                                   
+                                    this.createMailAlert()
+                          }}
+                                >
+                                    <View style={{ alignItems: 'center', justifyContent: "center" }}>
+                                        <Feather name="mail" size={height*0.02} color="#fff" />
+                                    </View>
+                                    <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5 }}>
+                                        <Text style={[styles.text, { color: "#ffff" ,fontSize:height*0.017}]} numberOfLines={1}>Mail</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+
+                        </View>
+                    </GestureRecognizer>
+              
                     {/* <View style={{ position: "absolute", width, justifyContent: "center", bottom: 130, left: 20 }}>
                       <TouchableOpacity 
                             onPress={() => { this.props.navigation.navigate("BillPrescription",{item:this.state.item})}}

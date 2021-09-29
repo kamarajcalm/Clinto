@@ -123,6 +123,10 @@ componentWillUnmount(){
            keyExtractor={(item, index) => index.toString()}
 
            renderItem={({ item, index }) => {
+                let dp = ""
+                if(item.displaypicture){
+                  dp = `${url}${item.displaypicture}`
+                }
              if(this.state.edit){
                return(
                  <TouchableOpacity style={{ height: height * 0.1, backgroundColor:this.validateColor(item), marginTop: 1, flexDirection: 'row' }}
@@ -144,17 +148,17 @@ componentWillUnmount(){
                    <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                      <Image
                        source={{
-                         uri: item.displaypicture || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                         uri: dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
                        }}
-                       style={{ height: 60, width: 60, borderRadius: 30, }}
+                     style={{ height: height*0.08, width:height*0.08, borderRadius:height*0.04, }}
                      />
                    </View>
                    <View style={{ flex: 0.6, }}>
                      <View style={{ flex: 0.4, justifyContent: "center" }}>
-                       <Text style={[styles.text, { fontSize: 16 }]}>{item.title}</Text>
+                       <Text style={[styles.text, { fontSize: height*0.03 }]}>{item.title}</Text>
                      </View>
                      <View style={{ flex: 0.6, }}>
-                       <Text style={[styles.text]}>{item.lastchatmessage}</Text>
+                       <Text style={[styles.text,{fontSize:height*0.02}]}>{item.lastchatmessage}</Text>
                      </View>
                    </View>
                  </TouchableOpacity>
@@ -168,26 +172,26 @@ componentWillUnmount(){
                  <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                    <Image
                      source={{
-                       uri: item.displaypicture || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                       uri: dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
                      }}
-                     style={{ height: 60, width: 60, borderRadius: 30, }}
+                     style={{ height: height*0.08, width:height*0.08, borderRadius:height*0.04, }}
                    />
                  </View>
                  <View style={{ flex: 0.4, justifyContent: "space-around" }}>
                    <View style={{ justifyContent: "center" }}>
-                     <Text style={[styles.text, {  fontSize: 16, }]} numberOfLines={1}>{item.title}</Text>
+                     <Text style={[styles.text, {  fontSize: height*0.03, }]} numberOfLines={1}>{item.title}</Text>
 
                    </View>
                    <View style={{ justifyContent: "center" }}>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{item.lastchatmessage}</Text>
+                     <Text style={[styles.text, { fontSize: height*0.02 }]}>{item.lastchatmessage}</Text>
 
                    </View>
 
                  </View>
-                 <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
-                 </View>
+                {item.lastmessagetime&& <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
+                     <Text style={[styles.text, { fontSize: height*0.02 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
+                     <Text style={[styles.text, { fontSize: height*0.02 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
+                 </View>}
                </TouchableOpacity>
              )
            }}
@@ -205,6 +209,10 @@ componentWillUnmount(){
          keyExtractor={(item, index) => index.toString()}
 
          renderItem={({ item, index }) => {
+                let dp = ""
+                if(item.displaypicture){
+                  dp = `${url}${item.displaypicture}`
+                }
                  if(this.state.edit){
                return(
                  <TouchableOpacity style={{ height: height * 0.1, backgroundColor:this.validateColor(item), marginTop: 1, flexDirection: 'row' }}
@@ -226,17 +234,17 @@ componentWillUnmount(){
                    <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                      <Image
                        source={{
-                         uri: item.displaypicture || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                         uri: dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
                        }}
-                       style={{ height: 60, width: 60, borderRadius: 30, }}
+                                 style={{ height: height*0.08, width:height*0.08, borderRadius:height*0.04, }}
                      />
                    </View>
                    <View style={{ flex: 0.6, }}>
                      <View style={{ flex: 0.4, justifyContent: "center" }}>
-                       <Text style={[styles.text, { fontSize: 16 }]}>{item.title}</Text>
+                       <Text style={[styles.text, { fontSize: height*0.03}]}>{item.title}</Text>
                      </View>
                      <View style={{ flex: 0.6, }}>
-                       <Text style={[styles.text]}>{item.lastchatmessage}</Text>
+                       <Text style={[styles.text,{fontSize:height*0.02}]}>{item.lastchatmessage}</Text>
                      </View>
                    </View>
                  </TouchableOpacity>
@@ -250,26 +258,26 @@ componentWillUnmount(){
                  <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                    <Image
                      source={{
-                       uri: item.displaypicture || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                       uri: dp|| "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
                      }}
-                     style={{ height: 60, width: 60, borderRadius: 30, }}
+                                 style={{ height: height*0.08, width:height*0.08, borderRadius:height*0.04, }}
                    />
                  </View>
                  <View style={{ flex: 0.4, justifyContent: "space-around" }}>
                    <View style={{ justifyContent: "center" }}>
-                     <Text style={[styles.text, {  fontSize: 16, }]} numberOfLines={1}>{item.title}</Text>
+                     <Text style={[styles.text, {  fontSize: height*0.02, }]} numberOfLines={1}>{item.title}</Text>
 
                    </View>
                    <View style={{ justifyContent: "center" }}>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{item.lastchatmessage}</Text>
+                     <Text style={[styles.text, { fontSize: height*0.02 }]}>{item.lastchatmessage}</Text>
 
                    </View>
 
                  </View>
-                 <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
-                 </View>
+               {item.lastmessagetime&&  <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
+                     <Text style={[styles.text, { fontSize: height*0.02 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
+                     <Text style={[styles.text, { fontSize: height*0.02 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
+                 </View>}
                </TouchableOpacity>
              )
          }}
@@ -286,6 +294,10 @@ componentWillUnmount(){
          keyExtractor={(item, index) => index.toString()}
 
          renderItem={({ item, index }) => {
+             let dp = ""
+                if(item.displaypicture){
+                  dp = `${url}${item.displaypicture}`
+                }
                 if(this.state.edit){
                return(
                  <TouchableOpacity style={{ height: height * 0.1, backgroundColor:this.validateColor(item), marginTop: 1, flexDirection: 'row' }}
@@ -307,9 +319,9 @@ componentWillUnmount(){
                    <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                      <Image
                        source={{
-                         uri: item.displaypicture || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                         uri: dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
                        }}
-                       style={{ height: 60, width: 60, borderRadius: 30, }}
+                                  style={{ height: height*0.08, width:height*0.08, borderRadius:height*0.04, }}
                      />
                    </View>
                    <View style={{ flex: 0.6, }}>
@@ -331,26 +343,26 @@ componentWillUnmount(){
                  <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                    <Image
                      source={{
-                       uri: item.displaypicture || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                       uri:dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
                      }}
-                     style={{ height: 60, width: 60, borderRadius: 30, }}
+                               style={{ height: height*0.08, width:height*0.08, borderRadius:height*0.04, }}
                    />
                  </View>
                  <View style={{ flex: 0.4, justifyContent: "space-around" }}>
                    <View style={{ justifyContent: "center" }}>
-                     <Text style={[styles.text, {  fontSize: 16, }]} numberOfLines={1}>{item.title}</Text>
+                     <Text style={[styles.text, {  fontSize: height*0.02, }]} numberOfLines={1}>{item.title}</Text>
 
                    </View>
                    <View style={{ justifyContent: "center" }}>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{item.lastchatmessage}</Text>
+                     <Text style={[styles.text, { fontSize: height*0.02}]}>{item.lastchatmessage}</Text>
 
                    </View>
 
                  </View>
-                 <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
-                 </View>
+                {item.lastmessagetime&& <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
+                     <Text style={[styles.text, { fontSize:height*0.02 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
+                     <Text style={[styles.text, { fontSize:height*0.02 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
+                 </View>}
                </TouchableOpacity>
              )
          }}

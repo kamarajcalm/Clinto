@@ -571,10 +571,10 @@ export default class MedicineDetails extends Component {
                     style={[styles.card2,{...((this.props.medicinesGiven.length+this.props.index+1)==(this.props.errorIndex+1)&&styles.errorStyle)}]}
                 >
                     <View style={{ flex: 1,flexDirection:"row",alignItems:"center",marginLeft:10}}>
-                        <Text style={[styles.text, { fontWeight: "bold", fontSize: height*0.03 }]}> {this.props.medicinesGiven.length+this.props.index+1} . {item.title || item.medicine}</Text>
+                        <Text style={[styles.text, { fontWeight: "bold",fontSize: height*0.023 }]}> {this.props.medicinesGiven.length+this.props.index+1} . {item.title || item.medicine}</Text>
                     </View>
                     <View style={{ flexDirection: "row", marginHorizontal: 10, alignItems: "center", justifyContent: "space-between" ,marginTop:10}}>
-                        <View style={{ flexDirection: "row" }}>
+                       <View style={{ flexDirection: "row" }}>
                             <Text style={[styles.text,{fontSize:height*0.02}]}>Category :</Text>
                             <Text style={[styles.text, {fontSize:height*0.02}]}> {item.type}</Text>
                         </View>
@@ -587,6 +587,7 @@ export default class MedicineDetails extends Component {
                         </View>
                        
                           <TextInput
+                              value={item.total_qty.toString()}
                               keyboardType={"numeric"}
                               selectionColor ={themeColor}
                               style={{ height: 35, width: 50, backgroundColor: '#eee', borderRadius: 5, marginLeft: 5, paddingLeft: 5 }}

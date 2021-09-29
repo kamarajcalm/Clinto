@@ -362,7 +362,7 @@ hideDatePicker = () => {
             extrapolate:"clamp"
         })
         return(
-            <TouchableOpacity style={{  backgroundColor:item.active?"red":"green", height: height * 0.15, alignItems:"center",justifyContent:"center"}}
+            <TouchableOpacity style={{  backgroundColor:item.active?"red":"green", height: height * 0.18, alignItems:"center",justifyContent:"center"}}
               onPress={() => { this.makeInvalid(item, index)}}
             >
               
@@ -446,6 +446,7 @@ hideDatePicker = () => {
        
         const { height,width } = Dimensions.get("window");
         if (this.state.isDoctor){
+           
           return(
             <Swipeable
                 onSwipeableRightOpen={() => { this.closeRow(index)}}
@@ -481,24 +482,28 @@ hideDatePicker = () => {
                                 <Text style={[styles.text]}>#{item.id}</Text>
                             </View>
                         </View>
-                     <View style={{ marginTop: 10,flexDirection:"row" }}>
-                            <View style={{flexDirection:"row"}}>
+                   <View style={{ marginTop: 10,flexDirection:"row" }}>
+                         {item?.diseaseTitle?.length>0&&<View style={{flexDirection:"row"}}>
                                 <Text style={[styles.text]}>Diagnosis : </Text>
-                            </View>
-                            <View style={{flexDirection:"row",width:"100%",flexWrap:"wrap"}}>
-                                {
-                                    item?.diseaseTitle?.map((it,index)=>{
+                            </View>}
+                            <View style={{flexDirection:"row",flexWrap:"wrap",flex:1}}>
+                               {
+                                   item?.diseaseTitle?.map((it,index)=>{
                                       
-                                                 return(
-                                        <View key={index}>
-                                            <Text style={[styles.text]}>{it}</Text>    
-                                        </View>
-                                    )
-                                    })
-                                }
-                
+                                        return(
+                                            <View style={{flexDirection:"row"}}>
+                                                 
+                                                          <Text style={[styles.text]}>{it}</Text>
+                                                 
+                                              
+                                                   { index < item?.diseaseTitle.length-1&&<Text style={[styles.text]}> , </Text> }
+                                                
+                                            </View>
+                                        )
+                                   })
+                               }
                             </View>
-                     
+                  
                         </View>
                          <View style={{marginTop:10,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
                                    <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: height*0.04, width:height*0.04, borderRadius: height*0.02, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
@@ -536,9 +541,9 @@ hideDatePicker = () => {
             if (item?.doctordetails?.dp) {
                 dp = `${url}${item?.doctordetails?.dp}`
             }
-
+        
             return (
-                <TouchableOpacity style={[styles.card, { flexDirection: "row", borderRadius: 5,    height: height * 0.2, }]}
+                <TouchableOpacity style={[styles.card, { flexDirection: "row", borderRadius: 5,    minHeight: height * 0.2, }]}
                     onPress={() => { this.props.navigation.navigate('PrescriptionViewDoctor', { item }) }}
                 >
                     <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
@@ -557,22 +562,27 @@ hideDatePicker = () => {
                             </View>
                         </View>
                         <View style={{ marginTop: 10,flexDirection:"row" }}>
-                            <View style={{flexDirection:"row"}}>
+                         {item?.diseaseTitle?.length>0&&<View style={{flexDirection:"row"}}>
                                 <Text style={[styles.text]}>Diagnosis : </Text>
+                            </View>}
+                            <View style={{flexDirection:"row",flexWrap:"wrap",flex:1}}>
+                               {
+                                   item?.diseaseTitle?.map((it,index)=>{
+                                      
+                                        return(
+                                            <View style={{flexDirection:"row"}}>
+                                                 
+                                                          <Text style={[styles.text]}>{it}</Text>
+                                                 
+                                              
+                                                   { index < item?.diseaseTitle.length-1&&<Text style={[styles.text]}> , </Text> }
+                                                
+                                            </View>
+                                        )
+                                   })
+                               }
                             </View>
-                            <FlatList 
-                               horizontal={true}
-                               ItemSeparatorComponent={this.separator}
-                               data={item.diseaseTitle}
-                               keyExtractor={(item,index)=>index.toString()}
-                               renderItem={({item,index})=>{
-                                    return(
-                                        <View>
-                                            <Text style={[styles.text]}>{item}</Text>    
-                                        </View>
-                                    )
-                               }}
-                            />
+                  
                         </View>
                         <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
                             <View>
@@ -580,14 +590,14 @@ hideDatePicker = () => {
                             </View>
                            
                         </View>
-                                <View style={{marginTop:10,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
-                                   <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                                <View style={{marginVertical:10,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                                   <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: height*0.04, width: height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
                                         onPress={() => { this.chatClinicAndCustomer(item) }}
                                     >
-                                        <Ionicons name="chatbox" size={24} color="#63BCD2" />
+                                        <Ionicons name="chatbox" size={height*0.02} color="#63BCD2" />
 
                                     </TouchableOpacity>
-                                               <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                                               <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: height*0.04, width:height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
                             onPress={() => {
                        
                                       if (Platform.OS == "android") {
@@ -599,7 +609,7 @@ hideDatePicker = () => {
     
     
                         >
-                           <Ionicons name="call" size={24} color="#63BCD2" />
+                           <Ionicons name="call" size={height*0.02} color="#63BCD2" />
                         </TouchableOpacity>
                            <View>
                                 <Text style={[styles.text]}>{moment(item.created).format("h:mm a")}</Text>
@@ -624,50 +634,44 @@ hideDatePicker = () => {
                     <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
                         <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                           
-                         <Text style={[styles.text,{color:"#000",fontSize:18}]} numberOfLines={1}>{item.clinicname.name}</Text>
+                         <Text style={[styles.text,{color:"#000",fontSize:height*0.02,fontWeight:"bold"}]} numberOfLines={1}>{item.clinicname.name}</Text>
                         </View>
                            <View style={{ alignItems: "center", justifyContent: "center" ,marginRight:10}}>
                                 <Text style={[styles.text]}>#{item.id}</Text>
                             </View>
                     </View>
                       <View style={{ marginTop: 10,flexDirection:"row" }}>
-                            <View style={{flexDirection:"row"}}>
+                      {item?.diseaseTitle?.length>0&&<View style={{flexDirection:"row"}}>
                                 <Text style={[styles.text]}>Diagnosis : </Text>
+                            </View>}
+                            <View style={{flexDirection:"row",flexWrap:"wrap",flex:1}}>
+                               {
+                                   item?.diseaseTitle?.map((it,index)=>{
+                                      
+                                        return(
+                                            <View style={{flexDirection:"row"}}>
+                                                 
+                                                          <Text style={[styles.text]}>{it}</Text>
+                                                 
+                                              
+                                                   { index < item?.diseaseTitle.length-1&&<Text style={[styles.text]}> , </Text> }
+                                                
+                                            </View>
+                                        )
+                                   })
+                               }
                             </View>
-                            <View style={{flexDirection:"row",flexWrap:"wrap",alignItems:"center",justifyContent:`${item?.diseaseTitle?.length>1?"space-around":"flex-start"}`,flex:1}}>
-                                        {
-                                item?.diseaseTitle?.map((itemm,index)=>{
-                                            return(
-                                        <View>
-                                            <Text style={[styles.text]}>{itemm}  {index< item?.diseaseTitle.length-1&&","}</Text> 
-                                           
-                                        </View>
-                                    ) 
-                                })
-                            }
-                            </View>
-                    
-                            {/* <FlatList
-                               ListFooterComponent={this.footer} 
-                               horizontal={true}
-                               ItemSeparatorComponent={this.separator}
-                               data={item.diseaseTitle}
-                               keyExtractor={(item,index)=>index.toString()}
-                               renderItem={({item,index})=>{
-                                
-                               }}
-                            /> */}
                         </View>
                   
                     <View style={{ flexDirection: "row", marginVertical:10 }}>
                         <View style={{flex:0.5,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}>
-                                            <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                                            <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width:height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
                             onPress={() => { this.chatClinic(item) }}
                         >
-                            <Ionicons name="chatbox" size={24} color="#63BCD2" />
+                            <Ionicons name="chatbox" size={height*0.02} color="#63BCD2" />
 
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                        <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: height*0.04, width:height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
                             onPress={() => {
                                 Linking.openURL(
                                     `https://www.google.com/maps/dir/?api=1&destination=` +
@@ -678,7 +682,7 @@ hideDatePicker = () => {
                                 );
                             }}
                         >
-                            <FontAwesome5 name="directions" size={20} color="#63BCD2" />
+                            <FontAwesome5 name="directions" size={height*0.02} color="#63BCD2" />
                         </TouchableOpacity>
                         </View>
                 
@@ -735,7 +739,7 @@ hideDatePicker = () => {
                 <View style={{ alignItems: "center", justifyContent: "center", width: width * 0.32, }}>
                     <View style={{ flexDirection: "row" }}>
                         <View style={{ alignItems: "center", justifyContent: "center" }}>
-                            <Text style={[styles.text, { color: "#fff" }]}>{this.state.showDate}</Text>
+                            <Text style={[styles.text, { color: "#fff", fontSize:height*0.019 }]}>{this.state.showDate}</Text>
                         </View>
 
                         <TouchableOpacity
@@ -903,7 +907,7 @@ hideDatePicker = () => {
                             }
                             data={this.state.prescriptions}
                             scrollEventThrottle={16}
-                            contentContainerStyle={{ paddingTop: headerHeight+height*0.01, paddingBottom: 150}}
+                            contentContainerStyle={{ paddingTop: headerHeight+height*0.01, paddingBottom: 200}}
                             onScroll={handleScroll}
                             ref={ref=>this.ref=ref}
                             bounces={false}
