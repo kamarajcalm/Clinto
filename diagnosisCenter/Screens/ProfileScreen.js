@@ -35,23 +35,35 @@ import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 const { height, width } = Dimensions.get("window");
 const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
-
+const url = settings.url
 import axios from 'axios';
 import moment from 'moment';
 import PendingAppoinments from './PendingAppoinments';
 import InProgressAppoinment from './InProgressAppoinment';
 import AllAppointments from './AllAppointments';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import HttpsClient from '../../api/HttpsClient';
 
 class ProfileScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showModal:false
+            showModal:false,
+            item:null
         };
     }
+    getLabDetails = async()=>{
+       let api =`${url}/api/prescription/clinics/${this.props.clinic.clinicpk}/`
+       console.log(api)
+       const data = await HttpsClient.get(api)
+       console.log(data)
+       if(data.type=="success"){
+            this.setState({item:data.data})
+       }
+    }
     componentDidMount() {
-
+   
+       this.getLabDetails()
     }
     logOut = async()=>{
         this.setState({showModal:false})
@@ -139,6 +151,54 @@ createAlert = () => {
                     <View style={{borderWidth:2,alignSelf:'center',borderColor:"gray",width:width*0.3,marginVertical:10,borderRadius:10}}>
 
                     </View>
+                                  <View style={{ margin: 20}}>
+                    <View>
+                        <Text style={[styles.text,{color:"gray"}]}>Personal Info</Text>
+                    </View>
+                    <View style={{ flexDirection: "row", marginTop: 15, alignItems: "center", justifyContent: 'space-between' }}>
+                        <View style={{ flex: 0.6 }}>
+                            <Text style={[styles.text, { color: "gray" }]}>Age</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.age}</Text>
+                        </View>
+                        <View style={{ flex: 0.4 }}>
+                            <Text style={[styles.text, { color: "gray" }]}>Blood Group</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.blood_group}</Text>
+                        </View>
+                    </View>
+
+                    {/* <View style={{ flexDirection: "row", marginTop: 15, alignItems: "center", justifyContent: 'space-between' }}>
+                        <View style={{ flex: 0.6 }}>
+                            <Text style={[styles.text, { color: "gray" }]}>Height</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.height}</Text>
+                        </View>
+                        <View style={{ flex: 0.4 }}>
+                            <Text style={[styles.text, { color: "gray" }]}>Weight</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.weight}</Text>
+                        </View>
+                    </View> */}
+                    <View style={{ flexDirection: "row", marginTop: 15, }}>
+                        <View style={{ flex: 0.6 }}>
+                            <Text style={[styles.text, { color: "gray" }]}>Mobile</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.mobile}</Text>
+                        </View>
+                    
+                    </View>
+                    <View style={{ flexDirection: "row", marginTop: 15,}}>
+                        <View >
+                            <Text style={[styles.text, { color: "gray" }]}>Address</Text>
+                            <Text style={[styles.text, { marginTop: 5,color: "#000",  }]}>{this.props.user.profile.address}</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000",  }]}>{this.props.user.profile.city}-{this.props.user.profile.pincode}</Text>
+                        </View>
+                       
+                    </View>
+                    <View style={{ flexDirection: "row", marginTop: 15, }}>
+                        <View style={{ }}>
+                            <Text style={[styles.text, { color: "gray" }]}>Email</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.email}</Text>
+                        </View>
+
+                    </View>
+                </View>
                     <TouchableOpacity style={{ flexDirection: "row",  paddingHorizontal: 20, width, marginTop: 20 }}
                         onPress={() => { this.props.navigation.navigate('ViewFeautures')}}
                     >
@@ -156,7 +216,7 @@ createAlert = () => {
                         </View>
                     </TouchableOpacity>
                                  <TouchableOpacity style={{ flexDirection: "row",paddingHorizontal: 20, width, marginTop: 20 }}
-                        onPress={() => { this.props.navigation.navigate('ViewLab')}}
+                        onPress={() => { this.props.navigation.navigate('ViewDiagnosticCenter',{item:this.state.item,diagnosticCenter:true})}}
                     >
                         <View style={{ flex: 0.7, flexDirection: "row" }}>
                             <View style={{ alignItems: "center", justifyContent: "center" }}>
@@ -195,7 +255,8 @@ const mapStateToProps = (state) => {
 
     return {
         theme: state.selectedTheme,
-        user:state.selectedUser
+        user:state.selectedUser,
+         clinic: state.selectedClinic
     }
 }
 export default connect(mapStateToProps, { selectTheme })(ProfileScreen);

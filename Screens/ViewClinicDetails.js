@@ -374,7 +374,7 @@ class ViewClinicDetails extends Component {
                                                                       <Text style={[styles.text, { color}]}>{item}  </Text>
                                                     </View>
                                                     <View style={{alignItems:"center",justifyContent:"center"}}>
-                                                         <Text style={[styles.text, { }]}> : </Text> 
+                                                         <Text style={[styles.text, {color }]}> : </Text> 
                                                     </View>
                                                 </View>
                                                             <View style={{flex:0.7}}>
@@ -442,15 +442,15 @@ class ViewClinicDetails extends Component {
                                             <TouchableOpacity style={{ flexDirection: "row", height: height * 0.1, }}
                                               onPress={()=>{this.props.navigation.navigate('ViewReceptionProfile',{item})}}
                                             >
-                                                <View style={{ alignItems: "center", justifyContent: "center", flex: 0.33 }}>
+                                                <View style={{ alignItems: "center", justifyContent: "center", flex: 0.2}}>
                                                     <Image
                                                         source={{ uri: item.user.profile.displayPicture || "https://s3-ap-southeast-1.amazonaws.com/practo-fabric/practices/711061/lotus-multi-speciality-health-care-bangalore-5edf8fe3ef253.jpeg" }}
-                                                        style={{ height: 60, width: 60, borderRadius: 30, }}
+                                                        style={{ height:height*0.05, width: height*0.05, borderRadius: height*0.025, }}
                                                     />
                                                 </View>
 
-                                                <View style={{ alignItems: 'center', justifyContent: "center", flex: 0.33 }}>
-                                                    <Text>{item.user.first_name}</Text>
+                                                <View style={{ alignItems: 'center', justifyContent: "center", flex: 0.43 }}>
+                                                    <Text style={[styles.text,{fontSize:height*0.02}]}>{item.user.first_name}</Text>
                                                 </View>
                                              {this.state.owner&&<TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', flex: 0.33 }}
                                                     onPress={() => { this.setState({ showModal2: true, deleteReceptionist: item, deleteReceptionIndex: index }) }}
@@ -487,24 +487,21 @@ class ViewClinicDetails extends Component {
                                                     />
                                                 </View>
 
-                                                <View style={{ alignItems: 'center', justifyContent: "center", flex: 0.2 }}>
-                                                    <Text style={[styles.text,{fontSize:height*0.02}]}>{item.doctor.first_name}</Text>
+                                                <View style={{ alignItems: 'center', justifyContent: "center", flex: 0.7 }}>
+                                                    <Text style={[styles.text,{fontSize:height*0.02}]} numberOfLines={1}>{item.doctor.first_name}</Text>
+                                                    <Text style={[styles.text,{fontSize:height*0.02,marginTop:5}]}>({item.doctor.username})</Text>
                                                 </View>
-                                                <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
-                                                    <View >
-                                                        <Text style={[styles.text,{fontSize:height*0.02}]}>Today Timings:</Text>
-                                                    </View>
-                                                    {
-                                                        this.getTodayTimings(item)
-                                                    }
+                                                
 
-                                                </View>
-
-                                               {this.state.owner&& <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', flex: 0.1 }}
+                                               {this.state.owner? <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', flex: 0.1 }}
                                                     onPress={() => { this.setState({ showModal: true, deleteDoctor: item, deleteDocorIndex: index }) }}
                                                 >
                                                     <Entypo name="circle-with-cross" size={24} color={themeColor} />
-                                                </TouchableOpacity>}
+                                                </TouchableOpacity>:
+                                                <View style={{ alignItems: 'center', justifyContent: 'center', flex: 0.1 }}>
+                                                        <AntDesign name="rightcircleo" size={height*0.02} color="#000" />  
+                                                </View>
+                                                }
                                             </TouchableOpacity>
                                         )
                                     }}

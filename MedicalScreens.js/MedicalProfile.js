@@ -99,10 +99,10 @@ class MedicalProfile extends Component {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={{ alignItems: 'center', justifyContent: "center", }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18, color: "#000" }]}>{this.props.user.first_name}</Text>
+                                    <Text style={[styles.text, { fontWeight: "bold", fontSize:height*0.022, color: "#000" }]}>{this.props.user.first_name}</Text>
                                 </View>
                                 <View style={{ alignItems: 'center', justifyContent: "center", }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18, color: "gray" }]}>{this.props.user.profile.specialization}</Text>
+                                    <Text style={[styles.text, { fontWeight: "bold", fontSize:height*0.022, color: "gray" }]}>{this.props.user.profile.specialization}</Text>
                                 </View>
                             </View>
 
@@ -114,16 +114,16 @@ class MedicalProfile extends Component {
                             <View style={{}}>
                                 <View style={{ margin: 20 }}>
                                     <View>
-                                        <Text style={[styles.text, { color: "gray" }]}>Personal Info</Text>
+                                        <Text style={[styles.text, { color: "gray" ,fontSize:height*0.02}]}>Personal Info</Text>
                                     </View>
                                     <View style={{ flexDirection: "row", marginTop: 15, alignItems: "center", justifyContent: 'space-between' }}>
                                         <View style={{ flex: 0.6 }}>
-                                            <Text style={[styles.text, { color: "gray" }]}>Age</Text>
-                                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.age}</Text>
+                                            <Text style={[styles.text, { color: "gray" ,fontSize:height*0.02}]}>Age</Text>
+                                            <Text style={[styles.text, { marginTop: 5, color: "#000",fontSize:height*0.02 }]}>{this.props.user.profile.age}</Text>
                                         </View>
                                         <View style={{ flex: 0.4 }}>
-                                            <Text style={[styles.text, { color: "gray" }]}>Blood Group</Text>
-                                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.blood_group}</Text>
+                                            <Text style={[styles.text, { color: "gray" ,fontSize:height*0.02}]}>Blood Group</Text>
+                                            <Text style={[styles.text, { marginTop: 5, color: "#000",fontSize:height*0.02 }]}>{this.props.user.profile.blood_group}</Text>
                                         </View>
                                     </View>
 
@@ -139,30 +139,30 @@ class MedicalProfile extends Component {
                                     </View> */}
                                     <View style={{ flexDirection: "row", marginTop: 15, }}>
                                         <View >
-                                            <Text style={[styles.text, { color: "gray" }]}>Mobile</Text>
-                                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.mobile}</Text>
+                                            <Text style={[styles.text, { color: "gray" ,fontSize:height*0.02}]}>Mobile</Text>
+                                            <Text style={[styles.text, { marginTop: 5, color: "#000",fontSize:height*0.02 }]}>{this.props.user.profile.mobile}</Text>
                                         </View>
 
                                     </View>
                                         <View style={{ flexDirection: "row", marginTop: 15, }}>
                                             <View >
-                                                <Text style={[styles.text, { color: "gray" }]}>Email</Text>
-                                                <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.email}</Text>
+                                                <Text style={[styles.text, { color: "gray" ,fontSize:height*0.02}]}>Email</Text>
+                                                <Text style={[styles.text, { marginTop: 5, color: "#000",fontSize:height*0.02 }]}>{this.props.user.email}</Text>
                                             </View>
 
                                         </View>
                                     <View style={{ flexDirection: "row", marginTop: 15, }}>
                                         <View >
-                                            <Text style={[styles.text, { color: "gray" }]}>Address</Text>
-                                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.address}</Text>
-                                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.city}-{this.props.user.profile.pincode}</Text>
+                                            <Text style={[styles.text, { color: "gray" ,fontSize:height*0.02}]}>Address</Text>
+                                            <Text style={[styles.text, { marginTop: 5, color: "#000",fontSize:height*0.02 }]}>{this.props.user.profile.address}</Text>
+                                            <Text style={[styles.text, { marginTop: 5, color: "#000", fontSize:height*0.02}]}>{this.props.user.profile.city}-{this.props.user.profile.pincode}</Text>
                                         </View>
 
                                     </View>
                              {this.props.user.profile.occupation=="MediacalRep"&&<View style={{ borderColor: "#F0F0F0", borderTopWidth: 3, borderBottomWidth: 3 ,marginTop:10}}>
                                         <View style={{ marginLeft: 20, flexDirection: "row", }}>
                                             <View style={{ marginTop: 5, flex: 0.6 }}>
-                                                <Text style={[styles.text,{color:"#000",fontSize:20,textDecorationLine:"underline"}]}>Medicals :</Text>
+                                                <Text style={[styles.text,{color:"#000",fontSize:height*0.022,}]}>Medicals :</Text>
                                             </View>
                                              <TouchableOpacity 
                                                 onPress={()=>{this.setState({showModal2:true})}}
@@ -182,8 +182,8 @@ class MedicalProfile extends Component {
                                                             onPress={() => { this.props.navigation.navigate('ViewMedicalDetails', { item }) }}
                                                         >
                                                             <View style={{ flex: 0.5, justifyContent: "center" }}>
-                                                                <Text style={[styles.text, { fontWeight: "bold", color: "#000", marginLeft: 10 }]}>{item.name}</Text>
-                                                                {this.props.medical.name == item.name && <Text style={[styles.text, { color: "gray", marginLeft: 10 }]}>selected</Text>}
+                                                                <Text style={[styles.text, { fontWeight: "bold", color: "#000", marginLeft: 10,fontSize:height*0.02 }]}>{item.name}</Text>
+                                                                {this.props.medical.name == item.name && <Text style={[styles.text, { color: "gray", marginLeft: 10 ,fontSize:height*0.02}]}>selected</Text>}
                                                             </View>
                                                             <View style={{ flex: 0.5, alignItems: 'flex-end', marginRight: 10, justifyContent: "center" }}>
                                                                 <AntDesign name="rightcircleo" size={24} color="#000" />
@@ -221,7 +221,7 @@ class MedicalProfile extends Component {
                                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                                     <View style={{ height: height * 0.3, width: width * 0.9, backgroundColor: "#fff", borderRadius: 20, alignItems: "center", justifyContent: "space-around" }}>
                                         <View>
-                                            <Text style={[styles.text, { fontWeight: "bold", color: themeColor, fontSize: 20 }]}>Do you want to logout?</Text>
+                                            <Text style={[styles.text, { fontWeight: "bold", color: themeColor, fontSize:height*0.02}]}>Do you want to logout?</Text>
                                         </View>
                                         <View style={{ flexDirection: "row", alignItems: 'center', justifyContent: "space-around", width, }}>
                                             <TouchableOpacity style={{ backgroundColor: themeColor, height: height * 0.05, width: width * 0.2, alignItems: "center", justifyContent: 'center', borderRadius: 10 }}
@@ -253,7 +253,7 @@ class MedicalProfile extends Component {
 
                             <View style={{ height: height * 0.3, width: width * 0.9, backgroundColor: "#fff", borderRadius: 20, alignItems: "center", justifyContent: "center" }}>
                                 <View style={{ marginTop: 5 }}>
-                                    <Text style={[styles.text, { color: "#000", fontSize: 18 }]}>Select Clinic</Text>
+                                    <Text style={[styles.text, { color: "#000", fontSize:height*0.022 }]}>Select Clinic</Text>
                                 </View>
                                 <FlatList
                                      showsVerticalScrollIndicator ={false}
@@ -265,7 +265,7 @@ class MedicalProfile extends Component {
                                                 onPress={() => { this.setActiveMedical(item) }}
                                             >
                                                 <View style={{ flex: 0.6, alignItems: "center", justifyContent: 'center' }}>
-                                                    <Text style={[styles.text]}>{item.name}</Text>
+                                                    <Text style={[styles.text,{fontSize:height*0.02}]}>{item.name}</Text>
                                                 </View>
 
                                                 <View style={{ flex: 0.4, alignItems: 'center', justifyContent: "center" }}>

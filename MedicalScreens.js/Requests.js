@@ -9,13 +9,14 @@ const {height,width} =Dimensions.get('window')
 const screenHeight = Dimensions.get("screen").height
 import { connect } from 'react-redux';
 import { selectTheme } from '../actions';
-import { Feather ,FontAwesome,FontAwesome5} from '@expo/vector-icons';
+import { Feather ,FontAwesome,FontAwesome5,Ionicons} from '@expo/vector-icons';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import CheckBox from '@react-native-community/checkbox';
 import HttpsClient from '../api/HttpsClient';
 import moment from 'moment';
 import ViewMedicines from '../AdminScreens/ViewMedicines';
 import * as Notifications from 'expo-notifications';
+import { LinearGradient } from 'expo-linear-gradient';
 
  const data =[
    {
@@ -304,6 +305,18 @@ import * as Notifications from 'expo-notifications';
   refresh = () =>{
    this.getRequests();
   }
+  getFirstLetter =(item ,patient=null)=>{
+          if(patient){
+              let name = item.patientname.name.split("")
+              return name[0].toUpperCase()
+          }
+      
+          let clinicName = item?.clinicname?.name.split("")
+
+          return clinicName[0].toUpperCase();
+      
+    
+  }
   render() {
     return (
       <View style={{flex:1}}>
@@ -316,58 +329,98 @@ import * as Notifications from 'expo-notifications';
             ItemSeparatorComponent={this.separator}
             renderItem ={({item,index})=>{
                    return(
-                     <TouchableOpacity style={{height:height*0.1,flexDirection:"row",marginVertical:10}}
-                       onPress={()=>{this.props.navigation.navigate("RequestView",{item})}}
+                     <TouchableOpacity style={{minHeight:height*0.1,flexDirection:"row",marginVertical:10}}
+                        onPress={()=>{this.props.navigation.navigate("RequestView",{item})}}
                      >
-                          <View style={{flex:0.6,}}>
-                            <View style={{flexDirection:"row",flex:0.7,alignItems:"center",justifyContent:"center"}}>
-                              <View style={{height: 30, alignItems:"center",justifyContent:"center"}}>
-                                   <Text style={[styles.text,{color:"#000"}]}>{index+1} .</Text>
-                              </View>
-                                <View style={{marginLeft:10,height:30,alignItems:"center",justifyContent:"center"}}>
-                                    <Text style={[styles.text,{color:"#000",fontWeight:"bold"}]}>{item.otherDetails.username}</Text>
-                                </View>
-                                <View style={{marginLeft:10,height:30,alignItems:"center",justifyContent:"center"}}>
-                                    <Text style={[styles.text]}>({item.otherDetails.age}-{item.otherDetails.sex})</Text>
-                                </View>
-                                <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
-                                        onPress={() => {
-                                            if (Platform.OS == "android") {
-                                                Linking.openURL(`tel:${item.otherDetails?.mobile}`)
-                                            } else {
+                            <View style={{ flexDirection: "row", flex: 1, }}>
+                           
+                                    <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                                       <LinearGradient
+                                            style={{ height: height*0.08, width: height*0.08, borderRadius:height*0.04,alignItems: "center", justifyContent: "center" }}
+                                            colors={["#333", themeColor, themeColor]}
+                                        >
+                                            <View >
+                                                <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 22 }]}>{"P"}</Text>
+                                            </View>
+                                        </LinearGradient>
+                                    </View>
+                                    <View style={{ flex: 0.7, paddingLeft: 10 }}>
+                                        <View style={{ marginTop:height*0.01,flex:1,flexDirection:"row"}}>
+                                          <View style={{flex:1,flexDirection:"row"}}>
+                                            <View>
+                                                  <Text style={[styles.text, { color: "#000", fontWeight: "bold", fontSize:height*0.02}]}>{item.otherDetails.username}</Text>
+                                            </View>
+                                            <View>
+                                                 <Text style={[styles.text,{fontSize:height*0.02}]}> ({item.otherDetails.age} - {item.otherDetails.sex}) </Text>
+                                            </View>     
+                                          </View>
+                                         
+                  
+                                        </View>
+                                        <View style={{marginTop:height*0.01,flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
+                                          <View>
+                                                 <Text style={[styles.text, { color: "#000",  fontSize:height*0.02}]}>Price : ₹{item.total_price}</Text>
+                                          </View>
+                                          <View style={{paddingRight:10}}>
+                                                <Text style={[styles.text, { color: "#000",  fontSize:height*0.02}]}>Items : {item.medicines.length}</Text>
+                                          </View> 
+                                        </View>
+                                                        <View style={{ flexDirection: 'row', justifyContent: "space-between", alignItems: "center", flex:1,marginTop:height*0.01,paddingRight:20}}>
+                                                <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width:height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center' }]}
+                                                    onPress={() => { this.chatClinic(item) }}
+                                                >
+                                                    <Ionicons name="md-chatbox" size={height*0.02} color="#63BCD2" />
+                                                </TouchableOpacity>
+                                                                                       <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width: height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center', }]}
+                            onPress={() => {
+                       
+                                      if (Platform.OS == "android") {
+                                        Linking.openURL(`tel:${item?.clinicname.mobile}`)
+                                    } else {
 
-                                                Linking.canOpenURL(`telprompt:${item.otherDetails?.mobile}`)
-                                            }
-                                          }}
-                                    >
-                                        <FontAwesome name="phone" size={20} color="#63BCD2" />
-                             </TouchableOpacity>
-                                {/* <View>
-                                      <Text style={[styles.text,{color:"#000"}]}>{item.medicineName} :{item.requiredQuantity}</Text>
-                                </View> */}
-                            </View>
-                              <View style={{marginLeft:30,flex:0.3,justifyContent:"center"}}>
-                                    <Text style={[styles.text,{color:"#000"}]}>Reason : {item.otherDetails.reason}</Text>
-                              </View>
-                               
-                          </View>
-
-                          <View style={{flex:0.4,alignItems:"center",justifyContent:"space-around",}}>
-                                  <View>
-                                      <TouchableOpacity style={{}}
-                                        onPress={()=>{this.setState({selectedItem:item,availabilityModal:true,price:item?.total_price?.toString()})}} 
-                                      >
-                                            <Text style={[styles.text,{color:"green",textDecorationLine:"underline"}]}>Accept</Text>
-                                      </TouchableOpacity>
-                                  </View>
-                                  <View>
-                              {/* <TouchableOpacity style={{}} 
-                                onPress={()=>{this.rejectOrder()}}
-                              >
-                                            <Text style={[styles.text,{color:"red",textDecorationLine:"underline"}]}>Reject</Text>
-                                      </TouchableOpacity> */}
-                                  </View>
-                          </View>
+                                        Linking.canOpenURL(`telprompt:${item?.clinicname.mobile}`)
+                                    }}}
+    
+    
+                        >
+                           <Ionicons name="call" size={height*0.02} color="#63BCD2" />
+                        </TouchableOpacity>
+                                                <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width:height*0.04, borderRadius: height*0.02, alignItems: "center", justifyContent: 'center' }]}
+                                                    onPress={() => {
+                                                        Linking.openURL(
+                                                            `https://www.google.com/maps/dir/?api=1&destination=` +
+                                                            item.clinicname.lat +
+                                                            `,` +
+                                                            item.clinicname.long +
+                                                            `&travelmode=driving`
+                                                        );
+                                                    }}
+                                                >
+                                                    <FontAwesome5 name="directions" size={height*0.02} color="#63BCD2" />
+                                                </TouchableOpacity>
+                                            </View>
+                                     
+                                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop:height*0.02, }}>
+                                            <View style={{ flex: 0.7 ,flexDirection:"row"}}>
+                                              <TouchableOpacity style={{flex:0.5}} 
+                                               onPress={()=>{
+                                                 this.setState({selectedItem:item,availabilityModal:true})
+                                               }}
+                                              
+                                              >
+                                                           <Text style={[styles.text, { color: "green" }]}>Accept</Text>
+                                              </TouchableOpacity>
+                                             <TouchableOpacity style={{flex:0.5}}>
+                                                      <Text style={[styles.text, { color: "red" }]}>Reject</Text>
+                                             </TouchableOpacity>
+                                            </View>
+                                            <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                                                     <Text style={[styles.text, { color: "#000", fontSize:height*0.018 }]}>{moment(item.created).format("hh:mm a")}</Text>
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
+                        
                      </TouchableOpacity>
                    )
             }}

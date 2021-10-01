@@ -276,7 +276,7 @@ class ViewClinic extends Component {
     render() {
         let dp =null
         if (this.state.item.displayPicture){
-            dp = `${url}${this.state.item.displayPicture}`
+            dp = `${this.state.item.displayPicture}`
         }
    
         console.log(this.state?.clinicDetails,"pppp");
@@ -426,7 +426,7 @@ class ViewClinic extends Component {
                                                                       <Text style={[styles.text, { color}]}>{item}  </Text>
                                                     </View>
                                                     <View style={{alignItems:"center",justifyContent:"center"}}>
-                                                         <Text style={[styles.text, { }]}> : </Text> 
+                                                         <Text style={[styles.text, { color}]}> : </Text> 
                                                     </View>
                                                 </View>
                                                             <View style={{flex:0.7}}>
@@ -532,7 +532,7 @@ class ViewClinic extends Component {
                                                                         <Text style={[styles.text, {  fontSize: height*0.02,color}]}>{day}</Text>
                                                                     </View>
                                                                     <View style={{ flex: 0.2 }}>
-                                                                        <Text style={[styles.text, {  fontSize: height*0.02}]}>:</Text>
+                                                                        <Text style={[styles.text, {  fontSize: height*0.02,color}]}>:</Text>
 
                                                                     </View>
                                                                 </View>

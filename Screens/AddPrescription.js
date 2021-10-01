@@ -94,6 +94,7 @@ getClinicDoctors = async()=>{
         if (data.type == "success") {
             this.setState({ doctors: data.data })
                 if(this.state.appoinment){
+               
                         let findDoctor = data.data.find((item)=>{
                             return item.doctor.profile.name==this.state?.appoinment?.doctordetails.name
                         })
@@ -109,6 +110,9 @@ getClinicDoctors = async()=>{
   componentDidMount(){
      if(this.props.user.profile.occupation=="ClinicRecoptionist"){
          this.getClinicDoctors()
+     }
+     if(this.state.appoinment){
+            this.searchUser(this.state?.appoinment?.patientname.mobile, this.state?.appoinment?.requesteddate, this.state?.appoinment?.clinic)
      }
            Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
@@ -347,7 +351,7 @@ getClinicDoctors = async()=>{
             this.setState({ creating: false })
             return this.showSimpleMessage("Please Enter patientsName", "#dd7030",)  
         }
-               if(this.state.dob==""){
+               if(this.state.dob==""||this.state.dob=="Invalid date"){
             this.setState({ creating: false })
             return this.showSimpleMessage("Please Enter dob", "#dd7030",)  
         }
@@ -359,10 +363,9 @@ getClinicDoctors = async()=>{
              this.setState({ creating: false })
             return this.showSimpleMessage("Please Select Sex", "#dd7030",) 
         }
-        if(this.state.medicines.length == 0){
+        if(this.state.medicines.length == 0 &&this.state.selectedReports.length == 0){
             this.setState({ creating: false })
-            return this.showSimpleMessage("Please add medicine", "#dd7030",)
-        
+            return this.showSimpleMessage("Please add medicine or reports", "#dd7030",)
         }
         if (this.state.doctorFees =="") {
             this.setState({ creating: false })
@@ -392,7 +395,6 @@ getClinicDoctors = async()=>{
                   error.error=`please select No of Days in medicine number ${this.state.MedicinesGiven.length+i+1}`
                   error.index= i
                   this.setState({errorIndex:i})
-                 
                 break;
               }
                   if(this.state.medicines[i].diagonsis==null||this.state.medicines[i].diagonsis==undefined||this.state.medicines[i].diagonsis==""){
@@ -445,7 +447,7 @@ getClinicDoctors = async()=>{
             
         })
         let medicines = this.state.medicines.concat(this.state.MedicinesGiven)
-        let sendData ={
+        let sendData = {
             doctor_selected:this?.state?.selectedDoctor?.doctor?.id||this.props.user.id,
             medicines,
             health_issues:this.state.healthIssues,
@@ -473,8 +475,8 @@ getClinicDoctors = async()=>{
        console.log(sendData,"seeee")
        console.log(post,"post")
        if(post.type=="success"){
+           this.setState({check:false})
            if(this.state.appoinment){
-               
                let api = `${url}/api/prescription/appointments/${this.state.appoinment.id}/`
                 let sendData = {
                     status: "Completed"

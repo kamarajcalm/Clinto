@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, TextInput, FlatList, Image, SafeAreaView, StatusBar,ActivityIndicator ,ScrollView} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, TextInput, FlatList, Image, SafeAreaView, StatusBar,ActivityIndicator ,ScrollView,Linking} from 'react-native';
 import { Ionicons, Entypo, AntDesign ,FontAwesome5,FontAwesome} from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { selectTheme } from '../../actions';
@@ -13,6 +13,7 @@ import axios from 'axios';
 import moment from 'moment';
 import HttpsClient from '../../api/HttpsClient';
 import Modal from 'react-native-modal';
+import { LinearGradient } from 'expo-linear-gradient';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
@@ -45,6 +46,7 @@ class PendingAppoinments extends Component {
 
         showMessage(message);
     }
+ 
         RejectAppointment =async()=>{
         let api = `${url}/api/prescription/appointments/${this.state.selectedAppointment.id}/`
         let sendData = { 
@@ -190,9 +192,9 @@ getPendingAppoinments = async()=>{
    componentDidMount(){
       this.getPendingAppoinments()
                  this._unsubscribe = this.props.navigation.addListener('focus', () => {
-            //   this.setState({offset:0,appoinments:[]},()=>{
-            //         this.getPendingAppoinments()
-            //   })
+              this.setState({offset:0,appoinments:[]},()=>{
+                    this.getPendingAppoinments()
+              })
               
         });
    }
@@ -452,14 +454,38 @@ refresh =()=>{
    
         return this.props.navigation.navigate('ViewAppointmentDoctors',{item})
     }
+    getFirstLetter =(item ,patient=null)=>{
+            if(patient){
+                let name = item.patientname.name.split("")
+                return name[0].toUpperCase()
+            }
+       
+           let clinicName = item?.clinicname?.name.split("")
+  
+            return clinicName[0].toUpperCase();
+        
+     
+    }
+    chatwithCustomer= async (item) => {
+        let api = null
+        if (this.props.user.profile.occupation == "Doctor") {
+            api = `${url}/api/prescription/createDoctorChat/?doctor=${this.props.user.id}&customer=${item.requesteduser}`
+        }else{
+            api = `${url}/api/prescription/createClinicChat/?clinic=${item.clinic}&customer=${item.requesteduser}`
+        }
+
+        let data = await HttpsClient.get(api)
+        console.log(data, "kkk")
+        if (data.type == "success") {
+            this.props.navigation.navigate('Chat', { item: data.data })
+        }
+    }
     render() {
         return (
-            <>
-                <SafeAreaView style={styles.topSafeArea} />
-                <SafeAreaView style={styles.bottomSafeArea}>
-                 <StatusBar backgroundColor={themeColor} barStyle={"default"} />
 
-                 <FlatList 
+                 <View style={{flex:1,}}>
+                    <FlatList 
+                    contentContainerStyle={{paddingBottom:150}}
                    onEndReached={()=>{this.handleEndReached()}}
                    onRefresh={()=>{this.refresh()}}
                    refreshing={this.state.refreshing}
@@ -468,51 +494,75 @@ refresh =()=>{
                    renderItem={({item,index})=>{
                 
                              return(
-             <TouchableOpacity
+                     <TouchableOpacity
                                 onPress={() => { this.viewAppointments(item) }}
-                                style={{
+                                style={[styles.boxWithShadow,{
                                     marginTop: 10,
-                                    height: height * 0.15,
-                                    backgroundColor: "#eee",
+                                    minHeight: height * 0.2,
+                                    backgroundColor: "#fff",
                                     marginHorizontal: 10,
                                     borderRadius: 10,
-                                }}
+                                    paddingBottom:20
+                                }]}
                             >
-
-
-                            
-                                    <View style={{ flex: 0.6,flexDirection:"row" }}>
-                                        <View style={{flex:0.5}}>
-                                                <View style={{ paddingLeft: 10, paddingTop: 10 }}>
-                                                    <Text style={[styles.text, { fontWeight: "bold", color: "#000" }]}>{item.patientname.name}</Text>
+                             <View style={{ flexDirection: "row", flex: 1, }}>
+                                    
+                                        <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                                       <LinearGradient 
+                                            style={{ height: height*0.08, width: height*0.08, borderRadius: height*0.04,alignItems: "center", justifyContent: "center" }}
+                                            colors={["#333", themeColor, themeColor]}
+                                        >
+                                            <View >
+                                                <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 22 }]}>{this.getFirstLetter(item,"patient")}</Text>
+                                            </View>
+                                        </LinearGradient>
+                                      </View>
+                                      <View style={{flex:0.7}}>
+                                             <View style={{marginTop:height*0.02,flexDirection:"row"}}>
+                                                     <View style={{flexDirection:"row",flex:0.7}}>
+                                                     <View style={{alignItems:"center",justifyContent:"center"}}>
+                                                           <Text style={[styles.text,{color:"#000",fontSize:height*0.02,fontWeight:"bold"}]}>{item.patientname.name}</Text>
+                                                    </View>
+                                                    <View style={{alignItems:"center",justifyContent:"center"}}>
+                                                        <Text style={[styles.text,{color:"#000",fontSize:height*0.017,}]}> ({item.patientname.age} - {item.patientname.sex})</Text>
+                                                    </View>
                                                 </View>
+                                                <View style={{flex:0.3,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                                                          <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width:height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center' }]}
+                                                    onPress={() => { this.chatwithCustomer(item) }}
+                                                >
+                                                    <Ionicons name="md-chatbox" size={height*0.02} color="#63BCD2" />
+                                                </TouchableOpacity>
+                                                                                       <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width: height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center', }]}
+                                                                                onPress={() => {
+                                                                        
+                                                                                        if (Platform.OS == "android") {
+                                                                                            Linking.openURL(`tel:${item?.patientname.mobile}`)
+                                                                                        } else {
 
-                                        <View style={{ paddingLeft: 10, paddingTop: 10, flexDirection: "row" }}>
-                                            <View>
-                                                <Text style={[styles.text, { fontWeight: "bold" }]}>Reason : </Text>
-                                            </View>
-                                            <View>
-                                                <Text style={[styles.text, { fontWeight: "bold" }]}>{item.reason}</Text>
-                                            </View>
-
-                                        </View>
-                                    </View>
-                                        
-                                        <View style={{ paddingLeft: 10, paddingTop: 10, flexDirection: "row",flex:0.5 }}>
-                                            <View>
-                                                <Text style={[styles.text, {}]}>{item.requesteddate}</Text>
-                                            </View>
-                                            <View>
-                                                <Text style={[styles.text]}> | </Text>
-                                            </View>
-                                            <View>
-                                                <Text style={[styles.text]}> {item.requestedtime} </Text>
-                                            </View>
-                                        </View>
-                                       
-                                    </View>
-                                    <View style={{ flex: 0.4, flexDirection: "row",}}>
-                                             <TouchableOpacity 
+                                                                                            Linking.canOpenURL(`telprompt:${item?.patientname.mobile}`)
+                                                                                        }}}
+                                                        
+                                                        
+                                                                            >
+                                                                            <Ionicons name="call" size={height*0.02} color="#63BCD2" />
+                                                                            </TouchableOpacity>
+                                             
+                                                </View>
+                                             </View>
+   
+                                             <View style={{marginTop:height*0.01,}}>
+                                                    <View>
+                                                        <Text style={[styles.text,{color:"#000",fontSize:height*0.018}]}>Reason : {item.reason}</Text>
+                                                    </View>
+                                             </View>
+                                                <View style={{marginTop:height*0.01,}}>
+                                                    <View>
+                                                        <Text style={[styles.text,{color:"#000",fontSize:height*0.018}]}>Requested : {item.requesteddate} | {item.requestedtime}</Text>
+                                                    </View>
+                                             </View>
+                                             <View style={{marginTop:height*0.01,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                                                   <TouchableOpacity 
                                               style={{flex:0.5,alignItems:"center",justifyContent:"center"}}
                                               onPress={() => { this.setState({ modal: true, selectedAppointment: item, selectedIndex: index, today2: item.requesteddate, time: item.requestedtime }) }}
                                              >
@@ -528,9 +578,12 @@ refresh =()=>{
                                         >
                                             <Text style={[styles.text, { color: "#B22222" }]}>Reject</Text>
                                         </TouchableOpacity>
-                                     
-                                    </View>
-                
+                                             </View>
+                                      </View>
+                             </View>
+
+                            
+                                   
 
                               
                       
@@ -538,25 +591,11 @@ refresh =()=>{
                     )
                    
                    }}
-                 /> 
-                         {this.appoinmentModal()}
-                  <View style={{
-                        position: "absolute",
-                        bottom: 100,
-                        left: 20,
-                        right: 20,
-                        flex: 1,
-                        alignItems: "center",
-                        justifyContent: "center",
 
-                        borderRadius: 20
-                    }}>
-                        <TouchableOpacity
-                            onPress={() => { this.setState({showAppoinmentModal:true}) }}
-                        >
-                            <AntDesign name="pluscircle" size={40} color={themeColor} />
-                        </TouchableOpacity>
-                    </View>
+                 /> 
+                    
+                     {this.appoinmentModal()}    
+       
                                  <DateTimePickerModal
                             isVisible={this.state.showAppoinmentDatePicker}
                             mode="date"
@@ -584,8 +623,9 @@ refresh =()=>{
                             onConfirm={this.handleConfirm2}
                             onCancel={this.hideDatePicker2}
                         />
-                </SafeAreaView>
-            </>
+                 </View>
+              
+          
         );
     }
 }

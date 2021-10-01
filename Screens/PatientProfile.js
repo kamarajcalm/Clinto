@@ -33,16 +33,16 @@ class PatientProfile extends Component {
             <View style={{}}>
                 <View style={{ margin: 20 }}>
                     <View>
-                        <Text style={[styles.text, { color: "gray" }]}>Personal Info</Text>
+                        <Text style={[styles.text, { color: "gray" ,fontSize:height*0.02}]}>Personal Info</Text>
                     </View>
                     <View style={{ flexDirection: "row", marginTop: 15, alignItems: "center", justifyContent: 'space-between' }}>
                         <View style={{ flex: 0.6 }}>
-                            <Text style={[styles.text, { color: "gray" }]}>Age</Text>
-                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.age}</Text>
+                            <Text style={[styles.text, { color: "gray",fontSize:height*0.02 }]}>Age</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000",fontSize:height*0.02 }]}>{this.props.user.profile.age}</Text>
                         </View>
                         <View style={{ flex: 0.4 }}>
-                            <Text style={[styles.text, { color: "gray" }]}>Blood Group</Text>
-                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.blood_group}</Text>
+                            <Text style={[styles.text, { color: "gray" ,fontSize:height*0.02}]}>Blood Group</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000", fontSize:height*0.02}]}>{this.props.user.profile.blood_group}</Text>
                         </View>
                     </View>
 
@@ -58,15 +58,15 @@ class PatientProfile extends Component {
                     </View> */}
                     <View style={{ flexDirection: "row", marginTop: 15, alignItems: "center", justifyContent: 'space-between' }}>
                         <View style={{ }}>
-                            <Text style={[styles.text, { color: "gray" }]}>Email</Text>
-                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.email}</Text>
+                            <Text style={[styles.text, { color: "gray",fontSize:height*0.02 }]}>Email</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000",fontSize:height*0.02 }]}>{this.props.user.email}</Text>
                         </View>
                      
                     </View>
                     <View style={{ flexDirection: "row", marginTop: 15, }}>
                         <View >
-                            <Text style={[styles.text, { color: "gray" }]}>Mobile</Text>
-                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.mobile}</Text>
+                            <Text style={[styles.text, { color: "gray",fontSize:height*0.02 }]}>Mobile</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000",fontSize:height*0.02 }]}>{this.props.user.profile.mobile}</Text>
                         </View>
 
                     </View>
@@ -80,26 +80,7 @@ class PatientProfile extends Component {
                     </View> */}
 
                 </View>
-              
-                <View style={{ borderColor: "#F0F0F0", borderTopWidth: 3, }}>
-                    <View style={{ marginHorizontal: 20 }}>
-                        <View style={{ marginTop: 5 }}>
-                            <Text style={[styles.text]}>Health Issues</Text>
-                        </View>
-                        <View style={{marginTop:5}}>
-                            {
-                                this.props.user?.profile?.health_issues?.map((item,index)=>{
-                                    return(
-                                   
-                                        <Text style={[styles.text,{color:'#000',marginLeft:5}]} key={index}>{item}</Text>
-                                    )   
-                                })
-                            }
-                        </View>
-                    </View>
-
-
-                </View>
+    
             </View>
         );
     }

@@ -36,16 +36,16 @@ class DoctorProfile extends Component {
             >
                 <View style={{ margin: 20}}>
                     <View>
-                        <Text style={[styles.text,{color:"gray"}]}>Personal Info</Text>
+                        <Text style={[styles.text,{color:"gray",fontSize:height*0.02}]}>Personal Info</Text>
                     </View>
                     <View style={{ flexDirection: "row", marginTop: 15, alignItems: "center", justifyContent: 'space-between' }}>
                         <View style={{ flex: 0.6 }}>
-                            <Text style={[styles.text, { color: "gray" }]}>Age</Text>
-                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.age}</Text>
+                            <Text style={[styles.text, { color: "gray" ,fontSize:height*0.02}]}>Age</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000", fontSize:height*0.02}]}>{this.props.user.profile.age}</Text>
                         </View>
                         <View style={{ flex: 0.4 }}>
-                            <Text style={[styles.text, { color: "gray" }]}>Blood Group</Text>
-                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.blood_group}</Text>
+                            <Text style={[styles.text, { color: "gray" ,fontSize:height*0.02}]}>Blood Group</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000",fontSize:height*0.02 }]}>{this.props.user.profile.blood_group}</Text>
                         </View>
                     </View>
 
@@ -61,23 +61,23 @@ class DoctorProfile extends Component {
                     </View> */}
                     <View style={{ flexDirection: "row", marginTop: 15, }}>
                         <View style={{ flex: 0.6 }}>
-                            <Text style={[styles.text, { color: "gray" }]}>Mobile</Text>
-                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.mobile}</Text>
+                            <Text style={[styles.text, { color: "gray" ,fontSize:height*0.02}]}>Mobile</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000", fontSize:height*0.02}]}>{this.props.user.profile.mobile}</Text>
                         </View>
                     
                     </View>
                     <View style={{ flexDirection: "row", marginTop: 15,}}>
                         <View >
-                            <Text style={[styles.text, { color: "gray" }]}>Address</Text>
-                            <Text style={[styles.text, { marginTop: 5,color: "#000",  }]}>{this.props.user.profile.address}</Text>
-                            <Text style={[styles.text, { marginTop: 5, color: "#000",  }]}>{this.props.user.profile.city}-{this.props.user.profile.pincode}</Text>
+                            <Text style={[styles.text, { color: "gray",fontSize:height*0.02 }]}>Address</Text>
+                            <Text style={[styles.text, { marginTop: 5,color: "#000", fontSize:height*0.02 }]}>{this.props.user.profile.address}</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000",fontSize:height*0.02  }]}>{this.props.user.profile.city}-{this.props.user.profile.pincode}</Text>
                         </View>
                        
                     </View>
                     <View style={{ flexDirection: "row", marginTop: 15, }}>
                         <View style={{ }}>
-                            <Text style={[styles.text, { color: "gray" }]}>Email</Text>
-                            <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.email}</Text>
+                            <Text style={[styles.text, { color: "gray",fontSize:height*0.02 }]}>Email</Text>
+                            <Text style={[styles.text, { marginTop: 5, color: "#000", fontSize:height*0.02}]}>{this.props.user.email}</Text>
                         </View>
 
                     </View>
@@ -86,7 +86,7 @@ class DoctorProfile extends Component {
                 <View style={{ borderColor: "#F0F0F0", borderTopWidth: 3,borderBottomWidth:3 }}>
                      <View style={{marginLeft:20,flexDirection:"row",}}>
                          <View style={{marginTop:5,flex:0.6}}>
-                             <Text style={[styles.text]}>Working Clinics</Text>
+                             <Text style={[styles.text,{fontSize:height*0.02}]}>Working Clinics</Text>
                          </View>
                          <TouchableOpacity style={[styles.boxWithShadow,{height:height*0.03,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,flex:0.4,marginTop:5,marginRight:5,borderRadius:5}]}
                             onPress={() => { this.props.ClinicSelect()}}
@@ -106,8 +106,8 @@ class DoctorProfile extends Component {
                                         onPress={() => { this.props.navigation.navigate('ViewClinicDetails', { item }) }}
                                     >
                                         <View style={{ flex: 0.5, justifyContent: "center" }}>
-                                            <Text style={[styles.text, { fontWeight: "bold", color: "#000", marginLeft: 10 }]}>{item.name}</Text>
-                                            {this?.props?.clinic.name == item.name&& <Text style={[styles.text, {  color: "gray", marginLeft: 10 }]}>selected</Text>}
+                                            <Text style={[styles.text, { fontWeight: "bold", color: "#000", marginLeft: 10,fontSize:height*0.02 }]}>{item.name}</Text>
+                                            {this?.props?.clinic.name == item.name&& <Text style={[styles.text, {  color: "gray", marginLeft: 10 ,fontSize:height*0.02}]}>selected</Text>}
                                         </View>
                                         <View style={{ flex: 0.5, alignItems: 'flex-end', marginRight: 10, justifyContent: "center" }}>
                                             <AntDesign name="rightcircleo" size={24} color="#000" />
@@ -124,7 +124,7 @@ class DoctorProfile extends Component {
                 {this.props?.clinics?.ownedclinics?.length>0&&<View style={{ borderColor: "#F0F0F0",  borderBottomWidth: 3 }}>
                     <View style={{ margin: 20 }}>
                         <View>
-                            <Text style={[styles.text]}>Owned Clinics</Text>
+                            <Text style={[styles.text,{fontSize:height*0.02}]}>Owned Clinics</Text>
                         </View>
                     </View>
 
@@ -139,13 +139,13 @@ class DoctorProfile extends Component {
                                         onPress={() => { this.props.navigation.navigate('ViewClinicDetails', { item, owner:true}) }}
                                     >
                                         <View style={{ flex: 0.5, justifyContent: "center" }}>
-                                            <Text style={[styles.text, { fontWeight: "bold", color: "#000", marginLeft: 10 }]}>{item.name}</Text>
-                                            {item?.validtill?.validTill?<Text style={[styles.text, { marginLeft: 10 ,color:"green"}]}>{moment(item?.validtill?.validTill).format("DD-MM-YYYY")}</Text>:
+                                            <Text style={[styles.text, { fontWeight: "bold", color: "#000", marginLeft: 10 ,fontSize:height*0.02}]}>{item.name}</Text>
+                                            {item?.validtill?.validTill?<Text style={[styles.text, { marginLeft: 10 ,color:"green",fontSize:height*0.02}]}>{moment(item?.validtill?.validTill).format("DD-MM-YYYY")}</Text>:
                                              <TouchableOpacity 
                                                     onPress={() => { this.props.navigation.navigate("PaymentPage",{item})}}
                                              
                                              >
-                                                 <Text style={[styles.text,{color:"red",marginLeft:10}]}>(please Recharge)</Text>
+                                                 <Text style={[styles.text,{color:"red",marginLeft:10,fontSize:height*0.02}]}>(please Recharge)</Text>
                                              </TouchableOpacity>
                                             }
                                         </View>
@@ -182,24 +182,24 @@ class DoctorProfile extends Component {
                 </View> */}
                 <View style={{margin:20}}>
                       <View>
-                          <Text style={[styles.text]}>Patients Attended</Text>
+                          <Text style={[styles.text,{fontSize:height*0.02}]}>Patients Attended</Text>
                       </View>
                       <View style={{marginTop:20}}>
-                          <Text style={[styles.text,{color:"red"}]}>Overall </Text>
-                        <Text style={[styles.text, { color: "red" }]}>{this.props.user.totalPatients}</Text>
+                          <Text style={[styles.text,{color:"red",fontSize:height*0.02}]}>Overall </Text>
+                        <Text style={[styles.text, { color: "red", fontSize:height*0.02}]}>{this.props.user.totalPatients}</Text>
                       </View>
                     <View style={{ marginTop: 20 ,flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
                          <View>
-                           <Text style={{fontFamily}}>This week</Text>
-                           <Text style={[styles.text,{color:"#000",fontWeight:'bold',marginTop:5}]}>10</Text>
+                           <Text style={{fontFamily,fontSize:height*0.02}}>This week</Text>
+                           <Text style={[styles.text,{color:"#000",fontWeight:'bold',marginTop:5,fontSize:height*0.02}]}>10</Text>
                          </View>
                          <View>
-                            <Text style={{ fontFamily }}>This Month</Text>
-                            <Text style={[styles.text, { color: "#000", fontWeight: 'bold' ,marginTop:5}]}>100</Text>
+                            <Text style={{ fontFamily,fontSize:height*0.02 }}>This Month</Text>
+                            <Text style={[styles.text, { color: "#000", fontWeight: 'bold' ,marginTop:5,fontSize:height*0.02}]}>100</Text>
                          </View>
                          <View>
-                            <Text style={{ fontFamily }}>This year</Text>
-                            <Text style={[styles.text, { color: "#000", fontWeight: 'bold' ,marginTop:5}]}>1000</Text>
+                            <Text style={{ fontFamily ,fontSize:height*0.02}}>This year</Text>
+                            <Text style={[styles.text, { color: "#000", fontWeight: 'bold' ,marginTop:5,fontSize:height*0.02}]}>1000</Text>
                          </View>
                     </View>
                 </View>

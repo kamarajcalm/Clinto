@@ -51,11 +51,9 @@ class MediacalTab extends Component {
         if (routeName == "SearchPateint") {
             return false
         }
-        if (routeName == "ChatScreen") {
+        if (routeName == "ChatScreen"){
             return false
         }
-   
-     
         return true
     }
     getTabBarVisibility7= (route) => {
@@ -71,7 +69,11 @@ class MediacalTab extends Component {
         }
         return true
     }
-    getTabBarVisibilityChats =()=>{
+    getTabBarVisibilityChats =(route)=>{
+        const routeName = route.state ? route.state.routes[route.state.index].name : ''
+          if (routeName == "ChatScreen"){
+            return false
+        }
         return true
     }
     getTabBarVisibility8 = (route) => {

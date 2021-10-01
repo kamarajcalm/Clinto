@@ -531,7 +531,8 @@ sendMessage =async()=>{
           chatTitle = this.state?.item?.customertitle || this.state.item?.clinictitle
       }
         if (this.props.user.profile.occupation == "LabAssistant"){
-          chatTitle = this.state?.item?.customertitle 
+           
+          chatTitle = this.state?.item?.customertitle||this.state.item.clinictitle
       }
 //  console.log(this.props.user)
     return (
@@ -557,12 +558,12 @@ sendMessage =async()=>{
                   
                         <Image
                             source={{ uri:this.state?.item?.displaypicture||"https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" }}
-                            style={{ height:height*0.08, width:height*0.08, borderRadius: height*0.04, }}
+                            style={{ height:height*0.06, width:height*0.06, borderRadius: height*0.03, }}
                             
                         />
                  
                       <View style={{alignItems:"center",justifyContent:"center"}}>
-                                <Text style={[styles.text, { color: '#fff', marginLeft: 20, fontWeight: 'bold', fontSize: height*0.03 }]}>{chatTitle}</Text>
+                                <Text style={[styles.text, { color: '#fff', marginLeft: 20, fontWeight: 'bold', fontSize: height*0.025 }]} numberOfLines={1}>{chatTitle}</Text>
 
                       </View>
                 </View>

@@ -7,6 +7,7 @@ import Appoinments from '../Screens/Appoinments';
 import CreateReport from '../Screens/CreateReport';
 import ViewAppointmentDoctors from '../../Screens/ViewAppointmentDoctors';
 import ChatScreen from '../../Screens/ChatScreen';
+import CreateAppoinment from '../../Screens/CreateAppoinment';
 const Stack = createStackNavigator();
 export default class AppoinmentsStack extends Component {
     constructor(props) {
@@ -31,6 +32,7 @@ export default class AppoinmentsStack extends Component {
                  <Stack.Screen name="CreateReport" component={CreateReport} options={{ headerShown: false }} />
                   <Stack.Screen name="ViewAppointmentDoctors" component={ViewAppointmentDoctors} options={{ headerShown: false }} />
                    <Stack.Screen name="Chat" component={ChatScreen} options={{ headerShown: false }} />
+                   <Stack.Screen name="CreateAppoinment" component={CreateAppoinment} options={{ headerShown: false }} />
             </Stack.Navigator>
         );
     }

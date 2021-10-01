@@ -30,6 +30,7 @@ class PendingRequests extends Component {
     }
     getPendingRequests = async()=>{
         let api = `${url}/api/prescription/vieworders/?user=${this.props.user.id}&status=true`
+        console.log(api)
         const data = await HttpsClient.get(api)
         if(data.type=="success"){
           this.setState({requests:data.data,loading:false})

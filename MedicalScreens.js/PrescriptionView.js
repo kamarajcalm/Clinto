@@ -46,6 +46,7 @@ class PrescriptionView extends Component {
             item: this.props?.route?.params?.item || null,
             valid: this.props.route?.params?.item?.active,
             load: false,
+            show:true,
             pk: this.props?.route?.params?.pk || null,
             showModal2: false,
             selected: "Prescribed",
@@ -93,18 +94,7 @@ class PrescriptionView extends Component {
         if (post.type == "success") {
             this.setState({issuing:false,drugModal:false})
             this.showSimpleMessage("issued SuccessFully", "#00A300", "success")
-            return this.props.navigation.dispatch(
-                CommonActions.reset({
-                    index: 0,
-                    routes: [
-                        {
-                            name: 'ClincicPriscriptionStack',
-
-                        },
-
-                    ],
-                })
-            )
+            return this.props.navigation.goBack()
 
         }
         else{
@@ -131,7 +121,10 @@ class PrescriptionView extends Component {
         this.setState({ drugs})
     }
     componentDidMount() {
-       
+         if(this.props.route?.params?.show==false){
+
+             this.setState({show:false})
+         }
         if(this.state.pk == null){
             this.validateAnimations()
             this.filterMedicines()
@@ -497,13 +490,13 @@ class PrescriptionView extends Component {
                                         
 
                                     {
-                                        this.state.item.diseaseTitle.map((item,index)=>{
+                                        this.state?.item?.diseaseTitle?.map((item,index)=>{
                                             return(
                                                     <View style={{flexDirection:"row"}}>
                                                         <View>
                                                               <Text style={[styles.text, {color:"#000",fontSize:height*0.017}]}>{item}</Text>
                                                         </View>
-                                                       { index < this.state.item.diseaseTitle.length-1&&<View>
+                                                       { index < this.state?.item?.diseaseTitle?.length-1&&<View>
                                                                 <Text style={[styles.text, {color:"#000",fontSize:height*0.017}]}> , </Text>
                                                         </View>}
                                                      </View> 
@@ -812,7 +805,7 @@ class PrescriptionView extends Component {
                                                     <View style={{ flex: 0.2, alignItems: "center", justifyContent: "space-around" }}>
 
                                                         <View>
-                                                            <Text style={[styles.text,{fontSize:width*0.037}]}>Qty : {item.total_qty} </Text>
+                                                            <Text style={[styles.text,{fontSize:width*0.037}]}>Qty : {Math.round(item.total_qty)} </Text>
                                                         </View>
                                                     </View>
                                                 </View>
@@ -890,7 +883,7 @@ class PrescriptionView extends Component {
                             </View>
                             <View style={{ flex: 0.1,flexDirection:"row" }}>
                                 <View style={{ flex: 0.5,alignItems:"center",justifyContent:"center", }}>
-                                               <TouchableOpacity
+                   {   this.state.show&&                         <TouchableOpacity
                             style={{ backgroundColor:themeColor,height:height*0.05,width:width*0.4,alignItems:'center',justifyContent:'center',borderRadius:5}}
                         onPress={() => {
                             if (!this.state.valid) {
@@ -922,7 +915,7 @@ class PrescriptionView extends Component {
                                
 
                      }
-                     </TouchableOpacity>
+                     </TouchableOpacity>}
                                 </View>
                                 <View style={{ alignSelf: 'flex-end', flex: 0.5, alignItems: "flex-end", justifyContent: "center", marginRight: 10 }}>
                                     <View>
@@ -947,7 +940,7 @@ class PrescriptionView extends Component {
                                         <Feather name="phone" size={height*0.02} color="#fff" />
                                     </View>
                                     <View style={{ alignItems: 'center', justifyContent: "center", marginLeft: 5 }}>
-                                        <Text style={[styles.text, { color: "#ffff" ,fontSize:height*0.017}]}>{this.state.item.clinicname.mobile}</Text>
+                                        <Text style={[styles.text, { color: "#ffff" ,fontSize:height*0.017}]}>{this.state.item?.clinicname?.mobile}</Text>
                                     </View>
                                 </TouchableOpacity >
                                 <TouchableOpacity style={{ flexDirection: "row",flex:0.5,alignItems:"center",justifyContent:"center" }}

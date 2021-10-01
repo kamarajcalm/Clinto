@@ -336,7 +336,7 @@ hideDatePicker = () => {
         let api = `${url}/api/prescription/prescriptions/${item.id}/`
         console.log(api)
         if(!item.active){
-            return this.showSimpleMessage("Prescription Already Invalid ! please Make Another One","orange","info")
+            return this.showSimpleMessage("Oops! You are not allowed to make the prescription valid again!","orange","info")
         }
         let sendData = {
             active:false
@@ -346,7 +346,7 @@ hideDatePicker = () => {
            
             let duplicate =  this.state.prescriptions
             duplicate[index].active = false
-           return this.showSimpleMessage("changed successfully", "#00A300", "success")
+           return this.showSimpleMessage("Prescription has been removed from patient`s account", "#00A300", "success")
          
         } else {
           
@@ -460,11 +460,11 @@ hideDatePicker = () => {
                 >
                     <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
                         <LinearGradient 
-                              style={{ height: 50, width: 50, borderRadius: 25,alignItems: "center", justifyContent: "center" }}
+                              style={{height: height*0.084, width: height*0.084, borderRadius: height*0.042,alignItems: "center", justifyContent: "center" }}
                               colors={["#333", themeColor, themeColor]}
                         >
                               <View >
-                                  <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 22 }]}>{this.getFirstLetter(item)}</Text>
+                                  <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: height*0.02 }]}>{this.getFirstLetter(item)}</Text>
                               </View>
                         </LinearGradient>
                        
@@ -547,8 +547,8 @@ hideDatePicker = () => {
                     onPress={() => { this.props.navigation.navigate('PrescriptionViewDoctor', { item }) }}
                 >
                     <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
-                        <View style={{ height: 70, width: 70, borderRadius: 35, backgroundColor: themeColor, alignItems: "center", justifyContent: "center" }}>
-                            <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 18 }]}>{this.getFirstLetter(item)}</Text>
+                        <View style={{ height: height*0.084, width: height*0.084, borderRadius: height*0.042, backgroundColor: themeColor, alignItems: "center", justifyContent: "center" }}>
+                            <Text style={[styles.text, { color: "#ffff", fontWeight: "bold",fontSize: height*0.02 }]}>{this.getFirstLetter(item)}</Text>
                         </View>
                     </View>
                     <View style={{ flex: 0.7, marginHorizontal: 10, justifyContent: 'center' }}>
@@ -626,8 +626,8 @@ hideDatePicker = () => {
                 onPress={() => { this.props.navigation.navigate('PrescriptionView', { item, }) }}
             >
                 <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
-                    <View style={{ height: 70, width: 70, borderRadius: 35, backgroundColor: themeColor, alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 18 }]}>{this.getFirstLetter(item,"clinic")}</Text>
+                    <View style={{ height: height*0.084, width: height*0.084, borderRadius: height*0.042, backgroundColor: themeColor, alignItems: "center", justifyContent: "center" }}>
+                        <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: height*0.02 }]}>{this.getFirstLetter(item,"clinic")}</Text>
                     </View>
                 </View>
                 <View style={{ flex: 0.7,justifyContent: 'center',}}>
@@ -654,7 +654,7 @@ hideDatePicker = () => {
                                                           <Text style={[styles.text]}>{it}</Text>
                                                  
                                               
-                                                   { index < item?.diseaseTitle.length-1&&<Text style={[styles.text]}> , </Text> }
+                                                   { index < item?.diseaseTitle?.length-1&&<Text style={[styles.text]}> , </Text> }
                                                 
                                             </View>
                                         )
@@ -783,7 +783,7 @@ hideDatePicker = () => {
                                            <View style={{justifyContent:"center",}}>
                              <View style={{}}>
 
-                              <Text style={{ color: '#fff', fontFamily: "openSans" ,fontSize: height*0.03, fontWeight: "bold" }}>{!this.state.ReportsState?"Prescription":"Reports"}</Text>
+                              <Text style={{ color: '#fff', fontFamily: "openSans" ,fontSize: height*0.028, fontWeight: "bold" }}>{!this.state.ReportsState?"Prescription":"Reports"}</Text>
 
                              </View>
 
@@ -798,7 +798,7 @@ hideDatePicker = () => {
                                          <View style={{justifyContent:"center",}}>
                              <View style={{marginLeft:20}}>
 
-                              <Text style={{ color: '#fff', fontFamily: "openSans" ,fontSize: height*0.03, fontWeight: "bold" }}>{!this.state.ReportsState?"Prescription":"Reports"}</Text>
+                              <Text style={{ color: '#fff', fontFamily: "openSans" ,fontSize: height*0.028, fontWeight: "bold" }}>{!this.state.ReportsState?"Prescription":"Reports"}</Text>
 
                              </View>
 
@@ -821,7 +821,7 @@ hideDatePicker = () => {
                             placeholderTextColor={"#000"}
                             selectionColor={themeColor}
                             style={{ height: "99%", flex: 0.8, backgroundColor: "#eee", paddingLeft: 10,justifyContent:"center" }}
-                            placeholder={`search  ${this.state.ReportsState?"report":this.props?.clinic?.name ||"prescription"}`}
+                            placeholder={`Search  ${this.state.ReportsState?"report":this.props?.clinic?.name ||"prescription"}`}
                             onChangeText={(text) => { this.searchPriscriptions(text) }}
                         />
                     </View>

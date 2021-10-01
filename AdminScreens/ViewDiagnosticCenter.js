@@ -23,7 +23,8 @@ class ViewDiagnosticCenter extends Component {
         this.state = {
             item,
             receptionList:[],
-            images:[]
+            images:[],
+            diagnosticCenter:this.props?.route?.params?.diagnosticCenter||null
         };
     }
               validateOpen = ()=>{
@@ -41,7 +42,7 @@ class ViewDiagnosticCenter extends Component {
         if(data.type=="success"){
             let images =[]
             data.data.forEach((item,index)=>{
-                images.push(`${url}${item.imageUrl}`)
+                images.push(`${item.imageUrl}`)
             })
             this.setState({images},()=>{
                 console.log(images)
@@ -162,7 +163,7 @@ class ViewDiagnosticCenter extends Component {
                                 <Ionicons name="chevron-back-circle" size={30} color="#fff" />
                             </TouchableOpacity>
                             <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
-                                <Text style={[styles.text, { color: '#fff', fontWeight: 'bold', fontSize: 18 }]}>{this.state.item.companyName}</Text>
+                                <Text style={[styles.text, { color: '#fff', fontWeight: 'bold', fontSize: 18 }]}>{this.state?.item?.companyName}</Text>
                             </View>
                             <TouchableOpacity style={{ flex: 0.2, flexDirection: "row", alignItems: "center", justifyContent: 'center' }}
                                 onPress={() => { this.props.navigation.navigate('EditClinicDetails', { clinic: this.state.item }) }}
@@ -187,7 +188,7 @@ class ViewDiagnosticCenter extends Component {
                             {/* Details */}
                                    <View style={[styles.boxWithShadow, { height: height * 0.07, width, backgroundColor: "#eee", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 20 }]}>
                                 <View>
-                                    <Text style={[styles.text]}>Clinic Details</Text>
+                                    <Text style={[styles.text]}>Lab Details</Text>
                                 </View>
                               
                             </View>
@@ -257,6 +258,7 @@ class ViewDiagnosticCenter extends Component {
                       
                                 </View>
                             </View>
+                       { !this.state.diagnosticCenter&&    <>
                             <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 10, alignItems: "center", justifyContent: "space-between"}}>
                                   <View style={{alignItems:"center",justifyContent:"center"}}>
                                     <Text style={[styles.text,{fontSize:height*0.023}]}>Owned By : </Text>
@@ -273,7 +275,7 @@ class ViewDiagnosticCenter extends Component {
                                     <Text style={[styles.text, { marginLeft: 10 }]}>{this.state?.item?.owner.username}</Text>
                                 </View>
                             </View>
- 
+                            </>}
                       
                                                         <View style={{ padding: 10, }}>
                                 

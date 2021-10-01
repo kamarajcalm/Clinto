@@ -197,7 +197,7 @@ class UploadImages extends Component {
             let uploadedimages = []
             data.data.forEach((item, index) => {
                 let pushObj ={
-                    uri: `${url}${item.imageUrl}`,
+                    uri: `${item.imageUrl}`,
                     id:item.id
                 }
                 uploadedimages.push(pushObj)

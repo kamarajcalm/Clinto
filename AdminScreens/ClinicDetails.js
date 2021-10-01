@@ -93,7 +93,7 @@ class ClinicDetails extends Component {
         if(data.type=="success"){
             let images =[]
             data.data.forEach((item,index)=>{
-                images.push(`${url}${item.imageUrl}`)
+                images.push(`${item.imageUrl}`)
             })
             this.setState({images},()=>{
                 console.log(images)

@@ -88,7 +88,7 @@ const {url} =settings
                              <View style={{flex:0.5,flexDirection:"row"}}>
                                 <View style={{flex:0.7}}>
                                      <View style={{marginTop:5}}>
-                                       <Text style={[styles.text,{color:"gray",fontSize:height*0.02}]}>Ratings : {item.rating}/5</Text>
+                                       <Text style={[styles.text,{color:"gray",fontSize:height*0.02}]}>Ratings : {item.rating}/5  (5) </Text>
                                     </View>
                                     <View style={{marginTop:5}}>
                                           <StarRating
@@ -99,16 +99,16 @@ const {url} =settings
                                     </View>
                                 
                                 </View>
-                                <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between",flex:0.3}}>
+                                    <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between",flex:0.3}}>
                                  
                               
-                                      <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', }]}
+                                      <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: height*0.04, width: height*0.04, borderRadius: height*0.02, alignItems: "center", justifyContent: 'center', }]}
                                       onPress={() => { this.chatClinic(item) }}
                                           >
-                                              <Ionicons name="chatbox" size={24} color="#63BCD2" />
+                                              <Ionicons name="chatbox" size={height*0.02} color="#63BCD2" />
 
                                           </TouchableOpacity>
-                                                 <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                                                 <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: height*0.04, width: height*0.04, borderRadius: height*0.02, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
                             onPress={() => {
                        
                                       if (Platform.OS == "android") {
@@ -120,9 +120,9 @@ const {url} =settings
     
     
                         >
-                           <Ionicons name="call" size={24} color="#63BCD2" />
+                           <Ionicons name="call" size={height*0.02} color="#63BCD2" />
                         </TouchableOpacity>
-                                          <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: 30, width: 30, borderRadius: 15, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
+                                          <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: height*0.04, width: height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center', marginLeft: 10 }]}
                                               onPress={() => {
                                                   Linking.openURL(
                                                       `https://www.google.com/maps/dir/?api=1&destination=` +
@@ -133,7 +133,7 @@ const {url} =settings
                                                   );
                                               }}
                                           >
-                                              <FontAwesome5 name="directions" size={20} color="#63BCD2" />
+                                              <FontAwesome5 name="directions" size={height*0.02} color="#63BCD2" />
                                           </TouchableOpacity>
                                    
                                 </View>

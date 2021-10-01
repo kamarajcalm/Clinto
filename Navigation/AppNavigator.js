@@ -55,6 +55,7 @@ import PetTab from './PetTab';
 import ViewLabDetails from '../diagnosisCenter/Screens/ViewLabDetails';
 import CreateDiagnosisCenterUser from '../AdminScreens/CreateDiagnosisCenterUser';
 import ChangePassword from '../Screens/ChangePassword';
+import ViewDiagnosticCenter from '../AdminScreens/ViewDiagnosticCenter';
 
 
 
@@ -132,6 +133,7 @@ const authScreens = {
                     <Stack.Screen name="MedicalOffers" component={MedicalOffers} options={{ headerShown: false }} />
                     <Stack.Screen name="ViewFeautures" component={ViewFeautures} options={{ headerShown: false }} />
                     <Stack.Screen name="ViewLab" component={ViewLabDetails} options={{ headerShown: false }} />
+                        <Stack.Screen name="ViewDiagnosticCenter" component={ViewDiagnosticCenter} options={{ headerShown: false }} />
                     <Stack.Screen name="CreateDiagnosisCenterUser" component={CreateDiagnosisCenterUser} options={{ headerShown: false }} />
                          <Stack.Screen name="CreateReport" component={CreateReport} options={{ headerShown: false }} />
                           <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />

@@ -12,13 +12,13 @@ const url =settings.url;
 const initialLayout = { width: Dimensions.get('window').width };
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import moment from 'moment';
-
  class Chat extends Component {
   constructor(props) {
     const routes = [
       { key: 'Clinics', title: 'Clinics' },
       { key: 'Doctors', title: 'Doctors' },
       { key: 'Medicals', title: 'Pharmacy'},
+      { key: 'Labs', title: 'Labs'},
     ];
     super(props);
     this.state = {
@@ -29,7 +29,8 @@ import moment from 'moment';
       doctors:[],
       medicals:[],
       edit:false,
-      selectedChats:[]
+      selectedChats:[],
+      labChats:[]
     };
   }
    getChats = async()=>{
@@ -50,8 +51,13 @@ import moment from 'moment';
      if (this.props.user.profile.occupation == "MedicalRecoptionist") {
        api = `${url}/api/prescription/getThreads/?type=clinic&clinic=${this.props.user.profile.recopinistclinics[0].clinicpk}`
      }
+     if (this.props.user.profile.occupation == "LabAssistant") {
+       api = `${url}/api/prescription/getThreads/?type=clinic&clinic=${this.props.clinic.clinicpk}`
+     }
+
      let data =await HttpsClient.get(api)
       console.log(api,'ghj')
+ 
      if(data.type =="success"){
        this.setState({ 
          clinics: data.data.clinicchats, 
@@ -93,7 +99,7 @@ componentWillUnmount(){
     if(find){
       return "#D3D3D3"
     }else{
-      return "#fafafa"
+      return "#fff"
     }
    }
    validateCheckBox = (item)=>{
@@ -125,7 +131,7 @@ componentWillUnmount(){
            renderItem={({ item, index }) => {
                 let dp = ""
                 if(item.displaypicture){
-                  dp = `${url}${item.displaypicture}`
+                  dp = `${item.displaypicture}`
                 }
              if(this.state.edit){
                return(
@@ -211,7 +217,7 @@ componentWillUnmount(){
          renderItem={({ item, index }) => {
                 let dp = ""
                 if(item.displaypicture){
-                  dp = `${url}${item.displaypicture}`
+                  dp = `${item.displaypicture}`
                 }
                  if(this.state.edit){
                return(
@@ -296,7 +302,7 @@ componentWillUnmount(){
          renderItem={({ item, index }) => {
              let dp = ""
                 if(item.displaypicture){
-                  dp = `${url}${item.displaypicture}`
+                  dp = `${item.displaypicture}`
                 }
                 if(this.state.edit){
                return(
@@ -326,7 +332,7 @@ componentWillUnmount(){
                    </View>
                    <View style={{ flex: 0.6, }}>
                      <View style={{ flex: 0.4, justifyContent: "center" }}>
-                       <Text style={[styles.text, { fontSize: 16 }]}>{item.title}</Text>
+                       <Text style={[styles.text, { fontSize:height*0.02 }]}>{item.title}</Text>
                      </View>
                      <View style={{ flex: 0.6, }}>
                        <Text style={[styles.text]}>{item.lastchatmessage}</Text>
@@ -369,6 +375,91 @@ componentWillUnmount(){
        />
      )
    }
+   fourthRoute = ()=>{
+           return (
+       <FlatList
+         contentContainerStyle={{ paddingBottom: 90 }}
+
+         data={this.state.labChats}
+
+         keyExtractor={(item, index) => index.toString()}
+
+         renderItem={({ item, index }) => {
+             let dp = ""
+                if(item.displaypicture){
+                  dp = `${item.displaypicture}`
+                }
+                if(this.state.edit){
+               return(
+                 <TouchableOpacity style={{ height: height * 0.1, backgroundColor:this.validateColor(item), marginTop: 1, flexDirection: 'row' }}
+                   onPress={() => {
+                     this.selectChat(item)
+                   }}
+                 >
+                    <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
+                        <View style={{height:20,width:20,borderColor:"#000",borderWidth:1,alignItems:"center",justifyContent:'center'}}
+                         
+                        >
+                          {
+                            this.validateCheckBox(item)
+                          }
+
+                        </View>
+                    </View>
+                   
+                   <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                     <Image
+                       source={{
+                         uri: dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                       }}
+                                  style={{ height: height*0.08, width:height*0.08, borderRadius:height*0.04, }}
+                     />
+                   </View>
+                   <View style={{ flex: 0.6, }}>
+                     <View style={{ flex: 0.4, justifyContent: "center" }}>
+                       <Text style={[styles.text, { fontSize:height*0.02 }]}>{item.title}</Text>
+                     </View>
+                     <View style={{ flex: 0.6, }}>
+                       <Text style={[styles.text]}>{item.lastchatmessage}</Text>
+                     </View>
+                   </View>
+                 </TouchableOpacity>
+               )
+             }
+             return (
+               <TouchableOpacity style={{ height: height * 0.1, backgroundColor: "#fafafa", marginTop: 1, flexDirection: 'row' }}
+                 onPress={() => { this.navigate(item,"clinic") }}
+                 onLongPress ={()=>{this.addToDelete(item)}}
+               >
+                 <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                   <Image
+                     source={{
+                       uri:dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                     }}
+                               style={{ height: height*0.08, width:height*0.08, borderRadius:height*0.04, }}
+                   />
+                 </View>
+                 <View style={{ flex: 0.4, justifyContent: "space-around" }}>
+                   <View style={{ justifyContent: "center" }}>
+                     <Text style={[styles.text, {  fontSize: height*0.02, }]} numberOfLines={1}>{item.title}</Text>
+
+                   </View>
+                   <View style={{ justifyContent: "center" }}>
+                     <Text style={[styles.text, { fontSize: height*0.02}]}>{item.lastchatmessage}</Text>
+
+                   </View>
+
+                 </View>
+                {item.lastmessagetime&& <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
+                     <Text style={[styles.text, { fontSize:height*0.02 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
+                     <Text style={[styles.text, { fontSize:height*0.02 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
+                 </View>}
+               </TouchableOpacity>
+             )
+         }}
+       />
+     ) 
+   }
 navigate =(item,type)=>{
 let itemArrange ={}
 if(type=="clinic"){
@@ -393,11 +484,19 @@ if(type=="clinic"){
      Clinics: this.FirstRoute,
      Doctors:this.SecondRoute,
      Medicals:this.ThirdRoute,
+     Labs:this.fourthRoute
    });
    indexChange = async (index,) => {
   
      this.setState({ index })
 
+   }
+   separator =()=>{
+      return(
+        <View style={{height:1,backgroundColor:"gray"}}>
+
+        </View>
+      )
    }
    validateChats =()=>{
      const { index, routes } = this.state
@@ -428,19 +527,23 @@ if(type=="clinic"){
     
        )
      }
-     if (this.props.user.profile.occupation == "ClinicRecoptionist" || this.props.user.profile.occupation == "MedicalRecoptionist") {
+     if (this.props.user.profile.occupation == "ClinicRecoptionist" || this.props.user.profile.occupation == "MedicalRecoptionist"||this.props.user.profile.occupation == "LabAssistant") {
         return(
           <FlatList
             contentContainerStyle={{ paddingBottom: 90 }}
 
             data={this.state.chats}
-
+            ItemSeparatorComponent={this.separator}
             keyExtractor={(item, index) => index.toString()}
 
             renderItem={({ item, index }) => {
+                 let dp = ""
+                if(item.displaypicture){
+                  dp = `${item.displaypicture}`
+                }
               if (this.state.edit) {
                 return (
-                  <TouchableOpacity style={{ height: height * 0.1, backgroundColor: this.validateColor(item), marginTop: 1, flexDirection: 'row' }}
+                  <TouchableOpacity style={{ height: height * 0.1, backgroundColor: "#fff", marginTop: 1, flexDirection: 'row' }}
                     onPress={() => {
                       this.selectChat(item)
                     }}
@@ -459,26 +562,26 @@ if(type=="clinic"){
                     <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                       <Image
                         source={{
-                          uri: item.displaypicture || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                          uri: dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
                         }}
                         style={{ height: 60, width: 60, borderRadius: 30, }}
                       />
                     </View>
                            <View style={{ flex: 0.4, justifyContent: "space-around" }}>
                    <View style={{ justifyContent: "center" }}>
-                     <Text style={[styles.text, {  fontSize: 16, }]} numberOfLines={1}>{item.title}</Text>
+                     <Text style={[styles.text, {  fontSize:height*0.02, }]} numberOfLines={1}>{item.title}</Text>
 
                    </View>
                    <View style={{ justifyContent: "center" }}>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{item.lastchatmessage}</Text>
+                     <Text style={[styles.text, { fontSize:height*0.02 }]}>{item.lastchatmessage}</Text>
 
                    </View>
 
                  </View>
-                 <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
-                 </View>
+           {item.lastmessagetime&&<View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
+                     <Text style={[styles.text, { fontSize:height*0.02 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
+                     <Text style={[styles.text, { fontSize:height*0.02 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
+                 </View>}
                   </TouchableOpacity>
                 )
               }
@@ -490,26 +593,26 @@ if(type=="clinic"){
                   <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                     <Image
                       source={{
-                        uri: item.displaypicture|| "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                        uri: dp|| "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
                       }}
                       style={{ height: 60, width: 60, borderRadius: 30, }}
                     />
                   </View>
                     <View style={{ flex: 0.4, justifyContent: "space-around" }}>
                    <View style={{ justifyContent: "center" }}>
-                     <Text style={[styles.text, {  fontSize: 16, }]} numberOfLines={1}>{item.title}</Text>
+                     <Text style={[styles.text, {  fontSize:height*0.02, }]} numberOfLines={1}>{item.title}</Text>
 
                    </View>
                    <View style={{ justifyContent: "center" }}>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{item.lastchatmessage}</Text>
+                     <Text style={[styles.text, { fontSize:height*0.02 }]}>{item.lastchatmessage}</Text>
 
                    </View>
 
                  </View>
-                 <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
-                 </View>
+               { item.lastmessagetime&& <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
+                     <Text style={[styles.text, { fontSize:height*0.02 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
+                     <Text style={[styles.text, { fontSize:height*0.02 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
+                 </View>}
                 </TouchableOpacity>
               )
             }}
@@ -526,6 +629,10 @@ if(type=="clinic"){
            keyExtractor={(item, index) => index.toString()}
 
            renderItem={({ item, index }) => {
+                     let dp = ""
+                if(item.displaypicture){
+                  dp = `${item.displaypicture}`
+                }
              if (this.state.edit) {
                return (
                  <TouchableOpacity style={{ height: height * 0.1, backgroundColor: this.validateColor(item), marginTop: 1, flexDirection: 'row',}}
@@ -547,26 +654,26 @@ if(type=="clinic"){
                    <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                      <Image
                        source={{
-                         uri: item.dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                         uri: dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
                        }}
                        style={{ height: 60, width: 60, borderRadius: 30, }}
                      />
                    </View>
                        <View style={{ flex: 0.4, justifyContent: "space-around" }}>
                    <View style={{ justifyContent: "center" }}>
-                     <Text style={[styles.text, {  fontSize: 16, }]} numberOfLines={1}>{item.title}</Text>
+                     <Text style={[styles.text, {  fontSize:height*0.02, }]} numberOfLines={1}>{item.title}</Text>
 
                    </View>
                    <View style={{ justifyContent: "center" }}>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{item.lastchatmessage}</Text>
+                     <Text style={[styles.text, { fontSize:height*0.02 }]}>{item.lastchatmessage}</Text>
 
                    </View>
 
                  </View>
-                 <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
-                 </View>
+             { item.lastmessagetime&&   <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
+                     <Text style={[styles.text, { fontSize:height*0.02 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
+                     <Text style={[styles.text, { fontSize:height*0.02 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
+                 </View>}
                  </TouchableOpacity>
                )
              }
@@ -578,25 +685,25 @@ if(type=="clinic"){
                  <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                    <Image
                      source={{
-                       uri: item.dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                       uri: dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
                      }}
                      style={{ height: 60, width: 60, borderRadius: 30, }}
                    />
                  </View>
                   <View style={{ flex: 0.4, justifyContent: "space-around" }}>
                    <View style={{ justifyContent: "center" }}>
-                     <Text style={[styles.text, {  fontSize: 16, }]} numberOfLines={1}>{item.title}</Text>
+                     <Text style={[styles.text, {  fontSize:height*0.02, }]} numberOfLines={1}>{item.title}</Text>
 
                    </View>
                    <View style={{ justifyContent: "center" }}>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{item.lastchatmessage}</Text>
+                     <Text style={[styles.text, { fontSize:height*0.02 }]}>{item.lastchatmessage}</Text>
 
                    </View>
 
                  </View>
                  <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
+                     <Text style={[styles.text, { fontSize:height*0.02 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
+                     <Text style={[styles.text, { fontSize:height*0.02 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
                  </View>
                </TouchableOpacity>
              )
@@ -614,6 +721,10 @@ if(type=="clinic"){
            keyExtractor={(item, index) => index.toString()}
 
            renderItem={({ item, index }) => {
+                     let dp = ""
+                if(item.displaypicture){
+                  dp = `${item.displaypicture}`
+                }
              if (this.state.edit) {
                return (
                  <TouchableOpacity style={{ height: height * 0.1, backgroundColor: this.validateColor(item), marginTop: 1, flexDirection: 'row' }}
@@ -635,25 +746,25 @@ if(type=="clinic"){
                    <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                      <Image
                        source={{
-                         uri: item.dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                         uri: dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
                        }}
                        style={{ height: 60, width: 60, borderRadius: 30, }}
                      />
                    </View>
                  <View style={{ flex: 0.4, justifyContent: "space-around" }}>
                    <View style={{ justifyContent: "center" }}>
-                     <Text style={[styles.text, {  fontSize: 16, }]} numberOfLines={1}>{item.title}</Text>
+                     <Text style={[styles.text, {  fontSize:height*0.02, }]} numberOfLines={1}>{item.title}</Text>
 
                    </View>
                    <View style={{ justifyContent: "center" }}>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{item.lastchatmessage}</Text>
+                     <Text style={[styles.text, { fontSize:height*0.02 }]}>{item.lastchatmessage}</Text>
 
                    </View>
 
                  </View>
                  <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
+                     <Text style={[styles.text, { fontSize:height*0.02 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
+                     <Text style={[styles.text, { fontSize:height*0.02 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
                  </View>
                  </TouchableOpacity>
                )
@@ -666,25 +777,25 @@ if(type=="clinic"){
                  <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                    <Image
                      source={{
-                       uri: item.dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                       uri:dp || "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
                      }}
                      style={{ height: 60, width: 60, borderRadius: 30, }}
                    />
                  </View>
                    <View style={{ flex: 0.4, justifyContent: "space-around" }}>
                    <View style={{ justifyContent: "center" }}>
-                     <Text style={[styles.text, {  fontSize: 16, }]} numberOfLines={1}>{item.title}</Text>
+                     <Text style={[styles.text, {  fontSize:height*0.02, }]} numberOfLines={1}>{item.title}</Text>
 
                    </View>
                    <View style={{ justifyContent: "center" }}>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{item.lastchatmessage}</Text>
+                     <Text style={[styles.text, { fontSize:height*0.02 }]}>{item.lastchatmessage}</Text>
 
                    </View>
 
                  </View>
                  <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
-                     <Text style={[styles.text, { fontSize: 16 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
+                     <Text style={[styles.text, { fontSize:height*0.02 }]}>{moment(item.lastmessagetime).format("DD-MM-YYYY")}</Text>
+                     <Text style={[styles.text, { fontSize:height*0.02 }]}>{moment(item.lastmessagetime).format("hh:mm a")}</Text>
                  </View>
                </TouchableOpacity>
              )
@@ -740,7 +851,7 @@ if(type=="clinic"){
             <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
              
               <View style={{flex:0.7 }}>
-                <Text style={[styles.text, { color: '#fff', marginLeft: 20 ,fontWeight:'bold',fontSize:height*0.03}]}>Chats</Text>
+                <Text style={[styles.text, { color: '#fff', marginLeft: 20 ,fontWeight:'bold',fontSize:height*0.028}]}>Chats</Text>
               </View>
              <View style={{flex:0.3,alignItems:"center",justifyContent:'center'}}>
                  {
@@ -779,7 +890,8 @@ const mapStateToProps = (state) => {
   return {
     theme: state.selectedTheme,
     user:state.selectedUser,
-    medical: state.selectedMedical
+    medical: state.selectedMedical,
+       clinic: state.selectedClinic
   }
 }
 export default connect(mapStateToProps, { selectTheme })(Chat);

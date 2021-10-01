@@ -401,11 +401,11 @@ const screenHeight =Dimensions.get('screen').height;
                 >
                     <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
                         <LinearGradient 
-                              style={{ height: 50, width: 50, borderRadius: 25,alignItems: "center", justifyContent: "center" }}
+                              style={{ height: height*0.084, width: height*0.084, borderRadius: height*0.042,alignItems: "center", justifyContent: "center" }}
                               colors={["#333", themeColor, themeColor]}
                         >
                               <View >
-                                  <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 22 }]}>{this.getFirstLetter(item)}</Text>
+                                  <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: height*0.02 }]}>{this.getFirstLetter(item)}</Text>
                               </View>
                         </LinearGradient>
                        

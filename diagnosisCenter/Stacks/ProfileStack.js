@@ -6,7 +6,7 @@ import ProfileScreen from '../Screens/ProfileScreen';
 import CreateReport from '../../Screens/CreateReport';
 import ViewFeautures from '../Screens/ViewFeautures';
 import ViewProfile from '../Screens/ViewProfile';
-
+import ViewDiagnosticCenter from '../../AdminScreens/ViewDiagnosticCenter';
 const Stack = createStackNavigator();
 export default class ProfileStack extends Component {
     constructor(props) {
@@ -29,6 +29,7 @@ export default class ProfileStack extends Component {
             >
                 <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="ViewProfile" component={ViewProfile} options={{ headerShown: false }} />
+            
           
             </Stack.Navigator>
         );

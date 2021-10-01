@@ -68,12 +68,7 @@ class CreateReceptionist extends Component {
         if (this.state.Experience == "") {
             return this.showSimpleMessage("Please fill Experience", "#dd7030",)
         }
-        if (this.state.Pan == "") {
-            return this.showSimpleMessage("Please fill Pan", "#dd7030",)
-        }
-        if (this.state.Address == "") {
-            return this.showSimpleMessage("Please fill Address", "#dd7030",)
-        }
+   
         if (this.state.Pincode == "") {
             return this.showSimpleMessage("Please fill Pincode", "#dd7030",)
         }
@@ -219,8 +214,8 @@ class CreateReceptionist extends Component {
         )
     }
     componentDidMount() {
-
-    }
+      
+    } 
     render() {
 
         return (
@@ -316,7 +311,7 @@ class CreateReceptionist extends Component {
                                         style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
-                                <View>
+                                {/* <View>
                                     <Text style={styles.text}>Pan</Text>
                                     <TextInput
                                         value={this.state.Pan}
@@ -335,8 +330,8 @@ class CreateReceptionist extends Component {
                                         selectionColor={themeColor}
                                         style={{ width: width * 0.8, height: height * 0.15, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
-                                </View>
-                                <View>
+                                </View> */}
+                                {/* <View>
                                     <Text style={styles.text}>Pincode</Text>
                                     <TextInput
                                         value={this.state.Pincode}
@@ -383,7 +378,7 @@ class CreateReceptionist extends Component {
                                         selectionColor={themeColor}
                                         style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
-                                </View>
+                                </View> */}
                               
 
                                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>

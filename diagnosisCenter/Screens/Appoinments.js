@@ -188,7 +188,23 @@ class Appoinments extends Component {
 
                 />
                   </View>  
+           <View style={{
+                        position: "absolute",
+                        bottom: 100,
+                        left: 20,
+                        right: 20,
+                        flex: 1,
+                        alignItems: "center",
+                        justifyContent: "center",
 
+                        borderRadius: 20
+                    }}>
+                        <TouchableOpacity
+                            onPress={() => { this.props.navigation.navigate("CreateAppoinment",{diagnosisCenter:true})}}
+                        >
+                            <AntDesign name="pluscircle" size={40} color={themeColor} />
+                        </TouchableOpacity>
+                    </View>
                 </SafeAreaView>
             </>
         );

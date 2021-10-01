@@ -9,7 +9,7 @@ import Modal from 'react-native-modal';
 import { NavigationContainer, CommonActions } from '@react-navigation/native';
 const fontFamily = settings.fontFamily;
 const themeColor = settings.themeColor;
-
+   let weekdays =["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
 class ViewDoctor extends Component {
     constructor(props) {
         let item =props.route.params.item
@@ -23,7 +23,7 @@ class ViewDoctor extends Component {
     componentDidMount() {
         console.log(this.state.item?.doctor?.profile?.name)
     }
-    getTodayTimings = (today) => {
+    getTodayTimings = (today,color) => {
       
    return(
        this.state.item.clinicShits[today][0].timings.map((i, index) => {
@@ -31,10 +31,9 @@ class ViewDoctor extends Component {
                <View 
                 key={index}
                 style={{ flexDirection: "row", marginTop: 5 }}>
-                   <Text style={[styles.text, { fontWeight: "bold" }]}>{index + 1}.</Text>
-                   <Text style={[styles.text, { marginLeft: 5 }]}>{i[0]}</Text>
-                   <Text style={[styles.text]}>-</Text>
-                   <Text style={[styles.text]}>{i[1]}</Text>
+                   <Text style={[styles.text, { marginLeft: 5,color }]}>{i[0]}</Text>
+                   <Text style={[styles.text ,{color}]}>-</Text>
+                   <Text style={[styles.text ,{color}]}>{i[1]}</Text>
                </View>
            )
        })
@@ -61,7 +60,7 @@ class ViewDoctor extends Component {
                                 <Ionicons name="chevron-back-circle" size={30} color="#fff" />
                             </TouchableOpacity>
                             <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
-                                <Text style={[styles.text, { color: '#fff', fontWeight: 'bold', fontSize: 18 }]}>{this.state.item?.doctor?.profile?.name}</Text>
+                                <Text style={[styles.text, { color: '#fff', fontWeight: 'bold', fontSize: height*0.02 }]}>{this.state.item?.doctor?.profile?.name}</Text>
                             </View>
                            {this.state.owner&&<TouchableOpacity style={{ flex: 0.2, flexDirection:"row",alignItems:"center",justifyContent:'center' }}
                                 onPress={() => { this.props.navigation.navigate('EditDoctorTimings',{clinic:this.state.item,})}}
@@ -79,130 +78,42 @@ class ViewDoctor extends Component {
                         <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around",marginTop:20}}>
                             <View style={{flex:0.5,alignItems:"center",justifyContent:'center',flexDirection:"row"}}>
                                 <View style={{flex:0.8,alignItems:"center",justifyContent:"center"}}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Day</Text>
+                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: height*0.02 }]}>Day</Text>
                                 </View>
                                <View style={{flex:0.2}}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>:</Text>
+                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: height*0.02 }]}>:</Text>
 
                                </View>
                             </View> 
                             <View style={{ flex: 0.5, alignItems: "center", justifyContent: 'center' }}>
-                                <Text style={[styles.text, { fontWeight: "bold", fontSize: 18}]}>Working Timings:</Text>
+                                <Text style={[styles.text, { fontWeight: "bold", fontSize: height*0.02}]}>Working Timings:</Text>
                             </View>
                         </View>
-                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginTop: 20 }}>
+                        {
+                            weekdays.map((day,index)=>{
+                                    let today =weekdays[new Date().getDay()]
+                                     let color = day==today?"red":"#000"
+                                return(
+                                             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginTop: 20 }} key={index}>
                             <View style={{ flex: 0.5, alignItems: "center", justifyContent: 'center',flexDirection:"row"}}>
                                 <View style={{ flex: 0.8, alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Sunday</Text>
+                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: height*0.02 ,color}]}>{day}</Text>
                                 </View>
                                 <View style={{ flex: 0.2 }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>:</Text>
+                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: height*0.02 ,color}]}>:</Text>
 
                                 </View>
                             </View>
                             <View style={{ flex: 0.5, alignItems: "center", justifyContent: 'center'}}>
                                 {
-                                    this.getTodayTimings("Sunday")
+                                    this.getTodayTimings(day,color)
                                 }
                             </View>
                         </View>
-                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginTop: 20 }}>
-                            <View style={{flex:0.5,alignItems:"center",justifyContent:'center',flexDirection:"row"}}>
-                                <View style={{ flex: 0.8, alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Monday</Text>
-                                </View>
-                                <View style={{ flex: 0.2 }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>:</Text>
-
-                                </View>
-                            </View>
-                            <View style={{ flex: 0.5, alignItems: "center", justifyContent: 'center'}}>
-                                {
-                                    this.getTodayTimings("Monday")
-                                }
-                            </View>
-                        </View>
-                       
-                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginTop: 20 }}>
-                            <View style={{ flex: 0.5, alignItems: "center", justifyContent: 'center',flexDirection:"row"}}>
-                                <View style={{ flex: 0.8, alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Tuesday</Text>
-                                </View>
-                                <View style={{ flex: 0.2 }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>:</Text>
-
-                                </View>
-                            </View>
-                            <View style={{ flex: 0.5, alignItems: "center", justifyContent: 'center'}}>
-                                {
-                                    this.getTodayTimings("Tuesday")
-                                }
-                            </View>
-                        </View>
-                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginTop: 20 }}>
-                            <View style={{ flex: 0.5, alignItems: "center", justifyContent: 'center',flexDirection:"row"}}>
-                                <View style={{ flex: 0.8, alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Wednesday</Text>
-                                </View>
-                                <View style={{ flex: 0.2 }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>:</Text>
-
-                                </View>
-                            </View>
-                            <View style={{ flex: 0.5, alignItems: "center", justifyContent: 'center'}}>
-                                {
-                                    this.getTodayTimings("Wednesday")
-                                }
-                            </View>
-                        </View>
-                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginTop: 20 }}>
-                            <View style={{ flex: 0.5, alignItems: "center", justifyContent: 'center',flexDirection:"row"}}>
-                                <View style={{ flex: 0.8, alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Thursday</Text>
-                                </View>
-                                <View style={{ flex: 0.2 }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>:</Text>
-
-                                </View>
-                            </View>
-                            <View style={{ flex: 0.5, alignItems: "center", justifyContent: 'center'}}>
-                                {
-                                    this.getTodayTimings("Thursday")
-                                }
-                            </View>
-                        </View>
-                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginTop: 20 }}>
-                            <View style={{ flex: 0.5, alignItems: "center", justifyContent: 'center',flexDirection:"row"}}>
-                                <View style={{ flex: 0.8, alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Friday</Text>
-                                </View>
-                                <View style={{ flex: 0.2 }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>:</Text>
-
-                                </View>
-                            </View>
-                            <View style={{ flex: 0.5, alignItems: "center", justifyContent: 'center'}}>
-                                {
-                                    this.getTodayTimings("Friday")
-                                }
-                            </View>
-                        </View>
-                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginTop: 20 }}>
-                            <View style={{ flex: 0.5, alignItems: "center", justifyContent: 'center',flexDirection:"row"}}>
-                                <View style={{ flex: 0.8, alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>Saturday</Text>
-                                </View>
-                                <View style={{ flex: 0.2 }}>
-                                    <Text style={[styles.text, { fontWeight: "bold", fontSize: 18 }]}>:</Text>
-
-                                </View>
-                            </View>
-                            <View style={{ flex: 0.5, alignItems: "center", justifyContent: 'center'}}>
-                                {
-                                    this.getTodayTimings("Saturday")
-                                }
-                            </View>
-                        </View>
+                                )
+                            })
+                        }
+                   
                     </View>
                    
                 </SafeAreaView>

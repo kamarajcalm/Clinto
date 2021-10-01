@@ -37,7 +37,9 @@ class DiagnosisTab extends Component {
         if (routeName == "ViewFeautures") {
             return false
         }
-  
+          if (routeName == "ViewDiagnosticCenter") {
+            return false
+        }
         return true
     }
     getTabBarVisibility = (route) => {

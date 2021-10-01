@@ -11,7 +11,7 @@ const themeColor = settings.themeColor;
 const url =settings.url;
 const date =new Date()
 import { Linking } from 'react-native';
-import { Ionicons ,AntDesign,FontAwesome,FontAwesome5,Entypo} from '@expo/vector-icons';
+import { Ionicons ,AntDesign,FontAwesome,FontAwesome5,Entypo,} from '@expo/vector-icons';
 
 import HttpsClient from '../api/HttpsClient';
 import { SliderBox } from "react-native-image-slider-box";
@@ -41,7 +41,7 @@ class ViewMedicals extends Component {
         if(data.type=="success"){
             let images =[]
             data.data.forEach((item,index)=>{
-                images.push(`${url}${item.imageUrl}`)
+                images.push(`${item.imageUrl}`)
             })
             this.setState({images},()=>{
                 console.log(images)
@@ -257,25 +257,25 @@ class ViewMedicals extends Component {
                       
                                 </View>
                             </View>
-                            <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 10, alignItems: "center", justifyContent: "space-between"}}>
+                          <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 10, alignItems: "center", justifyContent: "space-between"}}>
                                   <View style={{alignItems:"center",justifyContent:"center"}}>
-                                    <Text style={[styles.text,{fontSize:height*0.023}]}>Owned By : </Text>
+                                    <Text style={[styles.text,{fontSize:height*0.02}]}>Owned By : </Text>
                                   </View>
                                 <View style={{alignItems:'center',justifyContent:"center"}}>
-                                    <Text style={[styles.text,{marginLeft:10,fontSize:height*0.023}]}>{this.state?.item?.owner.first_name}</Text>
+                                    <Text style={[styles.text,{marginLeft:10,fontSize:height*0.02}]}>{this.state?.item?.owner.first_name}</Text>
                                 </View>
                               </View>
                             <View style={{ flexDirection: "row", marginHorizontal: 20, marginTop: 10, alignItems: "center", justifyContent: "space-between"}}>
                                 <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={[styles.text, {fontSize:height*0.023 }]}>Owned Number:</Text>
+                                    <Text style={[styles.text, {fontSize:height*0.02 }]}>Owned Number:</Text>
                                 </View>
                                 <View style={{ alignItems: 'center', justifyContent: "center" }}>
-                                    <Text style={[styles.text, { marginLeft: 10 }]}>{this.state?.item?.owner.username}</Text>
+                                    <Text style={[styles.text, { marginLeft: 10 ,fontSize:height*0.02}]}>{this.state?.item?.owner.username}</Text>
                                 </View>
                             </View>
  
                       
-                                                        <View style={{ padding: 10, }}>
+                            <View style={{ padding: 10, }}>
                                 
               
                                <View style={{flexDirection:"row"}}>
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff"
     },
-            boxWithShadow: {
+        boxWithShadow: {
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.8,

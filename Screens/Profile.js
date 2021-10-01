@@ -228,7 +228,7 @@ validateExpiry =()=>{
 
              </TouchableOpacity>
            </View> */}
-           <ReceptionistsProfile />
+           <ReceptionistsProfile navigation={this.props.navigation} />
          </>
        )
      }
@@ -451,13 +451,14 @@ validateExpiry =()=>{
                         this.diffrentiateUsers()
                     }
                 </View>
+       
           { this.state.isPatient&& <View style={{marginHorizontal:20,elevation:5,backgroundColor:"#fafafa",borderRadius:15,marginTop:20}}>
                  
                      <View style={{paddingVertical:20 }}>
                     <View style={{ marginHorizontal: 20 }}>
                         <View style={{ marginTop: 5,flexDirection:"row",alignItems:"center",justifyContent:"space-between" }}>
                             <View style={{}}>
-                                                   <Text style={[styles.text]}>Delivery Location</Text>
+                                                   <Text style={[styles.text,{fontSize:height*0.02}]}>Delivery Location</Text>
                             </View>
                              <View style={{}}>
                                  <TouchableOpacity style={{height:height*0.03,width:width*0.25,alignItems:"center",justifyContent:"center",backgroundColor:themeColor,borderRadius:5}}
@@ -471,7 +472,7 @@ validateExpiry =()=>{
                              
                         </View>
                         <View>
-                              <Text style={[styles.text, { marginTop: 5, color: "#000", }]}>{this.props.user.profile.location}</Text>
+                              <Text style={[styles.text, { marginTop: 5, color: "#000",fontSize:height*0.02 }]}>{this.props.user.profile.location}</Text>
                         </View>
                
                     </View>
@@ -487,7 +488,7 @@ validateExpiry =()=>{
                               <AntDesign name="gift" size={24} color={themeColor} />
                             </View>
                                 <View style={{ marginLeft:10,marginTop:5}}>
-                                    <Text style={[styles.text]}>Your Orders</Text>
+                                    <Text style={[styles.text,{fontSize:height*0.02}]}>Your Orders</Text>
                                 </View>
                         </View>
                     
@@ -505,7 +506,7 @@ validateExpiry =()=>{
                             <AntDesign name="questioncircle" size={24} color={themeColor}/>
                             </View>
                                 <View style={{ marginLeft:10,marginTop:5}}>
-                                    <Text style={[styles.text]}>Pending Requests</Text>
+                                    <Text style={[styles.text,{fontSize:height*0.02}]}>Pending Requests</Text>
                                 </View>
                         </View>
                  
@@ -523,7 +524,7 @@ validateExpiry =()=>{
                                  <Ionicons name="person-add" size={24} color={themeColor} />
                             </View>
                                 <View style={{ marginLeft:10,marginTop:5}}>
-                                    <Text style={[styles.text]}>Linked Accounts</Text>
+                                    <Text style={[styles.text,{fontSize:height*0.02}]}>Linked Accounts</Text>
                                 </View>
                         </View>
                   

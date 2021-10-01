@@ -259,7 +259,7 @@ class ViewAppointmentDoctors extends Component {
                             <Ionicons name="chevron-back-circle" size={30} color="#fff" />
                         </TouchableOpacity>
                         <View style={{ flex: 0.7, }}>
-                            <Text style={[styles.text, { color: "#fff" ,fontSize: height*0.03,fontWeight:'bold'}]}> Appointment Details</Text>
+                            <Text style={[styles.text, { color: "#fff" ,fontSize: height*0.028,fontWeight:'bold'}]}> Appointment Details</Text>
                         </View>
 
                     </View>
@@ -408,15 +408,14 @@ class ViewAppointmentDoctors extends Component {
                                             <Text style={[styles.text, { color: "#fff" }]}>Accept</Text>
                                         </TouchableOpacity> }
                                         
-                                        {this.state.item.status == "Accepted" && <TouchableOpacity style={{ height: height * 0.05, width: "70%", borderRadius: 10, alignItems: 'center', justifyContent: "center", backgroundColor: "orange" }}
+                                        {this.state.item.status == "Accepted" && <TouchableOpacity style={{ height: height * 0.05, width: "70%", borderRadius: 10, alignItems: 'center', justifyContent: "center", backgroundColor: "green" }}
                                             onPress={() => {
 
-                                              
                                                     this.completeAppointment()
                                               
                                             }}
                                         >
-                                            <Text style={[styles.text, { color: "#fff" }]}>finish</Text>
+                                            <Text style={[styles.text, { color: "#fff" }]}>Complete</Text>
                                         </TouchableOpacity>}
                                     </View>
 

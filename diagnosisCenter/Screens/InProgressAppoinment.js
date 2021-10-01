@@ -12,6 +12,7 @@ import axios from 'axios';
 import moment from 'moment';
 import HttpsClient from '../../api/HttpsClient';
 import Modal from 'react-native-modal';
+import { LinearGradient } from 'expo-linear-gradient';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 const url = settings.url;
@@ -25,6 +26,30 @@ class InProgressAppoinment extends Component {
            refreshing:false,
            next:true
         };
+    }
+        getFirstLetter =(item ,patient=null)=>{
+            if(patient){
+                let name = item.patientname.name.split("")
+                return name[0].toUpperCase()
+            }
+       
+           let clinicName = item?.clinicname?.name.split("")
+  
+            return clinicName[0].toUpperCase();
+        
+     
+    }
+               chatwithCustomer= async (item) => {
+        let api = null
+   
+            api = `${url}/api/prescription/createClinicChat/?clinic=${item.clinic}&customer=${item.requesteduser}`
+        
+
+        let data = await HttpsClient.get(api)
+        console.log(data, "kkk")
+        if (data.type == "success") {
+            this.props.navigation.navigate('Chat', { item: data.data })
+        }
     }
 
         completeAppointment =async()=>{
@@ -132,6 +157,7 @@ getProgressAppoinments= async()=>{
                  <StatusBar backgroundColor={themeColor} barStyle={"default"} />
 
                   <FlatList
+                  contentContainerStyle={{paddingBottom:150}}
                      refreshing={this.state.refreshing}
                      onRefresh={()=>{this.onRefresh()}}
                     onEndReached={()=>{this.onEndReached()}} 
@@ -139,50 +165,75 @@ getProgressAppoinments= async()=>{
                     keyExtractor={(item,index)=>index.toString()}
                     renderItem={({item,index})=>{
                             return(
-                                              <TouchableOpacity
-                            onPress={() => { this.viewAppointments(item)}}
-                            style={{
-                                marginTop: 10,
-                                height: height * 0.15,
-                                backgroundColor: "#eee",
-                                marginHorizontal: 10,
-                                borderRadius: 10,
-                         }}
-                        >
+                                                    <TouchableOpacity
+                                onPress={() => { this.viewAppointments(item) }}
+                                style={[styles.boxWithShadow,{
+                                    marginTop: 10,
+                                    minHeight: height * 0.2,
+                                    backgroundColor: "#fff",
+                                    marginHorizontal: 10,
+                                    borderRadius: 10,
+                                    paddingBottom:20
+                                }]}
+                            >
+                             <View style={{ flexDirection: "row", flex: 1, }}>
+                                    
+                                        <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                                       <LinearGradient 
+                                            style={{ height: height*0.08, width: height*0.08, borderRadius: height*0.04,alignItems: "center", justifyContent: "center" }}
+                                            colors={["#333", themeColor, themeColor]}
+                                        >
+                                            <View >
+                                                <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 22 }]}>{this.getFirstLetter(item,"patient")}</Text>
+                                            </View>
+                                        </LinearGradient>
+                                      </View>
+                                      <View style={{flex:0.7}}>
+                                             <View style={{marginTop:height*0.02,flexDirection:"row"}}>
+                                                     <View style={{flexDirection:"row",flex:0.7}}>
+                                                     <View style={{alignItems:"center",justifyContent:"center"}}>
+                                                           <Text style={[styles.text,{color:"#000",fontSize:height*0.02,fontWeight:"bold"}]}>{item.patientname.name}</Text>
+                                                    </View>
+                                                    <View style={{alignItems:"center",justifyContent:"center"}}>
+                                                        <Text style={[styles.text,{color:"#000",fontSize:height*0.017,}]}> ({item.patientname.age} - {item.patientname.sex})</Text>
+                                                    </View>
+                                                </View>
+                                                <View style={{flex:0.3,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                                                          <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width:height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center' }]}
+                                                    onPress={() => { this.chatwithCustomer(item) }}
+                                                >
+                                                    <Ionicons name="md-chatbox" size={height*0.02} color="#63BCD2" />
+                                                </TouchableOpacity>
+                                                                                       <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height:height*0.04, width: height*0.04, borderRadius:height*0.02, alignItems: "center", justifyContent: 'center', }]}
+                                                                                onPress={() => {
+                                                                        
+                                                                                        if (Platform.OS == "android") {
+                                                                                            Linking.openURL(`tel:${item?.patientname.mobile}`)
+                                                                                        } else {
 
-                 
-                    
-                            <View style={{flex:0.6,flexDirection:'row'}}>
-                                <View style={{flex:0.5}}>
-                                    <View style={{ paddingLeft: 10, paddingTop: 10 }}>
-                                        <Text style={[styles.text, { fontWeight: "bold", color: "#000" }]}>{item.patientname.name}</Text>
-                                    </View>
-                                    <View style={{ paddingLeft: 10, paddingTop: 10, flexDirection: "row" }}>
-                                        <View>
-                                            <Text style={[styles.text, { fontWeight: "bold" }]}>Reason : </Text>
-                                        </View>
-                                        <View>
-                                            <Text style={[styles.text, { fontWeight: "bold" }]}>{item.reason}</Text>
-                                        </View>
+                                                                                            Linking.canOpenURL(`telprompt:${item?.patientname.mobile}`)
+                                                                                        }}}
+                                                        
+                                                        
+                                                                            >
+                                                                            <Ionicons name="call" size={height*0.02} color="#63BCD2" />
+                                                                            </TouchableOpacity>
+                                             
+                                                </View>
+                                             </View>
 
-                                    </View>
-                                </View>
-                                    <View style={{ flex:0.5,flexDirection:"row",paddingTop:10}}>
-                                        <View>
-                                            <Text style={[styles.text, {}]}>{item.requesteddate}</Text>
-                                        </View>
-                                        <View>
-                                            <Text style={[styles.text]}> | </Text>
-                                        </View>
-                                        <View>
-                                            <Text style={[styles.text]}> {item.requestedtime} </Text>
-                                        </View>
-                                    </View>
-                                  
-                               </View>
-                               <View style={{flex:0.4,flexDirection:"row"}}>
-                                      
-                                      <TouchableOpacity style={{flex:0.5,alignItems:"center",justifyContent:"center"}}
+                                             <View style={{marginTop:height*0.01,}}>
+                                                    <View>
+                                                        <Text style={[styles.text,{color:"#000",fontSize:height*0.018}]}>Reason : {item.reason}</Text>
+                                                    </View>
+                                             </View>
+                                                <View style={{marginTop:height*0.01,}}>
+                                                    <View>
+                                                        <Text style={[styles.text,{color:"#000",fontSize:height*0.018}]}>Accepted : {item.accepteddate} | {item.acceptedtime}</Text>
+                                                    </View>
+                                             </View>
+                                             <View style={{marginTop:height*0.01,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                                           <TouchableOpacity style={{flex:0.5,alignItems:"center",justifyContent:"center"}}
                                             onPress={() => {
 
                                                 this.setState({ selectedAppointment: item, selectedIndex: index, }, () => {
@@ -201,13 +252,16 @@ getProgressAppoinments= async()=>{
                                         >
                                               <Text style={[styles.text, { color: "#B22222" }]}>Reject</Text>
                                         </TouchableOpacity>
-                                      
-                       
-                               </View>
-                        
-                     
-              
-                        </TouchableOpacity>
+                                             </View>
+                                      </View>
+                             </View>
+
+                            
+                                   
+
+                              
+                      
+                            </TouchableOpacity>
                             )
                     }}
                   

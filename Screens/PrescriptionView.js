@@ -268,7 +268,7 @@ renderHeader =()=>{
                                         
 
                                     {
-                                        this.state.item.diseaseTitle.map((item,index)=>{
+                                        this.state?.item?.diseaseTitle?.map((item,index)=>{
                                             return(
                                                     <View style={{flexDirection:"row"}}>
                                                         <View>
@@ -309,6 +309,7 @@ renderHeader =()=>{
      }
      decreaseQuantity = (item,index)=>{
         let duplicate = this.state.prescribed
+         duplicate[index].addedQuantity = Math.round(duplicate[index].addedQuantity )
          duplicate[index].addedQuantity -= 1
          if(duplicate[index].addedQuantity==0){
             duplicate[index].isAdded = false
@@ -323,7 +324,7 @@ renderHeader =()=>{
              return this.showSimpleMessage("Max Qty Reached","orange","info")
             }
         }
-     
+         duplicate[index].addedQuantity = Math.round(duplicate[index].addedQuantity)
          duplicate[index].addedQuantity += 1
      
          this.setState({prescribed:duplicate})
@@ -348,14 +349,16 @@ validateButton = (item,index) =>{
                      style={{height:height*0.04,width:"90%",backgroundColor:themeColor,alignItems:"center",justifyContent:"space-around",borderRadius:5,flexDirection:"row"}}
                    >
                          <TouchableOpacity 
+                           style={{flex:1,alignItems:"center",justifyContent:"center"}}
                            onPress={()=>{
                                this.decreaseQuantity(item,index)
                            }}
                          >
                              <AntDesign name={"minus"} size={14} color="#fff" />
                          </TouchableOpacity>
-                         <Text style={[styles.text,{color:"#fff"}]}>{item.addedQuantity}</Text>
+                         <Text style={[styles.text,{color:"#fff"}]}>{Math.round(item.addedQuantity)}</Text>
                            <TouchableOpacity 
+                             style={{flex:1,alignItems:"center",justifyContent:"center"}}
                              onPress={()=>{
                                this.addQuantity(item,index)
                            }}
@@ -412,12 +415,12 @@ validateButton = (item,index) =>{
                             </View>
                         </View>}
                         <View style={{ marginTop: 10 }}>
-                            {item.command&&<View>
+                            {item.command?<View>
                                        <Text style={[styles.text, { color:"#000",fontSize:height*0.015 }]}>Comments:</Text>
                             <View>
                                 <Text style={[styles.text, { marginLeft: 10,fontSize:height*0.015 }]}>{item.command}</Text>
                             </View>
-                            </View>
+                            </View>:null
                      }
                         </View>
                         <View style={{ alignItems:"center",justifyContent:"space-between",flexDirection:"row"}}>
@@ -426,7 +429,7 @@ validateButton = (item,index) =>{
                                                             </View>
                             <View style={{ }}>
 
-                            <Text style={[styles.text,{fontSize:height*0.015}]}>Qty : {item.total_qty}</Text>
+                            <Text style={[styles.text,{fontSize:height*0.015}]}>Qty : {Math.round(item.total_qty)}</Text>
                             </View>
                         </View>
               
@@ -527,18 +530,18 @@ validateButton = (item,index) =>{
          return(
              <View >
                        <View style={{marginTop:5,marginLeft:10}}>
-               {this.state.item.reports.length>0&&<View style={{paddingLeft:20}}>
-                      <Text style={[styles.text,{color:"#000",fontWeight:"bold",fontSize:height*0.02}]}>Suggested Lab Test : </Text>
+               {this.state.item.reports.length>0&&<View style={{paddingLeft:7}}>
+                      <Text style={[styles.text,{color:"#000",fontWeight:"bold",fontSize:height*0.017}]}>Suggested Lab Test : </Text>
                  </View>}
                  {
                      this.state.item.reports.map((item,index)=>{
                           return (
                               <View style={{flexDirection:"row",marginTop:10}}>
                                   <View>
-                                         <Text style={[styles.text]}>{index+1} . </Text>         
+                                         <Text style={[styles.text,{fontSize:height*0.017}]}>{index+1} . </Text>         
                                   </View>
                                   <View>
-                                           <Text style={[styles.text]}>{item}</Text>
+                                           <Text style={[styles.text,{fontSize:height*0.017}]}>{item}</Text>
                                   </View>
                               </View>
                           )

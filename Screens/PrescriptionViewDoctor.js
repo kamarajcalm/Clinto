@@ -388,24 +388,22 @@ sepeartor =()=>{
          return(
                  <View style={{marginTop:5,marginLeft:10}}>
                {this.state.item.reports.length>0&&<View style={{paddingLeft:20}}>
-                      <Text style={[styles.text,{color:"#000",fontWeight:"bold",fontSize:height*0.02}]}>Suggested Lab Test : </Text>
+                      <Text style={[styles.text,{color:"#000",fontWeight:"bold",fontSize:height*0.017}]}>Suggested Lab Test : </Text>
                  </View>}
                  {
                      this.state.item.reports.map((item,index)=>{
                           return (
                               <View style={{flexDirection:"row",marginTop:10}}>
                                   <View>
-                                         <Text style={[styles.text]}>{index+1} . </Text>         
+                                         <Text style={[styles.text,{fontSize:height*0.017}]}>{index+1} . </Text>         
                                   </View>
                                   <View>
-                                           <Text style={[styles.text]}>{item}</Text>
+                                           <Text style={[styles.text,{fontSize:height*0.017}]}>{item}</Text>
                                   </View>
                               </View>
                           )
                      })
                  }
-            
-            
              </View>
          )
      }
@@ -680,7 +678,7 @@ sepeartor =()=>{
                                                     <View style={{ flex: 0.2, alignItems: "center", justifyContent: "space-around" }}>
 
                                                         <View>
-                                                            <Text style={[styles.text,{fontSize:width*0.037}]}>Qty : {item.total_qty} </Text>
+                                                            <Text style={[styles.text,{fontSize:width*0.037}]}>Qty : {Math.round(item.total_qty)} </Text>
                                                         </View>
                                                     </View>
                                                 </View>

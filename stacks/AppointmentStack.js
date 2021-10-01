@@ -13,6 +13,7 @@ import AddPrescription from '../Screens/AddPrescription';
 import SearchMedicines from '../Screens/SearchMedicines';
 import AddAccount from '../Screens/AddAccount';
 import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack';
+import CreateAppoinment from '../Screens/CreateAppoinment';
 const Stack = createStackNavigator();
 export default class AppointmentStack extends Component {
     constructor(props) {
@@ -42,6 +43,7 @@ export default class AppointmentStack extends Component {
                 <Stack.Screen name="addPriscription" component={AddPrescription} options={{ headerShown: false }} />
                 <Stack.Screen name="SearchMedicines" component={SearchMedicines} options={{ headerShown: false }} />
                 <Stack.Screen name="AddAccount" component={AddAccount} options={{ headerShown: false }} />
+                <Stack.Screen name="CreateAppoinment" component={CreateAppoinment} options={{ headerShown: false }} />
             </Stack.Navigator>
         );
     }

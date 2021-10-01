@@ -52,7 +52,7 @@ const url = settings.url;
                             <View style={{ height: height * 0.1, backgroundColor: themeColor, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, flexDirection: 'row', alignItems: "center" }}>
                             
                               <View style={{flex:0.7 }}>
-                                <Text style={[styles.text, { color: '#fff', marginLeft: 20 ,fontWeight:'bold',fontSize:25}]}>Orders</Text>
+                                <Text style={[styles.text, { color: '#fff', marginLeft: 20 ,fontWeight:'bold',fontSize:height*0.028}]}>Orders</Text>
                               </View>
                             <View style={{flex:0.3,alignItems:"center",justifyContent:'center'}}>
                               

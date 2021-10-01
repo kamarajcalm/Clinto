@@ -186,7 +186,7 @@ class PriscriptionIssue extends Component {
             <View>
                 <View style={{ height: headerHeight / 2,flexDirection:"row",}}>
                      <View style={{flex:0.6,justifyContent:"center"}}>
-                        <Text style={{ color: '#fff', fontFamily: "openSans", marginLeft: 20, fontSize: height*0.04, fontWeight: "bold" }}>Prescription</Text>
+                        <Text style={{ color: '#fff', fontFamily: "openSans", marginLeft: 20, fontSize: height*0.028, fontWeight: "bold" }}>Prescription</Text>
                      </View>
                     <View style={{flex:0.4,alignItems: "center", justifyContent: 'center'}}>
                         {
@@ -210,6 +210,13 @@ class PriscriptionIssue extends Component {
                     </View>
 
                 </View>
+            </View>
+        )
+    }
+    separotor =()=>{
+        return (
+            <View style={{height:0.5,backgroundColor:"gray",}}>
+
             </View>
         )
     }
@@ -326,6 +333,7 @@ class PriscriptionIssue extends Component {
                                     progressViewOffset={headerHeight}
                                 />
                             }
+                         
                             data={this.state.priscriptions}
                             keyExtractor={(item, index) => index.toString()}
                             scrollEventThrottle={16}
@@ -337,38 +345,58 @@ class PriscriptionIssue extends Component {
                             onEndReachedThreshold={0.1}
                             renderItem={({ item, index }) => {
                                 return (
-                                    <TouchableOpacity style={[styles.card, { flexDirection: "row", borderRadius: 5 ,marginTop:15,}]}
-                                        onPress={() => { this.props.navigation.navigate('PrescriptionView', { pk:item.prescription,})}}
-                                    >
-                                          <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
+                             <TouchableOpacity style={[styles.card,styles.boxWithShadow, { flexDirection: "row",    height: height * 0.18,backgroundColor:"#fff",borderRadius:10,margin:10,marginTop:20}]}
+                                     onPress={() => { this.props.navigation.navigate('PrescriptionView', { pk:item.prescription,show:false})}}
+                    
+                >
+                    <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
                         <LinearGradient 
-                              style={{ height: 50, width: 50, borderRadius: 25,alignItems: "center", justifyContent: "center" }}
+                              style={{ height: height*0.084, width: height*0.084, borderRadius: height*0.042,alignItems: "center", justifyContent: "center" }}
                               colors={["#333", themeColor, themeColor]}
                         >
                               <View >
-                                  <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: 22 }]}>{this.getFirstLetter(item)}</Text>
+                                  <Text style={[styles.text, { color: "#ffff", fontWeight: "bold", fontSize: height*0.02}]}>{this.getFirstLetter(item)}</Text>
                               </View>
                         </LinearGradient>
                        
                     </View>
-                                        <View style={{ flex: 0.4, justifyContent: 'center', alignItems: 'center' }}>
-                                            <View >
-                                                <Text style={[styles.text,{ fontSize: 18, }]}>{item.patientdetails.name}</Text>
-                                                <Text style={[styles.text,{ fontSize: 12, }]}>{item.patientdetails.clinicname}</Text>
-                                            </View>
+                    <View style={{ flex: 0.7, marginHorizontal: 10, justifyContent: 'center' }}>
+                        <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
+                            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                 <View style={{flexDirection:"row"}}>
+                                      <Text style={[styles.text, { color: "#000", fontWeight: 'bold',fontSize:height*0.021 }]}>{item?.patientdetails?.name}</Text>
+                                      <Text style={[styles.text, {fontSize:height*0.021 }]}> ({item?.patientdetails.age} - {item?.patientdetails.sex})</Text>
+                                 </View>
+                                  
+                            </View>
+                            <View style={{ alignItems: "center", justifyContent: "center" ,marginRight:10}}>
+                                <Text style={[styles.text]}>#{item.prescription}</Text>
+                            </View>
+                        </View>
+                   <View style={{ marginTop: 10,flexDirection:"row" }}>
+                         <View style={{flexDirection:"row"}}>
+                                <Text style={[styles.text,{fontSize:height*0.021 }]}>Clinic : </Text>
+                            </View>
+                            <View style={{flexDirection:"row",flexWrap:"wrap",flex:1}}>
+                               <Text style={[styles.text,{fontSize:height*0.021 }]}>{item.patientdetails.clinic}</Text>
+                            </View>
+                  
+                        </View>
+                         <View style={{marginTop:10,flexDirection:"row",alignItems:"center",justifyContent:"space-between",}}>
+                                   <TouchableOpacity style={[styles.boxWithShadow, { backgroundColor: "#fff", height: height*0.04, width:height*0.04, borderRadius: height*0.02, alignItems: "center", justifyContent: 'center',}]}
+                                        onPress={() => { this.chatWithDoctor(item.forUser) }}
+                                    >
+                                        <Ionicons name="chatbox" size={height*0.02} color="#63BCD2" />
 
-                                        </View>
-                                        <View style={{ flex: 0.3, justifyContent: 'center', alignItems: "center" }}>
-                                            <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
-                                                <Text>{moment(item.created).format("DD/MM/YYYY")}</Text>
-
-                                            </View>
-                                            <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'center' }}>
-                                                <Text>{moment(item.created).format("hh:mm a")}</Text>
-                                            </View>
-
-                                        </View>
                                     </TouchableOpacity>
+                         
+                           <View style={{paddingRight:15}}>
+                                <Text style={[styles.text]}>{moment(item.created).format("h:mm a")}</Text>
+                            </View>
+                         </View>
+                    </View>
+
+                </TouchableOpacity>
                                 )
                             }}
                         />
@@ -416,6 +444,13 @@ const styles = StyleSheet.create({
         backgroundColor: themeColor,
         elevation: 6
     },
+        boxWithShadow: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        elevation: 5
+    }
 })
 const mapStateToProps = (state) => {
 

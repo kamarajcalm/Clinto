@@ -43,7 +43,8 @@ class CreateReceptionistMedical extends Component {
             firstEmergencyContactNo: "",
             secondEmergencyContactNo: '',
             image: null,
-            item
+            item,
+            email:""
         };
     }
 
@@ -68,7 +69,9 @@ class CreateReceptionistMedical extends Component {
         if (this.state.Mobile == "") {
             return this.showSimpleMessage("Please fill Mobile", "#dd7030",)
         }
-
+  if (this.state.email == "") {
+            return this.showSimpleMessage("Please fill Email", "#dd7030",)
+        }
         if (this.state.Age == "") {
             return this.showSimpleMessage("Please fill Age", "#dd7030",)
 
@@ -77,22 +80,22 @@ class CreateReceptionistMedical extends Component {
             return this.showSimpleMessage("Please fill Qualification", "#dd7030",)
         }
 
-        if (this.state.Pan == "") {
-            return this.showSimpleMessage("Please fill Pan", "#dd7030",)
-        }
-        if (this.state.Address == "") {
-            return this.showSimpleMessage("Please fill Address", "#dd7030",)
-        }
-        if (this.state.Pincode == "") {
-            return this.showSimpleMessage("Please fill Pincode", "#dd7030",)
-        }
-        if (this.state.State == "") {
-            return this.showSimpleMessage("Please fill State", "#dd7030",)
+        // if (this.state.Pan == "") {
+        //     return this.showSimpleMessage("Please fill Pan", "#dd7030",)
+        // }
+        // if (this.state.Address == "") {
+        //     return this.showSimpleMessage("Please fill Address", "#dd7030",)
+        // }
+        // if (this.state.Pincode == "") {
+        //     return this.showSimpleMessage("Please fill Pincode", "#dd7030",)
+        // }
+        // if (this.state.State == "") {
+        //     return this.showSimpleMessage("Please fill State", "#dd7030",)
 
-        }
-        if (this.state.City == "") {
-            return this.showSimpleMessage("Please fill City", "#dd7030",)
-        }
+        // }
+        // if (this.state.City == "") {
+        //     return this.showSimpleMessage("Please fill City", "#dd7030",)
+        // }
         let sendData = {
             name: this.state.Name,
             displayPicture: this.state.image,
@@ -109,7 +112,8 @@ class CreateReceptionistMedical extends Component {
             clinicsHandling: this.state.NoOfClinics,
             occupation: "MedicalRecoptionist",
             clinic: this.state.item.id,
-            type:"MedicalStore"
+            type:"MedicalStore",
+            email:this.state.email
         }
         if (this.state.image) {
             sendData.bodyType = "formData"
@@ -278,7 +282,16 @@ class CreateReceptionistMedical extends Component {
                                         style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
                                 </View>
-
+         <View >
+                                    <Text style={styles.text}>Email</Text>
+                                    <TextInput
+                                      
+                                        value={this.state.email}
+                                        onChangeText={(email) => { this.setState({ email }) }}
+                                        selectionColor={themeColor}
+                                        style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
+                                    />
+                                </View>
 
                                 <View>
                                     <Text style={styles.text}>Age</Text>
@@ -301,7 +314,7 @@ class CreateReceptionistMedical extends Component {
                                     />
                                 </View>
 
-                                <View>
+                                {/* <View>
                                     <Text style={styles.text}>Experience</Text>
                                     <TextInput
                                         onChangeText={(Experience) => { this.setState({ Experience }) }}
@@ -310,8 +323,8 @@ class CreateReceptionistMedical extends Component {
                                         selectionColor={themeColor}
                                         style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
-                                </View>
-                                <View>
+                                </View> */}
+                                {/* <View>
                                     <Text style={styles.text}>Pan</Text>
                                     <TextInput
                                         value={this.state.Pan}
@@ -378,7 +391,7 @@ class CreateReceptionistMedical extends Component {
                                         selectionColor={themeColor}
                                         style={{ width: width * 0.8, height: height * 0.05, borderRadius: 15, backgroundColor: "#eeee", margin: 10, paddingLeft: 10 }}
                                     />
-                                </View>
+                                </View> */}
 
 
                                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
